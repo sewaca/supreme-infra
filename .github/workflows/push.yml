@@ -24,31 +24,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: "pnpm"
-    - name: Setup npm registry
-      run: |
-        echo "registry=https://registry.npmjs.org/" >> .npmrc
-      shell: bash
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
       shell: bash
-      # env:
-      #   NODE_OPTIONS: "--max-old-space-size=4096"
-  lint: 
-    needs: [install]
-    runs-on: ubuntu-latest
-    steps:
     - name: lint
       run: pnpm lint
-  tsc: 
-    needs: [install]
-    runs-on: ubuntu-latest
-    steps:
     - name: tsc
       run: pnpm -r tsc
-  unit: 
-    needs: [install]
-    runs-on: ubuntu-latest
-    steps:
     - name: unit
       run: pnpm -r unit 
   # TODO: add stylelint & etc
