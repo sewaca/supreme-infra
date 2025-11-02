@@ -1,23 +1,15 @@
-import { Test, type TestingModule } from "@nestjs/testing";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { Test } from "@nestjs/testing";
+import { AppModule } from "./app.module";
+
+jest.mock("./features/HelloWorld/HelloWorld.module", () => ({
+  HelloWorldModule: class HelloWorldModuleMock {},
+}));
 
 describe("AppController", () => {
-  let appController: AppController;
-
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
+  it("should correctly build up", async () => {
+    const appModule = await Test.createTestingModule({
+      imports: [AppModule],
     }).compile();
-
-    appController = app.get<AppController>(AppController);
-  });
-
-  describe("root", () => {
-    // TODO: починить тесты
-    it.skip('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe("Hello World!");
-    });
+    expect(appModule).toBeDefined();
   });
 });
