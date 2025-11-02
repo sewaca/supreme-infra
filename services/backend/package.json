@@ -13,11 +13,11 @@
     "start:prod": "node dist/main",
     "lint": "npm run lint -w=root",
     "format": "npm run format -w=root",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "unit": "jest --passWithNoTests",
+    "unit:watch": "jest --watch",
+    "unit:coverage": "jest --coverage",
+    "unit:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "unit:e2e": "jest --config ./test/jest-e2e.json",
     "tsc": "tsc"
   },
   "dependencies": {

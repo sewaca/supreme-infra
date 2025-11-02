@@ -9,9 +9,9 @@
     "lint": "npm run lint -w=root",
     "format": "npm run format -w=root",
     "tsc": "tsc",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "unit": "jest --passWithNoTests",
+    "unit:watch": "jest --watch",
+    "unit:coverage": "jest --coverage"
   },
   "dependencies": {
     "next": "15.5.4",

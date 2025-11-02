@@ -1,0 +1,40 @@
+name: NodeJS CI push
+
+on:
+  push:
+    # TODO: возможно стоит удалить фильтр
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9.15.0
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: "pnpm"
+    - name: Install dependencies
+      run: pnpm install
+  check: 
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+    - name: lint
+      run: pnpm lint
+    - name: tsc
+      run: pnpm -r tsc
+    - name: unit
+      run: pnpm -r unit 
+    # TODO: add stylelint & etc

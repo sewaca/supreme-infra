@@ -1,21 +1,19 @@
 {
   "name": "root",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "supreme infra setup",
+  "engines": {
+    "node": "22.12.0",
+    "pnpm": "9.15.0"
+  },
   "scripts": {
     "lint": "biome check",
-    "format": "biome format --fix"
+    "format": "biome format --fix",
+    "ci": ""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "^2.2.5"
   },
-  "workspaces": [
-    "/",
-    "/services/frontend",
-    "/services/backend"
-  ]
+  "author": "sewaca",
+  "license": "ISC"
 }
