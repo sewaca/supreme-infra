@@ -13,13 +13,12 @@ jobs:
     strategy:
       matrix:
         node-version: [22]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
     - uses: actions/checkout@v4
     - name: Install pnpm
       uses: pnpm/action-setup@v4
       with:
-        version: 9.15.0
+        version: 9
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
@@ -27,14 +26,22 @@ jobs:
         cache: "pnpm"
     - name: Install dependencies
       run: pnpm install
-  check: 
+  lint: 
     needs: [install]
     runs-on: ubuntu-latest
     steps:
     - name: lint
       run: pnpm lint
+  tsc: 
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
     - name: tsc
       run: pnpm -r tsc
+  unit: 
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
     - name: unit
       run: pnpm -r unit 
-    # TODO: add stylelint & etc
+  # TODO: add stylelint & etc
