@@ -1,6 +1,6 @@
 packages: 
   - ./services/*
-
+lockfileIncludeTarballUrl: false
 catalog: 
   #TODO: 
 
