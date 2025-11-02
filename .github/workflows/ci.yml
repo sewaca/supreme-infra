@@ -1,14 +1,7 @@
-name: NodeJS CI push
-
-on:
-  push:
-    # TODO: возможно стоит удалить фильтр
-    # branches: [ $default-branch ]
-  pull_request:
-    # branches: [ $default-branch ]
-
+name: ci for project
+on: [push, pull_request]
 jobs:
-  install:
+  check-lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +24,24 @@ jobs:
       run: pnpm lint
     - name: tsc
       run: pnpm -r tsc
+  check-unit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: "pnpm"
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      shell: bash
     - name: unit
       run: pnpm -r unit 
-  # TODO: add stylelint & etc
