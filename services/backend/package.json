@@ -7,23 +7,18 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "npm run lint -w=root",
-    "format": "npm run format -w=root",
+    "dev": "nest start --watch",
+    "prod": "node dist/main",
+    "lint": "pnpm -w run lint",
+    "format": "pnpm -w run format",
     "unit": "jest --passWithNoTests",
-    "unit:watch": "jest --watch",
     "unit:coverage": "jest --coverage",
-    "unit:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "unit:e2e": "jest --config ./test/jest-e2e.json",
     "tsc": "tsc"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
-    "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/platform-fastify": "^11.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
