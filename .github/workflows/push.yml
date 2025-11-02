@@ -3,9 +3,9 @@ name: NodeJS CI push
 on:
   push:
     # TODO: возможно стоит удалить фильтр
-    branches: [ $default-branch ]
+    # branches: [ $default-branch ]
   pull_request:
-    branches: [ $default-branch ]
+    # branches: [ $default-branch ]
 
 jobs:
   install:
@@ -38,4 +38,3 @@ jobs:
     - name: unit
       run: pnpm -r unit 
     # TODO: add stylelint & etc
-    
