@@ -28,22 +28,3 @@ jobs:
         run: | 
           PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title --jq '.title')
           python python.py  
-
-
-      # - uses: amannn/action-semantic-pull-request@v6
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     types: |
-      #       major
-      #       minor
-      #       fix
-      #       chore
-      #     requireScope: false
-      #     subjectPattern: ^(?![A-Z]).+$
-      #     subjectPatternError: |
-      #       The subject "{subject}" found in the pull request title "{title}"
-      #       didn't match the configured pattern. Please ensure that the subject
-      #       doesn't start with an uppercase character.
-      #     wip: true
-      #     validateSingleCommit: false
