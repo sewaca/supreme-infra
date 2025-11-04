@@ -31,4 +31,3 @@ jobs:
           set -e
           PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title --jq '.title')
           python -u infra/check_pr_title.py "$PR_TITLE"
-          echo $PR_TITLE
