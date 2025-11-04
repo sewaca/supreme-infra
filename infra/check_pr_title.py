@@ -6,7 +6,7 @@ import os
 if len(sys.argv) < 2:
     print("FATAL: Did not get any pr title")
     sys.exit(1)
-pr_title = sys.argv[1]
+pr_title = sys.argv[1].strip()
 print("pr title is: ", pr_title)
 
 # Получаем теги из переменной окружения TAGS
