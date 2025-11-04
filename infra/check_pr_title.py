@@ -7,19 +7,18 @@ if len(sys.argv) < 2:
     print("FATAL: Did not get any pr title")
     sys.exit(1)
 pr_title = sys.argv[1].strip()
-print("pr title is: ", pr_title)
+print(f"pr_title='{pr_title}'")
 
 # Получаем теги из переменной окружения TAGS
 tags = os.getenv('TAGS')
 if not tags:
     print("FATAL: Did not get tags array")
     sys.exit(1)
-tag_list = [tag.strip() for tag in tags.split('\n')]
-print("available tags are: ", tag_list)
+tag_list = [tag.strip() for tag in tags.split('\n') if tag.strip() != '']
+print(f"tag_list='{tag_list}'")
 
-# tag != '' is workarount for safe use
-if any(pr_title.startswith(tag) and tag != '' for tag in tag_list): 
+if any(pr_title.startswith(tag) for tag in tag_list): 
     sys.exit(0)
 
-print(f"Wrong title format. None of correct tags found in {pr_title}")
+print(f"Wrong title format. None of correct tags found in '{pr_title}'")
 sys.exit(1)
