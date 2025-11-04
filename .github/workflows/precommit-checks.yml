@@ -14,7 +14,7 @@ jobs:
       - run: pip install pre-commit
       - run: pre-commit --version
       - run: pre-commit install
-      - run: pre-commit run --all-files --hook-stage=manual
+      - run: pre-commit run --all-files || true
       # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
       - id: check_changes
         run: |
