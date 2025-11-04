@@ -19,6 +19,9 @@ jobs:
           git config --global user.name 'Your Name'
           git config --global user.email 'your-username@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          echo "${{ secrets.GITHUB_TOKEN }}"
+          echo $GITHUB_REPOSITORY
+          echo "${GITHUB_REF:11}"
           git checkout "${GITHUB_REF:11}"
           git add .
           git commit -am "Automated report"
