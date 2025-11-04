@@ -8,6 +8,7 @@ def main():
         sys.exit(1)
 
     pr_title = sys.argv[1]
+    print("pr title is", pr_title)
 
     # Получаем теги из переменной окружения TAGS
     tags = os.getenv('TAGS')
@@ -16,6 +17,8 @@ def main():
         sys.exit(1)
 
     tag_list = [tag.strip() for tag in tags.split('\n')]
+
+    print("tag_list is ", tag_list)
     
     if any(pr_title.startswith(tag) for tag in tag_list): 
         sys.exit(0)
