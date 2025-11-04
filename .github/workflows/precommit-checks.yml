@@ -11,27 +11,38 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v2
-      - run: pip install pre-commit
-      - run: pre-commit --version
-      - run: pre-commit install
-      - run: pre-commit run --all-files || true
-      # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
-      - name: Debug branch name
-        run: | 
-          echo "Branch name: ${{ github.event.pull_request.head.ref }}"
-      - id: check_changes
+      - uses: actions/checkout@v1
+      - name: Create report file
+        run: date +%s > report.txt
+      - name: Commit report
         run: |
-          git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
-      - name: Commit and push changes
-        if: steps.check_changes.outputs.changes_detected == 'true'
-        env: 
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add .
-          git commit -m "Apply pre-commit hooks" || true
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          git config --global user.name 'Your Name'
+          git config --global user.email 'your-username@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout "${GITHUB_REF:11}"
+          git commit -am "Automated report"
+          git push
+      # - uses: actions/checkout@v3
+      # - uses: actions/setup-python@v2
+      # - run: pip install pre-commit
+      # - run: pre-commit --version
+      # - run: pre-commit install
+      # - run: pre-commit run --all-files || true
+      # # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
+      # - name: Debug branch name
+      #   run: | 
+      #     echo "Branch name: ${{ github.event.pull_request.head.ref }}"
+      # - id: check_changes
+      #   run: |
+      #     git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
+      # - name: Commit and push changes
+      #   if: steps.check_changes.outputs.changes_detected == 'true'
+      #   env: 
+      #     GH_TOKEN: ${{ github.token }}
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   run: |
+      #     git config --global user.email "action@github.com"
+      #     git config --global user.name "GitHub Action"
+      #     git add .
+      #     git commit -m "Apply pre-commit hooks" || true
+      #     git push origin HEAD:${{ github.event.pull_request.head.ref }}
