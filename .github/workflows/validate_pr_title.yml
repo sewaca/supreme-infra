@@ -1,44 +1,10 @@
-# name: 'Validate PR title'
-# on:
-#   pull_request_target:
-#     types:
-#       - opened
-#       - edited
-#       - synchronize
-# jobs:
-#   main:
-#     name: Validate PR title
-#     runs-on: ubuntu-latest
-#     permissions:
-#       pull-requests: read
-#     steps:
-#       - uses: amannn/action-semantic-pull-request@v6
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           types: |
-#             major
-#             minor
-#             fix
-#             chore
-#           requireScope: false
-#           subjectPattern: ^(?![A-Z]).+$
-#           subjectPatternError: |
-#             The subject "{subject}" found in the pull request title "{title}"
-#             didn't match the configured pattern. Please ensure that the subject
-#             doesn't start with an uppercase character.
-#           wip: true
-#           validateSingleCommit: false
-
-name: 'Lint PR'
-
+name: 'Validate PR title'
 on:
   pull_request_target:
     types:
       - opened
       - edited
-      - reopened
-
+      - synchronize
 jobs:
   main:
     name: Validate PR title
@@ -46,6 +12,38 @@ jobs:
     permissions:
       pull-requests: read
     steps:
-      - uses: amannn/action-semantic-pull-request@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout code  
+        uses: actions/checkout@v2  
+      - name: Set up Python  
+        uses: actions/setup-python@v5  
+        with: 
+          python-version: '3.10'  
+      - name: Run Python script  
+        env: 
+          TAGS: |
+            major
+            minor
+            fix
+            chore
+        run: | 
+          PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title --jq '.title')
+          python python.py  
+
+
+      # - uses: amannn/action-semantic-pull-request@v6
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     types: |
+      #       major
+      #       minor
+      #       fix
+      #       chore
+      #     requireScope: false
+      #     subjectPattern: ^(?![A-Z]).+$
+      #     subjectPatternError: |
+      #       The subject "{subject}" found in the pull request title "{title}"
+      #       didn't match the configured pattern. Please ensure that the subject
+      #       doesn't start with an uppercase character.
+      #     wip: true
+      #     validateSingleCommit: false
