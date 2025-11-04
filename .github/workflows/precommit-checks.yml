@@ -12,12 +12,18 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v3
+        with: 
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v2
       - run: pip install pre-commit
       - run: pre-commit --version
       - run: pre-commit install
       - run: pre-commit run --all-files || true
       # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
+      - name: Debug branch name
+        run: | 
+          echo "Branch name: ${{ github.event.pull_request.head.ref }}"
       - id: check_changes
         run: |
           git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
