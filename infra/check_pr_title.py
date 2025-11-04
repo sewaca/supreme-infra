@@ -26,6 +26,6 @@ def main():
     print(f"Wrong title format. None of correct tags found in {pr_title}")
     sys.exit(1)
 
-print("mdmdm")
-if __name__ == "__main__":
-    main()
+main()
+# if __name__ == "__main__":
+    # main()
