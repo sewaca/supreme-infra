@@ -30,4 +30,4 @@ jobs:
           git config --global user.name "sewaca"
           git add .
           git commit -m "Apply pre-commit hooks" || true  # || true чтобы действие не завершалось с ошибкой, если нет изменений для коммита
-          git push
+          git push origin HEAD
