@@ -21,8 +21,8 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           echo "${{ secrets.GITHUB_TOKEN }}"
           echo $GITHUB_REPOSITORY
-          echo "${GITHUB_REF:11}"
-          git checkout "${GITHUB_REF:11}"
+          echo "${{ github.event.pull_request.head.ref }}"
+          git checkout "${{ github.event.pull_request.head.ref }}"
           git add .
           git commit -am "Automated report"
           git push
