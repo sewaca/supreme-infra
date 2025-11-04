@@ -34,4 +34,4 @@ jobs:
           git config --global user.name "GitHub Action"
           git add .
           git commit -m "Apply pre-commit hooks" || true
-          git push # origin ${{ github.event.pull_request.head.ref }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
