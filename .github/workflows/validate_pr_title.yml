@@ -28,5 +28,5 @@ jobs:
             chore
         run: | 
           PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title --jq '.title')
-          python python.py  
+          python infra/check_pr_title.py "$PR_TITLE"
 
