@@ -11,35 +11,25 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v1
-      - name: Create report file
-        run: date +%s > report.txt
-      - name: Commit report
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+      - run: pip install pre-commit
+      - run: pre-commit --version
+      - run: pre-commit install
+      - run: pre-commit run --all-files || true
+      # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
+      - name: Debug branch name
+        run: | 
+          echo "Branch name: ${{ github.event.pull_request.head.ref }}"
+      - id: check_changes
         run: |
-          git config --global user.name 'Your Name'
-          git config --global user.email 'your-username@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          echo "${{ secrets.GITHUB_TOKEN }}"
-          echo $GITHUB_REPOSITORY
-          echo "${{ github.event.pull_request.head.ref }}"
-          git status
-          git checkout "${{ github.event.pull_request.head.ref }}"
-          git add .
-          git commit -am "Automated report"
-          git push
-      # - uses: actions/checkout@v3
-      # - uses: actions/setup-python@v2
-      # - run: pip install pre-commit
-      # - run: pre-commit --version
-      # - run: pre-commit install
-      # - run: pre-commit run --all-files || true
-      # # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
-      # - name: Debug branch name
-      #   run: | 
-      #     echo "Branch name: ${{ github.event.pull_request.head.ref }}"
-      # - id: check_changes
-      #   run: |
-      #     git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
+          git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes_detected == 'true'
+        uses: EndBug/add-and-commit@v9
+        with: 
+          author_name: Precommit Robot
+          author_email: precommitrobot@github.com
       # - name: Commit and push changes
       #   if: steps.check_changes.outputs.changes_detected == 'true'
       #   env: 
