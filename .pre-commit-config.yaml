@@ -3,15 +3,15 @@ repos:
     rev: v4.1.0
     hooks:
       - id: check-merge-conflict
+      - id: check-json
+      - id: check-xml
+      - id: check-yaml
+      - id: check-docstring-first
+      - id: detect-private-key
+      - id: mixed-line-ending
+      - id: pretty-format-json
       - id: end-of-file-fixer
-      # - id: check-docstring-first
-      # - id: check-json
-      # - id: check-xml
-      # - id: check-yaml
-      # - id: detect-private-key
-      # - id: mixed-line-ending
-      # - id: pretty-format-json
-      # - id: trailing-whitespace
+      - id: trailing-whitespace
 
 
       
