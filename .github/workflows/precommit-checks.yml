@@ -12,13 +12,13 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      # - uses: actions/checkout@v2
-      - uses: actions/checkout@v3
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.PAT }}
-          fetch-depth: 0
+      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v3
+      #   with:
+      #     repository: ${{ github.event.pull_request.head.repo.full_name }}
+      #     ref: ${{ github.event.pull_request.head.ref }}
+      #     token: ${{ secrets.PAT }}
+      #     fetch-depth: 0
       - uses: actions/setup-python@v2
       - run: pip install pre-commit
       - run: pre-commit --version
@@ -40,14 +40,15 @@ jobs:
       - name: Commit and push changes
         if: steps.check_changes.outputs.changes_detected == 'true'
         run: |
-          git config --global user.email "sewaca7@gmail.com"
-          git config --global user.name "sewaca"
+          git config --global user.email "ddd@github.com"
+          git config --global user.name "ddd"
           git config user.name "new name"
           git config credential.username "new name"
           git add .
-          git status 
+          # git status 
           git commit -m "Apply pre-commit hooks" || true
-          git push
+          # git push
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
       # - name: Commit & Push changes
       #   uses: Andro999b/push@v1.3
       #   with:
