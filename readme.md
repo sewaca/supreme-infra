@@ -26,3 +26,16 @@ Examples of correctly named PRs:
 * major: Refactored X functionality
 * major: Added Y functionality
 * chore: Added ai memory-bank
+
+### Style conventions 
+
+TODO: leave notes here
+
+We use pre-commit & biome lint checks to verify everything is okay. <br />
+Just commit your pretty code, with passed locally lint check. <br />
+Madara-robot will take care about everything another
+
+
+
+
+        

@@ -33,5 +33,5 @@ jobs:
           git config --global user.email "madara-robot@github.com"
           git config --global user.name "madara-robot"
           git add .
-          git commit -m "Apply pre-commit hooks" || true
+          git commit -m "<Madara Robot>: Apply pre-commit hooks fixes" || true
           git push
