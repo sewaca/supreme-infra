@@ -2,6 +2,12 @@
 
 TODO: 
 
+## Prerequisites
+
+### Secrets
+
+* For pre-commit hooks you need to define PAT secret, which will have access to write info in PRs <br /> You can do it in `Settings > Secrets and variables > Actions > Repository secrets` <br /> Just add secret in format `PAT=github_pat_XXX`
+
 ## Repo conventions
 
 ### PR Titles
@@ -20,4 +26,3 @@ Examples of correctly named PRs:
 * major: Refactored X functionality
 * major: Added Y functionality
 * chore: Added ai memory-bank
-
