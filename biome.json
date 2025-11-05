@@ -33,5 +33,11 @@
         "organizeImports": "on"
       }
     }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "jsxQuoteStyle": "double"
+    }
   }
 }
