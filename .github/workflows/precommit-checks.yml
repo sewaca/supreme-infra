@@ -5,6 +5,7 @@ on:
     branches: [main]
 permissions:
   contents: write
+  pull-requests: write
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
@@ -36,29 +37,30 @@ jobs:
       #   with: 
       #     author_name: Precommit Robot
       #     author_email: precommitrobot@github.com
-      # - name: Commit and push changes
-      #   if: steps.check_changes.outputs.changes_detected == 'true'
-      #   run: |
-      #     git config --global user.email "sewaca7@gmail.com"
-      #     git config --global user.name "sewaca"
-      #     git config user.name "new name"
-      #     git config credential.username "new name"
-      #     git add .
-      #     git status 
-      #     git commit -m "Apply pre-commit hooks" || true
-      #     git push
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes_detected == 'true'
+        run: |
+          git config --global user.email "sewaca7@gmail.com"
+          git config --global user.name "sewaca"
+          git config user.name "new name"
+          git config credential.username "new name"
+          git add .
+          git status 
+          git commit -m "Apply pre-commit hooks" || true
+          git push
       # - name: Commit & Push changes
       #   uses: Andro999b/push@v1.3
       #   with:
       #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Commit files # transfer the new html files back into the repository
-        run: |
-          git config --local user.name "jpadfield"
-          git config --local user.name "jpadfield@github.com"
-          git add .
-          git commit -m "Updating the repository GitHub html pages in the docs folder"
-      - name: Push changes # push the output folder to your repo
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
+      # dodkfl
+      # - name: Commit files # transfer the new html files back into the repository
+      #   run: |
+      #     git config --local user.name "jpadfield"
+      #     git config --local user.name "jpadfield@github.com"
+      #     git add .
+      #     git commit -m "Updating the repository GitHub html pages in the docs folder"
+      # - name: Push changes # push the output folder to your repo
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     force: true
