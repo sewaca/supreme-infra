@@ -1,0 +1,36 @@
+name: pre-commit checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.PAT }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v2
+      - run: pip install pre-commit
+      - run: pre-commit --version
+      - run: pre-commit install
+      - run: pre-commit run --all-files || true
+      # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
+      - id: check_changes
+        run: |
+          git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes_detected == 'true'
+        run: |
+          git config --global user.email "madara-robot@github.com"
+          git config --global user.name "madara-robot"
+          git add .
+          git commit -m "<Madara Robot>: Apply pre-commit hooks fixes" || true
+          git push

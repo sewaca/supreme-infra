@@ -12,20 +12,20 @@ jobs:
     permissions:
       pull-requests: read
     steps:
-      - name: Checkout code  
-        uses: actions/checkout@v2  
-      - name: Set up Python  
-        uses: actions/setup-python@v5  
-        with: 
-          python-version: '3.9'  
-      - name: Run Python script  
-        env: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Run Python script
+        env:
           GH_TOKEN: ${{ github.token }}
           TAGS: |
             major
             minor
             fix
             chore
-        run: | 
+        run: |
           PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title --jq '.title')
           python -u infra/check_pr_title.py "$PR_TITLE"
