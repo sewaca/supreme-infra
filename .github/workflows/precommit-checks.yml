@@ -12,7 +12,6 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      # - uses: actions/checkout@v2
       - uses: actions/checkout@v3
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -25,43 +24,14 @@ jobs:
       - run: pre-commit install
       - run: pre-commit run --all-files || true
       # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
-      - name: Debug branch name
-        run: | 
-          echo "Branch name: ${{ github.event.pull_request.head.ref }}"
       - id: check_changes
         run: |
           git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
-      # - name: Commit and push changes
-      #   if: steps.check_changes.outputs.changes_detected == 'true'
-      #   uses: EndBug/add-and-commit@v9
-      #   with: 
-      #     author_name: Precommit Robot
-      #     author_email: precommitrobot@github.com
       - name: Commit and push changes
         if: steps.check_changes.outputs.changes_detected == 'true'
         run: |
-          git config --global user.email "ddd@github.com"
-          git config --global user.name "ddd"
-          git config user.name "new name"
-          git config credential.username "new name"
+          git config --global user.email "madara-robot@github.com"
+          git config --global user.name "madara-robot"
           git add .
-          # git status 
           git commit -m "Apply pre-commit hooks" || true
           git push
-          # git push origin HEAD:${{ github.event.pull_request.head.ref }}
-      # - name: Commit & Push changes
-      #   uses: Andro999b/push@v1.3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      # dodkfl
-      # - name: Commit files # transfer the new html files back into the repository
-      #   run: |
-      #     git config --local user.name "jpadfield"
-      #     git config --local user.name "jpadfield@github.com"
-      #     git add .
-      #     git commit -m "Updating the repository GitHub html pages in the docs folder"
-      # - name: Push changes # push the output folder to your repo
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     force: true
