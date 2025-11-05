@@ -1,8 +1,8 @@
 name: ci for project
-on: 
+on:
   push:
     branches: [ main ]
-  pull_request: 
+  pull_request:
 jobs:
   check-lint:
     runs-on: ubuntu-latest
@@ -47,4 +47,4 @@ jobs:
       run: pnpm install --frozen-lockfile
       shell: bash
     - name: unit
-      run: pnpm -r unit 
+      run: pnpm -r unit

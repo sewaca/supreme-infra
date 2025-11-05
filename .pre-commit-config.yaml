@@ -9,6 +9,3 @@ repos:
       - id: check-docstring-first
       - id: trailing-whitespace
       - id: end-of-file-fixer
-
-
-      
