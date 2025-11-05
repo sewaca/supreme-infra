@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { HelloWorldRepository } from "./HelloWorld.repository";
+import { Injectable } from '@nestjs/common';
+import { HelloWorldRepository } from './HelloWorld.repository';
 
 @Injectable()
 export class HelloWorldService {

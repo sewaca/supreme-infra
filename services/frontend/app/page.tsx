@@ -1,3 +1,3 @@
 export default function Home() {
-  return <div>все ок. мама шлюха</div>;
+  return <div id="test">все ок. мама шлюха</div>;
 }

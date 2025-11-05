@@ -1,6 +1,6 @@
-import { NestFactory } from "@nestjs/core";
-import { FastifyAdapter } from "@nestjs/platform-fastify";
-import { AppModule } from "./app.module";
+import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { AppModule } from './app.module';
 
 const MAX_BODY_SIZE = 10 * 1024;
 
