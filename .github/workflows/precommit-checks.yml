@@ -37,9 +37,6 @@ jobs:
       #     author_email: precommitrobot@github.com
       - name: Commit and push changes
         if: steps.check_changes.outputs.changes_detected == 'true'
-        env: 
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
