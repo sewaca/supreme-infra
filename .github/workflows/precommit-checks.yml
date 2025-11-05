@@ -17,6 +17,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.PAT }}
+          fetch-depth: 0
       - uses: actions/setup-python@v2
       - run: pip install pre-commit
       - run: pre-commit --version
