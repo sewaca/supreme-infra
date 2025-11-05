@@ -1,6 +1,12 @@
 # supreme-infra
 
 TODO:
+```
+add security scans:
+  https://github.com/gramostv/nestjs-security-scan?ysclid=mhlay0kc9v531132720
+  https://github.com/Nimdy/NjordScan?ysclid=mhlb2fwt1f620047678
+  or one scanner for js 
+```
 
 ## Prerequisites
 
