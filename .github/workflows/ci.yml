@@ -70,7 +70,7 @@ jobs:
       run: pnpm install --frozen-lockfile
       shell: bash
     - name: pnpm tsc 
-      run: pnpm tsc
+      run: pnpm -r tsc
   check-unit:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
