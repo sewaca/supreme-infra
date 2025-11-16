@@ -22,7 +22,4 @@ RUN pnpm run build
 RUN pnpm config set package-import-method=clone-or-copy
 RUN pnpm install --frozen-lockfile --prod --ignore-scripts --shamefully-hoist --no-optional --offline --config.tarball=$GYP_TARBALL
 
-COPY --from=build /usr/local/app /usr/local/app
-WORKDIR /usr/local/app/services/${SERVICE_NAME}
-
 CMD npm run start
