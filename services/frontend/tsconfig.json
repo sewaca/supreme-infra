@@ -7,8 +7,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "jest.config.js"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
