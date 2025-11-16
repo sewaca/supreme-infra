@@ -1,8 +1,6 @@
 name: pre-commit checks
 on:
   pull_request:
-  push:
-    branches: [main]
 permissions:
   contents: write
   pull-requests: write
@@ -34,4 +32,3 @@ jobs:
           git add .
           git commit -m "<Madara Robot>: Apply pre-commit hooks fixes" || true
           git push
-
