@@ -25,7 +25,7 @@
 
     "module": "esnext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
 
     "jsx": "react-jsx",
     "lib": ["dom", "esnext"]

@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.bff.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "experimentalDecorators": true,
     "outDir": "./dist"
