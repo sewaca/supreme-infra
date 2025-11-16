@@ -20,10 +20,10 @@ jobs:
           changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
           echo "$changed_files"
           if echo "$changed_files" | grep -qE '^(services/|package.json)$'; then
-            echo "should-skip-service-checks=false" >> $GITHUB_OUTPUT
+            echo "should-skip-service-checks=true" >> $GITHUB_OUTPUT
             echo "detected service changes"
           else
-            echo "should-skip-service-checks=true" >> $GITHUB_OUTPUT
+            echo "should-skip-service-checks=false" >> $GITHUB_OUTPUT
             echo "no service changes detected"
           fi
 
