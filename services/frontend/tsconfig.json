@@ -3,6 +3,12 @@
 
   "compilerOptions": { "baseUrl": "src" },
 
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "jest.config.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "jest.config.js"
+  ],
   "exclude": ["node_modules"]
 }
