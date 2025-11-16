@@ -32,4 +32,3 @@ jobs:
           git add .
           git commit -m "<Madara Robot>: Apply pre-commit hooks fixes" || true
           git push
-
