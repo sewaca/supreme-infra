@@ -3,7 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 const BACKEND_PORT = process.env.BACKEND_PORT || 4000;
 const FRONTEND_PORT = process.env.FRONTEND_PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${FRONTEND_PORT}`;
-const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${BACKEND_PORT}`;
+const BACKEND_URL =
+  process.env.BACKEND_URL || `http://localhost:${BACKEND_PORT}`;
 
 export default defineConfig({
   testDir: './tests',
