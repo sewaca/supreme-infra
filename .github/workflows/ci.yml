@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     outputs:
-      has-service-changes: ${{ steps.check-files.outputs.has-service-changes }}
+      should-skip-service-checks: ${{ steps.check-files.outputs.should-skip-service-checks }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,16 +20,16 @@ jobs:
           changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
           echo "$changed_files"
           if echo "$changed_files" | grep -qE '^(services/|package.json)$'; then
-            echo "has-service-changes=true" >> $GITHUB_OUTPUT
+            echo "should-skip-service-checks=true" >> $GITHUB_OUTPUT
             echo "detected service changes"
           else
-            echo "has-service-changes=false" >> $GITHUB_OUTPUT
+            echo "should-skip-service-checks=false" >> $GITHUB_OUTPUT
             echo "no service changes detected"
           fi
 
   check-lint:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.has-service-changes == 'true'
+    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
     strategy:
       matrix:
         node-version: [22]
@@ -53,7 +53,7 @@ jobs:
       run: pnpm -r tsc
   check-unit:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.has-service-changes == 'true'
+    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
     strategy:
       matrix:
         node-version: [22]
