@@ -1,4 +1,4 @@
-// @ts-ignore TODO:
+// @ts-expect-error TODO:
 import baseJestConfig from '../../jest.config.global.ts';
 
 export default { ...baseJestConfig };
