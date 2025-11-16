@@ -22,4 +22,3 @@ jobs:
         run: cd services/${{ inputs.service-name }}
       - name: Build Docker image
         run: docker build -t supreme-${{ inputs.service-name }}-${{ inputs.version-tag }} .
-
