@@ -1,5 +1,3 @@
 import baseJestConfig from '../../jest.config.global';
 
-export default {
-  ...baseJestConfig,
-};
+export default { ...baseJestConfig };

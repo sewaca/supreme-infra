@@ -1,10 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
-    "moduleResolution": "bundler",
-
     "lib": ["dom", "dom.iterable", "esnext"],
 
     "resolveJsonModule": true,
