@@ -69,7 +69,7 @@ jobs:
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
       shell: bash
-    - name: pnpm tsc 
+    - name: pnpm tsc
       run: pnpm -r tsc
   check-unit:
     runs-on: ubuntu-latest
