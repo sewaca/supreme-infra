@@ -52,4 +52,3 @@ export class DatabaseMock {
     this.mocks.clear();
   }
 }
-

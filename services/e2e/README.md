@@ -75,4 +75,3 @@ test('example', async () => {
 - `FRONTEND_PORT` - Frontend server port (default: 3000)
 - `BASE_URL` - Frontend base URL
 - `BACKEND_URL` - Backend base URL
-

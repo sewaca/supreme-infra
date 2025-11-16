@@ -9,11 +9,10 @@ test.describe('Full Stack E2E Tests', () => {
   test('should load the frontend page', async ({ page }) => {
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
-    
+
     // Check that the page content is visible
     const content = page.locator('#test');
     await expect(content).toBeVisible();
     await expect(content).toHaveText('все ок. мама шлюха');
   });
 });
-
