@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolvePackageJsonExports": false
+  },
+  "include": ["**/*.ts", "playwright.config.ts"],
+  "exclude": ["node_modules"]
+}
+
