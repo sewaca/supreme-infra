@@ -11,7 +11,7 @@ ENV VERSION=$VERSION
 WORKDIR /usr/local/app
 
 # TODO: add garbage skip (different services & etc)
-copy . . 
+copy . .
 
 WORKDIR services/${SERVICE_NAME}
 
