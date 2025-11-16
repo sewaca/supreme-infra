@@ -11,7 +11,7 @@ jobs:
       has-service-changes: ${{ steps.check-files.outputs.has-service-changes }}
     steps:
       - uses: actions/checkout@v4
-        with: 
+        with:
           fetch-depth: 0
       - name: Check changed files
         id: check-files
