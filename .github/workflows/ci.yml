@@ -11,10 +11,12 @@ jobs:
       has-service-changes: ${{ steps.check-files.outputs.has-service-changes }}
     steps:
       - uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
       - name: Check changed files
         id: check-files
         run: |
-          changed_files=$(git diff --name-only main HEAD)
+          changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
           if echo "$changed_files" | grep -qE '^(services/|package.json)$'; then
             echo "::set-output name=has-service-changes::true"
           else
