@@ -4,8 +4,26 @@ on:
     branches: [ main ]
   pull_request:
 jobs:
+
+  selective-checks:
+    runs-on: ubuntu-latest
+    outputs:
+      has-service-changes: ${{ steps.check-files.outputs.has-service-changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check changed files
+        id: check-files
+        run: |
+          changed_files=$(git diff --name-only main HEAD)
+          if echo "$changed_files" | grep -qE '^(services/|package.json)$'; then
+            echo "::set-output name=has-service-changes::true"
+          else
+            echo "::set-output name=has-service-changes::false"
+          fi
+
   check-lint:
     runs-on: ubuntu-latest
+    if: needs.selective-checks.outputs.has-service-changes == 'true'
     strategy:
       matrix:
         node-version: [22]
@@ -29,6 +47,7 @@ jobs:
       run: pnpm -r tsc
   check-unit:
     runs-on: ubuntu-latest
+    if: needs.selective-checks.outputs.has-service-changes == 'true'
     strategy:
       matrix:
         node-version: [22]
