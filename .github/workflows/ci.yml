@@ -19,10 +19,10 @@ jobs:
           changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
           echo "$changed_files"
           if echo "$changed_files" | grep -qE '^(services/|package.json)$'; then
-            echo "::set-output name=has-service-changes::true"
+            echo "has-service-changes=true" >> $GITHUB_OUTPUT
             echo "detected service changes"
           else
-            echo "::set-output name=has-service-changes::false"
+            echo "has-service-changes=false" >> $GITHUB_OUTPUT
             echo "no service changes detected"
           fi
 
