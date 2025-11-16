@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+
+    "lib": ["ESNext"],
+    "rootDirs": ["src"],
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": ["**/node_modules"],
+  "ts-node": {
+    "experimentalResolver": true
+  }
+}
