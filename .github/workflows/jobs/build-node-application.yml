@@ -1,0 +1,25 @@
+name: Build Node Application
+
+on:
+  workflow_call:
+    inputs:
+      version-tag:
+        required: true
+        description: 'Release version'
+        type: string
+      service-name:
+        required: true
+        type: string
+        description: 'Service name'
+
+jobs:
+  build-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Change directory
+        run: cd services/${{ inputs.service-name }}
+      - name: Build Docker image
+        run: docker build -t supreme-${{ inputs.service-name }}-${{ inputs.version-tag }} .
+

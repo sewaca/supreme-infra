@@ -1,0 +1,24 @@
+name: CD Pipelines
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build-backend:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Build backend service
+        uses: ./jobs/build-node-application.yml
+        with:
+          version-tag: '0.0.0' # TODO: change to actual version
+          service-name: 'backend'
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Build frontend service
+        uses: ./jobs/build-node-application.yml
+        with:
+          version-tag: '0.0.0' # TODO: change to actual version
+          service-name: 'front'
