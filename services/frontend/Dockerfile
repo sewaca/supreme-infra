@@ -5,15 +5,14 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 ENV CI=1
 ENV HUSKY=0
-ENV NODE_ENV=production
 
 WORKDIR /app
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml tsconfig.* package.json .
 COPY packages packages
-COPY services/backend services/backend
+COPY services/frontend services/frontend
 
-WORKDIR services/backend
+WORKDIR /app/services/frontend
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 RUN pnpm run build
