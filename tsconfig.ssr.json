@@ -16,5 +16,6 @@
         "options": { "goToDefinition": true }
       }
     ]
-  }
+  },
+  "exclude": ["**/node_modules", "**/.next"]
 }
