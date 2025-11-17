@@ -16,6 +16,16 @@ add security scans:
 
 ## Repo conventions
 
+### Build services
+
+To make your service ready for production: 
+1. Create Dockerfile (i.e. services/frontend/Dockerfile)
+2. Run Dockerfile from root <br />
+  `docker build -f services/frontend/Dockerfile -t supreme-frontend-v1.0.0`
+3. Add release pipeline 
+
+It's required to correctly deploy application to k8s managed cluster
+
 ### PR Titles
 
 PR title MUST start with one of the configured pattern, meaning which release current changes need.
