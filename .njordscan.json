@@ -1,17 +1,17 @@
 {
-    "framework": "nextjs",
-    "security_level": "standard",
-    "theme": "dark",
-    "modules": {
-      "headers": true,
-      "static": true,
-      "dependencies": true,
-      "configs": true,
-      "runtime": false,
-      "ai": false
-    },
-    "ai_features": {
-      "behavioral_analysis": false,
-      "threat_intelligence": false
-    }
+  "framework": "nextjs",
+  "security_level": "standard",
+  "theme": "dark",
+  "modules": {
+    "headers": true,
+    "static": true,
+    "dependencies": true,
+    "configs": true,
+    "runtime": false,
+    "ai": false
+  },
+  "ai_features": {
+    "behavioral_analysis": false,
+    "threat_intelligence": false
   }
+}
