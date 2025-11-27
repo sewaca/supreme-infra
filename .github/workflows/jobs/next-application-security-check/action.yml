@@ -1,5 +1,5 @@
 name: 'Next Application Security Check'
-description: 'Run security scan for Next.js application using njsscan'
+description: 'Run security scan for Next.js application using NjordScan'
 
 inputs:
   service-name:
@@ -12,58 +12,14 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
-    - name: Install njsscan
-      run: |
-        pip install --upgrade pip
-        pip install njsscan
+        python-version: '3.11'
+    - name: Install NjordScan
+      run: pip install njordscan
       shell: bash
-    - name: Run security scan
-      run: |
-        SERVICE_NAME="${{ inputs.service-name }}"
-        njsscan services/$SERVICE_NAME --json -o /tmp/njsscan-report.json
-        if [ -f /tmp/njsscan-report.json ]; then
-          cat /tmp/njsscan-report.json
-          # Check if vulnerabilities were found
-          python3 << EOF
-        import json
-        import sys
-        import os
-
-        service_name = os.environ.get('SERVICE_NAME', 'unknown')
-
-        try:
-            with open('/tmp/njsscan-report.json', 'r') as f:
-                report = json.load(f)
-
-            # Check if there are any vulnerabilities
-            has_vulnerabilities = False
-
-            # Check errors array
-            if report.get('errors') and len(report['errors']) > 0:
-                has_vulnerabilities = True
-
-            # Check if nodejs or templates have any findings
-            nodejs = report.get('nodejs', {})
-            templates = report.get('templates', {})
-
-            if nodejs and len(nodejs) > 0:
-                has_vulnerabilities = True
-
-            if templates and len(templates) > 0:
-                has_vulnerabilities = True
-
-            print("\n")
-
-            if has_vulnerabilities:
-                print(f"::error::Security vulnerabilities found in {service_name}")
-                sys.exit(1)
-            else:
-                print("No security vulnerabilities found")
-                sys.exit(0)
-        except Exception as e:
-            print(f"Error parsing report: {e}")
-            sys.exit(1)
-        EOF
-        fi
+    - name: Setup NjordScan
+      run: njordscan setup --ci github
       shell: bash
+    - name: Security check with NjordScan
+      run: njordscan scan services/${{ inputs.service-name }} --ci --fail-on high
+      shell: bash
+
