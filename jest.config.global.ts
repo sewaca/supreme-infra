@@ -44,12 +44,33 @@ const baseJestConfig = {
   moduleDirectories: ['src', 'node_modules'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'cjs', 'jsx'],
   collectCoverageFrom,
+  coverageReporters: ['text', 'lcov', 'html', 'json'],
+  coverageDirectory: 'coverage',
   testRegex: '.*(?<!\\.screen)\\.spec\\.[mc]?[jt]sx?$',
   rootDir: cwd(),
   preset: 'ts-jest',
   transform: {
     '^.+\\.tsx?$': ['ts-jest'],
   },
+  reporters: [
+    'default',
+    [
+      'jest-html-reporters',
+      {
+        publicPath: './coverage/html-report',
+        filename: 'report.html',
+        expand: true,
+        pageTitle: 'Test Coverage Report',
+        openReport: false,
+        hideIcon: false,
+        includeFailureMsg: true,
+        includeSuiteFailure: true,
+        enableMergeData: true,
+        dataDirPath: './coverage/html-report/data',
+        inlineSource: false,
+      },
+    ],
+  ],
 };
 
 export default baseJestConfig;
