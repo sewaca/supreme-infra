@@ -31,12 +31,24 @@ runs:
       run: |
         source nodejsscan/venv/bin/activate
         cd nodejsscan
-        python3 manage.py recreate-db
+        python3 manage.py migrate
+        python3 manage.py createcachetable || true
       shell: bash
     - name: Run security scan
       run: |
         source nodejsscan/venv/bin/activate
         cd nodejsscan
-        python3 manage.py scan --path ${{ github.workspace }}/services/${{ inputs.service-name }}
+        python3 -c "
+        import os
+        import sys
+        import django
+        sys.path.insert(0, os.getcwd())
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nodejsscan.settings')
+        django.setup()
+        from web.scanner import scan
+        scan_path = '${{ github.workspace }}/services/${{ inputs.service-name }}'
+        result = scan(scan_path)
+        print(result)
+        "
       shell: bash
 
