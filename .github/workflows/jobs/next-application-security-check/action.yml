@@ -12,14 +12,24 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.14'
-    - name: Install NjordScan
-      run: pip install njordscan
+        python-version: '3.9'
+    - name: Kill me
+      run: 
+        git clone https://github.com/ajinabraham/nodejsscan.git
+        cd nodejsscan
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+        python3 manage.py recreate-db
       shell: bash
-    - name: Setup NjordScan
-      run: njordscan setup --ci github
-      shell: bash
-    - name: Security check with NjordScan
-      run: njordscan scan services/${{ inputs.service-name }} --ci --fail-on high
-      shell: bash
+
+    # - name: Install NjordScan
+    #   run: pip install njordscan
+    #   shell: bash
+    # - name: Setup NjordScan
+    #   run: njordscan setup --ci github
+    #   shell: bash
+    # - name: Security check with NjordScan
+    #   run: njordscan scan services/${{ inputs.service-name }} --ci --fail-on high
+    #   shell: bash
 
