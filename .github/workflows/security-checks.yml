@@ -5,16 +5,31 @@ on:
   pull_request:
 jobs:
   # run security scan for all nest js services
-  security-scan:
-    name: Security scan for ${{ matrix.service-name }}
+  security-scan-nest:
+    name: Security scan for NestJS ${{ matrix.service-name }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service-name: ['backend'] # Добавьте сюда другие NestJS сервисы
+        service-name: ['backend'] 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Security scan check for service ${{ matrix.service-name }}
         uses: ./.github/workflows/jobs/nest-application-security-check
+        with:
+          service-name: ${{ matrix.service-name }}
+
+  # run security scan for all next js services
+  security-scan-next:
+    name: Security scan for Next.js ${{ matrix.service-name }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service-name: ['frontend']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Security scan check for service ${{ matrix.service-name }}
+        uses: ./.github/workflows/jobs/next-application-security-check
         with:
           service-name: ${{ matrix.service-name }}
