@@ -4,12 +4,13 @@ on:
     branches: [ main ]
   pull_request:
 jobs:
-  build-backend:
+  security-scan-backend:
+    name: Security scan for services/backend
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # - name: Checkout code
+      #   uses: actions/checkout@v3
       - name: Security scan check for service Backend
-        uses: ./.github/workflows/jobs/nest-application-security-check.yml
+        uses: ./.github/workflows/jobs/nest-application-security-check
         with:
           service-name: 'backend'
