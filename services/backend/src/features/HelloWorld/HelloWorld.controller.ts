@@ -6,7 +6,7 @@ export class HelloWorldController {
   constructor(private readonly helloWorldService: HelloWorldService) {}
 
   @Get()
-  getHello(): string {
+  public getHello(): string {
     return this.helloWorldService.getHello();
   }
 }

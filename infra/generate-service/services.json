@@ -1,0 +1,4 @@
+{
+  "nest": ["backend"],
+  "next": ["frontend"]
+}
