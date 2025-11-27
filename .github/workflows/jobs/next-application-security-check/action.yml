@@ -20,7 +20,19 @@ runs:
       shell: bash
     - name: Run security scan
       run: |
-        njsscan --path services/${{ inputs.service-name }} --json --output /tmp/njsscan-report.json || true
-        cat /tmp/njsscan-report.json || echo "Scan completed"
+        njsscan services/${{ inputs.service-name }} --json -o /tmp/njsscan-report.json
+        if [ -f /tmp/njsscan-report.json ]; then
+          cat /tmp/njsscan-report.json
+          # Check if vulnerabilities were found (non-empty JSON)
+          report_size=$(wc -c < /tmp/njsscan-report.json)
+          if [ "$report_size" -gt 2 ]; then
+            # Check if it's not just empty array or empty object
+            content=$(cat /tmp/njsscan-report.json)
+            if [ "$content" != "[]" ] && [ "$content" != "{}" ] && [ "$content" != "null" ]; then
+              echo "::error::Security vulnerabilities found in ${{ inputs.service-name }}"
+              exit 1
+            fi
+          fi
+        fi
       shell: bash
 
