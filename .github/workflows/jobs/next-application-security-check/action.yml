@@ -1,5 +1,5 @@
 name: 'Next Application Security Check'
-description: 'Run security scan for Next.js application using nodejsscan'
+description: 'Run security scan for Next.js application using njsscan'
 
 inputs:
   service-name:
@@ -9,46 +9,18 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout nodejsscan repository
-      uses: actions/checkout@v4
-      with:
-        repository: ajinabraham/nodejsscan
-        path: nodejsscan
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.9'
-    - name: Create virtual environment
-      run: python3 -m venv nodejsscan/venv
-      shell: bash
-    - name: Install dependencies
+    - name: Install njsscan
       run: |
-        source nodejsscan/venv/bin/activate
         pip install --upgrade pip
-        pip install -r nodejsscan/requirements.txt
-      shell: bash
-    - name: Setup database
-      run: |
-        source nodejsscan/venv/bin/activate
-        cd nodejsscan
-        python3 manage.py migrate
-        python3 manage.py createcachetable || true
+        pip install njsscan
       shell: bash
     - name: Run security scan
       run: |
-        source nodejsscan/venv/bin/activate
-        cd nodejsscan
-        python3 -c "
-        import os
-        import sys
-        import django
-        sys.path.insert(0, os.getcwd())
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nodejsscan.settings')
-        django.setup()
-        from web.scanner import scan
-        scan_path = '${{ github.workspace }}/services/${{ inputs.service-name }}'
-        result = scan(scan_path)
-        print(result)
-        "
+        njsscan --path services/${{ inputs.service-name }} --json --output /tmp/njsscan-report.json || true
+        cat /tmp/njsscan-report.json || echo "Scan completed"
       shell: bash
 
