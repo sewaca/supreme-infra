@@ -1,5 +1,5 @@
 name: 'Next Application Security Check'
-description: 'Run security scan for Next.js application using NjordScan'
+description: 'Run security scan for Next.js application using nodejsscan'
 
 inputs:
   service-name:
@@ -9,27 +9,34 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Checkout nodejsscan repository
+      uses: actions/checkout@v4
+      with:
+        repository: ajinabraham/nodejsscan
+        path: nodejsscan
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.9'
-    - name: Kill me
-      run: 
-        git clone https://github.com/ajinabraham/nodejsscan.git
+    - name: Create virtual environment
+      run: python3 -m venv nodejsscan/venv
+      shell: bash
+    - name: Install dependencies
+      run: |
+        source nodejsscan/venv/bin/activate
+        pip install --upgrade pip
+        pip install -r nodejsscan/requirements.txt
+      shell: bash
+    - name: Setup database
+      run: |
+        source nodejsscan/venv/bin/activate
         cd nodejsscan
-        python3 -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
         python3 manage.py recreate-db
       shell: bash
-
-    # - name: Install NjordScan
-    #   run: pip install njordscan
-    #   shell: bash
-    # - name: Setup NjordScan
-    #   run: njordscan setup --ci github
-    #   shell: bash
-    # - name: Security check with NjordScan
-    #   run: njordscan scan services/${{ inputs.service-name }} --ci --fail-on high
-    #   shell: bash
+    - name: Run security scan
+      run: |
+        source nodejsscan/venv/bin/activate
+        cd nodejsscan
+        python3 manage.py scan --path ${{ github.workspace }}/services/${{ inputs.service-name }}
+      shell: bash
 
