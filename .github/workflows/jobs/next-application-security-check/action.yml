@@ -53,6 +53,8 @@ runs:
             if templates and len(templates) > 0:
                 has_vulnerabilities = True
             
+            print("\n")
+
             if has_vulnerabilities:
                 print(f"::error::Security vulnerabilities found in {service_name}")
                 sys.exit(1)
