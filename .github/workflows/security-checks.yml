@@ -1,0 +1,13 @@
+name: security checks for project
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Security scan check for service Backend
+        uses: ./jobs/nest-application-security-check.yml
+        with:
+          service-name: 'backend'
