@@ -8,13 +8,15 @@
   },
   "scripts": {
     "lint": "biome check",
-    "format": "biome format --fix"
+    "format": "biome format --fix",
+    "infra:generate": "tsx infra/generate-service/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.5",
     "@types/node": "^20",
     "nestjs-security-scan": "^1.1.0",
-    "ts-jest": "29.2.5"
+    "ts-jest": "29.2.5",
+    "tsx": "^4.20.6"
   },
   "author": "sewaca",
   "license": "ISC"
