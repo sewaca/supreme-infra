@@ -74,7 +74,7 @@ describe('PostsService', () => {
           userId: 1,
           id: 1,
           title: 'Test',
-          body: 'This is a very lo...',
+          body: 'This is a very long ...',
           commentsCount: 2,
         },
         {
