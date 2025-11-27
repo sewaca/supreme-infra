@@ -39,7 +39,6 @@ const collectCoverageFrom = [
 
 const baseJestConfig = {
   coverageProvider: 'v8',
-  reporters: ['default'],
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts', '.mts'],
   moduleDirectories: ['src', 'node_modules'],

@@ -9,7 +9,9 @@ const rootDir = resolve(currentDir, '../..');
 const globalConfigPath = resolve(rootDir, 'jest.config.global.ts');
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const baseJestConfig = require(globalConfigPath);
+const baseJestConfigModule = require(globalConfigPath);
+// Handle both default export and direct export
+const baseJestConfig = baseJestConfigModule.default || baseJestConfigModule;
 
 export default {
   ...baseJestConfig,
