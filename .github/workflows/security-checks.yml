@@ -4,16 +4,16 @@ on:
     branches: [ main ]
   pull_request:
 jobs:
-  security-scan-backend:
-    name: Security scan for services/backend
+  security-scan:
+    name: Security scan for ${{ matrix.service-name }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service-name: ['backend']
+        service-name: ['backend', 'backend2'] # Добавьте сюда другие NestJS сервисы
     steps:
-      # - name: Checkout code
-      #   uses: actions/checkout@v3
-      - name: Security scan check for service Backend
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Security scan check for service ${{ matrix.service-name }}
         uses: ./.github/workflows/jobs/nest-application-security-check
         with:
           service-name: ${{ matrix.service-name }}
