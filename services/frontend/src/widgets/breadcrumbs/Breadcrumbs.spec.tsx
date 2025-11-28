@@ -1,22 +1,25 @@
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { Breadcrumbs } from './Breadcrumbs';
 
 // Mock Next.js Link component
-jest.mock('next/link', () => {
-  return function MockLink({
-    children,
-    href,
-    className,
-  }: {
-    children: React.ReactNode;
-    href: string;
-    className?: string;
-  }) {
-    return (
-      <a href={href} className={className}>
-        {children}
-      </a>
-    );
+vi.mock('next/link', () => {
+  return {
+    default: function MockLink({
+      children,
+      href,
+      className,
+    }: {
+      children: React.ReactNode;
+      href: string;
+      className?: string;
+    }) {
+      return (
+        <a href={href} className={className}>
+          {children}
+        </a>
+      );
+    },
   };
 });
 

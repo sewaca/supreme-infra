@@ -1,17 +1,23 @@
 import { Test } from '@nestjs/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
 import { PostsService } from './Posts.service';
 
 describe('PostsService', () => {
   let service: PostsService;
-  let datasource: jest.Mocked<JsonplaceholderDatasource>;
+  let datasource: {
+    getPosts: ReturnType<typeof vi.fn>;
+    getPostById: ReturnType<typeof vi.fn>;
+    getComments: ReturnType<typeof vi.fn>;
+    getCommentsByPostId: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
-    const mockDatasource = {
-      getPosts: jest.fn(),
-      getPostById: jest.fn(),
-      getComments: jest.fn(),
-      getCommentsByPostId: jest.fn(),
+    datasource = {
+      getPosts: vi.fn(),
+      getPostById: vi.fn(),
+      getComments: vi.fn(),
+      getCommentsByPostId: vi.fn(),
     };
 
     const module = await Test.createTestingModule({
@@ -19,13 +25,12 @@ describe('PostsService', () => {
         PostsService,
         {
           provide: JsonplaceholderDatasource,
-          useValue: mockDatasource,
+          useValue: datasource,
         },
       ],
     }).compile();
 
     service = module.get<PostsService>(PostsService);
-    datasource = module.get(JsonplaceholderDatasource);
   });
 
   describe('getPostsSummary', () => {
