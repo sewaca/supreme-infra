@@ -1,4 +1,4 @@
-import { PostsListPage } from '../src/pages/PostsListPage/PostsListPage';
+import { PostsListPage } from '../src/views/PostsListPage/PostsListPage';
 import { backendApi } from '../src/shared/api/backendApi';
 
 interface HomeProps {
