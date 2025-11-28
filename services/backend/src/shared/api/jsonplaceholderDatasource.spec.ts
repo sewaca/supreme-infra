@@ -1,14 +1,15 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { JsonplaceholderDatasource } from './jsonplaceholderDatasource';
 
 // Mock global fetch
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('JsonplaceholderDatasource', () => {
   let datasource: JsonplaceholderDatasource;
 
   beforeEach(() => {
     datasource = new JsonplaceholderDatasource();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getPosts', () => {
@@ -18,7 +19,7 @@ describe('JsonplaceholderDatasource', () => {
         { userId: 2, id: 2, title: 'Test 2', body: 'Body 2' },
       ];
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockPosts,
       });
@@ -34,7 +35,7 @@ describe('JsonplaceholderDatasource', () => {
     it('should fetch posts filtered by userId', async () => {
       const mockPosts = [{ userId: 1, id: 1, title: 'Test', body: 'Body' }];
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockPosts,
       });
@@ -48,7 +49,7 @@ describe('JsonplaceholderDatasource', () => {
     });
 
     it('should throw error when fetch fails', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
         statusText: 'Not Found',
       });
@@ -63,7 +64,7 @@ describe('JsonplaceholderDatasource', () => {
     it('should fetch post by id', async () => {
       const mockPost = { userId: 1, id: 1, title: 'Test', body: 'Body' };
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockPost,
       });
@@ -77,7 +78,7 @@ describe('JsonplaceholderDatasource', () => {
     });
 
     it('should throw error when post not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
         status: 404,
         statusText: 'Not Found',
@@ -89,7 +90,7 @@ describe('JsonplaceholderDatasource', () => {
     });
 
     it('should throw error when fetch fails', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
         status: 500,
         statusText: 'Internal Server Error',
@@ -113,7 +114,7 @@ describe('JsonplaceholderDatasource', () => {
         },
       ];
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockComments,
       });
@@ -127,7 +128,7 @@ describe('JsonplaceholderDatasource', () => {
     });
 
     it('should throw error when fetch fails', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
         statusText: 'Not Found',
       });
@@ -150,7 +151,7 @@ describe('JsonplaceholderDatasource', () => {
         },
       ];
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockComments,
       });
@@ -164,7 +165,7 @@ describe('JsonplaceholderDatasource', () => {
     });
 
     it('should throw error when fetch fails', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
         statusText: 'Not Found',
       });
