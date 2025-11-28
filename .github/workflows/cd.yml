@@ -24,7 +24,7 @@ jobs:
         run: |
           # Get selected service
           SELECTED_SERVICE="${{ github.event.inputs.service }}"
-          
+
           # Convert to JSON array (single service wrapped in array)
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
@@ -401,7 +401,7 @@ jobs:
           YC_TOKEN: ${{ secrets.YC_TOKEN }}
           YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
 
-# TODO: 
+# TODO:
 # Примечание: Для работы потребуются secrets в GitHub:
 # DOCKER_HUB_USERNAME и DOCKER_HUB_TOKEN для публикации образов
 # YC_TOKEN и YC_FOLDER_ID для деплоя в Yandex Cloud
