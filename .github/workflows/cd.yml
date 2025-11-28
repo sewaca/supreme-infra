@@ -27,7 +27,8 @@ jobs:
         run: |
           # Get selected service
           SELECTED_SERVICE="${{ github.event.inputs.service }}"
-
+          
+          # Convert to JSON array (single service wrapped in array)
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
             sudo apt-get update && sudo apt-get install -y jq
