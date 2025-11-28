@@ -17,121 +17,68 @@ export function updateCdWorkflow(): void {
 
   // Читаем cd.yml
   const cdWorkflowPath = join(projectRoot, '.github', 'workflows', 'cd.yml');
-  let cdWorkflowContent = readFileSync(cdWorkflowPath, 'utf-8');
+  const cdWorkflowContent = readFileSync(cdWorkflowPath, 'utf-8');
 
-  // Собираем все сервисы
+  // Собираем все сервисы из обоих массивов
   const allServices = [
     ...(servicesConfig.nest || []),
     ...(servicesConfig.next || []),
   ];
 
-  // Создаем мапу типов сервисов для быстрого поиска
-  const serviceTypeMap = new Map<string, 'nest' | 'next'>();
-  (servicesConfig.nest || []).forEach((service) => {
-    serviceTypeMap.set(service, 'nest');
-  });
-  (servicesConfig.next || []).forEach((service) => {
-    serviceTypeMap.set(service, 'next');
-  });
-
-  // Генерируем options для choice input
-  const serviceOptions = allServices
-    .map((service) => `          - ${service}`)
-    .join('\n');
-  const defaultService = allServices[0] || '';
-
-  // Генерируем input для workflow_dispatch
-  const serviceInput = `      service:
-        description: 'Select service to deploy'
-        required: true
-        type: choice
-        options:
-${serviceOptions}
-        default: '${defaultService}'`;
-
-  // Обновляем секцию inputs в workflow_dispatch
-  const inputsRegex =
-    /(workflow_dispatch:\s+inputs:\s+)([\s\S]*?)(\n\s+)(jobs:)/;
-  cdWorkflowContent = cdWorkflowContent.replace(
-    inputsRegex,
-    `$1${serviceInput}\n    $4`,
-  );
-
-  // Обновляем логику в prepare-services для одного выбранного сервиса
-  const githubInputsService = `\${{ github.event.inputs.service }}`;
-  const githubOutput = '$GITHUB_OUTPUT';
-  const prepareServicesLogic = `          # Get selected service
-          SELECTED_SERVICE="${githubInputsService}"
-          
-          # Convert to JSON array (single service wrapped in array)
-          # Install jq if not available
-          if ! command -v jq &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y jq
-          fi
-          SERVICES_JSON=$(echo "$SELECTED_SERVICE" | jq -R -c '[.]')
-
-          echo "Selected service: $SELECTED_SERVICE"
-          echo "services=$SERVICES_JSON" >> ${githubOutput}
-          echo "Services JSON: $SERVICES_JSON"`;
-
-  // Обновляем логику prepare-services
-  const prepareServicesRegex =
-    /(Set services list[\s\S]*?id: set-services\s+run: \|)([\s\S]*?)(\n {2}get-latest-release-version:)/s;
-  cdWorkflowContent = cdWorkflowContent.replace(
-    prepareServicesRegex,
-    `$1\n${prepareServicesLogic}\n$3`,
-  );
-
-  // Обновляем security-checks секцию
-  // Генерируем условия для каждого типа сервиса
-  const nestServices = servicesConfig.nest || [];
-  const nextServices = servicesConfig.next || [];
-
-  // Генерируем шаги для security checks
-  const securityCheckSteps: string[] = [];
-
-  if (nestServices.length > 0) {
-    nestServices.forEach((service) => {
-      securityCheckSteps.push(
-        `      - name: Security scan check for NestJS \${{ matrix.service-name }}
-        if: matrix.service-name == '${service}'
-        uses: ./.github/workflows/jobs/nest-application-security-check
-        with:
-          service-name: \${{ matrix.service-name }}`,
-      );
-    });
+  if (allServices.length === 0) {
+    console.error('Error: No services found in services.json');
+    process.exit(1);
   }
 
-  if (nextServices.length > 0) {
-    nextServices.forEach((service) => {
-      securityCheckSteps.push(
-        `      - name: Security scan check for Next.js \${{ matrix.service-name }}
-        if: matrix.service-name == '${service}'
-        uses: ./.github/workflows/jobs/next-application-security-check
-        with:
-          service-name: \${{ matrix.service-name }}`,
-      );
-    });
+  // Разбиваем файл на строки
+  const lines = cdWorkflowContent.split('\n');
+
+  // Находим строку с "options:" (должна быть на строке 10, индекс 9)
+  const optionsLineIndex = lines.findIndex((line) => line.trim() === 'options:');
+  
+  if (optionsLineIndex === -1) {
+    console.error('Error: Could not find "options:" line in cd.yml');
+    process.exit(1);
   }
 
-  // Обновляем секцию security-checks
-  // Ищем блок от начала security-checks до начала build-image-to-docker-hub
-  const securityChecksRegex =
-    /(security-checks:[\s\S]*?steps:\s+- name: Checkout code[\s\S]*?uses: actions\/checkout@v4\s+)([\s\S]*?)(\n {2}build-image-to-docker-hub:)/s;
+  // Генерируем новые строки для options (строки 11-12)
+  const optionsLines = allServices.map((service) => `          - ${service}`);
 
-  if (securityCheckSteps.length > 0) {
-    const securityChecksReplacement = `$1${securityCheckSteps.join('\n\n')}\n$3`;
-    cdWorkflowContent = cdWorkflowContent.replace(
-      securityChecksRegex,
-      securityChecksReplacement,
-    );
+  // Генерируем строку default (строка 13)
+  const defaultService = allServices[0];
+  const defaultLine = `        default: '${defaultService}'`;
+
+  // Заменяем строки 11-13 (индексы 10-12)
+  // Сначала удаляем старые строки options и default
+  // Находим, где заканчивается блок options (ищем строку с default)
+  let defaultLineIndex = -1;
+  for (let i = optionsLineIndex + 1; i < lines.length; i++) {
+    if (lines[i].trim().startsWith('default:')) {
+      defaultLineIndex = i;
+      break;
+    }
   }
+
+  if (defaultLineIndex === -1) {
+    console.error('Error: Could not find "default:" line in cd.yml');
+    process.exit(1);
+  }
+
+  // Удаляем все строки между options и default (включая старые опции)
+  // и саму строку default
+  const linesToRemove = defaultLineIndex - optionsLineIndex;
+  lines.splice(optionsLineIndex + 1, linesToRemove);
+
+  // Вставляем новые строки options и default после строки "options:"
+  lines.splice(optionsLineIndex + 1, 0, ...optionsLines, defaultLine);
+
+  // Собираем файл обратно
+  const updatedContent = lines.join('\n');
 
   // Сохраняем обновленный файл
-  writeFileSync(cdWorkflowPath, cdWorkflowContent, 'utf-8');
+  writeFileSync(cdWorkflowPath, updatedContent, 'utf-8');
 
   console.log('CD workflow updated successfully!');
-  console.log(`All services: ${allServices.join(', ')}`);
-  console.log(`Nest services: ${nestServices.join(', ')}`);
-  console.log(`Next services: ${nextServices.join(', ')}`);
+  console.log(`Services: ${allServices.join(', ')}`);
+  console.log(`Default service: ${defaultService}`);
 }

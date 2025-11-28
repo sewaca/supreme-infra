@@ -18,22 +18,45 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       services: ${{ steps.set-services.outputs.services }}
+      service-type: ${{ steps.set-services.outputs.service-type }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Set services list
         id: set-services
         run: |
           # Get selected service
           SELECTED_SERVICE="${{ github.event.inputs.service }}"
           
-          # Convert to JSON array (single service wrapped in array)
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
             sudo apt-get update && sudo apt-get install -y jq
           fi
+          
+          # Read services.json to determine service type
+          SERVICES_JSON_FILE="infra/generate-service/services.json"
+          
+          # Check if service is in nest array
+          IS_NEST=$(jq -r --arg service "$SELECTED_SERVICE" '.nest | index($service) != null' "$SERVICES_JSON_FILE")
+          # Check if service is in next array
+          IS_NEXT=$(jq -r --arg service "$SELECTED_SERVICE" '.next | index($service) != null' "$SERVICES_JSON_FILE")
+          
+          if [ "$IS_NEST" = "true" ]; then
+            SERVICE_TYPE="nest"
+          elif [ "$IS_NEXT" = "true" ]; then
+            SERVICE_TYPE="next"
+          else
+            echo "Error: Service $SELECTED_SERVICE not found in services.json"
+            exit 1
+          fi
+          
+          # Convert to JSON array (single service wrapped in array)
           SERVICES_JSON=$(echo "$SELECTED_SERVICE" | jq -R -c '[.]')
 
           echo "Selected service: $SELECTED_SERVICE"
+          echo "Service type: $SERVICE_TYPE"
           echo "services=$SERVICES_JSON" >> $GITHUB_OUTPUT
+          echo "service-type=$SERVICE_TYPE" >> $GITHUB_OUTPUT
           echo "Services JSON: $SERVICES_JSON"
 
   get-latest-release-version:
@@ -244,12 +267,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Security scan check for NestJS ${{ matrix.service-name }}
-        if: matrix.service-name == 'backend'
+        if: needs.prepare-services.outputs.service-type == 'nest'
         uses: ./.github/workflows/jobs/nest-application-security-check
         with:
           service-name: ${{ matrix.service-name }}
       - name: Security scan check for Next.js ${{ matrix.service-name }}
-        if: matrix.service-name == 'frontend'
+        if: needs.prepare-services.outputs.service-type == 'next'
         uses: ./.github/workflows/jobs/next-application-security-check
         with:
           service-name: ${{ matrix.service-name }}
