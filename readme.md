@@ -2,7 +2,7 @@
 
 Repository with fully setted up infrastructure settings. Was designed as monorepo for microservice application with Next and Nest js. But actually, it can be easily scaled for any other tech stack.
 
-What we support now: 
+What we support now:
 * Nginx (as reverse-proxy)
 * Next
 * Nest
@@ -11,9 +11,9 @@ What we support now:
 
 ### Secrets
 
-Initially you have to define some secrets in repository, for correct work of actions and jobs. 
+Initially you have to define some secrets in repository, for correct work of actions and jobs.
 
-All secrets you need are: 
+All secrets you need are:
 * PAT – GitHub personal access token <br />
   This token neccessary for all Madara Robot operations. (i.e. commit pre-commit diff, generate services, etc) <br />
   Format of secret is: `PAT=github_pat_XXX`
