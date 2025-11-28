@@ -10,13 +10,11 @@ WORKDIR /app
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml tsconfig.* package.json .
 COPY packages packages
-COPY services/frontend .
-
-RUN ls -la
+COPY services/frontend services/frontend
 
 WORKDIR /app/services/frontend
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 RUN pnpm run build
 
-CMD pnpm start
+CMD ["pnpm", "start"]
