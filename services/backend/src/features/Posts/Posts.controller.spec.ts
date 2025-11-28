@@ -1,16 +1,20 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PostsController } from './Posts.controller';
 import { PostsService } from './Posts.service';
 
 describe('PostsController', () => {
   let controller: PostsController;
-  let service: jest.Mocked<PostsService>;
+  let service: {
+    getPostsSummary: ReturnType<typeof vi.fn>;
+    getPostDetails: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
-    const mockService = {
-      getPostsSummary: jest.fn(),
-      getPostDetails: jest.fn(),
+    service = {
+      getPostsSummary: vi.fn(),
+      getPostDetails: vi.fn(),
     };
 
     const module = await Test.createTestingModule({
@@ -18,13 +22,12 @@ describe('PostsController', () => {
       providers: [
         {
           provide: PostsService,
-          useValue: mockService,
+          useValue: service,
         },
       ],
     }).compile();
 
     controller = module.get<PostsController>(PostsController);
-    service = module.get(PostsService);
   });
 
   describe('getSummary', () => {
