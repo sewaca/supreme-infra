@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { HelloWorldModule } from './features/HelloWorld/HelloWorld.module';
+import { PostsModule } from './features/Posts/Posts.module';
 
 @Module({
-  imports: [HelloWorldModule],
+  imports: [PostsModule],
   controllers: [],
   providers: [],
 })

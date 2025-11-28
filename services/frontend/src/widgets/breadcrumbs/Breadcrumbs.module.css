@@ -1,0 +1,18 @@
+.nav {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.link {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.label {
+  color: #666;
+}
+
+.separator {
+  margin: 0 8px;
+  color: #999;
+}
