@@ -364,7 +364,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-${{ steps.get-version.outputs.version }}
           cache-to: type=inline
-      
+
   create-release-branch:
     name: Create release branch for ${{ matrix.service-name }}
     needs: [prepare-services, calculate-new-version]
