@@ -234,9 +234,11 @@ jobs:
           service-name: ${{ matrix.service-name }}
 
   build-image-to-docker-hub:
+    # TODO: fix secrets
     name: Build and push image to Docker Hub for ${{ matrix.service-name }}
     needs: [prepare-services, security-checks, calculate-new-version]
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
@@ -266,10 +268,7 @@ jobs:
         with:
           context: ./services/${{ matrix.service-name }}
           push: true
-          tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
           cache-to: type=inline
 
   create-release-branch:
