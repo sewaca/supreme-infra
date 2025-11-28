@@ -519,13 +519,15 @@ jobs:
               --title "$RELEASE_NAME" \
               --notes-file "$BODY_FILE" \
               --repo ${{ github.repository }} \
-              --verify-tag
+              --verify-tag \
+              --latest=false
           else
             echo "Creating new release $TAG_NAME"
             gh release create "$TAG_NAME" \
               --title "$RELEASE_NAME" \
               --notes-file "$BODY_FILE" \
-              --repo ${{ github.repository }}
+              --repo ${{ github.repository }} \
+              --latest=false
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
