@@ -1,5 +1,5 @@
-import { PostsListPage } from '../src/pages/PostsListPage';
 import { backendApi } from '../src/shared/api/backendApi';
+import { PostsListPage } from '../src/views/PostsListPage/PostsListPage';
 
 interface HomeProps {
   searchParams: Promise<{ userId?: string }>;
