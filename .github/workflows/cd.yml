@@ -362,7 +362,7 @@ jobs:
           context: .
           file: ./services/${{ matrix.service-name }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-${{ steps.get-version.outputs.version }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v${{ steps.get-version.outputs.version }}
           cache-to: type=inline
 
   create-release-branch:
@@ -487,8 +487,8 @@ jobs:
             fi
             echo ""
             echo "## Docker Image"
-            echo "https://hub.docker.com/repository/docker/sewaca/supreme/general"
-            echo "\`${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-${{ steps.get-version.outputs.version }}\`"
+            echo "https://hub.docker.com/repository/docker/sewaca/supreme/general\n"
+            echo "\`${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v${{ $VERSION }}\`"
           } > release_body_$SERVICE_NAME.txt
 
           echo "Release body prepared"
