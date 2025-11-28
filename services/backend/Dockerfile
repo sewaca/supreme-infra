@@ -11,7 +11,7 @@ WORKDIR /app
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml tsconfig.* package.json .
 COPY packages packages
-COPY services/backend .
+COPY services/backend services/backend
 
 WORKDIR services/backend
 
