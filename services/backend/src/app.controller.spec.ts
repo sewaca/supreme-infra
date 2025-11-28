@@ -1,4 +1,5 @@
 import { Test } from '@nestjs/testing';
+import { describe, expect, it } from 'vitest';
 import { AppModule } from './app.module';
 
 describe('AppController', () => {

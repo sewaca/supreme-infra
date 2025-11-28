@@ -9,9 +9,9 @@
     "lint": "pnpm run -w lint",
     "format": "pnpm run -w format",
     "tsc": "tsc",
-    "unit": "jest --passWithNoTests",
-    "unit:watch": "jest --watch",
-    "unit:coverage": "jest --coverage"
+    "unit": "vitest run --passWithNoTests",
+    "unit:watch": "vitest",
+    "unit:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@types/node": "^20",
@@ -26,10 +26,13 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "@types/jest": "^29.5.0",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/ui": "^2.1.8",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jsdom": "^25.0.1",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
   }
 }

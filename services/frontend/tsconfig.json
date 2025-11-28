@@ -4,5 +4,6 @@
     "baseUrl": "src"
   },
   "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", ".next"]
+  "exclude": ["node_modules", ".next"],
+  "files": ["node_modules/@testing-library/jest-dom/types/index.d.ts"]
 }

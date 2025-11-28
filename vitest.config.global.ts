@@ -1,0 +1,59 @@
+import { cwd } from 'node:process';
+import { defineConfig } from 'vitest/config';
+
+const collectCoverageFrom = [
+  '**/*.{mjs,ts,tsx}',
+  '!**/node_modules/**',
+  '!**/*.d.ts',
+  '!**/__reports/**',
+  '!src/vendor/**',
+  '!src/tools/**',
+  '!src/types/graphql.ts',
+  '!src/**/__mocks__/**',
+  '!src/**/mocks/**',
+  '!**/*.screen.spec.{ts,tsx}',
+  '!**/*.stories.{ts,tsx}',
+  '!**/*.lazy.{ts,tsx}',
+  '!**/*.i18n/*',
+  '!**/*.mock.{ts,tsx}',
+  '!src/client/graphql-types.ts',
+  '!**/*.graphql-types.d.ts',
+  '!src/shared/api/gql/gql.ts',
+  '!src/shared/api/gql/graphql.ts',
+  '!**/.next/**',
+  '!**/storybook-static/**',
+  '!**/playwright-report/**',
+  '!src/**/*.model.ts',
+  '!src/**/*.module.ts',
+  '!src/**/*.dto.ts',
+  '!src/main.ts',
+  '!instrumentation.ts',
+  '!server/app.module.ts',
+  '!src/types/**/*.ts',
+  '!**/types.ts',
+  '!**/*.config.ts',
+  '!src/**/*.mock.ts',
+  '!src/**/*.schema.ts',
+  '!src/**/*.schemas.ts',
+  '!src/server/gql/types.ts',
+];
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    root: cwd(),
+    include: ['**/*.spec.{ts,tsx,mts,cts}', '!**/*.screen.spec.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov', 'html', 'json'],
+      reportsDirectory: 'coverage',
+      include: collectCoverageFrom.filter(
+        (pattern) => !pattern.startsWith('!'),
+      ),
+      exclude: collectCoverageFrom
+        .filter((pattern) => pattern.startsWith('!'))
+        .map((pattern) => pattern.slice(1)),
+    },
+  },
+});
