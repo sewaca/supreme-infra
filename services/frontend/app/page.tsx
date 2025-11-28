@@ -1,4 +1,3 @@
-import { PostsListPage } from '../src/views/PostsListPage/PostsListPage';
 import { backendApi } from '../src/shared/api/backendApi';
 import { PostsListPage } from '../src/views/PostsListPage/PostsListPage';
 
