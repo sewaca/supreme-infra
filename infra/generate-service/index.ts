@@ -1,6 +1,10 @@
 import { updateSecurityChecks } from './update-security-checks';
+import { updateCdWorkflow } from './update-cd-workflow';
 
 console.log('Updating security checks...');
 updateSecurityChecks();
+
+console.log('Updating CD workflow...');
+updateCdWorkflow();
 
 console.log('Generation finished');
