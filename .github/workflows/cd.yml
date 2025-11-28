@@ -355,13 +355,38 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "override_flag=$OVERRIDE_FLAG" >> $GITHUB_OUTPUT
 
+          # Count changelog lines
+          if [ -n "$CHANGELOG" ]; then
+            CHANGELOG_LINES=$(echo "$CHANGELOG" | wc -l)
+          else
+            CHANGELOG_LINES=0
+          fi
+
           # Prepare release body
           {
             echo "Release $SERVICE_NAME v$VERSION$OVERRIDE_FLAG"
             echo ""
             echo "## Changelog"
             if [ -n "$CHANGELOG" ]; then
-              echo "$CHANGELOG"
+              if [ "$CHANGELOG_LINES" -gt 12 ]; then
+                # Hide long changelog in collapsible section
+                echo "<details>"
+                echo ""
+                echo "<summary>"
+                echo ""
+                echo "view full changelog"
+                echo ""
+                echo "</summary>"
+                echo ""
+                echo "<pre>"
+                echo "$CHANGELOG"
+                echo "</pre>"
+                echo ""
+                echo "</details>"
+              else
+                # Show short changelog directly
+                echo "$CHANGELOG"
+              fi
             else
               echo "No changes"
             fi
