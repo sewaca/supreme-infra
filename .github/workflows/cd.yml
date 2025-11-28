@@ -27,20 +27,20 @@ jobs:
         run: |
           # Get selected service
           SELECTED_SERVICE="${{ github.event.inputs.service }}"
-          
+
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
             sudo apt-get update && sudo apt-get install -y jq
           fi
-          
+
           # Read services.json to determine service type
           SERVICES_JSON_FILE="infra/generate-service/services.json"
-          
+
           # Check if service is in nest array
           IS_NEST=$(jq -r --arg service "$SELECTED_SERVICE" '.nest | index($service) != null' "$SERVICES_JSON_FILE")
           # Check if service is in next array
           IS_NEXT=$(jq -r --arg service "$SELECTED_SERVICE" '.next | index($service) != null' "$SERVICES_JSON_FILE")
-          
+
           if [ "$IS_NEST" = "true" ]; then
             SERVICE_TYPE="nest"
           elif [ "$IS_NEXT" = "true" ]; then
@@ -49,7 +49,7 @@ jobs:
             echo "Error: Service $SELECTED_SERVICE not found in services.json"
             exit 1
           fi
-          
+
           # Convert to JSON array (single service wrapped in array)
           SERVICES_JSON=$(echo "$SELECTED_SERVICE" | jq -R -c '[.]')
 
