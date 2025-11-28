@@ -359,16 +359,29 @@ jobs:
           } > release_body_$SERVICE_NAME.txt
 
           echo "Release body prepared"
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
       - name: Create GitHub Release
-        uses: ncipollo/create-release@v1
+        run: |
+          SERVICE_NAME="${{ matrix.service-name }}"
+          VERSION="${{ steps.get-release-info.outputs.version }}"
+          OVERRIDE_FLAG="${{ steps.get-release-info.outputs.override_flag }}"
+          TAG_NAME="${SERVICE_NAME}-v${VERSION}"
+          RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}${OVERRIDE_FLAG}"
+          BODY_FILE="release_body_${SERVICE_NAME}.txt"
+
+          gh release create "$TAG_NAME" \
+            --title "$RELEASE_NAME" \
+            --notes-file "$BODY_FILE" \
+            --repo ${{ github.repository }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ matrix.service-name }}-v${{ steps.get-release-info.outputs.version }}
-          name: Release ${{ matrix.service-name }} v${{ steps.get-release-info.outputs.version }}${{ steps.get-release-info.outputs.override_flag }}
-          bodyPath: release_body_${{ matrix.service-name }}.txt
-          draft: false
-          prerelease: false
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-to-yandex-cloud:
     name: Deploy to Yandex Cloud for ${{ matrix.service-name }}
@@ -388,6 +401,7 @@ jobs:
           YC_TOKEN: ${{ secrets.YC_TOKEN }}
           YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
 
-# # Примечание: Для работы потребуются secrets в GitHub:
+# TODO:
+# Примечание: Для работы потребуются secrets в GitHub:
 # DOCKER_HUB_USERNAME и DOCKER_HUB_TOKEN для публикации образов
 # YC_TOKEN и YC_FOLDER_ID для деплоя в Yandex Cloud
