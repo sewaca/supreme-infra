@@ -34,8 +34,10 @@ export function updateCdWorkflow(): void {
   const lines = cdWorkflowContent.split('\n');
 
   // Находим строку с "options:" (должна быть на строке 10, индекс 9)
-  const optionsLineIndex = lines.findIndex((line) => line.trim() === 'options:');
-  
+  const optionsLineIndex = lines.findIndex(
+    (line) => line.trim() === 'options:',
+  );
+
   if (optionsLineIndex === -1) {
     console.error('Error: Could not find "options:" line in cd.yml');
     process.exit(1);
