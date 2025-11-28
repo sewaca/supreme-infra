@@ -8,7 +8,8 @@ ENV HUSKY=0
 
 WORKDIR /app
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml tsconfig.* package.json .
+COPY pnpm-lock.yaml pnpm-workspace.yaml tsconfig.* package.json .dockerignore .
+RUN ls -la
 COPY packages packages
 COPY services/frontend services/frontend
 
