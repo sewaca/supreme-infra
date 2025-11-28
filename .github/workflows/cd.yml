@@ -60,14 +60,26 @@ jobs:
         id: get-version
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
-          LATEST_RELEASE=$(gh release list --repo ${{ github.repository }} --limit 100 | grep "^$SERVICE_NAME-v" | head -n 1 | awk '{print $1}' || echo "")
+          
+          # Get all releases and filter by service name pattern
+          # gh release list format: TAG_NAME  TITLE  (draft/prerelease)
+          ALL_RELEASES=$(gh release list --repo ${{ github.repository }} --limit 100 || echo "")
+          
+          # Find the latest release tag matching the pattern ${SERVICE_NAME}-v*
+          LATEST_RELEASE=$(echo "$ALL_RELEASES" | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+" | head -n 1 | awk '{print $1}' || echo "")
+          
+          # Alternative: try to get releases via git tags
+          if [ -z "$LATEST_RELEASE" ]; then
+            echo "Trying to find release via git tags..."
+            LATEST_RELEASE=$(git tag -l "${SERVICE_NAME}-v*" | sort -V | tail -n 1 || echo "")
+          fi
 
           if [ -z "$LATEST_RELEASE" ]; then
             VERSION="0.0.0"
             RELEASE_TAG=""
             echo "No previous release found for $SERVICE_NAME, using version: $VERSION"
           else
-            VERSION=$(echo "$LATEST_RELEASE" | sed "s/^$SERVICE_NAME-v//")
+            VERSION=$(echo "$LATEST_RELEASE" | sed "s/^${SERVICE_NAME}-v//")
             RELEASE_TAG="$LATEST_RELEASE"
             echo "Latest release for $SERVICE_NAME: $LATEST_RELEASE, version: $VERSION"
           fi
@@ -292,8 +304,8 @@ jobs:
           name: new-version-${{ matrix.service-name }}
       - name: Configure Git
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "madara-robot@mail.ru"
+          git config --global user.name "madara-robot"
       - name: Get version and create branch
         id: create-branch
         run: |
@@ -376,10 +388,27 @@ jobs:
           RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}${OVERRIDE_FLAG}"
           BODY_FILE="release_body_${SERVICE_NAME}.txt"
 
-          gh release create "$TAG_NAME" \
-            --title "$RELEASE_NAME" \
-            --notes-file "$BODY_FILE" \
-            --repo ${{ github.repository }}
+          # Check if release already exists
+          if gh release view "$TAG_NAME" --repo ${{ github.repository }} >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists, skipping creation"
+            exit 0
+          fi
+
+          # Check if tag exists but release doesn't
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Tag $TAG_NAME exists but release doesn't, creating release from existing tag"
+            gh release create "$TAG_NAME" \
+              --title "$RELEASE_NAME" \
+              --notes-file "$BODY_FILE" \
+              --repo ${{ github.repository }} \
+              --verify-tag
+          else
+            echo "Creating new release $TAG_NAME"
+            gh release create "$TAG_NAME" \
+              --title "$RELEASE_NAME" \
+              --notes-file "$BODY_FILE" \
+              --repo ${{ github.repository }}
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
