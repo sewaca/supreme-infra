@@ -30,8 +30,9 @@ export function updateCdWorkflow(): void {
     process.exit(1);
   }
 
-  // Разбиваем файл на строки
-  const lines = cdWorkflowContent.split('\n');
+  // Генерируем options для choice input
+  const serviceOptions = allServices.map((service) => `          - ${service}`).join('\n');
+  const defaultService = allServices[0] || '';
 
   // Генерируем input для workflow_dispatch
   const serviceInput = `      service:
@@ -50,17 +51,12 @@ ${serviceOptions}
     `$1${serviceInput}\n    $4`,
   );
 
-  // Генерируем логику для сбора выбранных сервисов в prepare-services
-  const serviceChecks = allServices
-    .map(
-      (
-        service,
-      ) => `          if [ "$\{{ github.event.inputs.${service} }}" == "true" ]; then
-            SERVICES+=("${service}")
-          fi`,
-    )
-    .join('\n\n');
-
+  // Обновляем логику в prepare-services для одного выбранного сервиса
+  const githubInputsService = '${{ github.event.inputs.service }}';
+  const githubOutput = '$GITHUB_OUTPUT';
+  const prepareServicesLogic = `          # Get selected service
+          SELECTED_SERVICE="${githubInputsService}"
+          
           # Convert to JSON array (single service wrapped in array)
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
@@ -74,7 +70,7 @@ ${serviceOptions}
 
   // Обновляем логику prepare-services
   const prepareServicesRegex =
-    /(Set services list[\s\S]*?id: set-services\s+run: \|)([\s\S]*?)(\n {2}get-latest-release-version:)/s;
+    /(Set services list[\s\S]*?id: set-services\s+run: \|)([\s\S]*?)(\n  get-latest-release-version:)/s;
   cdWorkflowContent = cdWorkflowContent.replace(
     prepareServicesRegex,
     `$1\n${prepareServicesLogic}\n$3`,
