@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { PostDetailsPage } from '../../src/pages/PostDetailsPage/PostDetailsPage';
 import { backendApi, PostDetails } from '../../src/shared/api/backendApi';
 import { PostDetailsPage } from '../../src/views/PostDetailsPage/PostDetailsPage';
 
