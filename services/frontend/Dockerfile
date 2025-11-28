@@ -10,7 +10,9 @@ WORKDIR /app
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml tsconfig.* package.json .
 COPY packages packages
-COPY services/frontend services/frontend
+COPY services/frontend .
+
+RUN ls -la
 
 WORKDIR /app/services/frontend
 
