@@ -27,7 +27,7 @@ jobs:
       - name: Commit and push changes
         if: steps.check_changes.outputs.changes_detected == 'true'
         run: |
-          git config --global user.email "madara-robot@github.com"
+          git config --global user.email "madara-robot@mail.ru"
           git config --global user.name "madara-robot"
           git add .
           git commit -m "<Madara Robot>: Apply pre-commit hooks fixes" || true
