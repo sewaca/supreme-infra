@@ -306,11 +306,9 @@ jobs:
           service-name: ${{ matrix.service-name }}
 
   build-image-to-docker-hub:
-    # TODO: fix secrets
     name: Build and push image to Docker Hub for ${{ matrix.service-name }}
     needs: [prepare-services, security-checks, calculate-new-version]
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       matrix:
         service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
