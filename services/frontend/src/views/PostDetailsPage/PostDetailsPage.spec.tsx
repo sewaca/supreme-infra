@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { PostDetails } from '../shared/api/backendApi';
+import { PostDetails } from '../../shared/api/backendApi';
 import { PostDetailsPage } from './PostDetailsPage';
 
 // Mock Next.js Link component
