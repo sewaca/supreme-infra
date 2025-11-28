@@ -488,7 +488,7 @@ jobs:
             echo ""
             echo "## Docker Image"
             echo "https://hub.docker.com/repository/docker/sewaca/supreme/general\n"
-            echo "\`${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v${{ $VERSION }}\`"
+            echo "\`${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v$VERSION\`"
           } > release_body_$SERVICE_NAME.txt
 
           echo "Release body prepared"
