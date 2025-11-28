@@ -1,5 +1,8 @@
 node_modules
 .DS_Store
-**.md
+**/*.md
 .next
-**.tsbuildinfo
+**/*.tsbuildinfo
+coverage
+**/*.spec.*
+**/vitest.config*

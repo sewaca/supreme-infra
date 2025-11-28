@@ -1,6 +1,6 @@
-import { PostCard } from '../entities/post/PostCard';
-import { PostSummary } from '../shared/api/backendApi';
-import { Breadcrumbs } from '../widgets/breadcrumbs/Breadcrumbs';
+import { PostCard } from '../../entities/post/PostCard';
+import { PostSummary } from '../../shared/api/backendApi';
+import { Breadcrumbs } from '../../widgets/Breadcrumbs/Breadcrumbs';
 import styles from './PostsListPage.module.css';
 
 interface PostsListPageProps {

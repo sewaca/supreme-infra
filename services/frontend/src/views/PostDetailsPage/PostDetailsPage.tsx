@@ -1,6 +1,6 @@
-import { PostDetails } from '../shared/api/backendApi';
-import { Breadcrumbs } from '../widgets/breadcrumbs/Breadcrumbs';
-import { CommentsSection } from '../widgets/comments-section/CommentsSection';
+import { PostDetails } from '../../shared/api/backendApi';
+import { Breadcrumbs } from '../../widgets/Breadcrumbs/Breadcrumbs';
+import { CommentsSection } from '../../widgets/CommentsSection/CommentsSection';
 import styles from './PostDetailsPage.module.css';
 
 interface PostDetailsPageProps {
