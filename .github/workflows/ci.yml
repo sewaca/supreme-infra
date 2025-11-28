@@ -74,6 +74,8 @@ jobs:
   check-unit:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    outputs:
+      coverage-available: ${{ steps.coverage-check.outputs.available }}
     strategy:
       matrix:
         node-version: [22]
@@ -93,3 +95,24 @@ jobs:
       shell: bash
     - name: unit
       run: pnpm -r unit
+    - name: Generate coverage reports
+      id: coverage-check
+      run: |
+        pnpm -r unit:coverage || true
+        if [ -d "services/frontend/coverage/html-report" ] || [ -d "services/backend/coverage/html-report" ] || [ -d "services/frontend/coverage/lcov-report" ] || [ -d "services/backend/coverage/lcov-report" ]; then
+          echo "available=true" >> $GITHUB_OUTPUT
+        else
+          echo "available=false" >> $GITHUB_OUTPUT
+        fi
+      continue-on-error: true
+      shell: bash
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: steps.coverage-check.outputs.available == 'true'
+      with:
+        name: coverage-reports-${{ github.run_number }}
+        path: |
+          services/*/coverage/lcov-report/
+          services/*/coverage/html-report/
+        retention-days: 2
+        if-no-files-found: ignore
