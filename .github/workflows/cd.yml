@@ -177,13 +177,16 @@ jobs:
           NEW_MAJOR=$MAJOR
           NEW_MINOR=$MINOR
           NEW_PATCH=$PATCH
-          OVERRIDE_FLAG=""
+          IS_ROLLBACK=false
+          ROLLBACK_HASH=""
 
           # Check if only chore commits exist
           if [ "$HAS_CHORE" = true ] && [ "$HAS_MAJOR" = false ] && [ "$HAS_MINOR" = false ] && [ "$HAS_FIX" = false ]; then
-            # Only chore commits - keep version 0.0.0 and add Override flag
-            NEW_VERSION="0.0.0"
-            OVERRIDE_FLAG=" (Override)"
+            # Only chore commits - create rollback release with hash
+            IS_ROLLBACK=true
+            ROLLBACK_HASH=$(date +%s | sha256sum | head -c 8)
+            NEW_VERSION="$CURRENT_VERSION"
+            echo "Only chore commits detected, creating rollback release with hash: $ROLLBACK_HASH"
           elif [ "$HAS_MAJOR" = true ]; then
             NEW_MAJOR=$((MAJOR + 1))
             NEW_MINOR=0
@@ -203,25 +206,31 @@ jobs:
 
           echo "Service: $SERVICE_NAME"
           echo "Current version: $CURRENT_VERSION"
-          echo "New version: $NEW_VERSION$OVERRIDE_FLAG"
+          echo "New version: $NEW_VERSION"
+          echo "Is rollback: $IS_ROLLBACK"
+          echo "Rollback hash: $ROLLBACK_HASH"
           echo "Has major: $HAS_MAJOR"
           echo "Has minor: $HAS_MINOR"
           echo "Has fix: $HAS_FIX"
           echo "Has chore: $HAS_CHORE"
 
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "is_rollback=$IS_ROLLBACK" >> $GITHUB_OUTPUT
+          echo "rollback_hash=$ROLLBACK_HASH" >> $GITHUB_OUTPUT
           echo "$NEW_VERSION" > new_version_$SERVICE_NAME.txt
-          echo "$OVERRIDE_FLAG" > override_flag_$SERVICE_NAME.txt
+          echo "$IS_ROLLBACK" > is_rollback_$SERVICE_NAME.txt
+          echo "$ROLLBACK_HASH" > rollback_hash_$SERVICE_NAME.txt
           echo -e "$CHANGELOG" > changelog_$SERVICE_NAME.txt
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload new version, override flag and changelog
+      - name: Upload new version, rollback info and changelog
         uses: actions/upload-artifact@v4
         with:
           name: new-version-${{ matrix.service-name }}
           path: |
             new_version_${{ matrix.service-name }}.txt
-            override_flag_${{ matrix.service-name }}.txt
+            is_rollback_${{ matrix.service-name }}.txt
+            rollback_hash_${{ matrix.service-name }}.txt
             changelog_${{ matrix.service-name }}.txt
 
   security-checks:
@@ -343,17 +352,30 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: new-version-${{ matrix.service-name }}
-      - name: Get version, override flag and prepare changelog
+      - name: Get version, rollback info and prepare changelog
         id: get-release-info
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
           VERSION=$(cat new_version_$SERVICE_NAME.txt)
-          OVERRIDE_FLAG=$(cat override_flag_$SERVICE_NAME.txt 2>/dev/null || echo "")
+          IS_ROLLBACK=$(cat is_rollback_$SERVICE_NAME.txt 2>/dev/null || echo "false")
+          ROLLBACK_HASH=$(cat rollback_hash_$SERVICE_NAME.txt 2>/dev/null || echo "")
           CHANGELOG=$(cat changelog_$SERVICE_NAME.txt 2>/dev/null || echo "")
 
-          echo "Creating release for $SERVICE_NAME with version $VERSION$OVERRIDE_FLAG"
+          # Determine tag name and release name
+          if [ "$IS_ROLLBACK" = "true" ] && [ -n "$ROLLBACK_HASH" ]; then
+            TAG_NAME="${SERVICE_NAME}-v${VERSION}-${ROLLBACK_HASH}"
+            RELEASE_NAME="Rollback ${SERVICE_NAME} v${VERSION}"
+          else
+            TAG_NAME="${SERVICE_NAME}-v${VERSION}"
+            RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}"
+          fi
+
+          echo "Creating release for $SERVICE_NAME"
+          echo "Tag: $TAG_NAME"
+          echo "Release name: $RELEASE_NAME"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "override_flag=$OVERRIDE_FLAG" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
 
           # Count changelog lines
           if [ -n "$CHANGELOG" ]; then
@@ -364,7 +386,7 @@ jobs:
 
           # Prepare release body
           {
-            echo "Release $SERVICE_NAME v$VERSION$OVERRIDE_FLAG"
+            echo "$RELEASE_NAME"
             echo ""
             echo "## Changelog"
             if [ -n "$CHANGELOG" ]; then
@@ -407,10 +429,8 @@ jobs:
       - name: Create GitHub Release
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
-          VERSION="${{ steps.get-release-info.outputs.version }}"
-          OVERRIDE_FLAG="${{ steps.get-release-info.outputs.override_flag }}"
-          TAG_NAME="${SERVICE_NAME}-v${VERSION}"
-          RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}${OVERRIDE_FLAG}"
+          TAG_NAME="${{ steps.get-release-info.outputs.tag_name }}"
+          RELEASE_NAME="${{ steps.get-release-info.outputs.release_name }}"
           BODY_FILE="release_body_${SERVICE_NAME}.txt"
 
           # Check if release already exists
