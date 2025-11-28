@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { PostDetailsPage } from '../../src/views/PostDetailsPage/PostDetailsPage';
 import { backendApi, PostDetails } from '../../src/shared/api/backendApi';
+import { PostDetailsPage } from '../../src/views/PostDetailsPage/PostDetailsPage';
 
 interface PostPageProps {
   params: Promise<{ id: string }>;
