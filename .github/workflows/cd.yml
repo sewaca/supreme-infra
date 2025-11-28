@@ -312,7 +312,7 @@ jobs:
         with:
           context: ./services/${{ matrix.service-name }}
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
+          tags: supreme/production/${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
           cache-to: type=inline
 
   create-release-branch:
