@@ -24,7 +24,7 @@ jobs:
         run: |
           # Get selected service
           SELECTED_SERVICE="${{ github.event.inputs.service }}"
-          
+
           # Convert to JSON array (single service wrapped in array)
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
@@ -60,14 +60,14 @@ jobs:
         id: get-version
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
-          
+
           # Get all releases and filter by service name pattern
           # gh release list format: TAG_NAME  TITLE  (draft/prerelease)
           ALL_RELEASES=$(gh release list --repo ${{ github.repository }} --limit 100 || echo "")
-          
+
           # Find the latest release tag matching the pattern ${SERVICE_NAME}-v*
           LATEST_RELEASE=$(echo "$ALL_RELEASES" | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+" | head -n 1 | awk '{print $1}' || echo "")
-          
+
           # Alternative: try to get releases via git tags
           if [ -z "$LATEST_RELEASE" ]; then
             echo "Trying to find release via git tags..."
