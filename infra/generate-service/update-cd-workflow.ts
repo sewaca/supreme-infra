@@ -16,12 +16,7 @@ export function updateCdWorkflow(): void {
   const servicesConfig: ServicesConfig = JSON.parse(servicesContent);
 
   // Читаем cd.yml
-  const cdWorkflowPath = join(
-    projectRoot,
-    '.github',
-    'workflows',
-    'cd.yml',
-  );
+  const cdWorkflowPath = join(projectRoot, '.github', 'workflows', 'cd.yml');
   let cdWorkflowContent = readFileSync(cdWorkflowPath, 'utf-8');
 
   // Собираем все сервисы
@@ -55,7 +50,8 @@ ${serviceOptions}
         default: '${defaultService}'`;
 
   // Обновляем секцию inputs в workflow_dispatch
-  const inputsRegex = /(workflow_dispatch:\s+inputs:\s+)([\s\S]*?)(\n\s+)(jobs:)/;
+  const inputsRegex =
+    /(workflow_dispatch:\s+inputs:\s+)([\s\S]*?)(\n\s+)(jobs:)/;
   cdWorkflowContent = cdWorkflowContent.replace(
     inputsRegex,
     `$1${serviceInput}\n    $4`,
@@ -64,7 +60,9 @@ ${serviceOptions}
   // Генерируем логику для сбора выбранных сервисов в prepare-services
   const serviceChecks = allServices
     .map(
-      (service) => `          if [ "${{ github.event.inputs.${service} }}" == "true" ]; then
+      (
+        service,
+      ) => `          if [ "$\{{ github.event.inputs.${service} }}" == "true" ]; then
             SERVICES+=("${service}")
           fi`,
     )
@@ -100,11 +98,11 @@ ${serviceOptions}
   if (nestServices.length > 0) {
     nestServices.forEach((service) => {
       securityCheckSteps.push(
-        `      - name: Security scan check for NestJS ${{ matrix.service-name }}
+        `      - name: Security scan check for NestJS \${{ matrix.service-name }}
         if: matrix.service-name == '${service}'
         uses: ./.github/workflows/jobs/nest-application-security-check
         with:
-          service-name: ${{ matrix.service-name }}`,
+          service-name: \${{ matrix.service-name }}`,
       );
     });
   }
@@ -112,11 +110,11 @@ ${serviceOptions}
   if (nextServices.length > 0) {
     nextServices.forEach((service) => {
       securityCheckSteps.push(
-        `      - name: Security scan check for Next.js ${{ matrix.service-name }}
+        `      - name: Security scan check for Next.js \${{ matrix.service-name }}
         if: matrix.service-name == '${service}'
         uses: ./.github/workflows/jobs/next-application-security-check
         with:
-          service-name: ${{ matrix.service-name }}`,
+          service-name: \${{ matrix.service-name }}`,
       );
     });
   }
@@ -124,8 +122,8 @@ ${serviceOptions}
   // Обновляем секцию security-checks
   // Ищем блок от начала security-checks до начала build-image-to-docker-hub
   const securityChecksRegex =
-    /(security-checks:[\s\S]*?steps:\s+- name: Checkout code[\s\S]*?uses: actions\/checkout@v4\s+)([\s\S]*?)(\n  build-image-to-docker-hub:)/s;
-  
+    /(security-checks:[\s\S]*?steps:\s+- name: Checkout code[\s\S]*?uses: actions\/checkout@v4\s+)([\s\S]*?)(\n {2}build-image-to-docker-hub:)/s;
+
   if (securityCheckSteps.length > 0) {
     const securityChecksReplacement = `$1${securityCheckSteps.join('\n\n')}\n$3`;
     cdWorkflowContent = cdWorkflowContent.replace(
@@ -142,4 +140,3 @@ ${serviceOptions}
   console.log(`Nest services: ${nestServices.join(', ')}`);
   console.log(`Next services: ${nextServices.join(', ')}`);
 }
-
