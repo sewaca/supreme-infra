@@ -1,5 +1,6 @@
 import { updateCdWorkflow } from './update-cd-workflow';
 import { updateSecurityChecks } from './update-security-checks';
+import { updateCdWorkflow } from './update-cd-workflow';
 
 console.log('Updating security checks...');
 updateSecurityChecks();
