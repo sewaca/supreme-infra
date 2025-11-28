@@ -26,31 +26,31 @@ jobs:
         run: |
           # Collect selected services
           SERVICES=()
-          
+
           if [ "${{ github.event.inputs.backend }}" == "true" ]; then
             SERVICES+=("backend")
           fi
-          
+
           if [ "${{ github.event.inputs.frontend }}" == "true" ]; then
             SERVICES+=("frontend")
           fi
-          
+
           # Check if at least one service is selected
           if [ ${#SERVICES[@]} -eq 0 ]; then
             echo "Error: At least one service must be selected"
             exit 1
           fi
-          
+
           # Convert array to comma-separated string
           SERVICES_STRING=$(IFS=','; echo "${SERVICES[*]}")
-          
+
           # Convert to JSON array
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
             sudo apt-get update && sudo apt-get install -y jq
           fi
           SERVICES_JSON=$(echo "$SERVICES_STRING" | jq -R -s -c 'split(",")')
-          
+
           echo "Selected services: $SERVICES_STRING"
           echo "services=$SERVICES_JSON" >> $GITHUB_OUTPUT
           echo "Services JSON: $SERVICES_JSON"
@@ -80,7 +80,7 @@ jobs:
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
           LATEST_RELEASE=$(gh release list --repo ${{ github.repository }} --limit 100 | grep "^$SERVICE_NAME-v" | head -n 1 | awk '{print $1}' || echo "")
-          
+
           if [ -z "$LATEST_RELEASE" ]; then
             VERSION="0.0.0"
             echo "No previous release found for $SERVICE_NAME, using version: $VERSION"
@@ -88,7 +88,7 @@ jobs:
             VERSION=$(echo "$LATEST_RELEASE" | sed "s/^$SERVICE_NAME-v//")
             echo "Latest release for $SERVICE_NAME: $LATEST_RELEASE, version: $VERSION"
           fi
-          
+
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "service=$SERVICE_NAME" >> $GITHUB_OUTPUT
         env:
@@ -119,14 +119,14 @@ jobs:
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
           CURRENT_VERSION=$(cat version_$SERVICE_NAME.txt)
-          
+
           # Parse version (assuming semantic versioning)
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-          
+
           # Increment patch version
           NEW_PATCH=$((PATCH + 1))
           NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
-          
+
           echo "Service: $SERVICE_NAME"
           echo "Current version: $CURRENT_VERSION"
           echo "New version: $NEW_VERSION"
@@ -228,7 +228,7 @@ jobs:
           name: Release ${{ matrix.service-name }} v${{ steps.get-version.outputs.version }}
           body: |
             Release ${{ matrix.service-name }} v${{ steps.get-version.outputs.version }}
-            
+
             Docker image: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
           draft: false
           prerelease: false
