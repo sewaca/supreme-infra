@@ -35,7 +35,9 @@ export function updateCdWorkflow(): void {
   });
 
   // Генерируем options для choice input
-  const serviceOptions = allServices.map((service) => `          - ${service}`).join('\n');
+  const serviceOptions = allServices
+    .map((service) => `          - ${service}`)
+    .join('\n');
   const defaultService = allServices[0] || '';
 
   // Генерируем input для workflow_dispatch
@@ -56,7 +58,7 @@ ${serviceOptions}
   );
 
   // Обновляем логику в prepare-services для одного выбранного сервиса
-  const githubInputsService = '${{ github.event.inputs.service }}';
+  const githubInputsService = `\${{ github.event.inputs.service }}`;
   const githubOutput = '$GITHUB_OUTPUT';
   const prepareServicesLogic = `          # Get selected service
           SELECTED_SERVICE="${githubInputsService}"
@@ -74,7 +76,7 @@ ${serviceOptions}
 
   // Обновляем логику prepare-services
   const prepareServicesRegex =
-    /(Set services list[\s\S]*?id: set-services\s+run: \|)([\s\S]*?)(\n  get-latest-release-version:)/s;
+    /(Set services list[\s\S]*?id: set-services\s+run: \|)([\s\S]*?)(\n {2}get-latest-release-version:)/s;
   cdWorkflowContent = cdWorkflowContent.replace(
     prepareServicesRegex,
     `$1\n${prepareServicesLogic}\n$3`,
