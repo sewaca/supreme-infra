@@ -362,7 +362,8 @@ jobs:
           context: .
           file: ./services/${{ matrix.service-name }}/Dockerfile
           push: true
-          tags: supreme/production/${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
+          tags: sewaca/supreme:production/${{ matrix.service-name }}-${{ steps.get-version.outputs.version }}
+          # tags: supreme/production/${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
           cache-to: type=inline
 
   create-release-branch:
