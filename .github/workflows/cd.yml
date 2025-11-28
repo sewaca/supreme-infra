@@ -1,18 +1,16 @@
-name: CD Pipelines
+name: CD Pipeline
 
 on:
   workflow_dispatch:
     inputs:
-      backend:
-        description: 'Deploy backend service'
-        required: false
-        type: boolean
-        default: true
-      frontend:
-        description: 'Deploy frontend service'
-        required: false
-        type: boolean
-        default: true
+      service:
+        description: 'Select service to deploy'
+        required: true
+        type: choice
+        options:
+          - backend
+          - frontend
+        default: 'backend'
 
 jobs:
   prepare-services:
@@ -24,34 +22,17 @@ jobs:
       - name: Set services list
         id: set-services
         run: |
-          # Collect selected services
-          SERVICES=()
+          # Get selected service
+          SELECTED_SERVICE="${{ github.event.inputs.service }}"
 
-          if [ "${{ github.event.inputs.backend }}" == "true" ]; then
-            SERVICES+=("backend")
-          fi
-
-          if [ "${{ github.event.inputs.frontend }}" == "true" ]; then
-            SERVICES+=("frontend")
-          fi
-
-          # Check if at least one service is selected
-          if [ ${#SERVICES[@]} -eq 0 ]; then
-            echo "Error: At least one service must be selected"
-            exit 1
-          fi
-
-          # Convert array to comma-separated string
-          SERVICES_STRING=$(IFS=','; echo "${SERVICES[*]}")
-
-          # Convert to JSON array
+          # Convert to JSON array (single service wrapped in array)
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
             sudo apt-get update && sudo apt-get install -y jq
           fi
-          SERVICES_JSON=$(echo "$SERVICES_STRING" | jq -R -s -c 'split(",")')
+          SERVICES_JSON=$(echo "$SELECTED_SERVICE" | jq -R -c '[.]')
 
-          echo "Selected services: $SERVICES_STRING"
+          echo "Selected service: $SELECTED_SERVICE"
           echo "services=$SERVICES_JSON" >> $GITHUB_OUTPUT
           echo "Services JSON: $SERVICES_JSON"
 

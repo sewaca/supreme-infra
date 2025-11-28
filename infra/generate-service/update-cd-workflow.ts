@@ -34,42 +34,52 @@ export function updateCdWorkflow(): void {
     serviceTypeMap.set(service, 'next');
   });
 
-  // Генерируем inputs для workflow_dispatch
-  const inputs = allServices
-    .map(
-      (service) => `      ${service}:
-        description: 'Deploy ${service} service'
-        required: false
-        type: boolean
-        default: true`,
-    )
+  // Генерируем options для choice input
+  const serviceOptions = allServices
+    .map((service) => `          - ${service}`)
     .join('\n');
+  const defaultService = allServices[0] || '';
+
+  // Генерируем input для workflow_dispatch
+  const serviceInput = `      service:
+        description: 'Select service to deploy'
+        required: true
+        type: choice
+        options:
+${serviceOptions}
+        default: '${defaultService}'`;
 
   // Обновляем секцию inputs в workflow_dispatch
   const inputsRegex =
     /(workflow_dispatch:\s+inputs:\s+)([\s\S]*?)(\n\s+)(jobs:)/;
   cdWorkflowContent = cdWorkflowContent.replace(
     inputsRegex,
-    `$1${inputs}\n    $4`,
+    `$1${serviceInput}\n    $4`,
   );
 
-  // Генерируем логику для сбора выбранных сервисов в prepare-services
-  const serviceChecks = allServices
-    .map(
-      (
-        service,
-      ) => `          if [ "$\{{ github.event.inputs.${service} }}" == "true" ]; then
-            SERVICES+=("${service}")
-          fi`,
-    )
-    .join('\n\n');
+  // Обновляем логику в prepare-services для одного выбранного сервиса
+  const githubInputsService = `\${{ github.event.inputs.service }}`;
+  const githubOutput = '$GITHUB_OUTPUT';
+  const prepareServicesLogic = `          # Get selected service
+          SELECTED_SERVICE="${githubInputsService}"
 
-  // Обновляем логику сбора сервисов
-  const servicesCollectionRegex =
-    /(# Collect selected services\s+SERVICES=\(\)\s+)([\s\S]*?)(\s+# Check if at least one service is selected)/s;
+          # Convert to JSON array (single service wrapped in array)
+          # Install jq if not available
+          if ! command -v jq &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+          SERVICES_JSON=$(echo "$SELECTED_SERVICE" | jq -R -c '[.]')
+
+          echo "Selected service: $SELECTED_SERVICE"
+          echo "services=$SERVICES_JSON" >> ${githubOutput}
+          echo "Services JSON: $SERVICES_JSON"`;
+
+  // Обновляем логику prepare-services
+  const prepareServicesRegex =
+    /(Set services list[\s\S]*?id: set-services\s+run: \|)([\s\S]*?)(\n {2}get-latest-release-version:)/s;
   cdWorkflowContent = cdWorkflowContent.replace(
-    servicesCollectionRegex,
-    `$1${serviceChecks}\n\n$3`,
+    prepareServicesRegex,
+    `$1\n${prepareServicesLogic}\n$3`,
   );
 
   // Обновляем security-checks секцию
