@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: Create Release Pipeline 
 
 on:
   workflow_dispatch:
