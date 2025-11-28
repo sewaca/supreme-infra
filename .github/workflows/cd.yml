@@ -362,8 +362,7 @@ jobs:
           context: .
           file: ./services/${{ matrix.service-name }}/Dockerfile
           push: true
-          tags: sewaca/supreme:production/${{ matrix.service-name }}-${{ steps.get-version.outputs.version }}
-          # tags: supreme/production/${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-${{ steps.get-version.outputs.version }}
           cache-to: type=inline
 
   create-release-branch:
@@ -387,7 +386,7 @@ jobs:
           name: new-version-${{ matrix.service-name }}
       - name: Configure Git
         run: |
-          git config --global user.email "madara-robot@mail.ru"
+          git config --global user.email "246592117+madara-robot@users.noreply.github.com"
           git config --global user.name "madara-robot"
       - name: Get version and create branch
         id: create-branch
