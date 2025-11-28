@@ -6,12 +6,12 @@ catalog:
   # Common dependencies
   '@types/node': ^22.10.7
   typescript: ^5.7.3
-  
+
   # Build tools
   '@biomejs/biome': ^2.2.5
   tsx: ^4.20.6
   vite: ^6.0.7
-  
+
   # Testing
   vitest: ^2.1.8
   '@vitest/coverage-v8': ^2.1.8
@@ -25,7 +25,7 @@ catalog:
   globals: ^16.0.0
   supertest: ^7.0.0
   '@types/supertest': ^6.0.2
-  
+
   # NestJS
   '@nestjs/cli': ^11.0.0
   '@nestjs/common': ^11.0.1
@@ -41,13 +41,13 @@ catalog:
   ts-node: ^10.9.2
   tsconfig-paths: ^4.2.0
   unplugin-swc: ^1.5.9
-  
+
   # React & Next.js
   '@types/react': ^19
   '@types/react-dom': ^19
   next: 15.5.4
   react: 19.1.0
   react-dom: 19.1.0
-  
+
   # Security
   nestjs-security-scan: ^1.1.0
