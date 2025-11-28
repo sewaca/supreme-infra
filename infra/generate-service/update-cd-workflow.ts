@@ -62,7 +62,7 @@ ${serviceOptions}
   const githubOutput = '$GITHUB_OUTPUT';
   const prepareServicesLogic = `          # Get selected service
           SELECTED_SERVICE="${githubInputsService}"
-          
+
           # Convert to JSON array (single service wrapped in array)
           # Install jq if not available
           if ! command -v jq &> /dev/null; then
