@@ -50,12 +50,12 @@ jobs:
           fetch-depth: 0
       - name: Install GitHub CLI
         run: |
-          type -p curl >/dev/null || (apt update && apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && apt update \
-          && apt install gh -y
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
       - name: Get latest release version
         id: get-version
         run: |
@@ -64,24 +64,30 @@ jobs:
 
           if [ -z "$LATEST_RELEASE" ]; then
             VERSION="0.0.0"
+            RELEASE_TAG=""
             echo "No previous release found for $SERVICE_NAME, using version: $VERSION"
           else
             VERSION=$(echo "$LATEST_RELEASE" | sed "s/^$SERVICE_NAME-v//")
+            RELEASE_TAG="$LATEST_RELEASE"
             echo "Latest release for $SERVICE_NAME: $LATEST_RELEASE, version: $VERSION"
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
           echo "service=$SERVICE_NAME" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Save version to file
+      - name: Save version and tag to file
         run: |
           echo "${{ steps.get-version.outputs.version }}" > version_${{ matrix.service-name }}.txt
-      - name: Upload version file
+          echo "${{ steps.get-version.outputs.release_tag }}" > release_tag_${{ matrix.service-name }}.txt
+      - name: Upload version files
         uses: actions/upload-artifact@v4
         with:
           name: version-${{ matrix.service-name }}
-          path: version_${{ matrix.service-name }}.txt
+          path: |
+            version_${{ matrix.service-name }}.txt
+            release_tag_${{ matrix.service-name }}.txt
 
   calculate-new-version:
     name: Calculate new version for ${{ matrix.service-name }}
@@ -91,33 +97,120 @@ jobs:
       matrix:
         service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
     steps:
-      - name: Download version file
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+      - name: Download version files
         uses: actions/download-artifact@v4
         with:
           name: version-${{ matrix.service-name }}
-      - name: Calculate new version
+      - name: Calculate new version from commits
         id: calculate-version
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
           CURRENT_VERSION=$(cat version_$SERVICE_NAME.txt)
+          RELEASE_TAG=$(cat release_tag_$SERVICE_NAME.txt)
 
-          # Parse version (assuming semantic versioning)
+          # Parse current version
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
 
-          # Increment patch version
-          NEW_PATCH=$((PATCH + 1))
-          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+          # Get commits since last release
+          if [ -z "$RELEASE_TAG" ]; then
+            # No previous release, get all commits
+            COMMITS=$(git log --pretty=format:"%s" --reverse)
+            echo "No previous release, analyzing all commits"
+          else
+            # Get commits since last release tag
+            COMMITS=$(git log $RELEASE_TAG..HEAD --pretty=format:"%s" --reverse || git log --pretty=format:"%s" --reverse)
+            echo "Analyzing commits since $RELEASE_TAG"
+          fi
+
+          # Analyze commits for version bump type
+          HAS_MAJOR=false
+          HAS_MINOR=false
+          HAS_FIX=false
+          HAS_CHORE=false
+          CHANGELOG=""
+
+          while IFS= read -r commit_msg; do
+            if [ -z "$commit_msg" ]; then
+              continue
+            fi
+
+            # Add to changelog
+            CHANGELOG="${CHANGELOG}- ${commit_msg}\n"
+
+            # Check commit prefix
+            if echo "$commit_msg" | grep -qE "^major:"; then
+              HAS_MAJOR=true
+            elif echo "$commit_msg" | grep -qE "^minor:"; then
+              HAS_MINOR=true
+            elif echo "$commit_msg" | grep -qE "^fix:"; then
+              HAS_FIX=true
+            elif echo "$commit_msg" | grep -qE "^chore:"; then
+              HAS_CHORE=true
+            fi
+          done <<< "$COMMITS"
+
+          # Calculate new version based on commit types
+          NEW_MAJOR=$MAJOR
+          NEW_MINOR=$MINOR
+          NEW_PATCH=$PATCH
+          OVERRIDE_FLAG=""
+
+          # Check if only chore commits exist
+          if [ "$HAS_CHORE" = true ] && [ "$HAS_MAJOR" = false ] && [ "$HAS_MINOR" = false ] && [ "$HAS_FIX" = false ]; then
+            # Only chore commits - keep version 0.0.0 and add Override flag
+            NEW_VERSION="0.0.0"
+            OVERRIDE_FLAG=" (Override)"
+          elif [ "$HAS_MAJOR" = true ]; then
+            NEW_MAJOR=$((MAJOR + 1))
+            NEW_MINOR=0
+            NEW_PATCH=0
+            NEW_VERSION="$NEW_MAJOR.$NEW_MINOR.$NEW_PATCH"
+          elif [ "$HAS_MINOR" = true ]; then
+            NEW_MINOR=$((MINOR + 1))
+            NEW_PATCH=0
+            NEW_VERSION="$NEW_MAJOR.$NEW_MINOR.$NEW_PATCH"
+          elif [ "$HAS_FIX" = true ]; then
+            NEW_PATCH=$((PATCH + 1))
+            NEW_VERSION="$NEW_MAJOR.$NEW_MINOR.$NEW_PATCH"
+          else
+            # No relevant commits found, keep current version
+            NEW_VERSION="$NEW_MAJOR.$NEW_MINOR.$NEW_PATCH"
+          fi
 
           echo "Service: $SERVICE_NAME"
           echo "Current version: $CURRENT_VERSION"
-          echo "New version: $NEW_VERSION"
+          echo "New version: $NEW_VERSION$OVERRIDE_FLAG"
+          echo "Has major: $HAS_MAJOR"
+          echo "Has minor: $HAS_MINOR"
+          echo "Has fix: $HAS_FIX"
+          echo "Has chore: $HAS_CHORE"
+
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "$NEW_VERSION" > new_version_$SERVICE_NAME.txt
-      - name: Upload new version file
+          echo "$OVERRIDE_FLAG" > override_flag_$SERVICE_NAME.txt
+          echo -e "$CHANGELOG" > changelog_$SERVICE_NAME.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload new version, override flag and changelog
         uses: actions/upload-artifact@v4
         with:
           name: new-version-${{ matrix.service-name }}
-          path: new_version_${{ matrix.service-name }}.txt
+          path: |
+            new_version_${{ matrix.service-name }}.txt
+            override_flag_${{ matrix.service-name }}.txt
+            changelog_${{ matrix.service-name }}.txt
 
   security-checks:
     name: Security checks for all services
@@ -179,9 +272,55 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:latest
           cache-to: type=inline
 
+  create-release-branch:
+    name: Create release branch for ${{ matrix.service-name }}
+    needs: [prepare-services, calculate-new-version]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download new version file
+        uses: actions/download-artifact@v4
+        with:
+          name: new-version-${{ matrix.service-name }}
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Get version and create branch
+        id: create-branch
+        run: |
+          SERVICE_NAME="${{ matrix.service-name }}"
+          VERSION=$(cat new_version_$SERVICE_NAME.txt)
+          BRANCH_NAME="releases/production/${SERVICE_NAME}-${VERSION}"
+
+          # Check if branch already exists
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists"
+            git checkout "$BRANCH_NAME"
+          else
+            # Create and push new branch from current HEAD
+            git checkout -b "$BRANCH_NAME"
+            git push -u origin "$BRANCH_NAME"
+            echo "Created branch $BRANCH_NAME"
+          fi
+
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   create-github-release:
     name: Create GitHub release for ${{ matrix.service-name }}
-    needs: [prepare-services, build-image-to-docker-hub, calculate-new-version]
+    needs: [prepare-services, build-image-to-docker-hub, calculate-new-version, create-release-branch]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -189,28 +328,46 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Download new version file
+      - name: Download new version and changelog files
         uses: actions/download-artifact@v4
         with:
           name: new-version-${{ matrix.service-name }}
-      - name: Get version for service
-        id: get-version
+      - name: Get version, override flag and prepare changelog
+        id: get-release-info
         run: |
           SERVICE_NAME="${{ matrix.service-name }}"
           VERSION=$(cat new_version_$SERVICE_NAME.txt)
-          echo "Creating release for $SERVICE_NAME with version $VERSION"
+          OVERRIDE_FLAG=$(cat override_flag_$SERVICE_NAME.txt 2>/dev/null || echo "")
+          CHANGELOG=$(cat changelog_$SERVICE_NAME.txt 2>/dev/null || echo "")
+
+          echo "Creating release for $SERVICE_NAME with version $VERSION$OVERRIDE_FLAG"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "override_flag=$OVERRIDE_FLAG" >> $GITHUB_OUTPUT
+
+          # Prepare release body
+          {
+            echo "Release $SERVICE_NAME v$VERSION$OVERRIDE_FLAG"
+            echo ""
+            echo "## Changelog"
+            if [ -n "$CHANGELOG" ]; then
+              echo "$CHANGELOG"
+            else
+              echo "No changes"
+            fi
+            echo ""
+            echo "## Docker Image"
+            echo "\`${{ secrets.DOCKER_HUB_USERNAME }}/supreme-$SERVICE_NAME:$VERSION\`"
+          } > release_body_$SERVICE_NAME.txt
+
+          echo "Release body prepared"
       - name: Create GitHub Release
         uses: ncipollo/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ matrix.service-name }}-v${{ steps.get-version.outputs.version }}
-          name: Release ${{ matrix.service-name }} v${{ steps.get-version.outputs.version }}
-          body: |
-            Release ${{ matrix.service-name }} v${{ steps.get-version.outputs.version }}
-
-            Docker image: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme-${{ matrix.service-name }}:${{ steps.get-version.outputs.version }}
+          tag: ${{ matrix.service-name }}-v${{ steps.get-release-info.outputs.version }}
+          name: Release ${{ matrix.service-name }} v${{ steps.get-release-info.outputs.version }}${{ steps.get-release-info.outputs.override_flag }}
+          bodyPath: release_body_${{ matrix.service-name }}.txt
           draft: false
           prerelease: false
 
