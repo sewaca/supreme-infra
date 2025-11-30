@@ -1,4 +1,5 @@
 # Generated values for frontend in development environment
+# Generated at: 2025-11-30
 # Source: services/frontend/service.yaml
 
 replicaCount: 1
