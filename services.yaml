@@ -2,11 +2,10 @@
 # Используется генераторами для автоматической генерации конфигураций
 
 services:
-  - name: backend
-    type: nest
-    description: Backend service (NestJS)
+  nest:
+    - name: backend
+      description: Backend service (NestJS)
   
-  - name: frontend
-    type: next
-    description: Frontend service (Next.js)
-
+  next:
+    - name: frontend
+      description: Frontend service (Next.js)

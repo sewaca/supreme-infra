@@ -1,6 +1,6 @@
-import { updateSecurityChecks } from '../generate-service/update-security-checks';
-import { updateCdWorkflow } from '../generate-service/update-cd-workflow';
-import { generateValuesForAllServices } from '../generate-values/generate-values';
+import { updateSecurityChecks } from './update-security-checks';
+import { updateCdWorkflow } from './update-cd-workflow';
+import { generateValuesForAllServices } from './generate-values/generate-values';
 
 console.log('═══════════════════════════════════════════════════════════');
 console.log('🚀 Supreme Infrastructure Generator');
@@ -25,4 +25,3 @@ console.log('');
 console.log('═══════════════════════════════════════════════════════════');
 console.log('✅ All generation tasks completed successfully!');
 console.log('═══════════════════════════════════════════════════════════');
-

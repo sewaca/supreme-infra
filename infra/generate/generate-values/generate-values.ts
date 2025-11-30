@@ -10,6 +10,11 @@ const SERVICE_TYPES: Record<string, ServiceType> = {
   frontend: { type: 'frontend', defaultPort: 3000, defaultHealthPath: '/api/status' },
 };
 
+const HELM_CHART_MAPPING: Record<string, string> = {
+  nest: 'backend-service',
+  next: 'frontend-service',
+};
+
 const ENVIRONMENTS = ['development', 'staging', 'production'];
 
 function log(message: string, level: 'info' | 'success' | 'error' | 'debug' = 'info'): void {
@@ -51,16 +56,27 @@ function deepMerge<T>(target: T, source: Partial<T>): T {
   return result;
 }
 
-function loadDefaultValues(): ServiceConfig {
-  log('Loading default values from defaults.yaml', 'debug');
-  const defaultsPath = path.join(__dirname, 'defaults.yaml');
-  const content = fs.readFileSync(defaultsPath, 'utf-8');
+function getHelmChartPath(serviceType: 'nest' | 'next'): string {
+  const chartName = HELM_CHART_MAPPING[serviceType];
+  return path.join(__dirname, '../../helmcharts', chartName);
+}
+
+function loadDefaultValues(serviceType: 'nest' | 'next'): ServiceConfig {
+  const helmChartPath = getHelmChartPath(serviceType);
+  const valuesPath = path.join(helmChartPath, 'values.yaml');
+  
+  log(`Loading default values from ${HELM_CHART_MAPPING[serviceType]}/values.yaml`, 'debug');
+  
+  const content = fs.readFileSync(valuesPath, 'utf-8');
   return yaml.parse(content) as ServiceConfig;
 }
 
-function loadEnvironmentOverrides(): Record<string, Partial<ServiceConfig>> {
-  log('Loading environment overrides from environment-overrides.yaml', 'debug');
-  const overridesPath = path.join(__dirname, 'environment-overrides.yaml');
+function loadEnvironmentOverrides(serviceType: 'nest' | 'next'): Record<string, Partial<ServiceConfig>> {
+  const helmChartPath = getHelmChartPath(serviceType);
+  const overridesPath = path.join(helmChartPath, 'environment-overrides.yaml');
+  
+  log(`Loading environment overrides from ${HELM_CHART_MAPPING[serviceType]}/environment-overrides.yaml`, 'debug');
+  
   const content = fs.readFileSync(overridesPath, 'utf-8');
   return yaml.parse(content) as Record<string, Partial<ServiceConfig>>;
 }
@@ -94,7 +110,7 @@ function detectServiceType(serviceName: string): ServiceType {
 function loadServiceConfig(serviceName: string): ServiceConfig {
   const serviceYamlPath = path.join(
     __dirname,
-    '../../services',
+    '../../../services',
     serviceName,
     'service.yaml'
   );
@@ -114,21 +130,28 @@ function loadServiceConfig(serviceName: string): ServiceConfig {
 
 function generateValuesForService(
   serviceName: string,
-  environment: string,
-  defaultValues: ServiceConfig,
-  environmentOverrides: Record<string, Partial<ServiceConfig>>
+  environment: string
 ): ServiceConfig {
   log(`Generating values for environment: ${environment}`, 'debug');
   
+  const service = getServiceByName(serviceName);
+  if (!service) {
+    throw new Error(`Service ${serviceName} not found in services.yaml`);
+  }
+  
   const serviceType = detectServiceType(serviceName);
   const serviceConfig = loadServiceConfig(serviceName);
+  
+  // Load defaults and overrides specific to service type
+  const defaultValues = loadDefaultValues(service.type);
+  const environmentOverrides = loadEnvironmentOverrides(service.type);
   
   log(`Merging configurations...`, 'debug');
   
   // Start with defaults
   let values: ServiceConfig = deepMerge({}, defaultValues);
   
-  // Apply service type defaults
+  // Apply service type defaults (already in defaults.yaml, but ensure consistency)
   log(`Applying service type defaults (port: ${serviceType.defaultPort})`, 'debug');
   if (!values.service) {
     values.service = {};
@@ -140,7 +163,7 @@ function generateValuesForService(
   }
   values.env.PORT = serviceType.defaultPort.toString();
   
-  // Update health check paths based on service type
+  // Update health check paths based on service type (already in defaults.yaml)
   if (values.livenessProbe?.httpGet) {
     values.livenessProbe.httpGet.path = serviceType.defaultHealthPath;
   }
@@ -194,7 +217,7 @@ function writeValuesFile(
   environment: string,
   values: ServiceConfig
 ): void {
-  const overridesDir = path.join(__dirname, '../overrides', environment);
+  const overridesDir = path.join(__dirname, '../../overrides', environment);
   ensureDirectoryExists(overridesDir);
   
   const outputPath = path.join(overridesDir, `${serviceName}.yaml`);
@@ -227,11 +250,6 @@ export function generateValuesForAllServices(): void {
   }
   log('', 'info');
   
-  // Load defaults and environment overrides once
-  const defaultValues = loadDefaultValues();
-  const environmentOverrides = loadEnvironmentOverrides();
-  log('', 'info');
-  
   let successCount = 0;
   let errorCount = 0;
   
@@ -240,12 +258,7 @@ export function generateValuesForAllServices(): void {
     
     for (const environment of ENVIRONMENTS) {
       try {
-        const values = generateValuesForService(
-          serviceName,
-          environment,
-          defaultValues,
-          environmentOverrides
-        );
+        const values = generateValuesForService(serviceName, environment);
         writeValuesFile(serviceName, environment, values);
         successCount++;
       } catch (error) {
@@ -266,4 +279,3 @@ export function generateValuesForAllServices(): void {
     log(`  Errors encountered: ${errorCount}`, 'error');
   }
 }
-

@@ -1,4 +1,4 @@
-# Environment-specific overrides
+# Environment-specific overrides for backend services (NestJS)
 # These values override the defaults for each environment
 
 development:
@@ -13,14 +13,6 @@ development:
       cpu: 50m
       memory: 64Mi
 
-staging:
-  replicaCount: 2
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-    maxReplicas: 5
-    targetCPUUtilizationPercentage: 75
-
 production:
   replicaCount: 3
   autoscaling:
@@ -29,4 +21,3 @@ production:
     maxReplicas: 20
     targetCPUUtilizationPercentage: 70
     targetMemoryUtilizationPercentage: 80
-
