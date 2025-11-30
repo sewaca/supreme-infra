@@ -28,25 +28,23 @@ export function getServicesByType(type: 'nest' | 'next'): Service[] {
 
 export function getAllServiceNames(): string[] {
   const services = loadServices();
-  const nestServices = services.nest.map((s) => s.name);
-  const nextServices = services.next.map((s) => s.name);
+  const nestServices = services.nest.map(s => s.name);
+  const nextServices = services.next.map(s => s.name);
   return [...nestServices, ...nextServices];
 }
 
-export function getServiceByName(
-  name: string,
-): { service: Service; type: 'nest' | 'next' } | undefined {
+export function getServiceByName(name: string): { service: Service; type: 'nest' | 'next' } | undefined {
   const services = loadServices();
-
-  const nestService = services.nest.find((s) => s.name === name);
+  
+  const nestService = services.nest.find(s => s.name === name);
   if (nestService) {
     return { service: nestService, type: 'nest' };
   }
-
-  const nextService = services.next.find((s) => s.name === name);
+  
+  const nextService = services.next.find(s => s.name === name);
   if (nextService) {
     return { service: nextService, type: 'next' };
   }
-
+  
   return undefined;
 }

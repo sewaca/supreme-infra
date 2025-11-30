@@ -8,8 +8,8 @@ export function updateSecurityChecks(): void {
   const projectRoot = path.join(__dirname, '../../..');
 
   // Загружаем сервисы из services.yaml
-  const nestServices = getServicesByType('nest').map((s) => s.name);
-  const nextServices = getServicesByType('next').map((s) => s.name);
+  const nestServices = getServicesByType('nest').map(s => s.name);
+  const nextServices = getServicesByType('next').map(s => s.name);
 
   // Читаем security-checks.yml
   const securityChecksPath = path.join(
@@ -53,3 +53,4 @@ export function updateSecurityChecks(): void {
   console.log(`  Nest services: ${nestServices.join(', ') || 'none'}`);
   console.log(`  Next services: ${nextServices.join(', ') || 'none'}`);
 }
+
