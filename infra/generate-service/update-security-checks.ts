@@ -1,19 +1,14 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-
-interface ServicesConfig {
-  nest: string[];
-  next: string[];
-}
+import { getServicesByType } from '../shared/load-services';
 
 export function updateSecurityChecks(): void {
   // Путь к корню проекта (относительно текущего файла)
   const projectRoot = join(__dirname, '../..');
 
-  // Читаем services.json
-  const servicesJsonPath = join(__dirname, 'services.json');
-  const servicesContent = readFileSync(servicesJsonPath, 'utf-8');
-  const servicesConfig: ServicesConfig = JSON.parse(servicesContent);
+  // Загружаем сервисы из services.yaml
+  const nestServices = getServicesByType('nest').map(s => s.name);
+  const nextServices = getServicesByType('next').map(s => s.name);
 
   // Читаем security-checks.yml
   const securityChecksPath = join(
@@ -25,14 +20,12 @@ export function updateSecurityChecks(): void {
   let securityChecksContent = readFileSync(securityChecksPath, 'utf-8');
 
   // Формируем строку для matrix nest сервисов
-  const nestServices = servicesConfig.nest || [];
   const nestMatrixValue =
     nestServices.length > 0
       ? `service-name: [${nestServices.map((s) => `'${s}'`).join(', ')}]`
       : `service-name: []`;
 
   // Формируем строку для matrix next сервисов
-  const nextServices = servicesConfig.next || [];
   const nextMatrixValue =
     nextServices.length > 0
       ? `service-name: [${nextServices.map((s) => `'${s}'`).join(', ')}]`
@@ -63,9 +56,7 @@ export function updateSecurityChecks(): void {
   // Сохраняем обновленный файл
   writeFileSync(securityChecksPath, securityChecksContent, 'utf-8');
 
-  console.log('Security checks updated successfully!');
-  console.log(`Nest services: ${nestServices.join(', ')}`);
-  console.log(`Next services: ${nextServices.join(', ')}`);
+  console.log('✓ Security checks updated successfully!');
+  console.log(`  Nest services: ${nestServices.join(', ') || 'none'}`);
+  console.log(`  Next services: ${nextServices.join(', ') || 'none'}`);
 }
-
-updateSecurityChecks();

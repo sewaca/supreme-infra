@@ -1,0 +1,12 @@
+# Список всех сервисов в проекте
+# Используется генераторами для автоматической генерации конфигураций
+
+services:
+  - name: backend
+    type: nest
+    description: Backend service (NestJS)
+  
+  - name: frontend
+    type: next
+    description: Frontend service (Next.js)
+

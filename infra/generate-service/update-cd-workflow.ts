@@ -1,34 +1,22 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-
-interface ServicesConfig {
-  nest: string[];
-  next: string[];
-}
+import { getAllServiceNames } from '../shared/load-services';
 
 export function updateCdWorkflow(): void {
   // Путь к корню проекта (относительно текущего файла)
   const projectRoot = join(__dirname, '../..');
 
-  // Читаем services.json
-  const servicesJsonPath = join(__dirname, 'services.json');
-  const servicesContent = readFileSync(servicesJsonPath, 'utf-8');
-  const servicesConfig: ServicesConfig = JSON.parse(servicesContent);
+  // Загружаем все сервисы из services.yaml
+  const allServices = getAllServiceNames();
+
+  if (allServices.length === 0) {
+    console.error('✗ Error: No services found in services.yaml');
+    process.exit(1);
+  }
 
   // Читаем cd.yml
   const cdWorkflowPath = join(projectRoot, '.github', 'workflows', 'cd.yml');
   const cdWorkflowContent = readFileSync(cdWorkflowPath, 'utf-8');
-
-  // Собираем все сервисы из обоих массивов
-  const allServices = [
-    ...(servicesConfig.nest || []),
-    ...(servicesConfig.next || []),
-  ];
-
-  if (allServices.length === 0) {
-    console.error('Error: No services found in services.json');
-    process.exit(1);
-  }
 
   // Разбиваем файл на строки
   const lines = cdWorkflowContent.split('\n');
@@ -39,7 +27,7 @@ export function updateCdWorkflow(): void {
   );
 
   if (optionsLineIndex === -1) {
-    console.error('Error: Could not find "options:" line in cd.yml');
+    console.error('✗ Error: Could not find "options:" line in cd.yml');
     process.exit(1);
   }
 
@@ -62,7 +50,7 @@ export function updateCdWorkflow(): void {
   }
 
   if (defaultLineIndex === -1) {
-    console.error('Error: Could not find "default:" line in cd.yml');
+    console.error('✗ Error: Could not find "default:" line in cd.yml');
     process.exit(1);
   }
 
@@ -80,7 +68,7 @@ export function updateCdWorkflow(): void {
   // Сохраняем обновленный файл
   writeFileSync(cdWorkflowPath, updatedContent, 'utf-8');
 
-  console.log('CD workflow updated successfully!');
-  console.log(`Services: ${allServices.join(', ')}`);
-  console.log(`Default service: ${defaultService}`);
+  console.log('✓ CD workflow updated successfully!');
+  console.log(`  Services: ${allServices.join(', ')}`);
+  console.log(`  Default service: ${defaultService}`);
 }

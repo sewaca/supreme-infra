@@ -1,5 +1,5 @@
 # Generated values for frontend in staging environment
-# Generated at: 2025-11-30T15:15:47.178Z
+# Generated at: 2025-11-30T15:18:31.961Z
 # Source: services/frontend/service.yaml
 
 replicaCount: 2

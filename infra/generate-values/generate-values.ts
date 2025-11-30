@@ -3,6 +3,7 @@ import * as path from 'node:path';
 import Handlebars from 'handlebars';
 import * as yaml from 'yaml';
 import type { ServiceConfig, ServiceType } from './types';
+import { loadServices, getServiceByName } from '../shared/load-services';
 
 const SERVICE_TYPES: Record<string, ServiceType> = {
   backend: { type: 'backend', defaultPort: 4000, defaultHealthPath: '/status' },
@@ -66,24 +67,27 @@ function loadEnvironmentOverrides(): Record<string, Partial<ServiceConfig>> {
 
 function detectServiceType(serviceName: string): ServiceType {
   log(`Detecting service type for: ${serviceName}`, 'debug');
-  const servicesJson = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../generate-service/services.json'), 'utf-8')
-  ) as Record<string, string[]>;
   
-  for (const [type, services] of Object.entries(servicesJson)) {
-    if (services.includes(serviceName)) {
-      if (type === 'nest') {
-        log(`Service type detected: backend (NestJS)`, 'debug');
-        return SERVICE_TYPES.backend;
-      }
-      if (type === 'next') {
-        log(`Service type detected: frontend (Next.js)`, 'debug');
-        return SERVICE_TYPES.frontend;
-      }
-    }
+  const service = getServiceByName(serviceName);
+  
+  if (!service) {
+    log(`Service not found in services.yaml, defaulting to: backend`, 'debug');
+    return SERVICE_TYPES.backend;
   }
   
-  log(`Service type not found, defaulting to: backend`, 'debug');
+  log(`Service found: ${service.name} (${service.type})`, 'debug');
+  
+  if (service.type === 'nest') {
+    log(`Service type detected: backend (NestJS)`, 'debug');
+    return SERVICE_TYPES.backend;
+  }
+  
+  if (service.type === 'next') {
+    log(`Service type detected: frontend (Next.js)`, 'debug');
+    return SERVICE_TYPES.frontend;
+  }
+  
+  log(`Unknown service type: ${service.type}, defaulting to: backend`, 'debug');
   return SERVICE_TYPES.backend;
 }
 
@@ -214,15 +218,13 @@ export function generateValuesForAllServices(): void {
   log('Starting values generation process', 'info');
   log('', 'info');
   
-  const servicesJson = JSON.parse(
-    fs.readFileSync(
-      path.join(__dirname, '../generate-service/services.json'),
-      'utf-8'
-    )
-  ) as Record<string, string[]>;
+  const services = loadServices();
+  const allServices = services.map(s => s.name);
   
-  const allServices = Object.values(servicesJson).flat();
-  log(`Found ${allServices.length} service(s) to process: ${allServices.join(', ')}`, 'info');
+  log(`Found ${allServices.length} service(s) to process:`, 'info');
+  for (const service of services) {
+    log(`  • ${service.name} (${service.type})${service.description ? ` - ${service.description}` : ''}`, 'info');
+  }
   log('', 'info');
   
   // Load defaults and environment overrides once
