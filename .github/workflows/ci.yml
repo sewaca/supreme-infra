@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Run e2e tests
-        uses: ./.github/workflows/jobs/test-e2e
+        uses: ./.github/actions/test-e2e
         with:
           services: ""
 
