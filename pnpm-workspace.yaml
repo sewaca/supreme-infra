@@ -1,6 +1,7 @@
 packages:
   - ./services/*
   - ./packages/*
+  - ./e2e
 lockfileIncludeTarballUrl: false
 catalog:
   # Common dependencies
@@ -25,6 +26,7 @@ catalog:
   globals: ^16.0.0
   supertest: ^7.0.0
   '@types/supertest': ^6.0.2
+  '@playwright/test': ^1.48.0
 
   # NestJS
   '@nestjs/cli': ^11.0.0
