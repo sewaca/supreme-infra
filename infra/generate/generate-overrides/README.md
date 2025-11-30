@@ -41,7 +41,7 @@ infra/
 ### Генерация всех values файлов
 
 ```bash
-pnpm run values:generate
+pnpm run generate:overrides
 ```
 
 Эта команда:
@@ -268,7 +268,7 @@ autoscaling:
 
 1. Создайте `services/${service_name}/service.yaml` с настройками сервиса
 2. Добавьте сервис в `infra/generate-service/services.json`
-3. Запустите генератор: `pnpm run values:generate`
+3. Запустите генератор: `pnpm run generate:overrides`
 
 ## Добавление нового окружения
 
