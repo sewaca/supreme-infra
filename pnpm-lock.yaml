@@ -146,6 +146,9 @@ importers:
       tsx:
         specifier: 'catalog:'
         version: 4.20.6
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
       vite:
         specifier: 'catalog:'
         version: 6.4.1(@types/node@22.18.11)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.2)

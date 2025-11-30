@@ -22,6 +22,7 @@
     "handlebars": "^4.7.8",
     "nestjs-security-scan": "catalog:",
     "tsx": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "yaml": "^2.6.1"

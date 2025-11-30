@@ -1,5 +1,5 @@
 # Generated values for frontend in production environment
-# Generated at: 2025-11-30T15:42:54.178Z
+# Generated at: 2025-11-30T21:44:16.835Z
 # Source: services/frontend/service.yaml
 
 replicaCount: 3
