@@ -1,10 +1,12 @@
 name: Test E2E
 description: 'Run e2e tests for provided services'
 
-inputs:
-  services:
-    description: "Services name to test"
-    required: false
+on:
+	workflow_call:
+		inputs:
+			services:
+				description: "Services name to test"
+				required: false
 
 runs:
   using: "composite"
