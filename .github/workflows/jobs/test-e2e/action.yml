@@ -6,6 +6,10 @@ inputs:
 		description: "Services name to test"
 		required: false
 
+on:
+	push:
+		branches: [ main ]
+
 jobs:
 	test-e2e:
 		runs-on: ubuntu-latest
