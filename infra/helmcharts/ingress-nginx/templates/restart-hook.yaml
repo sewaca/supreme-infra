@@ -1,0 +1,33 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: restart-controller-{{ .Release.Revision }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded,hook-failed
+    helm.sh/hook-weight: "10"
+spec:
+  ttlSecondsAfterFinished: 60
+  backoffLimit: 3
+  template:
+    metadata:
+      name: restart-controller
+    spec:
+      serviceAccountName: restart-controller-sa
+      restartPolicy: Never
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Waiting for Ingress resources..."
+          sleep 10
+          echo "Restarting controller..."
+          kubectl rollout restart deployment ingress-nginx-controller -n {{ .Release.Namespace }}
+          kubectl rollout status deployment ingress-nginx-controller -n {{ .Release.Namespace }} --timeout=5m
+          echo "Restart complete!"
+{{- end }}
