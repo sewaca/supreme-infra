@@ -76,6 +76,7 @@ async function verifyPortIsFree(port: number): Promise<boolean> {
   });
 }
 
+
 async function ensurePortsAvailable(
   serviceConfigs: ServiceConfig[],
 ): Promise<void> {
