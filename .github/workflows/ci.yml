@@ -29,8 +29,7 @@ jobs:
     
   test-e2e:
     runs-on: ubuntu-latest
-    needs: [selective-checks]
-    if: always()
+    if: github.event_name == 'pull_request'
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/jobs/test-e2e
@@ -39,7 +38,8 @@ jobs:
 
   check-lint:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    needs: [selective-checks]
+    if: always() && (github.event_name == 'push' || needs.selective-checks.outputs.should-skip-service-checks != 'true')
     strategy:
       matrix:
         node-version: [22]
@@ -61,7 +61,8 @@ jobs:
       run: pnpm lint
   check-tsc:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    needs: [selective-checks]
+    if: always() && (github.event_name == 'push' || needs.selective-checks.outputs.should-skip-service-checks != 'true')
     strategy:
       matrix:
         node-version: [22]
@@ -83,7 +84,8 @@ jobs:
       run: pnpm -r tsc
   check-unit:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    needs: [selective-checks]
+    if: always() && (github.event_name == 'push' || needs.selective-checks.outputs.should-skip-service-checks != 'true')
     outputs:
       coverage-available: ${{ steps.coverage-check.outputs.available }}
     strategy:
