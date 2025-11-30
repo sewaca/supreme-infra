@@ -1,5 +1,6 @@
 import { ChildProcess, execSync, spawn } from 'node:child_process';
 import * as fs from 'node:fs/promises';
+import * as net from 'node:net';
 import * as path from 'node:path';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -7,6 +8,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 interface ServiceProcess {
   process: ChildProcess;
   name: string;
+  suppressOutput: () => void;
 }
 
 interface ServiceConfig {
@@ -31,22 +33,47 @@ function getPortFromUrl(url: string): number | null {
 async function checkAndKillPort(port: number): Promise<void> {
   try {
     // Check if port is in use on Linux/Mac
-    const command = `lsof -ti:${port}`;
+    const command = `netstat -tulpn | grep :${port} | awk '{print $7}' | cut -d'/' -f1 |`;
     const pids = execSync(command, { encoding: 'utf-8' }).trim();
 
     if (pids) {
       console.log(
-        `   ⚠️  Port ${port} is in use, killing process(es): ${pids.split('\n').join(', ')}`,
+        `Port ${port} is in use, killing process(es): ${pids.split('\n').join(', ')}`,
       );
       // Kill the processes
       execSync(`kill -9 ${pids.split('\n').join(' ')}`, { stdio: 'ignore' });
       // Wait a bit for port to be freed
-      await sleep(1000);
-      console.log(`   ✓ Port ${port} is now available`);
+      await sleep(2000);
+      console.log(`✓ Port ${port} is now available`);
+    } else {
+      console.log(`✓ Port ${port} is available`);
     }
   } catch {
-    // Port is not in use or lsof failed (which is fine)
+    // Port is not in use or lsof failed
+    // Try alternative method to verify port is really free
+    console.log(`Port ${port} appears available (netstat check completed)`);
   }
+}
+
+async function verifyPortIsFree(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    
+    server.once('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE') {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+    
+    server.once('listening', () => {
+      server.close();
+      resolve(true);
+    });
+    
+    server.listen(port, '0.0.0.0');
+  });
 }
 
 async function ensurePortsAvailable(
@@ -58,6 +85,14 @@ async function ensurePortsAvailable(
     const port = getPortFromUrl(config.healthCheckUrl);
     if (port) {
       await checkAndKillPort(port);
+      
+      // Double-check that port is actually free by trying to bind to it
+      const isFree = await verifyPortIsFree(port);
+      if (!isFree) {
+        console.error(`Port ${port} is still in use after cleanup attempt!`);
+        console.error(`Try running: sudo netstat -tulpn | grep :3000 | awk '{print $7}' | cut -d'/' -f1 | xargs kill -9`);
+        throw new Error(`Port ${port} is in use and could not be freed`);
+      }
     }
   }
 }
@@ -82,14 +117,14 @@ async function waitForService(
       // Log non-ok responses occasionally
       if (attemptCount % 10 === 0) {
         console.log(
-          `   ${serviceName}: Still waiting (status: ${response.status})...`,
+          `${serviceName}: Still waiting (status: ${response.status})...`,
         );
       }
     } catch {
       // Service not ready yet - only log occasionally to reduce noise
       if (attemptCount % 10 === 0) {
         console.log(
-          `   ${serviceName}: Still waiting (attempt ${attemptCount})...`,
+          `${serviceName}: Still waiting (attempt ${attemptCount})...`,
         );
       }
     }
@@ -100,7 +135,13 @@ async function waitForService(
 
 async function cleanupServices() {
   if (services.length === 0) return;
-  console.log('\n🧹 Cleaning up services...');
+  console.log('Cleaning up services...');
+  
+  // Suppress output from services during cleanup to avoid confusing error messages
+  for (const service of services) {
+    service.suppressOutput();
+  }
+  
   const killPromises = services.map((service) => {
     return new Promise<void>((resolve) => {
       try {
@@ -114,11 +155,11 @@ async function cleanupServices() {
           if (!service.process.killed) {
             service.process.kill('SIGKILL');
           }
-          console.log(`   Stopped ${service.name}`);
+          console.log(`✓ Stopped ${service.name}`);
           resolve();
         }, 2000);
       } catch (error) {
-        console.error(`   Failed to stop ${service.name}:`, error);
+        console.error(`Failed to stop ${service.name}:`, error);
         resolve();
       }
     });
@@ -130,7 +171,7 @@ async function startService(
   config: ServiceConfig,
   projectRoot: string,
 ): Promise<void> {
-  console.log(`📦 Starting ${config.name} service...`);
+  console.log(`Starting ${config.name} service...`);
 
   const serviceProcess = spawn(
     'pnpm',
@@ -145,15 +186,29 @@ async function startService(
   const serviceName =
     config.name.charAt(0).toUpperCase() + config.name.slice(1);
 
+  // Flag to suppress output during cleanup
+  let suppressOutput = false;
+
   serviceProcess.stdout?.on('data', (data) => {
-    process.stdout.write(`[${serviceName}] ${data}`);
+    if (!suppressOutput) {
+      process.stdout.write(`[${serviceName}] ${data}`);
+    }
   });
 
   serviceProcess.stderr?.on('data', (data) => {
-    process.stderr.write(`[${serviceName}] ${data}`);
+    if (!suppressOutput) {
+      process.stderr.write(`[${serviceName}] ${data}`);
+    }
   });
 
-  services.push({ process: serviceProcess, name: config.name });
+  // Store the service with a method to suppress output
+  services.push({
+    process: serviceProcess,
+    name: config.name,
+    suppressOutput: () => {
+      suppressOutput = true;
+    },
+  });
 }
 
 function parseServiceArguments(): string[] {
@@ -173,19 +228,33 @@ async function main() {
   const e2eDir = __dirname;
 
   // Define all available service configurations
+  // Service addresses are received from environment variables
+  const frontendPort = process.env.FRONTEND_PORT ?? '3000';
+  const frontendHost = process.env.FRONTEND_HOST ?? 'localhost';
+  const backendPort = process.env.BACKEND_PORT ?? '4000';
+  const backendHost = process.env.BACKEND_HOST ?? 'localhost';
+
   const allServiceConfigs: ServiceConfig[] = [
     {
       name: 'frontend',
       filter: 'frontend',
       command: 'dev',
-      healthCheckUrl: 'http://localhost:3000',
+      healthCheckUrl: `http://${frontendHost}:${frontendPort}`,
+      env: { 
+        PORT: frontendPort,
+        HOST: frontendHost,
+      },
     },
     {
       name: 'backend',
       filter: 'backend',
       command: 'dev',
-      healthCheckUrl: 'http://localhost:4000/posts/get-summary',
-      env: { MOCK_EXTERNAL: 'true' },
+      healthCheckUrl: `http://${backendHost}:${backendPort}`,
+      env: { 
+        PORT: backendPort,
+        HOST: backendHost,
+        MOCK_EXTERNAL: "true",
+      },
     },
   ];
 
@@ -208,24 +277,24 @@ async function main() {
     );
 
     if (unknownServices.length > 0) {
-      console.error(`❌ Unknown service(s): ${unknownServices.join(', ')}`);
-      console.error(`   Available services: ${availableServices.join(', ')}`);
+      console.error(`Unknown service(s): ${unknownServices.join(', ')}`);
+      console.error(`Available services: ${availableServices.join(', ')}`);
       process.exit(1);
     }
   }
 
   if (serviceConfigs.length === 0) {
-    console.error('❌ No services to start');
+    console.error('No services to start');
     process.exit(1);
   }
 
   console.log(
-    `📋 Services to start: ${serviceConfigs.map((c) => c.name).join(', ')}\n`,
+    `Services to start: ${serviceConfigs.map((c) => c.name).join(', ')}\n`,
   );
 
   try {
     // 1. Ensure ports are available
-    // await ensurePortsAvailable(serviceConfigs);
+    await ensurePortsAvailable(serviceConfigs);
 
     // 2. Start requested services
     for (const serviceConfig of serviceConfigs) {
@@ -235,7 +304,7 @@ async function main() {
     }
 
     // 3. Wait for all services to be ready
-    console.log('\n⏳ Waiting for services to be ready...');
+    console.log('Waiting for services to be ready...');
     for (const serviceConfig of serviceConfigs) {
       const ready = await waitForService(
         serviceConfig.healthCheckUrl,
@@ -246,13 +315,13 @@ async function main() {
           `${serviceConfig.name} service failed to start within timeout`,
         );
       }
-      console.log(`   ✓ ${serviceConfig.name} is ready`);
+      console.log(`${serviceConfig.name} is ready`);
     }
 
-    console.log('\n✅ All services are ready!\n');
+    console.log('All services are ready!\n');
 
     // 4. Run Playwright tests
-    console.log('🧪 Running Playwright tests...\n');
+    console.log('Running Playwright tests...\n');
     const playwrightProcess = spawn(
       'pnpm',
       ['--filter', 'e2e', 'run', 'test'],
@@ -273,11 +342,11 @@ async function main() {
     const reportPath = path.join(e2eDir, 'playwright-report', 'index.html');
     try {
       await fs.access(reportPath);
-      console.log(`\n📊 HTML Report generated at: ${reportPath}`);
-      console.log(`\nTo view the report, run: pnpm --filter e2e run report`);
+      console.log(`HTML Report generated at: ${reportPath}`);
+      console.log(`To view the report, run: pnpm --filter e2e run report`);
     } catch (error) {
       console.error(error);
-      console.warn(`\n⚠️  Warning: HTML report not found at ${reportPath}`);
+      console.warn(`Warning: HTML report not found at ${reportPath}`);
     }
 
     // Exit with playwright's exit code
@@ -285,7 +354,7 @@ async function main() {
     await cleanupServices();
     process.exit(exitCode);
   } catch (error) {
-    console.error('\n❌ Error during E2E test execution:', error);
+    console.error('Error during E2E test execution:', error);
     await cleanupServices();
     process.exit(1);
   }
@@ -296,7 +365,7 @@ let cleanupInProgress = false;
 async function handleSignal() {
   if (cleanupInProgress) return;
   cleanupInProgress = true;
-  console.log('\n\n⚠️  Received termination signal, cleaning up...');
+  console.log('Received termination signal, cleaning up...');
   await cleanupServices();
   process.exit(1);
 }
