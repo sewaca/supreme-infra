@@ -1,0 +1,12 @@
+# service-hello.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-hello
+spec:
+  type: ClusterIP  # НЕ LoadBalancer! Теперь трафик идёт через Ingress
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: hello  # ← РАСКОММЕНТИРУЙ! Укажи метку твоих подов
