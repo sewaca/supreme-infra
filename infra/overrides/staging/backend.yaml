@@ -1,5 +1,5 @@
 # Generated values for backend in staging environment
-# Generated at: 2025-11-30T15:15:47.167Z
+# Generated at: 2025-11-30T15:18:31.949Z
 # Source: services/backend/service.yaml
 
 replicaCount: 2
