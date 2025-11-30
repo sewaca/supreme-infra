@@ -7,7 +7,7 @@ inputs:
 		required: false
 
 on:
-	push:
+	pull_request:
 		branches: [ main ]
 
 jobs:
