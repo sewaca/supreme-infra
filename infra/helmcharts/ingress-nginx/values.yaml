@@ -10,6 +10,9 @@ ingress:
     - service: service-hello
       port: 80
       path: /
-    - service: service-frontend
+    - service: frontend
       port: 80
       path: /frontend
+    - service: backend
+      port: 80
+      path: /backend
