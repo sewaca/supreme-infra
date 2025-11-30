@@ -58,7 +58,7 @@ async function checkAndKillPort(port: number): Promise<void> {
 async function verifyPortIsFree(port: number): Promise<boolean> {
   return new Promise((resolve) => {
     const server = net.createServer();
-    
+
     server.once('error', (err: NodeJS.ErrnoException) => {
       if (err.code === 'EADDRINUSE') {
         resolve(false);
@@ -66,12 +66,12 @@ async function verifyPortIsFree(port: number): Promise<boolean> {
         resolve(true);
       }
     });
-    
+
     server.once('listening', () => {
       server.close();
       resolve(true);
     });
-    
+
     server.listen(port, '0.0.0.0');
   });
 }
@@ -85,12 +85,14 @@ async function ensurePortsAvailable(
     const port = getPortFromUrl(config.healthCheckUrl);
     if (port) {
       await checkAndKillPort(port);
-      
+
       // Double-check that port is actually free by trying to bind to it
       const isFree = await verifyPortIsFree(port);
       if (!isFree) {
         console.error(`Port ${port} is still in use after cleanup attempt!`);
-        console.error(`Try running: sudo netstat -tulpn | grep :3000 | awk '{print $7}' | cut -d'/' -f1 | xargs kill -9`);
+        console.error(
+          `Try running: sudo netstat -tulpn | grep :3000 | awk '{print $7}' | cut -d'/' -f1 | xargs kill -9`,
+        );
         throw new Error(`Port ${port} is in use and could not be freed`);
       }
     }
@@ -136,12 +138,12 @@ async function waitForService(
 async function cleanupServices() {
   if (services.length === 0) return;
   console.log('Cleaning up services...');
-  
+
   // Suppress output from services during cleanup to avoid confusing error messages
   for (const service of services) {
     service.suppressOutput();
   }
-  
+
   const killPromises = services.map((service) => {
     return new Promise<void>((resolve) => {
       try {
@@ -240,7 +242,7 @@ async function main() {
       filter: 'frontend',
       command: 'dev',
       healthCheckUrl: `http://${frontendHost}:${frontendPort}`,
-      env: { 
+      env: {
         PORT: frontendPort,
         HOST: frontendHost,
       },
@@ -250,10 +252,10 @@ async function main() {
       filter: 'backend',
       command: 'dev',
       healthCheckUrl: `http://${backendHost}:${backendPort}`,
-      env: { 
+      env: {
         PORT: backendPort,
         HOST: backendHost,
-        MOCK_EXTERNAL: "true",
+        MOCK_EXTERNAL: 'true',
       },
     },
   ];
