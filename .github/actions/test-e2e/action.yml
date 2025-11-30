@@ -20,7 +20,7 @@ runs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
         cache: pnpm
 
     - name: Install dependencies
@@ -28,6 +28,11 @@ runs:
       shell: bash
 
     - name: Test E2E
-      run: pnpm run e2e services=${{ inputs.services }} --no-interactive
+      run: |
+        if [ -n "${{ inputs.services }}" ]; then
+          pnpm --filter e2e run e2e ${{ inputs.services }}
+        else
+          pnpm --filter e2e run e2e
+        fi
       shell: bash
 
