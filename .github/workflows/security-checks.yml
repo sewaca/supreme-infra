@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service-name: ['backend']
+        service-name:
+          - backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -25,7 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service-name: ['frontend']
+        service-name:
+          - frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

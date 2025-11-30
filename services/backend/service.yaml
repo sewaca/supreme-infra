@@ -1,0 +1,35 @@
+# Конфигурация для backend сервиса
+# Используется при деплое через: helm install backend ./infra/helmcharts/service -f services/backend/service.yaml
+
+image:
+  repository: backend
+
+nameOverride: "backend"
+fullnameOverride: "backend"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4000
+
+env:
+  PORT: "4000"
+  NODE_ENV: "production"
+
+replicaCount: 2
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# HPA настройки для backend
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+

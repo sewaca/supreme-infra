@@ -18,4 +18,4 @@ WORKDIR services/backend
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 RUN pnpm run build
 
-CMD pnpm start
+CMD pnpm run prod

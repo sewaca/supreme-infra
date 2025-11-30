@@ -1,0 +1,49 @@
+# Конфигурация для frontend сервиса
+# Используется при деплое через: helm install frontend ./infra/helmcharts/frontend-service -f services/frontend/service.yaml
+
+image:
+  repository: frontend
+
+nameOverride: "frontend"
+fullnameOverride: "frontend"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+env:
+  PORT: "3000"
+  NODE_ENV: "production"
+
+replicaCount: 2
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# HPA настройки для frontend
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# Переопределения для конкретных окружений
+overrides:
+  production:
+    # В production увеличиваем минимальное количество реплик
+    autoscaling:
+      minReplicas: 5
+      maxReplicas: 30
+  staging:
+    # В staging можем использовать меньше ресурсов
+    resources:
+      limits:
+        cpu: 300m
+        memory: 384Mi
+
