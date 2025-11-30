@@ -3,5 +3,9 @@ node_modules
 **.tsbuildinfo
 infra/helmcharts/**/charts/**/*
 e2e/playwright-report
+<<<<<<< HEAD
 e2e/test-results
 infra/helmcharts/**/charts/**/*
+=======
+e2e/test-results
+>>>>>>> 8f31661 (minor: add e2e test workflow)
