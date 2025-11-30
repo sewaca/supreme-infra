@@ -95,3 +95,11 @@ jobs:
       shell: bash
     - name: unit
       run: pnpm -r unit:coverage
+  test-e2e:
+    runs-on: ubuntu-latest
+    needs: [selective-checks]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/workflows/jobs/test-e2e
+      with:
+        services: ""
