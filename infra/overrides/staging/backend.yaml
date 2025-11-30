@@ -1,37 +1,37 @@
-# Generated values for frontend in development environment
-# Generated at: 2025-11-30T15:15:47.175Z
-# Source: services/frontend/service.yaml
+# Generated values for backend in staging environment
+# Generated at: 2025-11-30T15:15:47.167Z
+# Source: services/backend/service.yaml
 
-replicaCount: 1
+replicaCount: 2
 
 image:
-  repository: frontend
+  repository: backend
   tag: ""
   pullPolicy: IfNotPresent
 
-nameOverride: "frontend"
-fullnameOverride: "frontend"
+nameOverride: "backend"
+fullnameOverride: "backend"
 
 service:
   type: ClusterIP
   port: 80
-  targetPort: 3000
+  targetPort: 4000
 
 env:
-  PORT: "3000"
-  NODE_ENV: "development"
+  PORT: "4000"
+  NODE_ENV: "production"
 
 resources:
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 500m
+    memory: 512Mi
   requests:
-    cpu: 50m
-    memory: 64Mi
+    cpu: 100m
+    memory: 128Mi
 
 livenessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 60
   periodSeconds: 30
@@ -40,7 +40,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -54,10 +54,10 @@ tolerations: []
 affinity: {}
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
   targetMemoryUtilizationPercentage: 80
   behavior:
     scaleDown:

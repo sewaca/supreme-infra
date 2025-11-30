@@ -10,8 +10,7 @@
     "lint": "biome check",
     "format": "biome format --fix",
     "infra:generate": "tsx infra/generate-service/index.ts",
-    "values:generate": "tsx infra/generate-values/index.ts",
-    "generate": "tsx infra/generate/index.ts"
+    "values:generate": "tsx infra/generate-values/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

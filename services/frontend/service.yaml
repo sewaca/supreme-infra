@@ -33,3 +33,17 @@ autoscaling:
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
 
+# Переопределения для конкретных окружений
+overrides:
+  production:
+    # В production увеличиваем минимальное количество реплик
+    autoscaling:
+      minReplicas: 5
+      maxReplicas: 30
+  staging:
+    # В staging можем использовать меньше ресурсов
+    resources:
+      limits:
+        cpu: 300m
+        memory: 384Mi
+

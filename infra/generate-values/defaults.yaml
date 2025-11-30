@@ -1,37 +1,36 @@
-# Generated values for frontend in development environment
-# Generated at: 2025-11-30T15:15:47.175Z
-# Source: services/frontend/service.yaml
+# Default values for all services
+# These values are used as a base and can be overridden by service-specific configs
 
-replicaCount: 1
+replicaCount: 2
 
 image:
-  repository: frontend
+  repository: ""
   tag: ""
   pullPolicy: IfNotPresent
 
-nameOverride: "frontend"
-fullnameOverride: "frontend"
+nameOverride: ""
+fullnameOverride: ""
 
 service:
   type: ClusterIP
   port: 80
-  targetPort: 3000
+  targetPort: 4000
 
 env:
-  PORT: "3000"
-  NODE_ENV: "development"
+  PORT: "4000"
+  NODE_ENV: "production"
 
 resources:
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 1000m
+    memory: 1Gi
   requests:
-    cpu: 50m
-    memory: 64Mi
+    cpu: 250m
+    memory: 256Mi
 
 livenessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 60
   periodSeconds: 30
@@ -40,7 +39,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -57,7 +56,7 @@ autoscaling:
   enabled: false
   minReplicas: 2
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+  targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
   behavior:
     scaleDown:
