@@ -26,11 +26,6 @@ jobs:
             echo "no service changes detected"
           fi
     
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 3863b68 (fix)
   check-lint:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
