@@ -29,6 +29,7 @@ runs:
 
     - name: Install chromium
       run: pnpm exec playwright install chromium
+      shell: bash
 
     - name: Test E2E
       run: |
