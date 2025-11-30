@@ -1,0 +1,9 @@
+service: backend
+type: nest
+routes:
+  - path: /posts/[^/]+
+    method: GET
+  - path: /posts/get-summary
+    method: GET
+  - path: /status
+    method: GET

@@ -22,3 +22,4 @@ if any(pr_title.startswith(tag) for tag in tag_list):
 
 print(f"Wrong title format. None of correct tags found in '{pr_title}'")
 sys.exit(1)
+
