@@ -1,5 +1,4 @@
 # Generated values for backend in development environment
-# Generated at: 2025-11-30T21:44:16.813Z
 # Source: services/backend/service.yaml
 
 replicaCount: 1
