@@ -16,7 +16,12 @@ export function updateCdWorkflow(): void {
   }
 
   // Читаем cd.yml
-  const cdWorkflowPath = path.join(projectRoot, '.github', 'workflows', 'cd.yml');
+  const cdWorkflowPath = path.join(
+    projectRoot,
+    '.github',
+    'workflows',
+    'cd.yml',
+  );
   const cdWorkflowContent = fs.readFileSync(cdWorkflowPath, 'utf-8');
 
   // Парсим YAML
@@ -24,12 +29,16 @@ export function updateCdWorkflow(): void {
 
   // Находим секцию workflow_dispatch -> inputs -> service -> options
   const workflowDispatch = workflow.get('on') as yaml.YAMLMap;
-  const workflowDispatchNode = workflowDispatch?.get('workflow_dispatch') as yaml.YAMLMap;
+  const workflowDispatchNode = workflowDispatch?.get(
+    'workflow_dispatch',
+  ) as yaml.YAMLMap;
   const inputs = workflowDispatchNode?.get('inputs') as yaml.YAMLMap;
   const service = inputs?.get('service') as yaml.YAMLMap;
 
   if (!service) {
-    console.error('✗ Error: Could not find workflow_dispatch.inputs.service in cd.yml');
+    console.error(
+      '✗ Error: Could not find workflow_dispatch.inputs.service in cd.yml',
+    );
     process.exit(1);
   }
 
@@ -47,4 +56,3 @@ export function updateCdWorkflow(): void {
   console.log(`  Services: ${allServices.join(', ')}`);
   console.log(`  Default service: ${defaultService}`);
 }
-

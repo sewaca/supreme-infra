@@ -1,6 +1,6 @@
-import { updateSecurityChecks } from './update-security-checks';
-import { updateCdWorkflow } from './update-cd-workflow';
 import { generateValuesForAllServices } from './generate-values/generate-values';
+import { updateCdWorkflow } from './update-cd-workflow';
+import { updateSecurityChecks } from './update-security-checks';
 
 console.log('═══════════════════════════════════════════════════════════');
 console.log('🚀 Supreme Infrastructure Generator');
