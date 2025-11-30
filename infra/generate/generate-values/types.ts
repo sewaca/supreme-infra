@@ -80,4 +80,3 @@ export interface ServiceType {
   defaultPort: number;
   defaultHealthPath: string;
 }
-
