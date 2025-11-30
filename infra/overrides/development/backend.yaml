@@ -1,34 +1,37 @@
-replicaCount: 2
+# Generated values for backend in development environment
+# Generated at: 2025-11-30T15:15:47.158Z
+# Source: services/backend/service.yaml
+
+replicaCount: 1
 
 image:
-  repository: ""
-  # tag will be provided externally during CD deployment
+  repository: backend
   tag: ""
   pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "backend"
+fullnameOverride: "backend"
 
 service:
   type: ClusterIP
   port: 80
-  targetPort: 3000
+  targetPort: 4000
 
 env:
-  PORT: "3000"
-  NODE_ENV: "production"
+  PORT: "4000"
+  NODE_ENV: "development"
 
 resources:
   limits:
-    cpu: 1000m
-    memory: 1Gi
-  requests:
-    cpu: 250m
+    cpu: 200m
     memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
 
 livenessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 60
   periodSeconds: 30
@@ -37,7 +40,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -54,7 +57,7 @@ autoscaling:
   enabled: false
   minReplicas: 2
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
   behavior:
     scaleDown:

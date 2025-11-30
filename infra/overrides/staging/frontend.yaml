@@ -1,13 +1,16 @@
+# Generated values for frontend in staging environment
+# Generated at: 2025-11-30T15:15:47.178Z
+# Source: services/frontend/service.yaml
+
 replicaCount: 2
 
 image:
-  repository: ""
-  # tag will be provided externally during CD deployment
+  repository: frontend
   tag: ""
   pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "frontend"
+fullnameOverride: "frontend"
 
 service:
   type: ClusterIP
@@ -20,11 +23,11 @@ env:
 
 resources:
   limits:
-    cpu: 1000m
-    memory: 1Gi
+    cpu: 300m
+    memory: 384Mi
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 100m
+    memory: 128Mi
 
 livenessProbe:
   httpGet:
@@ -51,10 +54,10 @@ tolerations: []
 affinity: {}
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
   targetMemoryUtilizationPercentage: 80
   behavior:
     scaleDown:

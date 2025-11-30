@@ -1,8 +1,10 @@
+# Default values for all services
+# These values are used as a base and can be overridden by service-specific configs
+
 replicaCount: 2
 
 image:
   repository: ""
-  # tag will be provided externally during CD deployment
   tag: ""
   pullPolicy: IfNotPresent
 
@@ -12,10 +14,10 @@ fullnameOverride: ""
 service:
   type: ClusterIP
   port: 80
-  targetPort: 3000
+  targetPort: 4000
 
 env:
-  PORT: "3000"
+  PORT: "4000"
   NODE_ENV: "production"
 
 resources:
@@ -28,7 +30,7 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 60
   periodSeconds: 30
@@ -37,7 +39,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 10

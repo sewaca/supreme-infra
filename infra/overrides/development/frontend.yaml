@@ -1,13 +1,16 @@
-replicaCount: 2
+# Generated values for frontend in development environment
+# Generated at: 2025-11-30T15:15:47.175Z
+# Source: services/frontend/service.yaml
+
+replicaCount: 1
 
 image:
-  repository: ""
-  # tag will be provided externally during CD deployment
+  repository: frontend
   tag: ""
   pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "frontend"
+fullnameOverride: "frontend"
 
 service:
   type: ClusterIP
@@ -16,15 +19,15 @@ service:
 
 env:
   PORT: "3000"
-  NODE_ENV: "production"
+  NODE_ENV: "development"
 
 resources:
   limits:
-    cpu: 1000m
-    memory: 1Gi
-  requests:
-    cpu: 250m
+    cpu: 200m
     memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
 
 livenessProbe:
   httpGet:
@@ -54,7 +57,7 @@ autoscaling:
   enabled: false
   minReplicas: 2
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
   behavior:
     scaleDown:
