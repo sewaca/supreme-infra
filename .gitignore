@@ -2,3 +2,4 @@ node_modules
 .DS_Store
 **.tsbuildinfo
 infra/helmcharts/**/charts/**/*
+e2e/playwright-report
