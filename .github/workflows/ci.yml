@@ -28,7 +28,8 @@ jobs:
     
   check-lint:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    needs: [selective-checks]
+    if: always() && (github.event_name == 'push' || needs.selective-checks.outputs.should-skip-service-checks != 'true')
     strategy:
       matrix:
         node-version: [22]
@@ -50,7 +51,8 @@ jobs:
       run: pnpm lint
   check-tsc:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    needs: [selective-checks]
+    if: always() && (github.event_name == 'push' || needs.selective-checks.outputs.should-skip-service-checks != 'true')
     strategy:
       matrix:
         node-version: [22]
@@ -72,7 +74,8 @@ jobs:
       run: pnpm -r tsc
   check-unit:
     runs-on: ubuntu-latest
-    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    needs: [selective-checks]
+    if: always() && (github.event_name == 'push' || needs.selective-checks.outputs.should-skip-service-checks != 'true')
     outputs:
       coverage-available: ${{ steps.coverage-check.outputs.available }}
     strategy:
