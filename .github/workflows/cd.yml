@@ -154,7 +154,7 @@ jobs:
 
   calculate-new-version:
     name: Calculate new version for ${{ matrix.service-name }}
-    needs: [prepare-services, get-latest-release-version]
+    needs: [ prepare-services, get-latest-release-version ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -286,7 +286,7 @@ jobs:
 
   security-checks:
     name: Security checks for all services
-    needs: [prepare-services]
+    needs: [ prepare-services ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -307,7 +307,7 @@ jobs:
 
   build-image-to-docker-hub:
     name: Build and push image to Docker Hub for ${{ matrix.service-name }}
-    needs: [prepare-services, security-checks, calculate-new-version]
+    needs: [ prepare-services, security-checks, calculate-new-version ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -360,12 +360,13 @@ jobs:
           context: .
           file: ./services/${{ matrix.service-name }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v${{ steps.get-version.outputs.version }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{
+            matrix.service-name }}-v${{ steps.get-version.outputs.version }}
           cache-to: type=inline
 
   create-release-branch:
     name: Create release branch for ${{ matrix.service-name }}
-    needs: [prepare-services, calculate-new-version]
+    needs: [ prepare-services, calculate-new-version ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -411,7 +412,13 @@ jobs:
 
   create-github-release:
     name: Create GitHub release for ${{ matrix.service-name }}
-    needs: [prepare-services, build-image-to-docker-hub, calculate-new-version, create-release-branch]
+    needs:
+      [
+        prepare-services,
+        build-image-to-docker-hub,
+        calculate-new-version,
+        create-release-branch
+      ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -532,7 +539,7 @@ jobs:
 
   deploy-to-yandex-cloud:
     name: Deploy to Yandex Cloud for ${{ matrix.service-name }}
-    needs: [prepare-services, build-image-to-docker-hub, create-github-release]
+    needs: [ prepare-services, build-image-to-docker-hub, create-github-release ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
