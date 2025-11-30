@@ -11,6 +11,7 @@ runs:
   steps:
     - name: Install netstat
       run: sudo apt-get update && sudo apt-get install -y net-tools
+      shell: bash
 
     - name: Install pnpm
       uses: pnpm/action-setup@v4
@@ -24,6 +25,9 @@ runs:
 
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
+      shell: bash
 
     - name: Test E2E
       run: pnpm run e2e services=${{ inputs.services }} --no-interactive
+      shell: bash
+
