@@ -1,0 +1,9 @@
+service: frontend
+type: next
+routes:
+  - path: /
+    method: GET
+  - path: /[^/]+
+    method: GET
+  - path: /api/status
+    method: GET

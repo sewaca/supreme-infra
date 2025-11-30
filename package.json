@@ -9,17 +9,23 @@
   "scripts": {
     "lint": "biome check",
     "format": "biome format --fix",
-    "infra:generate": "tsx infra/generate-service/index.ts"
+    "infra:generate": "tsx infra/generate-service/index.ts",
+    "values:generate": "tsx infra/generate-values/index.ts",
+    "generate": "tsx infra/generate/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
+    "@types/handlebars": "^4.1.0",
+    "handlebars": "^4.7.8",
     "nestjs-security-scan": "catalog:",
     "tsx": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "yaml": "^2.6.1"
   },
   "author": "sewaca",
   "license": "ISC"
