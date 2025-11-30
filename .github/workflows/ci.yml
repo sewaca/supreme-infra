@@ -5,6 +5,16 @@ on:
   pull_request:
 jobs:
 
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run e2e tests
+        uses: ./.github/workflows/jobs/test-e2e
+        with:
+          services: ""
+
   selective-checks:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
@@ -27,13 +37,7 @@ jobs:
             echo "no service changes detected"
           fi
     
-  test-e2e:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: ./.github/workflows/jobs/test-e2e
-      with:
-        services: ""
+
 
   check-lint:
     runs-on: ubuntu-latest
