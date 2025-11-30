@@ -1,5 +1,4 @@
 # Generated values for backend in production environment
-# Generated at: 2025-11-30
 # Source: services/backend/service.yaml
 
 replicaCount: 3
