@@ -31,20 +31,20 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: /status
+    path: /api/status
     port: http
-  initialDelaySeconds: 100
-  periodSeconds: 30
-  timeoutSeconds: 20
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 10
   failureThreshold: 5
 
 readinessProbe:
   httpGet:
-    path: /status
+    path: /api/status
     port: http
-  initialDelaySeconds: 100
-  periodSeconds: 30
-  timeoutSeconds: 20
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 10
   failureThreshold: 5
 
 nodeSelector: {}

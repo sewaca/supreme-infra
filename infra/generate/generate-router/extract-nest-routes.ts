@@ -7,6 +7,8 @@ interface Route {
   method: string;
 }
 
+// TODO: переписать на человеческий формат 
+
 const HTTP_METHODS = [
   'Get',
   'Post',
