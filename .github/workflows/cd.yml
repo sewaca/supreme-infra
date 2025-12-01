@@ -357,7 +357,7 @@ jobs:
   #       uses: yc-actions/yc-cr-login@v1
   #       with:
   #         yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-      
+
 
   build-image-to-docker-hub:
     name: Build and push image to Docker Hub for ${{ matrix.service-name }}
@@ -597,7 +597,13 @@ jobs:
 
   deploy-to-yandex-cloud:
     name: Deploy to Yandex Cloud for ${{ matrix.service-name }}
-    needs: [ prepare-services, build-image-to-docker-hub, create-github-release, calculate-new-version ]
+    needs:
+      [
+        prepare-services,
+        build-image-to-docker-hub,
+        create-github-release,
+        calculate-new-version
+      ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -648,7 +654,7 @@ jobs:
 
           # Get kubeconfig for the cluster
           yc managed-kubernetes cluster get-credentials --id $YC_K8S_CLUSTER_ID --external --force --no-browser --debug --debug-grpc 
-          
+
           # Verify connection
           kubectl cluster-info
         env:
@@ -672,14 +678,14 @@ jobs:
           fi
 
           OVERRIDES_FILE="./infra/overrides/production/$SERVICE_NAME.yaml"
-          
+
           # Construct Docker image reference
           DOCKER_IMAGE="$DOCKER_HUB_USERNAME/supreme:production-${SERVICE_NAME}-v${VERSION}"
-          
+
           echo "Deploying $SERVICE_NAME using chart $CHART_PATH"
           echo "Docker image: $DOCKER_IMAGE"
           echo "Overrides file: $OVERRIDES_FILE"
-          
+
           # Deploy with Helm
           helm upgrade "$SERVICE_NAME" "$CHART_PATH" \
             -f "$OVERRIDES_FILE" \
@@ -689,9 +695,9 @@ jobs:
             --wait \
             --timeout 5m \
             --atomic
-          
+
           echo "Deployment completed successfully"
-          
+
           # Show deployment status
           kubectl get pods -l app.kubernetes.io/name="$SERVICE_NAME"
         env:
