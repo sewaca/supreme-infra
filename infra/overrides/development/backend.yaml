@@ -57,7 +57,7 @@ autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+  targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
   behavior:
     scaleDown:
@@ -67,15 +67,15 @@ autoscaling:
         value: 50
         periodSeconds: 60
     scaleUp:
-      stabilizationWindowSeconds: 0
+      stabilizationWindowSeconds: 60
       policies:
       - type: Percent
-        value: 100
-        periodSeconds: 30
+        value: 50
+        periodSeconds: 60
       - type: Pods
-        value: 2
-        periodSeconds: 30
-      selectPolicy: Max
+        value: 1
+        periodSeconds: 60
+      selectPolicy: Min
 
 strategy:
   type: RollingUpdate
