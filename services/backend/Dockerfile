@@ -7,6 +7,8 @@ ENV CI=1
 ENV HUSKY=0
 ENV NODE_ENV=production
 
+EXPOSE 4000
+
 WORKDIR /app
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml tsconfig.* package.json .
