@@ -3,16 +3,7 @@ import * as path from 'node:path';
 import Handlebars from 'handlebars';
 import * as yaml from 'yaml';
 import { getServiceByName, loadServices } from '../shared/load-services';
-import type { ServiceConfig, ServiceType } from './types';
-
-const SERVICE_TYPES: Record<string, ServiceType> = {
-  backend: { type: 'backend', defaultPort: 4000, defaultHealthPath: '/status' },
-  frontend: {
-    type: 'frontend',
-    defaultPort: 3000,
-    defaultHealthPath: '/api/status',
-  },
-};
+import type { ServiceConfig } from './types';
 
 const HELM_CHART_MAPPING: Record<string, string> = {
   nest: 'backend-service',
@@ -96,24 +87,6 @@ function loadEnvironmentOverrides(
   return yaml.parse(content) as Record<string, Partial<ServiceConfig>>;
 }
 
-function detectServiceType(serviceName: string): ServiceType {
-  const result = getServiceByName(serviceName);
-
-  if (!result) {
-    return SERVICE_TYPES.backend;
-  }
-
-  if (result.type === 'nest') {
-    return SERVICE_TYPES.backend;
-  }
-
-  if (result.type === 'next') {
-    return SERVICE_TYPES.frontend;
-  }
-
-  return SERVICE_TYPES.backend;
-}
-
 function loadServiceConfig(serviceName: string): ServiceConfig {
   const serviceYamlPath = path.join(
     __dirname,
@@ -141,7 +114,6 @@ function generateValuesForService(
     throw new Error(`Service ${serviceName} not found in services.yaml`);
   }
 
-  const serviceType = detectServiceType(serviceName);
   const serviceConfig = loadServiceConfig(serviceName);
 
   // Load defaults and overrides specific to service type
@@ -150,29 +122,6 @@ function generateValuesForService(
 
   // Start with defaults
   let values: ServiceConfig = deepMerge({}, defaultValues);
-
-  // Apply service type defaults (already in defaults.yaml, but ensure consistency)
-  log(
-    `Applying service type defaults (port: ${serviceType.defaultPort})`,
-    'debug',
-  );
-  if (!values.service) {
-    values.service = {};
-  }
-  values.service.targetPort = serviceType.defaultPort;
-
-  if (!values.env) {
-    values.env = {};
-  }
-  values.env.PORT = serviceType.defaultPort.toString();
-
-  // Update health check paths based on service type (already in defaults.yaml)
-  if (values.livenessProbe?.httpGet) {
-    values.livenessProbe.httpGet.path = serviceType.defaultHealthPath;
-  }
-  if (values.readinessProbe?.httpGet) {
-    values.readinessProbe.httpGet.path = serviceType.defaultHealthPath;
-  }
 
   // Apply service-specific config (excluding overrides)
   const { overrides, ...serviceConfigWithoutOverrides } = serviceConfig;
