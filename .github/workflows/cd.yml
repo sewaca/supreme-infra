@@ -618,6 +618,13 @@ jobs:
           yc config profile create sa-profile
           yc config set service-account-key key.json
           rm key.json
+      - name: Get IAM token
+        id: get-iam-token
+        run: |
+          # Get IAM token from service account
+          IAM_TOKEN=$(yc iam create-token)
+          echo "iam_token=$IAM_TOKEN" >> $GITHUB_OUTPUT
+          echo "IAM token obtained successfully"
       - name: Get Kubernetes config
         run: |
           # Get kubeconfig for the cluster
@@ -671,12 +678,12 @@ jobs:
           SERVICE_TYPE: ${{ needs.prepare-services.outputs.service-type }}
           VERSION: ${{ steps.get-version.outputs.version }}
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          YC_TOKEN: ${{ secrets.YC_TOKEN }}
+          YC_TOKEN: ${{ steps.get-iam-token.outputs.iam_token }}
           YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
 
 # TODO:
 # Примечание: Для работы потребуются secrets в GitHub:
 # DOCKER_HUB_USERNAME и DOCKER_HUB_TOKEN для публикации образов в Docker Hub
-# YC_SA_JSON_CREDENTIALS - JSON credentials сервисного аккаунта Yandex Cloud
+# YC_SA_JSON_CREDENTIALS - JSON credentials сервисного аккаунта Yandex Cloud (IAM токен получается автоматически)
 # YC_K8S_CLUSTER_ID - ID Kubernetes кластера в Yandex Cloud
-# YC_TOKEN и YC_FOLDER_ID для дополнительных операций в Yandex Cloud
+# YC_FOLDER_ID - ID папки в Yandex Cloud для дополнительных операций
