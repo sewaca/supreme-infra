@@ -644,7 +644,7 @@ jobs:
       - name: Get Kubernetes config
         run: |
           echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > sa-key.json
-          yc config profile create diploma
+          yc config profile create supreme-robot
           yc config set service-account-key sa-key.json
           yc config list
           yc config set cloud-id "$YC_CLOUD_ID"
