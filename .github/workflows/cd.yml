@@ -83,11 +83,9 @@ jobs:
       - name: Get latest release version
         id: get-version
         run: |
-          SERVICE_NAME="${{ matrix.service-name }}"
-
           # Get all releases and filter by service name pattern
           # gh release list format: TAG_NAME  TITLE  (draft/prerelease)
-          ALL_RELEASES=$(gh release list --repo ${{ github.repository }} --limit 100 || echo "")
+          ALL_RELEASES=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 100 || echo "")
 
           # Find the latest release tag matching the pattern ${SERVICE_NAME}-v*
           # Exclude rollback releases (those with hash suffix like -abc12345)
@@ -140,11 +138,17 @@ jobs:
           echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
           echo "service=$SERVICE_NAME" >> $GITHUB_OUTPUT
         env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Save version and tag to file
         run: |
-          echo "${{ steps.get-version.outputs.version }}" > version_${{ matrix.service-name }}.txt
-          echo "${{ steps.get-version.outputs.release_tag }}" > release_tag_${{ matrix.service-name }}.txt
+          echo "$VERSION" > "version_${SERVICE_NAME}.txt"
+          echo "$RELEASE_TAG" > "release_tag_${SERVICE_NAME}.txt"
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          VERSION: ${{ steps.get-version.outputs.version }}
+          RELEASE_TAG: ${{ steps.get-version.outputs.release_tag }}
       - name: Upload version files
         uses: actions/upload-artifact@v4
         with:
@@ -180,9 +184,8 @@ jobs:
       - name: Calculate new version from commits
         id: calculate-version
         run: |
-          SERVICE_NAME="${{ matrix.service-name }}"
-          CURRENT_VERSION=$(cat version_$SERVICE_NAME.txt)
-          RELEASE_TAG=$(cat release_tag_$SERVICE_NAME.txt)
+          CURRENT_VERSION=$(cat "version_${SERVICE_NAME}.txt")
+          RELEASE_TAG=$(cat "release_tag_${SERVICE_NAME}.txt")
 
           # Parse current version
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
@@ -269,11 +272,12 @@ jobs:
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "is_rollback=$IS_ROLLBACK" >> $GITHUB_OUTPUT
           echo "rollback_hash=$ROLLBACK_HASH" >> $GITHUB_OUTPUT
-          echo "$NEW_VERSION" > new_version_$SERVICE_NAME.txt
-          echo "$IS_ROLLBACK" > is_rollback_$SERVICE_NAME.txt
-          echo "$ROLLBACK_HASH" > rollback_hash_$SERVICE_NAME.txt
-          echo -e "$CHANGELOG" > changelog_$SERVICE_NAME.txt
+          echo "$NEW_VERSION" > "new_version_${SERVICE_NAME}.txt"
+          echo "$IS_ROLLBACK" > "is_rollback_${SERVICE_NAME}.txt"
+          echo "$ROLLBACK_HASH" > "rollback_hash_${SERVICE_NAME}.txt"
+          echo -e "$CHANGELOG" > "changelog_${SERVICE_NAME}.txt"
         env:
+          SERVICE_NAME: ${{ matrix.service-name }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload new version, rollback info and changelog
         uses: actions/upload-artifact@v4
@@ -372,8 +376,7 @@ jobs:
       - name: Get version for service
         id: get-version
         run: |
-          SERVICE_NAME="${{ matrix.service-name }}"
-          VERSION_FILE="new_version_$SERVICE_NAME.txt"
+          VERSION_FILE="new_version_${SERVICE_NAME}.txt"
 
           # Check if version file exists and is not empty
           if [ ! -f "$VERSION_FILE" ]; then
@@ -397,6 +400,8 @@ jobs:
 
           echo "Building $SERVICE_NAME with version $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub
@@ -440,8 +445,7 @@ jobs:
       - name: Get version and create branch
         id: create-branch
         run: |
-          SERVICE_NAME="${{ matrix.service-name }}"
-          VERSION=$(cat new_version_$SERVICE_NAME.txt)
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
           BRANCH_NAME="releases/production/${SERVICE_NAME}-${VERSION}"
 
           # Check if branch already exists
@@ -458,6 +462,7 @@ jobs:
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
         env:
+          SERVICE_NAME: ${{ matrix.service-name }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create-github-release:
@@ -483,11 +488,10 @@ jobs:
       - name: Get version, rollback info and prepare changelog
         id: get-release-info
         run: |
-          SERVICE_NAME="${{ matrix.service-name }}"
-          VERSION=$(cat new_version_$SERVICE_NAME.txt)
-          IS_ROLLBACK=$(cat is_rollback_$SERVICE_NAME.txt 2>/dev/null || echo "false")
-          ROLLBACK_HASH=$(cat rollback_hash_$SERVICE_NAME.txt 2>/dev/null || echo "")
-          CHANGELOG=$(cat changelog_$SERVICE_NAME.txt 2>/dev/null || echo "")
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
+          IS_ROLLBACK=$(cat "is_rollback_${SERVICE_NAME}.txt" 2>/dev/null || echo "false")
+          ROLLBACK_HASH=$(cat "rollback_hash_${SERVICE_NAME}.txt" 2>/dev/null || echo "")
+          CHANGELOG=$(cat "changelog_${SERVICE_NAME}.txt" 2>/dev/null || echo "")
 
           # Determine tag name and release name
           if [ "$IS_ROLLBACK" = "true" ] && [ -n "$ROLLBACK_HASH" ]; then
@@ -544,10 +548,13 @@ jobs:
             echo "## Docker Image"
             echo "https://hub.docker.com/repository/docker/sewaca/supreme/general"
             echo ""
-            echo "\`${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v$VERSION\`"
-          } > release_body_$SERVICE_NAME.txt
+            echo "\`$DOCKER_HUB_USERNAME/supreme:production-${SERVICE_NAME}-v$VERSION\`"
+          } > "release_body_${SERVICE_NAME}.txt"
 
           echo "Release body prepared"
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       - name: Install GitHub CLI
         run: |
           type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
@@ -558,13 +565,10 @@ jobs:
           && sudo apt install gh -y
       - name: Create GitHub Release
         run: |
-          SERVICE_NAME="${{ matrix.service-name }}"
-          TAG_NAME="${{ steps.get-release-info.outputs.tag_name }}"
-          RELEASE_NAME="${{ steps.get-release-info.outputs.release_name }}"
           BODY_FILE="release_body_${SERVICE_NAME}.txt"
 
           # Check if release already exists
-          if gh release view "$TAG_NAME" --repo ${{ github.repository }} >/dev/null 2>&1; then
+          if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $TAG_NAME already exists, skipping creation"
             exit 0
           fi
@@ -575,16 +579,20 @@ jobs:
             gh release create "$TAG_NAME" \
               --title "$RELEASE_NAME" \
               --notes-file "$BODY_FILE" \
-              --repo ${{ github.repository }} \
+              --repo "$GITHUB_REPOSITORY" \
               --verify-tag
           else
             echo "Creating new release $TAG_NAME"
             gh release create "$TAG_NAME" \
               --title "$RELEASE_NAME" \
               --notes-file "$BODY_FILE" \
-              --repo ${{ github.repository }}
+              --repo "$GITHUB_REPOSITORY"
           fi
         env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          TAG_NAME: ${{ steps.get-release-info.outputs.tag_name }}
+          RELEASE_NAME: ${{ steps.get-release-info.outputs.release_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-to-yandex-cloud:
@@ -604,10 +612,11 @@ jobs:
       - name: Get version for service
         id: get-version
         run: |
-          SERVICE_NAME="${{ matrix.service-name }}"
-          VERSION=$(cat new_version_$SERVICE_NAME.txt | tr -d '[:space:]')
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt" | tr -d '[:space:]')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Deploying $SERVICE_NAME version $VERSION"
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
       - name: Install Yandex Cloud CLI
         run: |
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
@@ -617,6 +626,7 @@ jobs:
           echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > key.json
           yc config profile create sa-profile
           yc config set service-account-key key.json
+          yc version
           rm key.json
       - name: Get IAM token
         id: get-iam-token
@@ -627,12 +637,20 @@ jobs:
           echo "IAM token obtained successfully"
       - name: Get Kubernetes config
         run: |
+          echo '${{ secrets.YC_SA_JSON_KEY }}' > sa-key.json
+          yc config profile create diploma
+          yc config set service-account-key sa-key.json
+          yc config set cloud-id "$YC_CLOUD_ID"
+          yc config set folder-id "$YC_FOLDER_ID"
+
           # Get kubeconfig for the cluster
-          yc managed-kubernetes cluster get-credentials "$YC_K8S_CLUSTER_ID" --external --force
+          yc managed-kubernetes cluster get-credentials --id $CLUSTER_ID --external
           
           # Verify connection
           kubectl cluster-info
         env:
+          YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
           YC_K8S_CLUSTER_ID: ${{ secrets.YC_K8S_CLUSTER_ID }}
       - name: Install Helm
         uses: azure/setup-helm@v3
