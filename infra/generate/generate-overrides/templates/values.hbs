@@ -79,3 +79,12 @@ autoscaling:
 {{/each}}
       selectPolicy: {{autoscaling.behavior.scaleUp.selectPolicy}}
 
+{{#if strategy}}
+strategy:
+  type: {{strategy.type}}
+  {{#if strategy.rollingUpdate}}
+  rollingUpdate:
+    maxUnavailable: {{strategy.rollingUpdate.maxUnavailable}}
+    maxSurge: {{strategy.rollingUpdate.maxSurge}}
+  {{/if}}
+{{/if}}
