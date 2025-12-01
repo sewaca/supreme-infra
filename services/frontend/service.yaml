@@ -20,7 +20,7 @@ replicaCount: 2
 
 resources:
   limits:
-    cpu: 500m
+    cpu: 600m
     memory: 512Mi
   requests:
     cpu: 100m
@@ -30,7 +30,7 @@ resources:
 autoscaling:
   enabled: true
   minReplicas: 2
-  targetCPUUtilizationPercentage: 70
+  targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
 # Переопределения для конкретных окружений
