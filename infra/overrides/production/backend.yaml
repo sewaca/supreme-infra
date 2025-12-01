@@ -29,9 +29,10 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+# TODO: generate routes correctly
 livenessProbe:
   httpGet:
-    path: /status
+    path: /api/status
     port: http
   initialDelaySeconds: 100
   periodSeconds: 30
@@ -40,7 +41,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /status
+    path: /api/status
     port: http
   initialDelaySeconds: 100
   periodSeconds: 30
