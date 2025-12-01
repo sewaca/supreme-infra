@@ -48,14 +48,14 @@ const mockComments = [
 
 function handleRequest(req: IncomingMessage, res: ServerResponse) {
   const url = new URL(req.url || '/', `http://${req.headers.host}`);
-  
+
   res.setHeader('Content-Type', 'application/json');
 
   // GET /posts or /posts?userId=X
   if (url.pathname === '/posts') {
     const userId = url.searchParams.get('userId');
     if (userId) {
-      const filtered = mockPosts.filter(p => p.userId === Number(userId));
+      const filtered = mockPosts.filter((p) => p.userId === Number(userId));
       res.writeHead(200);
       res.end(JSON.stringify(filtered));
       return;
@@ -69,7 +69,7 @@ function handleRequest(req: IncomingMessage, res: ServerResponse) {
   const postMatch = url.pathname.match(/^\/posts\/(\d+)$/);
   if (postMatch) {
     const postId = Number(postMatch[1]);
-    const post = mockPosts.find(p => p.id === postId);
+    const post = mockPosts.find((p) => p.id === postId);
     if (!post) {
       res.writeHead(404);
       res.end(JSON.stringify({ error: 'Not found' }));
@@ -84,7 +84,7 @@ function handleRequest(req: IncomingMessage, res: ServerResponse) {
   const commentsMatch = url.pathname.match(/^\/posts\/(\d+)\/comments$/);
   if (commentsMatch) {
     const postId = Number(commentsMatch[1]);
-    const filtered = mockComments.filter(c => c.postId === postId);
+    const filtered = mockComments.filter((c) => c.postId === postId);
     res.writeHead(200);
     res.end(JSON.stringify(filtered));
     return;
@@ -123,4 +123,3 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
-

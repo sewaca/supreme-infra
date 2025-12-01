@@ -17,9 +17,11 @@ test.describe('Posts List Page', () => {
 
     // Verify body truncation (first post has long body, should be truncated)
     // The full text should not be visible as a complete string
-    const post1FullBody = page.locator('text="This is a longer body text for mock post 1 that should be truncated in summary"');
+    const post1FullBody = page.locator(
+      'text="This is a longer body text for mock post 1 that should be truncated in summary"',
+    );
     await expect(post1FullBody).not.toBeVisible();
-    
+
     // Should show truncated version (first 20 chars + "...")
     const truncatedText = page.locator('text="This is a longer bod..."');
     await expect(truncatedText).toBeVisible();
@@ -39,7 +41,7 @@ test.describe('Posts List Page', () => {
     // Should only show posts from user 1
     await expect(page.locator('text=Mock Post 1')).toBeVisible();
     await expect(page.locator('text=Mock Post 2')).toBeVisible();
-    
+
     // Should not show post from user 2
     await expect(page.locator('text=Mock Post 3')).not.toBeVisible();
 
@@ -47,7 +49,9 @@ test.describe('Posts List Page', () => {
     await expect(page.locator('text=user 1')).toBeVisible();
   });
 
-  test('should navigate to post details when clicking a post', async ({ page }) => {
+  test('should navigate to post details when clicking a post', async ({
+    page,
+  }) => {
     await page.goto('/');
 
     // Wait for posts to load
@@ -61,14 +65,20 @@ test.describe('Posts List Page', () => {
 
     // Verify post details are displayed
     await expect(page.locator('h1')).toContainText('Mock Post 1');
-    
+
     // Verify full body is shown (not truncated)
-    await expect(page.locator('text=This is a longer body text for mock post 1 that should be truncated in summary')).toBeVisible();
+    await expect(
+      page.locator(
+        'text=This is a longer body text for mock post 1 that should be truncated in summary',
+      ),
+    ).toBeVisible();
   });
 });
 
 test.describe('Post Details Page', () => {
-  test('should display post details with full body and comments', async ({ page }) => {
+  test('should display post details with full body and comments', async ({
+    page,
+  }) => {
     await page.goto('/1');
 
     // Verify post title
@@ -76,14 +86,18 @@ test.describe('Post Details Page', () => {
 
     // Verify full body is displayed (not truncated)
     await expect(
-      page.locator('text=This is a longer body text for mock post 1 that should be truncated in summary'),
+      page.locator(
+        'text=This is a longer body text for mock post 1 that should be truncated in summary',
+      ),
     ).toBeVisible();
 
     // Verify comments are displayed
     await expect(page.locator('text=John Doe')).toBeVisible();
     await expect(page.locator('text=Great post!')).toBeVisible();
     await expect(page.locator('text=Jane Smith')).toBeVisible();
-    await expect(page.locator('text=I completely agree with this.')).toBeVisible();
+    await expect(
+      page.locator('text=I completely agree with this.'),
+    ).toBeVisible();
   });
 
   test('should display breadcrumbs correctly', async ({ page }) => {
@@ -99,7 +113,9 @@ test.describe('Post Details Page', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('should navigate back to user posts via breadcrumb', async ({ page }) => {
+  test('should navigate back to user posts via breadcrumb', async ({
+    page,
+  }) => {
     await page.goto('/1');
 
     // Click on user breadcrumb
@@ -139,15 +155,15 @@ test.describe('Error Handling', () => {
 
   test('should handle invalid userId parameter', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    
+
     // Backend should return 400 for invalid userId
     const backendResponse = await page.request.get(
       `${backendUrl}/posts/get-summary?userId=invalid`,
     );
-    
+
     // Backend should return 400 Bad Request
     expect(backendResponse.status()).toBe(400);
-    
+
     // Frontend should handle this gracefully
     await page.goto('/?userId=invalid');
     // Page might show error or handle gracefully - just verify it doesn't crash
@@ -156,18 +172,20 @@ test.describe('Error Handling', () => {
 });
 
 test.describe('Backend API Integration', () => {
-  test('should return posts summary with correct structure', async ({ page }) => {
+  test('should return posts summary with correct structure', async ({
+    page,
+  }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    
+
     const response = await page.request.get(`${backendUrl}/posts/get-summary`);
-    
+
     expect(response.status()).toBe(200);
     const data = await response.json();
-    
+
     // Verify response structure
     expect(Array.isArray(data)).toBe(true);
     expect(data.length).toBeGreaterThan(0);
-    
+
     // Verify post structure
     const post = data[0];
     expect(post).toHaveProperty('id');
@@ -175,7 +193,7 @@ test.describe('Backend API Integration', () => {
     expect(post).toHaveProperty('title');
     expect(post).toHaveProperty('body');
     expect(post).toHaveProperty('commentsCount');
-    
+
     // Verify body truncation (should be max 23 chars: 20 + "...")
     expect(post.body.length).toBeLessThanOrEqual(23);
     if (post.body.length > 20) {
@@ -185,12 +203,12 @@ test.describe('Backend API Integration', () => {
 
   test('should return post details with comments', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    
+
     const response = await page.request.get(`${backendUrl}/posts/1`);
-    
+
     expect(response.status()).toBe(200);
     const data = await response.json();
-    
+
     // Verify response structure
     expect(data).toHaveProperty('id');
     expect(data).toHaveProperty('userId');
@@ -198,7 +216,7 @@ test.describe('Backend API Integration', () => {
     expect(data).toHaveProperty('body');
     expect(data).toHaveProperty('comments');
     expect(Array.isArray(data.comments)).toBe(true);
-    
+
     // Verify comment structure
     if (data.comments.length > 0) {
       const comment = data.comments[0];
@@ -212,20 +230,22 @@ test.describe('Backend API Integration', () => {
 
   test('should return 404 for non-existent post', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    
+
     const response = await page.request.get(`${backendUrl}/posts/999`);
-    
+
     expect(response.status()).toBe(404);
   });
 
   test('should filter posts by userId', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    
-    const response = await page.request.get(`${backendUrl}/posts/get-summary?userId=1`);
-    
+
+    const response = await page.request.get(
+      `${backendUrl}/posts/get-summary?userId=1`,
+    );
+
     expect(response.status()).toBe(200);
     const data = await response.json();
-    
+
     // All posts should be from user 1
     expect(Array.isArray(data)).toBe(true);
     data.forEach((post: { userId: number }) => {
@@ -235,17 +255,19 @@ test.describe('Backend API Integration', () => {
 
   test('should return 400 for invalid userId parameter', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    
-    const response = await page.request.get(`${backendUrl}/posts/get-summary?userId=invalid`);
-    
+
+    const response = await page.request.get(
+      `${backendUrl}/posts/get-summary?userId=invalid`,
+    );
+
     expect(response.status()).toBe(400);
   });
 
   test('should return 400 for invalid post ID', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    
+
     const response = await page.request.get(`${backendUrl}/posts/invalid`);
-    
+
     expect(response.status()).toBe(400);
   });
 });
