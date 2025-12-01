@@ -1,7 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { mockComments, mockPosts } from './mocks';
 
-
 function handleRequest(req: IncomingMessage, res: ServerResponse) {
   const url = new URL(req.url || '/', `http://${req.headers.host}`);
 
