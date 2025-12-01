@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { mockComments, mockPosts } from '../mocks';
 
 test.describe('Posts List Page', () => {
   test('should display all posts with truncated bodies', async ({ page }) => {
@@ -11,19 +12,19 @@ test.describe('Posts List Page', () => {
     await expect(page.locator('h1')).toContainText('Posts');
 
     // Verify mock posts are displayed
-    await expect(page.locator('text=Mock Post 1')).toBeVisible();
-    await expect(page.locator('text=Mock Post 2')).toBeVisible();
-    await expect(page.locator('text=Mock Post 3')).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[0].title}`)).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[1].title}`)).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[2].title}`)).toBeVisible();
 
     // Verify body truncation (first post has long body, should be truncated)
     // The full text should not be visible as a complete string
-    const post1FullBody = page.locator(
-      'text="This is a longer body text for mock post 1 that should be truncated in summary"',
-    );
+    const post1FullBody = page.locator(`text="${mockPosts[0].body}"`);
     await expect(post1FullBody).not.toBeVisible();
 
     // Should show truncated version (first 20 chars + "...")
-    const truncatedText = page.locator('text="This is a longer bod..."');
+    const truncatedText = page.locator(
+      `text="${mockPosts[0].body.substring(0, 20)}..."`,
+    );
     await expect(truncatedText).toBeVisible();
 
     // Verify comments count is displayed (post 1 has 2 comments, post 2 has 1)
@@ -33,20 +34,22 @@ test.describe('Posts List Page', () => {
 
   test('should filter posts by userId', async ({ page }) => {
     // Navigate to filtered view
-    await page.goto('/?userId=1');
+    await page.goto(`/?userId=${mockPosts[0].userId}`);
 
     // Wait for posts to load
     await expect(page.locator('h1')).toContainText('Posts');
 
     // Should only show posts from user 1
-    await expect(page.locator('text=Mock Post 1')).toBeVisible();
-    await expect(page.locator('text=Mock Post 2')).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[0].title}`)).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[1].title}`)).toBeVisible();
 
     // Should not show post from user 2
-    await expect(page.locator('text=Mock Post 3')).not.toBeVisible();
+    await expect(page.locator(`text=${mockPosts[2].title}`)).not.toBeVisible();
 
     // Verify breadcrumbs show user filter
-    await expect(page.locator('text=user 1')).toBeVisible();
+    await expect(
+      page.locator(`text=user ${mockPosts[0].userId}`),
+    ).toBeVisible();
   });
 
   test('should navigate to post details when clicking a post', async ({
@@ -55,23 +58,19 @@ test.describe('Posts List Page', () => {
     await page.goto('/');
 
     // Wait for posts to load
-    await expect(page.locator('text=Mock Post 1')).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[0].title}`)).toBeVisible();
 
     // Click on first post
-    await page.locator('text=Mock Post 1').click();
+    await page.locator(`text=${mockPosts[0].title}`).click();
 
     // Verify navigation to post details page
-    await expect(page).toHaveURL(/\/1$/);
+    await expect(page).toHaveURL(new RegExp(`\\/${mockPosts[0].id}$`));
 
     // Verify post details are displayed
-    await expect(page.locator('h1')).toContainText('Mock Post 1');
+    await expect(page.locator('h1')).toContainText(mockPosts[0].title);
 
     // Verify full body is shown (not truncated)
-    await expect(
-      page.locator(
-        'text=This is a longer body text for mock post 1 that should be truncated in summary',
-      ),
-    ).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[0].body}`)).toBeVisible();
   });
 });
 
@@ -79,34 +78,32 @@ test.describe('Post Details Page', () => {
   test('should display post details with full body and comments', async ({
     page,
   }) => {
-    await page.goto('/1');
+    await page.goto(`/${mockPosts[0].id}`);
 
     // Verify post title
-    await expect(page.locator('h1')).toContainText('Mock Post 1');
+    await expect(page.locator('h1')).toContainText(mockPosts[0].title);
 
     // Verify full body is displayed (not truncated)
-    await expect(
-      page.locator(
-        'text=This is a longer body text for mock post 1 that should be truncated in summary',
-      ),
-    ).toBeVisible();
+    await expect(page.locator(`text=${mockPosts[0].body}`)).toBeVisible();
 
     // Verify comments are displayed
-    await expect(page.locator('text=John Doe')).toBeVisible();
-    await expect(page.locator('text=Great post!')).toBeVisible();
-    await expect(page.locator('text=Jane Smith')).toBeVisible();
-    await expect(
-      page.locator('text=I completely agree with this.'),
-    ).toBeVisible();
+    await expect(page.locator(`text=${mockComments[0].name}`)).toBeVisible();
+    await expect(page.locator(`text=${mockComments[0].body}`)).toBeVisible();
+    await expect(page.locator(`text=${mockComments[1].name}`)).toBeVisible();
+    await expect(page.locator(`text=${mockComments[1].body}`)).toBeVisible();
   });
 
   test('should display breadcrumbs correctly', async ({ page }) => {
-    await page.goto('/1');
+    await page.goto(`/${mockPosts[0].id}`);
 
     // Verify breadcrumbs navigation
     await expect(page.locator('nav').locator('text=all posts')).toBeVisible();
-    await expect(page.locator('nav').locator('text=user 1')).toBeVisible();
-    await expect(page.locator('nav').locator('text=Mock Post 1')).toBeVisible();
+    await expect(
+      page.locator('nav').locator(`text=user ${mockPosts[0].userId}`),
+    ).toBeVisible();
+    await expect(
+      page.locator('nav').locator(`text=${mockPosts[0].title}`),
+    ).toBeVisible();
 
     // Click on "all posts" breadcrumb
     await page.locator('text=all posts').click();
@@ -116,25 +113,27 @@ test.describe('Post Details Page', () => {
   test('should navigate back to user posts via breadcrumb', async ({
     page,
   }) => {
-    await page.goto('/1');
+    await page.goto(`/${mockPosts[0].id}`);
 
     // Click on user breadcrumb
-    await page.locator('text=user 1').click();
+    await page.locator(`text=user ${mockPosts[0].userId}`).click();
 
     // Should navigate to filtered posts
-    await expect(page).toHaveURL('/?userId=1');
+    await expect(page).toHaveURL(`/?userId=${mockPosts[0].userId}`);
     await expect(page.locator('h1')).toContainText('Posts');
   });
 
   test('should display post with no comments', async ({ page }) => {
-    await page.goto('/3');
+    await page.goto(`/${mockPosts[2].id}`);
 
     // Verify post is displayed
-    await expect(page.locator('h1')).toContainText('Mock Post 3');
+    await expect(page.locator('h1')).toContainText(mockPosts[2].title);
 
     // Verify no comments section or empty state
     // Post 3 has no comments in mock data
-    await expect(page.locator('text=John Doe')).not.toBeVisible();
+    await expect(
+      page.locator(`text=${mockComments[0].name}`),
+    ).not.toBeVisible();
   });
 });
 
@@ -204,7 +203,9 @@ test.describe('Backend API Integration', () => {
   test('should return post details with comments', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
-    const response = await page.request.get(`${backendUrl}/posts/1`);
+    const response = await page.request.get(
+      `${backendUrl}/posts/${mockPosts[0].id}`,
+    );
 
     expect(response.status()).toBe(200);
     const data = await response.json();
@@ -240,7 +241,7 @@ test.describe('Backend API Integration', () => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
     const response = await page.request.get(
-      `${backendUrl}/posts/get-summary?userId=1`,
+      `${backendUrl}/posts/get-summary?userId=${mockPosts[0].userId}`,
     );
 
     expect(response.status()).toBe(200);
@@ -249,7 +250,7 @@ test.describe('Backend API Integration', () => {
     // All posts should be from user 1
     expect(Array.isArray(data)).toBe(true);
     data.forEach((post: { userId: number }) => {
-      expect(post.userId).toBe(1);
+      expect(post.userId).toBe(mockPosts[0].userId);
     });
   });
 
