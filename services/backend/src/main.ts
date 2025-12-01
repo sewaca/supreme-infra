@@ -11,6 +11,13 @@ async function bootstrap() {
     { bufferLogs: true },
   );
   app.enableShutdownHooks();
+
+  // Add a simple health check endpoint
+  const fastifyInstance = app.getHttpAdapter().getInstance();
+  fastifyInstance.get('/', async () => {
+    return { status: 'ok', message: 'Backend service is running' };
+  });
+
   await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();
