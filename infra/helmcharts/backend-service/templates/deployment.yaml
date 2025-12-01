@@ -9,6 +9,10 @@ spec:
   selector:
     matchLabels:
       {{- include "service.selectorLabels" . | nindent 6 }}
+  {{- if .Values.strategy }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -55,4 +59,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-

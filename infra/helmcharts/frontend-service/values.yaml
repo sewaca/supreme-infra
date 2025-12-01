@@ -74,3 +74,8 @@ autoscaling:
         periodSeconds: 30
       selectPolicy: Max
 
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 100%
