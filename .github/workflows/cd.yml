@@ -637,7 +637,7 @@ jobs:
           echo "IAM token obtained successfully"
       - name: Get Kubernetes config
         run: |
-          echo '${{ secrets.YC_SA_JSON_KEY }}' > sa-key.json
+          echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > sa-key.json
           yc config profile create diploma
           yc config set service-account-key sa-key.json
           yc config set cloud-id "$YC_CLOUD_ID"
@@ -661,14 +661,14 @@ jobs:
           # Determine Helm chart path and overrides file based on service type
           if [ "$SERVICE_TYPE" = "nest" ]; then
             CHART_PATH="./infra/helmcharts/backend-service"
-            OVERRIDES_FILE="./infra/overrides/production/backend.yaml"
           elif [ "$SERVICE_TYPE" = "next" ]; then
             CHART_PATH="./infra/helmcharts/frontend-service"
-            OVERRIDES_FILE="./infra/overrides/production/frontend.yaml"
           else
             echo "Error: Unknown service type $SERVICE_TYPE"
             exit 1
           fi
+
+          OVERRIDES_FILE="./infra/overrides/production/$SERVICE_NAME.yaml"
           
           # Construct Docker image reference
           DOCKER_IMAGE="$DOCKER_HUB_USERNAME/supreme:production-${SERVICE_NAME}-v${VERSION}"
