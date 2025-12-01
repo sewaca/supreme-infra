@@ -41,7 +41,7 @@ overrides:
       minReplicas: 1
       maxReplicas: 5
     env:
-      NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216
+      NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/api
   staging:
     # В staging можем использовать меньше ресурсов
     resources:
