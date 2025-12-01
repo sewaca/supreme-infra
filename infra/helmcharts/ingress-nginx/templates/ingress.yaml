@@ -1,18 +1,22 @@
 {{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.rules }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.ingress.name }}
-  namespace: {{ .Values.ingress.namespace }}
+  name: {{ $.Values.ingress.name }}-{{ .service }}
+  namespace: {{ $.Values.ingress.namespace }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    {{- if .rewrite }}
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    {{- end }}
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      {{- range .Values.ingress.rules }}
+      {{- if .rewrite }}
       - path: {{ .path }}(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
@@ -20,5 +24,14 @@ spec:
             name: {{ .service }}
             port:
               number: {{ .port }}
+      {{- else }}
+      - path: {{ .path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .service }}
+            port:
+              number: {{ .port }}
       {{- end }}
+{{- end }}
 {{- end }}

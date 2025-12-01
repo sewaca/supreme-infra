@@ -7,11 +7,13 @@ ingress:
   name: ingress-main
   namespace: default
   rules:
+    - service: backend
+      port: 80
+      path: /api
+      rewrite: true
     - service: frontend
       port: 80
       path: /
-    - service: backend
-      port: 80
-      path: /api/
+      rewrite: false
 
 # TODO: Rolling strategy как у микросервисов 
