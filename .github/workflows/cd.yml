@@ -28,25 +28,26 @@ jobs:
           # Get selected service
           SELECTED_SERVICE="${{ github.event.inputs.service }}"
 
-          # Install jq if not available
-          if ! command -v jq &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y jq
+          # Install yq for YAML parsing if not available
+          if ! command -v yq &> /dev/null; then
+            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            sudo chmod +x /usr/local/bin/yq
           fi
 
-          # Read services.json to determine service type
-          SERVICES_JSON_FILE="infra/generate-service/services.json"
+          # Read services.yaml to determine service type
+          SERVICES_YAML_FILE="services.yaml"
 
-          # Check if service is in nest array
-          IS_NEST=$(jq -r --arg service "$SELECTED_SERVICE" '.nest | index($service) != null' "$SERVICES_JSON_FILE")
-          # Check if service is in next array
-          IS_NEXT=$(jq -r --arg service "$SELECTED_SERVICE" '.next | index($service) != null' "$SERVICES_JSON_FILE")
+          # Check if service exists in nest services
+          IS_NEST=$(yq eval ".services.nest[] | select(.name == \"$SELECTED_SERVICE\") | .name" "$SERVICES_YAML_FILE")
+          # Check if service exists in next services
+          IS_NEXT=$(yq eval ".services.next[] | select(.name == \"$SELECTED_SERVICE\") | .name" "$SERVICES_YAML_FILE")
 
-          if [ "$IS_NEST" = "true" ]; then
+          if [ -n "$IS_NEST" ]; then
             SERVICE_TYPE="nest"
-          elif [ "$IS_NEXT" = "true" ]; then
+          elif [ -n "$IS_NEXT" ]; then
             SERVICE_TYPE="next"
           else
-            echo "Error: Service $SELECTED_SERVICE not found in services.json"
+            echo "Error: Service $SELECTED_SERVICE not found in services.yaml"
             exit 1
           fi
 
