@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class HealthController {
-  @Get('status')
+  @Get('api/status')
   getStatus(): { status: string } {
     return { status: 'ok' };
   }
