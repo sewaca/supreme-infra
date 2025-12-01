@@ -9,8 +9,8 @@
   "scripts": {
     "lint": "biome check",
     "format": "biome format --fix",
-    "infra:generate": "tsx infra/generate-service/index.ts",
-    "values:generate": "tsx infra/generate-values/index.ts",
+    "generate:router": "tsx infra/generate/generate-router/index.ts",
+    "generate:overrides": "tsx infra/generate-overrides/index.ts",
     "generate": "tsx infra/generate/index.ts"
   },
   "devDependencies": {

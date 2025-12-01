@@ -118,7 +118,7 @@ pnpm run generate
 pnpm run infra:generate
 
 # Только values файлы
-pnpm run values:generate
+pnpm run generate:overrides
 ```
 
 ## Структура
