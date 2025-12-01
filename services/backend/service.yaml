@@ -29,7 +29,7 @@ resources:
 # HPA настройки для backend
 autoscaling:
   enabled: true
-  minReplicas: 2
+  minReplicas: 1
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
 
