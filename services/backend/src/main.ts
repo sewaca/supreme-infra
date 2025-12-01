@@ -11,7 +11,6 @@ async function bootstrap() {
     { bufferLogs: true },
   );
   app.enableShutdownHooks();
-  app.setGlobalPrefix('api');
 
   // Add a simple health check endpoint
   const fastifyInstance = app.getHttpAdapter().getInstance();
