@@ -39,7 +39,7 @@ overrides:
     # В production увеличиваем минимальное количество реплик
     autoscaling:
       minReplicas: 1
-      maxReplicas: 30
+      maxReplicas: 5
   staging:
     # В staging можем использовать меньше ресурсов
     resources:
