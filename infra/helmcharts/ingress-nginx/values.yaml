@@ -7,12 +7,9 @@ ingress:
   name: ingress-main
   namespace: default
   rules:
-    - service: service-hello
-      port: 80
-      path: /
     - service: frontend
       port: 80
-      path: /frontend
+      path: /
     - service: backend
       port: 80
-      path: /backend
+      path: /api/
