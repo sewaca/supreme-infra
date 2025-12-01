@@ -17,7 +17,8 @@ export interface Comment {
 
 @Injectable()
 export class JsonplaceholderDatasource {
-  private readonly baseUrl = 'https://jsonplaceholder.typicode.com';
+  private readonly baseUrl =
+    process.env.JSONPLACEHOLDER_URL || 'https://jsonplaceholder.typicode.com';
 
   public async getPosts(userId?: number): Promise<Post[]> {
     const url = userId
