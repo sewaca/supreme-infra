@@ -40,7 +40,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /api/status
+    path: /status
     port: http
   initialDelaySeconds: 100
   periodSeconds: 30

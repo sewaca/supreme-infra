@@ -11,7 +11,7 @@ async function bootstrap() {
     { bufferLogs: true },
   );
   app.enableShutdownHooks();
-  app.setGlobalPrefix('api')
+  app.setGlobalPrefix('api');
 
   // Add a simple health check endpoint
   const fastifyInstance = app.getHttpAdapter().getInstance();
@@ -19,6 +19,6 @@ async function bootstrap() {
     return { status: 'ok', message: 'Backend service is running' };
   });
 
-  await app.listen(process.env.PORT ?? 4000);
+  await app.listen(process.env.PORT ?? 4000, '0.0.0.0');
 }
 bootstrap();
