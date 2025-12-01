@@ -13,3 +13,5 @@ ingress:
     - service: backend
       port: 80
       path: /api/
+
+# TODO: Rolling strategy как у микросервисов 
