@@ -14,11 +14,11 @@ fullnameOverride: "backend"
 
 service:
   type: ClusterIP
-  port: 8080
-  targetPort: 8080
+  port: 80
+  targetPort: 4000
 
 env:
-  PORT: "8080"
+  PORT: "4000"
   NODE_ENV: "production"
 
 resources:
@@ -31,20 +31,20 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: /api/status
-    port: 8080
-  initialDelaySeconds: 30
-  periodSeconds: 20
-  timeoutSeconds: 10
+    path: /status
+    port: http
+  initialDelaySeconds: 100
+  periodSeconds: 30
+  timeoutSeconds: 20
   failureThreshold: 5
 
 readinessProbe:
   httpGet:
-    path: /api/status
-    port: 8080
-  initialDelaySeconds: 30
-  periodSeconds: 20
-  timeoutSeconds: 10
+    path: /status
+    port: http
+  initialDelaySeconds: 100
+  periodSeconds: 30
+  timeoutSeconds: 20
   failureThreshold: 5
 
 nodeSelector: {}

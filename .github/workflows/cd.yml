@@ -646,14 +646,11 @@ jobs:
           echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > sa-key.json
           yc config profile create supreme-robot
           yc config set service-account-key sa-key.json
-          yc config list
           yc config set cloud-id "$YC_CLOUD_ID"
-          yc config list
           yc config set folder-id "$YC_FOLDER_ID"
-          yc config list
 
           # Get kubeconfig for the cluster
-          yc managed-kubernetes cluster get-credentials --id $YC_K8S_CLUSTER_ID --external --force --no-browser --debug --debug-grpc 
+          yc managed-kubernetes cluster get-credentials --id $YC_K8S_CLUSTER_ID --external --force --no-browser
 
           # Verify connection
           kubectl cluster-info
