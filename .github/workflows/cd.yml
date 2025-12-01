@@ -305,6 +305,55 @@ jobs:
         with:
           service-name: ${{ matrix.service-name }}
 
+  # build-image-to-yc: 
+  #   name: Build and push image to Yandex Cloud Container Registry for ${{ matrix.service-name }}
+  #   needs: [ prepare-services, security-checks, calculate-new-version ]
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #     - name: Download new version file
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: new-version-${{ matrix.service-name }}
+  #     - name: Get version for service
+  #       id: get-version
+  #       run: |
+  #         SERVICE_NAME="${{ matrix.service-name }}"
+  #         VERSION_FILE="new_version_$SERVICE_NAME.txt"
+
+  #         # Check if version file exists and is not empty
+  #         if [ ! -f "$VERSION_FILE" ]; then
+  #           echo "Error: Version file $VERSION_FILE not found"
+  #           exit 1
+  #         fi
+
+  #         VERSION=$(cat "$VERSION_FILE" | tr -d '[:space:]')
+
+  #         # Validate version is not empty
+  #         if [ -z "$VERSION" ]; then
+  #           echo "Error: Version is empty in $VERSION_FILE"
+  #           exit 1
+  #         fi
+
+  #         # Validate version format (should be x.y.z)
+  #         if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+  #           echo "Error: Invalid version format: $VERSION (expected x.y.z)"
+  #           exit 1
+  #         fi
+
+  #         echo "Building $SERVICE_NAME with version $VERSION"
+  #         echo "version=$VERSION" >> $GITHUB_OUTPUT
+  #     - name: Login to Yandex Cloud Container Registry
+  #       id: login-cr
+  #       uses: yc-actions/yc-cr-login@v1
+  #       with:
+  #         yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+      
+
   build-image-to-docker-hub:
     name: Build and push image to Docker Hub for ${{ matrix.service-name }}
     needs: [ prepare-services, security-checks, calculate-new-version ]
@@ -539,7 +588,7 @@ jobs:
 
   deploy-to-yandex-cloud:
     name: Deploy to Yandex Cloud for ${{ matrix.service-name }}
-    needs: [ prepare-services, build-image-to-docker-hub, create-github-release ]
+    needs: [ prepare-services, build-image-to-docker-hub, create-github-release, calculate-new-version ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -547,15 +596,86 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Deploy to Yandex Cloud
+      - name: Download new version file
+        uses: actions/download-artifact@v4
+        with:
+          name: new-version-${{ matrix.service-name }}
+      - name: Get version for service
+        id: get-version
         run: |
-          echo "Deploying ${{ matrix.service-name }} to Yandex Cloud"
-          # TODO: Implement actual deployment logic
+          SERVICE_NAME="${{ matrix.service-name }}"
+          VERSION=$(cat new_version_$SERVICE_NAME.txt | tr -d '[:space:]')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Deploying $SERVICE_NAME version $VERSION"
+      - name: Install Yandex Cloud CLI
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
+      - name: Configure Yandex Cloud CLI
+        run: |
+          echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > key.json
+          yc config profile create sa-profile
+          yc config set service-account-key key.json
+          rm key.json
+      - name: Get Kubernetes config
+        run: |
+          # Get kubeconfig for the cluster
+          yc managed-kubernetes cluster get-credentials "$YC_K8S_CLUSTER_ID" --external --force
+          
+          # Verify connection
+          kubectl cluster-info
         env:
+          YC_K8S_CLUSTER_ID: ${{ secrets.YC_K8S_CLUSTER_ID }}
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.13.0'
+      - name: Deploy with Helm
+        run: |
+          # Determine Helm chart path and overrides file based on service type
+          if [ "$SERVICE_TYPE" = "nest" ]; then
+            CHART_PATH="./infra/helmcharts/backend-service"
+            OVERRIDES_FILE="./infra/overrides/production/backend.yaml"
+          elif [ "$SERVICE_TYPE" = "next" ]; then
+            CHART_PATH="./infra/helmcharts/frontend-service"
+            OVERRIDES_FILE="./infra/overrides/production/frontend.yaml"
+          else
+            echo "Error: Unknown service type $SERVICE_TYPE"
+            exit 1
+          fi
+          
+          # Construct Docker image reference
+          DOCKER_IMAGE="$DOCKER_HUB_USERNAME/supreme:production-${SERVICE_NAME}-v${VERSION}"
+          
+          echo "Deploying $SERVICE_NAME using chart $CHART_PATH"
+          echo "Docker image: $DOCKER_IMAGE"
+          echo "Overrides file: $OVERRIDES_FILE"
+          
+          # Deploy with Helm
+          helm upgrade "$SERVICE_NAME" "$CHART_PATH" \
+            -f "$OVERRIDES_FILE" \
+            --set image.tag="production-${SERVICE_NAME}-v${VERSION}" \
+            --set image.repository="$DOCKER_HUB_USERNAME/supreme" \
+            --install \
+            --wait \
+            --timeout 5m \
+            --atomic
+          
+          echo "Deployment completed successfully"
+          
+          # Show deployment status
+          kubectl get pods -l app.kubernetes.io/name="$SERVICE_NAME"
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          SERVICE_TYPE: ${{ needs.prepare-services.outputs.service-type }}
+          VERSION: ${{ steps.get-version.outputs.version }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           YC_TOKEN: ${{ secrets.YC_TOKEN }}
           YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
 
 # TODO:
 # Примечание: Для работы потребуются secrets в GitHub:
-# DOCKER_HUB_USERNAME и DOCKER_HUB_TOKEN для публикации образов
-# YC_TOKEN и YC_FOLDER_ID для деплоя в Yandex Cloud
+# DOCKER_HUB_USERNAME и DOCKER_HUB_TOKEN для публикации образов в Docker Hub
+# YC_SA_JSON_CREDENTIALS - JSON credentials сервисного аккаунта Yandex Cloud
+# YC_K8S_CLUSTER_ID - ID Kubernetes кластера в Yandex Cloud
+# YC_TOKEN и YC_FOLDER_ID для дополнительных операций в Yandex Cloud
