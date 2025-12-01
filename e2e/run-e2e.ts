@@ -175,15 +175,29 @@ async function startService(
 ): Promise<void> {
   console.log(`Starting ${config.name} service...`);
 
-  const serviceProcess = spawn(
-    'pnpm',
-    ['--filter', config.filter, 'run', config.command],
-    {
-      cwd: projectRoot,
+  // Special handling for mock-server - run directly without pnpm filter
+  const isDirectCommand = config.command.startsWith('tsx ');
+  let serviceProcess: ChildProcess;
+
+  if (isDirectCommand) {
+    const [cmd, ...args] = config.command.split(' ');
+    const workingDir = path.join(projectRoot, 'e2e');
+    serviceProcess = spawn(cmd, args, {
+      cwd: workingDir,
       stdio: 'pipe',
       env: { ...process.env, ...config.env },
-    },
-  );
+    });
+  } else {
+    serviceProcess = spawn(
+      'pnpm',
+      ['--filter', config.filter, 'run', config.command],
+      {
+        cwd: projectRoot,
+        stdio: 'pipe',
+        env: { ...process.env, ...config.env },
+      },
+    );
+  }
 
   const serviceName =
     config.name.charAt(0).toUpperCase() + config.name.slice(1);
@@ -235,16 +249,17 @@ async function main() {
   const frontendHost = process.env.FRONTEND_HOST ?? 'localhost';
   const backendPort = process.env.BACKEND_PORT ?? '4000';
   const backendHost = process.env.BACKEND_HOST ?? 'localhost';
+  const mockServerPort = process.env.MOCK_SERVER_PORT ?? '5000';
+  const mockServerHost = process.env.MOCK_SERVER_HOST ?? 'localhost';
 
   const allServiceConfigs: ServiceConfig[] = [
     {
-      name: 'frontend',
-      filter: 'frontend',
-      command: 'dev',
-      healthCheckUrl: `http://${frontendHost}:${frontendPort}`,
+      name: 'mock-server',
+      filter: 'e2e',
+      command: 'tsx mock-server.ts',
+      healthCheckUrl: `http://${mockServerHost}:${mockServerPort}/posts`,
       env: {
-        PORT: frontendPort,
-        HOST: frontendHost,
+        MOCK_SERVER_PORT: mockServerPort,
       },
     },
     {
@@ -255,7 +270,18 @@ async function main() {
       env: {
         PORT: backendPort,
         HOST: backendHost,
-        MOCK_EXTERNAL: 'true',
+        JSONPLACEHOLDER_URL: `http://${mockServerHost}:${mockServerPort}`,
+      },
+    },
+    {
+      name: 'frontend',
+      filter: 'frontend',
+      command: 'dev',
+      healthCheckUrl: `http://${frontendHost}:${frontendPort}`,
+      env: {
+        PORT: frontendPort,
+        HOST: frontendHost,
+        NEXT_PUBLIC_BACKEND_URL: `http://${backendHost}:${backendPort}`,
       },
     },
   ];
@@ -330,7 +356,11 @@ async function main() {
       {
         cwd: projectRoot,
         stdio: 'inherit',
-        env: { ...process.env },
+        env: {
+          ...process.env,
+          BACKEND_URL: `http://${backendHost}:${backendPort}`,
+          FRONTEND_URL: `http://${frontendHost}:${frontendPort}`,
+        },
       },
     );
 
