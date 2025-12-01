@@ -6,9 +6,5 @@ helm dependency build
 ```
 
 ```
-helm upgrade ingress-nginx . -n production --install
-```
-
-```
-kubectl describe ingress ingress-hello -n production
+helm upgrade ingress-nginx . -n ingress-nginx --install
 ```
