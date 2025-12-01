@@ -20,6 +20,7 @@ service:
 env:
   PORT: "3000"
   NODE_ENV: "production"
+  NEXT_PUBLIC_BACKEND_URL: "http://84.252.134.216"
 
 resources:
   limits:
