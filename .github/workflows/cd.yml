@@ -644,7 +644,7 @@ jobs:
           yc config set folder-id "$YC_FOLDER_ID"
 
           # Get kubeconfig for the cluster
-          yc managed-kubernetes cluster get-credentials --id $CLUSTER_ID --external
+          yc managed-kubernetes cluster get-credentials --id $YC_K8S_CLUSTER_ID --external
           
           # Verify connection
           kubectl cluster-info
