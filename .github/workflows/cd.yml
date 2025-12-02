@@ -613,56 +613,13 @@ jobs:
   # PRODUCTION DEPLOYMENT
   # ============================================
 
-  approve-rollback:
-    name: Approve rollback to production
-    needs: [detect-release-mode, prepare-services, create-release-branch, calculate-new-version]
-    if: |
-      always() &&
-      needs.create-release-branch.result == 'success' &&
-      needs.detect-release-mode.outputs.is_rollback == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: Download new version file
-        uses: actions/download-artifact@v4
-        with:
-          name: new-version-${{ github.event.inputs.service }}
-
-      - name: Get version
-        id: get-version
-        env:
-          SERVICE_NAME: ${{ github.event.inputs.service }}
-        run: |
-          VERSION=$(cat "new_version_${SERVICE_NAME}.txt" | tr -d '[:space:]')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Wait for manual approval
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ secrets.GITHUB_TOKEN }}
-          approvers: ${{ github.actor }}
-          minimum-approvals: 1
-          issue-title: "Approve ROLLBACK: ${{ github.event.inputs.service }} to v${{ steps.get-version.outputs.version }}"
-          issue-body: |
-            **⚠️ ROLLBACK REQUEST**
-            
-            Rolling back **${{ github.event.inputs.service }}** to version **v${{ steps.get-version.outputs.version }}**.
-            
-            This will deploy an older version directly to production (no canary).
-            
-            **To approve:** Comment `approve` or `lgtm`
-            **To deny:** Comment `deny`
-          exclude-workflow-initiator-as-approver: false
-        timeout-minutes: 60
-
   promote-to-production:
     name: Promote to production for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, approve-canary, approve-rollback]
+    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, approve-canary]
     if: |
       always() &&
       needs.create-release-branch.result == 'success' &&
-      (needs.approve-canary.result == 'success' || needs.approve-rollback.result == 'success')
+      (needs.approve-canary.result == 'success' || needs.detect-release-mode.outputs.is_rollback == 'true')
     runs-on: ubuntu-latest
     strategy:
       matrix:
