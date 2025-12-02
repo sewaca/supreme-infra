@@ -30,7 +30,7 @@ export class PostsController {
       commentsCount: 227
     }]
 
-    return this.postsService.getPostsSummary(userIdNumber);
+    // return this.postsService.getPostsSummary(userIdNumber);
   }
 
   @Get(':id')
