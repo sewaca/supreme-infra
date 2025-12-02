@@ -58,24 +58,48 @@ runs:
         echo "Version: $VERSION"
         echo "Canary enabled: $CANARY_ENABLED"
 
-        # Build helm command
-        HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH -f $OVERRIDES_FILE"
-        HELM_CMD="$HELM_CMD --set image.tag=production-${SERVICE_NAME}-v${VERSION}"
-        HELM_CMD="$HELM_CMD --set image.repository=$DOCKER_HUB_USERNAME/supreme"
-        HELM_CMD="$HELM_CMD --set canary.enabled=$CANARY_ENABLED"
+        # Check if release exists
+        RELEASE_EXISTS=$(helm list -q | grep -x "$SERVICE_NAME" || echo "")
 
         if [ "$CANARY_ENABLED" = "true" ]; then
-          HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
-          HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
-          HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
+          # CANARY mode: only deploy canary pods, don't touch stable
+          echo "Deploying CANARY only (stable deployment unchanged)"
+          
+          if [ -n "$RELEASE_EXISTS" ]; then
+            # Release exists: use --reuse-values to keep stable deployment unchanged
+            HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH"
+            HELM_CMD="$HELM_CMD --reuse-values"
+            HELM_CMD="$HELM_CMD --set canary.enabled=true"
+            HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
+            HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
+            HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
+          else
+            # First deploy: need full values
+            HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH -f $OVERRIDES_FILE"
+            HELM_CMD="$HELM_CMD --set image.repository=$DOCKER_HUB_USERNAME/supreme"
+            HELM_CMD="$HELM_CMD --set canary.enabled=true"
+            HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
+            HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
+            HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
+            HELM_CMD="$HELM_CMD --install"
+          fi
+        else
+          # PRODUCTION mode: update stable deployment, disable canary
+          echo "Deploying to PRODUCTION (canary disabled)"
+          HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH -f $OVERRIDES_FILE"
+          HELM_CMD="$HELM_CMD --set image.tag=production-${SERVICE_NAME}-v${VERSION}"
+          HELM_CMD="$HELM_CMD --set image.repository=$DOCKER_HUB_USERNAME/supreme"
+          HELM_CMD="$HELM_CMD --set canary.enabled=false"
+          HELM_CMD="$HELM_CMD --install"
         fi
 
-        HELM_CMD="$HELM_CMD --install --wait --timeout 5m"
+        HELM_CMD="$HELM_CMD --wait --timeout 5m"
 
         if [ "$USE_ATOMIC" = "true" ]; then
           HELM_CMD="$HELM_CMD --atomic"
         fi
 
+        echo "Running: $HELM_CMD"
         eval $HELM_CMD
 
         echo "Deployment completed"
