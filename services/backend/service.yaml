@@ -31,3 +31,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
+overrides:
+  production:
+    canary:
+      enabled: true

@@ -35,6 +35,8 @@ autoscaling:
 # Переопределения для конкретных окружений
 overrides:
   production:
+    canary:
+      enabled: true
     # В production увеличиваем минимальное количество реплик
     autoscaling:
       minReplicas: 1
