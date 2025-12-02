@@ -35,3 +35,19 @@ jobs:
         uses: ./.github/workflows/jobs/next-application-security-check
         with:
           service-name: ${{ matrix.service-name }}
+
+  # final job that waits for all security checks
+  security-checks-summary:
+    name: Security checks summary
+    runs-on: ubuntu-latest
+    needs: [ security-scan-nest, security-scan-next ]
+    if: always()
+    steps:
+      - name: Check all security scans status
+        run: |
+          if [ "${{ needs.security-scan-nest.result }}" != "success" ] || [ "${{ needs.security-scan-next.result }}" != "success" ]; then
+            echo "Some security checks failed"
+            exit 1
+          else
+            echo "All security checks passed"
+          fi
