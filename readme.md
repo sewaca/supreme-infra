@@ -168,11 +168,223 @@ Examples of correctly named PRs:
 
 ### Style conventions
 
-TODO: leave notes here
+#### Code Formatting & Linting
+
+We use **Biome** as our primary code formatter and linter:
+
+- **Indentation**: 2 spaces
+- **Quotes**: Single quotes for JavaScript/TypeScript, double quotes for JSX
+- **Line endings**: LF (Unix)
+- **Semicolons**: Required
+- **Trailing commas**: Required in multiline structures
+
+**Biome configuration** (`biome.json`):
+```json
+{
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "rules": {
+      "recommended": true,
+      "style": {
+        "useImportType": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "jsxQuoteStyle": "double"
+    }
+  }
+}
+```
+
+#### TypeScript Configuration
+
+**Strict TypeScript settings** (`tsconfig.base.json`):
+- Strict mode enabled
+- No unused locals/parameters
+- No implicit returns/overrides
+- Explicit types required
+- No `any` type usage
+
+#### Project Structure
+
+We follow **Feature-Sliced Design** architecture:
+
+```
+services/
+├── backend/           # NestJS service
+│   └── src/
+│       ├── app.module.ts
+│       ├── features/    # Business logic features
+│       │   └── Posts/
+│       │       ├── Posts.controller.ts
+│       │       ├── Posts.service.ts
+│       │       └── Posts.module.ts
+│       └── shared/      # Shared utilities and API
+└── frontend/          # Next.js service
+    └── src/
+        ├── app/        # Next.js app router
+        ├── entities/   # Business entities (Post, Comment)
+        ├── features/   # Feature components
+        ├── shared/     # Shared utilities and API
+        ├── views/      # Page components
+        └── widgets/    # UI components
+```
+
+#### Naming Conventions
+
+**Files & Directories**:
+- PascalCase for components: `PostCard.tsx`, `PostsService.ts`
+- camelCase for utilities: `backendApi.ts`, `jsonplaceholderDatasource.ts`
+- kebab-case for CSS modules: `PostCard.module.css`
+
+**Code**:
+- PascalCase for classes, interfaces, types: `PostsController`, `PostSummary`
+- camelCase for variables, functions, methods: `getPostsSummary()`, `postId`
+- Private methods start with lowercase: `countCommentsByPostId()`
+- Constants in UPPER_SNAKE_CASE: `BASE_URL`
+
+#### React Components
+
+**Functional components** with TypeScript:
+```tsx
+interface PostCardProps {
+  post: PostSummary;
+}
+
+export function PostCard({ post }: PostCardProps) {
+  return (
+    <div>
+      <h2>{post.title}</h2>
+      <p>{post.body}</p>
+    </div>
+  );
+}
+```
+
+#### Backend (NestJS)
+
+**Controller structure**:
+```ts
+@Controller('posts')
+export class PostsController {
+  constructor(private readonly postsService: PostsService) {}
+
+  @Get('summary')
+  public async getSummary(): Promise<PostSummary[]> {
+    return this.postsService.getPostsSummary();
+  }
+}
+```
+
+**Service structure**:
+```ts
+@Injectable()
+export class PostsService {
+  public async getPostsSummary(): Promise<PostSummary[]> {
+    // Implementation
+  }
+
+  private countCommentsByPostId(comments: Comment[]): Map<number, number> {
+    // Private helper method
+  }
+}
+```
+
+#### API Layer
+
+**Backend API client** (Singleton pattern):
+```ts
+class BackendApi {
+  private static instance: BackendApi | null = null;
+
+  public static getInstance(): BackendApi {
+    if (!BackendApi.instance) {
+      BackendApi.instance = new BackendApi();
+    }
+    return BackendApi.instance;
+  }
+
+  public async getPostsSummary(): Promise<PostSummary[]> {
+    const response = await fetch(`${this.baseUrl}/posts/summary`);
+    return response.json();
+  }
+}
+```
+
+#### Testing
+
+**Unit tests** with Vitest:
+- Mock all external dependencies
+- Write mocks in single line format
+- Use descriptive test names
+- Follow AAA pattern (Arrange, Act, Assert)
+
+```ts
+describe('PostsService', () => {
+  it('should return posts summary with truncated body', async () => {
+    // Arrange
+    const mockPosts = [{ userId: 1, id: 1, title: 'Test', body: 'Long body text' }];
+    datasource.getPosts.mockResolvedValue(mockPosts);
+
+    // Act
+    const result = await service.getPostsSummary();
+
+    // Assert
+    expect(result[0].body).toBe('Long body ...');
+  });
+});
+```
+
+**Test commands**:
+```bash
+# Run unit tests for specific service
+cd services/backend && pnpm run unit --verbose
+
+# Run frontend tests
+cd services/frontend && pnpm run unit --verbose
+```
+
+#### Import Organization
+
+**Import grouping order**:
+1. External libraries (React, NestJS, etc.)
+2. Internal shared modules
+3. Relative imports (parent/child directories)
+4. Type imports (when needed)
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
+import { PostSummary } from './types';
+```
+
+#### Scripts
+
+**Available commands**:
+```bash
+pnpm lint              # Run Biome linting
+pnpm format            # Run Biome formatting
+pnpm generate:router   # Generate service router configuration
+pnpm generate:overrides # Generate Helm overrides
+pnpm generate          # Run all generators
+```
 
 We use pre-commit & biome lint checks to verify everything is okay. <br />
 Just commit your pretty code, with passed locally lint check. <br />
 Madara-robot will take care about everything another
+
+## Documentation
+
+- **[Руководство по стилю кода](docs/code-style.md)** - Полные стандарты и соглашения кодирования
+- **[Генератор инфраструктуры](docs/infrastructure-generator.md)** - Автоматизированное управление инфраструктурой
+- **[CI/CD Pipeline](docs/ci.md)** - Настройка непрерывной интеграции и развертывания
+- **[Процесс релиза](docs/release-process.md)** - Полная документация по pipeline релиза
 
 ## Version Naming
 
