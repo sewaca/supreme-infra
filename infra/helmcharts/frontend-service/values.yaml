@@ -1,3 +1,5 @@
+replicaCount: 1
+
 image:
   repository: ""
   # tag will be provided externally during CD deployment
