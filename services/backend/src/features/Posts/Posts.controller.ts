@@ -22,17 +22,7 @@ export class PostsController {
       throw new BadRequestException('Invalid userId parameter');
     }
 
-    return [
-      {
-        userId: 228,
-        id: 228,
-        title: 'сломанный релиз',
-        body: 'сломанный релиз',
-        commentsCount: 227,
-      },
-    ];
-
-    // return this.postsService.getPostsSummary(userIdNumber);
+    return this.postsService.getPostsSummary(userIdNumber);
   }
 
   @Get(':id')

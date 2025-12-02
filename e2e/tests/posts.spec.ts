@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { mockComments, mockPosts } from '../mocks';
 
-test.describe.skip('Posts List Page', () => {
+test.describe('Posts List Page', () => {
   test('should display all posts with truncated bodies', async ({ page }) => {
     await page.goto('/');
 
@@ -74,7 +74,7 @@ test.describe.skip('Posts List Page', () => {
   });
 });
 
-test.describe.skip('Post Details Page', () => {
+test.describe('Post Details Page', () => {
   test('should display post details with full body and comments', async ({
     page,
   }) => {
@@ -137,7 +137,7 @@ test.describe.skip('Post Details Page', () => {
   });
 });
 
-test.describe.skip('Error Handling', () => {
+test.describe('Error Handling', () => {
   test('should handle 404 for non-existent post', async ({ page }) => {
     await page.goto('/999');
 
@@ -170,7 +170,7 @@ test.describe.skip('Error Handling', () => {
   });
 });
 
-test.describe.skip('Backend API Integration', () => {
+test.describe('Backend API Integration', () => {
   test('should return posts summary with correct structure', async ({
     page,
   }) => {
