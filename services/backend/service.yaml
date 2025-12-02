@@ -16,20 +16,18 @@ env:
   PORT: "4000"
   NODE_ENV: "production"
 
-replicaCount: 2
-
 resources:
   limits:
     cpu: 500m
     memory: 512Mi
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 200Mi
 
-# HPA настройки для backend
 autoscaling:
   enabled: true
-  minReplicas: 1
+  minReplicas: 2
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 

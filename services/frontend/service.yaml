@@ -16,20 +16,19 @@ env:
   PORT: "3000"
   NODE_ENV: "production"
 
-replicaCount: 2
-
 resources:
   limits:
     cpu: 600m
     memory: 512Mi
   requests:
-    cpu: 100m
-    memory: 256Mi
+    cpu: 180m
+    memory: 300Mi
 
 # HPA настройки для frontend
 autoscaling:
   enabled: true
   minReplicas: 2
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
@@ -41,7 +40,7 @@ overrides:
       minReplicas: 1
       maxReplicas: 5
     env:
-      NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/api
+      NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/api # TODO: унести в другую node-env
   staging:
     # В staging можем использовать меньше ресурсов
     resources:

@@ -1,6 +1,5 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import Handlebars from 'handlebars';
 import * as yaml from 'yaml';
 import { getServiceByName, loadServices } from '../shared/load-services';
 import type { ServiceConfig } from './types';
@@ -25,6 +24,10 @@ function log(
   console.log(`${prefix[level]} ${message}`);
 }
 
+/**
+ * Глубокое слияние двух объектов.
+ * Значения из source перезаписывают значения из target.
+ */
 function deepMerge<T>(target: T, source: Partial<T>): T {
   const result = { ...target } as T;
 
@@ -32,22 +35,24 @@ function deepMerge<T>(target: T, source: Partial<T>): T {
     const sourceValue = source[key];
     const targetValue = result[key];
 
-    if (sourceValue !== undefined) {
-      if (
-        typeof sourceValue === 'object' &&
-        sourceValue !== null &&
-        !Array.isArray(sourceValue) &&
-        typeof targetValue === 'object' &&
-        targetValue !== null &&
-        !Array.isArray(targetValue)
-      ) {
-        result[key] = deepMerge(targetValue, sourceValue) as T[Extract<
-          keyof T,
-          string
-        >];
-      } else {
-        result[key] = sourceValue as T[Extract<keyof T, string>];
-      }
+    if (sourceValue === undefined) continue;
+
+    const isSourceObject =
+      typeof sourceValue === 'object' &&
+      sourceValue !== null &&
+      !Array.isArray(sourceValue);
+    const isTargetObject =
+      typeof targetValue === 'object' &&
+      targetValue !== null &&
+      !Array.isArray(targetValue);
+
+    if (isSourceObject && isTargetObject) {
+      result[key] = deepMerge(targetValue, sourceValue) as T[Extract<
+        keyof T,
+        string
+      >];
+    } else {
+      result[key] = sourceValue as T[Extract<keyof T, string>];
     }
   }
 
@@ -59,32 +64,11 @@ function getHelmChartPath(serviceType: 'nest' | 'next'): string {
   return path.join(__dirname, '../../helmcharts', chartName);
 }
 
-function loadDefaultValues(serviceType: 'nest' | 'next'): ServiceConfig {
+function loadHelmDefaults(serviceType: 'nest' | 'next'): ServiceConfig {
   const helmChartPath = getHelmChartPath(serviceType);
   const valuesPath = path.join(helmChartPath, 'values.yaml');
-
-  log(
-    `Loading default values from ${HELM_CHART_MAPPING[serviceType]}/values.yaml`,
-    'debug',
-  );
-
   const content = fs.readFileSync(valuesPath, 'utf-8');
   return yaml.parse(content) as ServiceConfig;
-}
-
-function loadEnvironmentOverrides(
-  serviceType: 'nest' | 'next',
-): Record<string, Partial<ServiceConfig>> {
-  const helmChartPath = getHelmChartPath(serviceType);
-  const overridesPath = path.join(helmChartPath, 'environment-overrides.yaml');
-
-  log(
-    `Loading environment overrides from ${HELM_CHART_MAPPING[serviceType]}/environment-overrides.yaml`,
-    'debug',
-  );
-
-  const content = fs.readFileSync(overridesPath, 'utf-8');
-  return yaml.parse(content) as Record<string, Partial<ServiceConfig>>;
 }
 
 function loadServiceConfig(serviceName: string): ServiceConfig {
@@ -100,55 +84,46 @@ function loadServiceConfig(serviceName: string): ServiceConfig {
   }
 
   const content = fs.readFileSync(serviceYamlPath, 'utf-8');
-  const config = yaml.parse(content) as ServiceConfig;
-
-  return config;
+  return yaml.parse(content) as ServiceConfig;
 }
 
+/**
+ * Генерирует финальные values для сервиса в указанном окружении.
+ *
+ * Порядок применения (от низшего приоритета к высшему):
+ * 1. values.yaml — базовые дефолты из helm chart
+ * 2. service.yaml (без overrides) — общий конфиг сервиса
+ * 3. service.yaml.overrides[env] — специфичные переопределения для окружения
+ */
 function generateValuesForService(
   serviceName: string,
   environment: string,
 ): ServiceConfig {
-  const result = getServiceByName(serviceName);
-  if (!result) {
+  const serviceInfo = getServiceByName(serviceName);
+  if (!serviceInfo) {
     throw new Error(`Service ${serviceName} not found in services.yaml`);
   }
 
+  // 1. Загружаем базовые дефолты из helm chart
+  const helmDefaults = loadHelmDefaults(serviceInfo.type);
+
+  // 2. Загружаем конфиг сервиса и отделяем overrides
   const serviceConfig = loadServiceConfig(serviceName);
+  const { overrides: serviceOverrides, ...serviceBaseConfig } = serviceConfig;
 
-  // Load defaults and overrides specific to service type
-  const defaultValues = loadDefaultValues(result.type);
-  const environmentOverrides = loadEnvironmentOverrides(result.type);
+  // 3. Получаем переопределения для конкретного окружения
+  const envOverrides = serviceOverrides?.[environment] ?? {};
 
-  // Start with defaults
-  let values: ServiceConfig = deepMerge({}, defaultValues);
+  // Применяем в правильном порядке
+  let values: ServiceConfig = { ...helmDefaults };
+  values = deepMerge(values, serviceBaseConfig);
+  values = deepMerge(values, envOverrides);
 
-  // Apply service-specific config (excluding overrides)
-  const { overrides, ...serviceConfigWithoutOverrides } = serviceConfig;
-  values = deepMerge(
-    values,
-    serviceConfigWithoutOverrides as Partial<ServiceConfig>,
-  );
-
-  // Apply environment overrides
-  const envOverrides = environmentOverrides[environment] ?? {};
-  if (Object.keys(envOverrides).length > 0) {
-    values = deepMerge(values, envOverrides as Partial<ServiceConfig>);
-  }
-
-  // Apply service-specific environment overrides from service.yaml
-  if (overrides?.[environment]) {
-    values = deepMerge(
-      values,
-      overrides[environment] as Partial<ServiceConfig>,
-    );
-  }
-
-  // Set NODE_ENV
-  if (values.env) {
-    values.env.NODE_ENV =
-      environment === 'development' ? 'development' : 'production';
-  }
+  // Устанавливаем NODE_ENV
+  values.env = {
+    ...values.env,
+    NODE_ENV: environment === 'development' ? 'development' : 'production',
+  };
 
   return values;
 }
@@ -159,10 +134,13 @@ function ensureDirectoryExists(dirPath: string): void {
   }
 }
 
-function loadTemplate(): Handlebars.TemplateDelegate {
-  const templatePath = path.join(__dirname, 'templates/values.hbs');
-  const templateContent = fs.readFileSync(templatePath, 'utf-8');
-  return Handlebars.compile(templateContent);
+function generateFileHeader(serviceName: string, environment: string): string {
+  return [
+    `# This file is automatically generated and should not be edited manually!`,
+    `# Generated values for ${serviceName} in ${environment} environment`,
+    `# Source: services/${serviceName}/service.yaml`,
+    '',
+  ].join('\n');
 }
 
 function writeValuesFile(
@@ -174,15 +152,9 @@ function writeValuesFile(
   ensureDirectoryExists(overridesDir);
 
   const outputPath = path.join(overridesDir, `${serviceName}.yaml`);
-
-  const template = loadTemplate();
-
-  const output = template({
-    serviceName,
-    environment,
-    timestamp: new Date().toISOString().split('T')[0],
-    ...values,
-  });
+  const header = generateFileHeader(serviceName, environment);
+  const yamlContent = yaml.stringify(values, { indent: 2 });
+  const output = header + yamlContent;
 
   fs.writeFileSync(outputPath, output, 'utf-8');
 
@@ -192,7 +164,6 @@ function writeValuesFile(
 
 export function generateValuesForAllServices(): void {
   log('Starting values generation process', 'info');
-  log('', 'info');
 
   const services = loadServices();
   const nestServices = services.nest || [];
@@ -212,7 +183,6 @@ export function generateValuesForAllServices(): void {
       'info',
     );
   }
-  log('', 'info');
 
   let successCount = 0;
   let errorCount = 0;
@@ -233,10 +203,8 @@ export function generateValuesForAllServices(): void {
         errorCount++;
       }
     }
-    log('', 'info');
   }
 
-  log('', 'info');
   log('Generation summary:', 'info');
   log(`  Total files generated: ${successCount}`, 'success');
   if (errorCount > 0) {

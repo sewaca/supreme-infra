@@ -1,5 +1,3 @@
-replicaCount: 2
-
 image:
   repository: ""
   # tag will be provided externally during CD deployment

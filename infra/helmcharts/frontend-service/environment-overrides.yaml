@@ -2,9 +2,8 @@
 # These values override the defaults for each environment
 
 development:
-  replicaCount: 1
   autoscaling:
-    enabled: false
+    enabled: true
   resources:
     limits:
       cpu: 200m
@@ -14,7 +13,6 @@ development:
       memory: 64Mi
 
 production:
-  replicaCount: 3
   autoscaling:
     enabled: true
     minReplicas: 3
