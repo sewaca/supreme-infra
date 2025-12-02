@@ -472,11 +472,10 @@ jobs:
 
           if [ "$IS_ROLLBACK" = "true" ]; then
             # For rollback: create unique tag with hash
-            SALT="Rollback ${SERVICE_NAME} to ${VERSION}"
-            TIMESTAMP=$(date +%s)
-            HASH=$(echo -n "${SALT}${TIMESTAMP}" | sha256sum | head -c 8)
-            TAG_NAME="${SERVICE_NAME}-rollback-v${VERSION}-${HASH}"
             RELEASE_NAME="Rollback ${SERVICE_NAME} to v${VERSION}"
+            TIMESTAMP=$(date +%s)
+            HASH=$(echo -n "${RELEASE_NAME}${TIMESTAMP}" | sha256sum | head -c 8)
+            TAG_NAME="${SERVICE_NAME}-rollback-v${VERSION}-${HASH}"
           else
             TAG_NAME="${SERVICE_NAME}-v${VERSION}"
             RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}"
