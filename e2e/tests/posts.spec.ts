@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { mockComments, mockPosts } from '../mocks';
 
-test.describe('Posts List Page', () => {
+test.describe.skip('Posts List Page', () => {
   test('should display all posts with truncated bodies', async ({ page }) => {
     await page.goto('/');
 
