@@ -33,9 +33,9 @@ jobs:
         run: |
           BRANCH_NAME="${{ github.ref_name }}"
           SERVICE_NAME="${{ github.event.inputs.service }}"
-          
+
           echo "Workflow triggered from branch: $BRANCH_NAME"
-          
+
           # Check if this is a release branch (rollback) or main branch (normal release)
           if [[ "$BRANCH_NAME" =~ ^releases/production/${SERVICE_NAME}-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
@@ -104,7 +104,7 @@ jobs:
 
   get-latest-release-version:
     name: Get latest release version for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services]
+    needs: [ detect-release-mode, prepare-services ]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.save-output.outputs.version }}
@@ -125,12 +125,12 @@ jobs:
         run: |
           # Get all tags for this service, sorted by version
           ALL_TAGS=$(git tag -l "${SERVICE_NAME}-v*" 2>/dev/null | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
-          
+
           echo "All tags for ${SERVICE_NAME}:"
           echo "$ALL_TAGS"
-          
+
           LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
-          
+
           if [ -z "$LATEST_TAG" ]; then
             VERSION="0.0.0"
             RELEASE_TAG=""
@@ -172,7 +172,7 @@ jobs:
 
   calculate-new-version:
     name: Calculate new version for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, get-latest-release-version]
+    needs: [ detect-release-mode, prepare-services, get-latest-release-version ]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.save-output.outputs.version }}
@@ -283,7 +283,7 @@ jobs:
 
   security-checks:
     name: Security checks for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services]
+    needs: [ detect-release-mode, prepare-services ]
     if: needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
     strategy:
@@ -307,7 +307,13 @@ jobs:
 
   build-image-to-docker-hub:
     name: Build and push image for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, security-checks, calculate-new-version]
+    needs:
+      [
+        detect-release-mode,
+        prepare-services,
+        security-checks,
+        calculate-new-version
+      ]
     if: needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
     strategy:
@@ -352,7 +358,8 @@ jobs:
           context: .
           file: ./services/${{ matrix.service-name }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v${{ steps.get-version.outputs.version }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{
+            matrix.service-name }}-v${{ steps.get-version.outputs.version }}
           cache-to: type=inline
 
   # ============================================
@@ -361,7 +368,13 @@ jobs:
 
   create-release-branch:
     name: Create release branch for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, calculate-new-version, build-image-to-docker-hub]
+    needs:
+      [
+        detect-release-mode,
+        prepare-services,
+        calculate-new-version,
+        build-image-to-docker-hub
+      ]
     if: |
       always() &&
       needs.calculate-new-version.result == 'success' &&
@@ -421,7 +434,13 @@ jobs:
 
   create-github-release:
     name: Create GitHub release for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch]
+    needs:
+      [
+        detect-release-mode,
+        prepare-services,
+        calculate-new-version,
+        create-release-branch
+      ]
     if: |
       always() &&
       needs.create-release-branch.result == 'success'
@@ -522,7 +541,14 @@ jobs:
 
   deploy-canary:
     name: Deploy canary for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, create-github-release]
+    needs:
+      [
+        detect-release-mode,
+        prepare-services,
+        calculate-new-version,
+        create-release-branch,
+        create-github-release
+      ]
     if: |
       always() &&
       needs.create-release-branch.result == 'success' &&
@@ -584,7 +610,13 @@ jobs:
 
   approve-canary:
     name: Approve canary promotion to production
-    needs: [detect-release-mode, prepare-services, deploy-canary, calculate-new-version]
+    needs:
+      [
+        detect-release-mode,
+        prepare-services,
+        deploy-canary,
+        calculate-new-version
+      ]
     if: |
       always() &&
       needs.deploy-canary.result == 'success' &&
@@ -612,12 +644,13 @@ jobs:
           secret: ${{ secrets.GITHUB_TOKEN }}
           approvers: ${{ github.actor }}
           minimum-approvals: 1
-          issue-title: "Approve canary promotion: ${{ github.event.inputs.service }} v${{ steps.get-version.outputs.version }}"
+          issue-title: "Approve canary promotion: ${{ github.event.inputs.service }} v${{
+            steps.get-version.outputs.version }}"
           issue-body: |
             Canary deployment completed for **${{ github.event.inputs.service }}** version **v${{ steps.get-version.outputs.version }}**.
-            
+
             Please verify the canary pods are working correctly before approving promotion to production.
-            
+
             **To approve:** Comment `approve` or `lgtm`
             **To deny:** Comment `deny`
           exclude-workflow-initiator-as-approver: false
@@ -629,7 +662,15 @@ jobs:
 
   promote-to-production:
     name: Promote to production for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, create-github-release, approve-canary]
+    needs:
+      [
+        detect-release-mode,
+        prepare-services,
+        calculate-new-version,
+        create-release-branch,
+        create-github-release,
+        approve-canary
+      ]
     if: |
       always() &&
       needs.create-release-branch.result == 'success' &&
