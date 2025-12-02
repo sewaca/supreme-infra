@@ -1,0 +1,47 @@
+name: 'Setup Yandex Cloud'
+description: 'Install and configure Yandex Cloud CLI with Kubernetes access'
+
+inputs:
+  yc-sa-json-credentials:
+    description: 'Yandex Cloud service account JSON credentials'
+    required: true
+  yc-cloud-id:
+    description: 'Yandex Cloud ID'
+    required: true
+  yc-folder-id:
+    description: 'Yandex Cloud folder ID'
+    required: true
+  yc-k8s-cluster-id:
+    description: 'Kubernetes cluster ID'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Yandex Cloud CLI
+      shell: bash
+      run: |
+        curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+        echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
+
+    - name: Configure Yandex Cloud CLI
+      shell: bash
+      run: |
+        echo '${{ inputs.yc-sa-json-credentials }}' > key.json
+        $HOME/yandex-cloud/bin/yc config profile create sa-profile
+        $HOME/yandex-cloud/bin/yc config set service-account-key key.json
+        $HOME/yandex-cloud/bin/yc version
+        rm key.json
+
+    - name: Get Kubernetes config
+      shell: bash
+      run: |
+        echo '${{ inputs.yc-sa-json-credentials }}' > sa-key.json
+        $HOME/yandex-cloud/bin/yc config profile create supreme-robot
+        $HOME/yandex-cloud/bin/yc config set service-account-key sa-key.json
+        $HOME/yandex-cloud/bin/yc config set cloud-id "${{ inputs.yc-cloud-id }}"
+        $HOME/yandex-cloud/bin/yc config set folder-id "${{ inputs.yc-folder-id }}"
+        $HOME/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials --id "${{ inputs.yc-k8s-cluster-id }}" --external --force --no-browser
+        rm sa-key.json
+        kubectl cluster-info
+

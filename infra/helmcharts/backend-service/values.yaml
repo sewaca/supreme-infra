@@ -78,3 +78,10 @@ strategy:
   rollingUpdate:
     maxUnavailable: 0
     maxSurge: 100%
+
+canary:
+  enabled: false
+  replicas: 1
+  image:
+    repository: ""
+    tag: ""
