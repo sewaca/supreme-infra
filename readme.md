@@ -23,6 +23,17 @@ All secrets you need are:
 * DOCKER_HUB_TOKEN – Access token for user, whos username was provided in DOCKER_HUB_USERNAME <br />
   With this token we push builded images to the regestry. So, sure we need **write** access <br />
   Format of secret is: `DOCKER_HUB_TOKEN=xxx_xxxxxxxxxxx`
+* YC_SA_JSON_CREDENTIALS – Yandex Cloud service account JSON credentials <br />
+  Required for Kubernetes deployments
+* YC_CLOUD_ID – Yandex Cloud ID
+* YC_FOLDER_ID – Yandex Cloud folder ID
+* YC_K8S_CLUSTER_ID – Kubernetes cluster ID in Yandex Cloud
+
+### GitHub Environments
+
+You need to create two environments in GitHub repository settings:
+* **canary** – Environment for canary deployments (can be auto-approved or with reviewers)
+* **production** – Environment with required reviewers for production promotion
 
 ## Infra:
 
@@ -46,11 +57,58 @@ It will make all neccessary tasks:
 3. Create release/production/{service_name}-v{service_version-tag}
 4. Build Docker image and upload it to [project registry](https://hub.docker.com/repository/docker/sewaca/supreme/general)
 5. Create GitHub release
-6. Deploy image into Yandex Cloud
+6. Deploy canary pods (50% of current replicas)
+7. Wait for manual approval
+8. Promote to production (update main deployment, remove canary)
 
 Edge-cases:
 * If you start release and there is 0 new commits since last release – pipeline will fall down
 * If you start release where presented only `chore` new changes – release will be called rollback and will not create new version in registry
+
+### Canary Deployments
+
+All releases go through a canary stage before full production deployment:
+
+1. **Canary Phase**: New version is deployed as canary pods (50% of current replica count)
+   - Old pods continue running
+   - Traffic is split between old and new pods
+   - Canary pods have label `app.kubernetes.io/variant: canary`
+
+2. **Manual Approval**: Pipeline waits for approval in `production` environment
+   - Review canary metrics and logs
+   - Approve to promote to production
+   - Reject/Cancel to keep old version
+
+3. **Promotion**: On approval, main deployment is updated and canary pods are removed
+
+4. **Cancellation**: If cancelled, canary pods will be cleaned up on next deployment
+
+### Rollback
+
+To rollback to a previous version:
+
+1. Go to [Create Release Pipeline](https://github.com/sewaca/supreme-infra/actions/workflows/cd.yml)
+2. Click "Run workflow"
+3. Select the service to rollback
+4. In **release_branch** field, enter the release branch name, e.g.:
+   ```
+   releases/production/frontend-3.1.5
+   ```
+5. Run the workflow
+
+**What happens during rollback:**
+1. Validates that the release branch exists
+2. Checks that Docker image for that version exists in registry
+3. Rebases the release branch onto main (to get fresh helm overrides)
+4. Creates a rollback GitHub release
+5. Deploys canary with the old version
+6. Waits for manual approval
+7. Promotes rollback to production
+
+**Important notes:**
+- The Docker image must exist in the registry for the rollback to work
+- Rebase ensures you get the latest infrastructure configuration
+- Rollback also goes through canary stage for safety
 
 ### Service overrides
 
@@ -62,6 +120,34 @@ So, if you want to generate overrides for your service (i.e. wanna see your serv
 1. Make sure your service is inside services config in right place.
 2. Run `pnpm ingra:generate` in root of monorepo
 3. Commit all changes
+
+### Helm Charts
+
+We use Helm for Kubernetes deployments. Charts are located in `infra/helmcharts/`:
+
+- `backend-service/` – Chart for NestJS services
+- `frontend-service/` – Chart for Next.js services
+
+Each service has its overrides in `infra/overrides/{environment}/{service}.yaml`
+
+**Key Helm values:**
+```yaml
+image:
+  repository: sewaca/supreme
+  tag: production-backend-v1.2.3
+
+canary:
+  enabled: false
+  replicas: 1
+  image:
+    repository: ""
+    tag: ""
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+```
 
 ### PR Titles
 
@@ -87,3 +173,15 @@ TODO: leave notes here
 We use pre-commit & biome lint checks to verify everything is okay. <br />
 Just commit your pretty code, with passed locally lint check. <br />
 Madara-robot will take care about everything another
+
+## Version Naming
+
+- **Normal release**: `{service}-v{major}.{minor}.{patch}` (e.g., `backend-v1.2.3`)
+- **Chore release**: `{service}-v{version}-{hash}` (e.g., `backend-v1.2.3-abc12345`)
+- **Rollback release**: `{service}-rollback-v{version}-{short-sha}` (e.g., `backend-rollback-v1.2.3-def456`)
+
+## Docker Image Naming
+
+Format: `{DOCKER_HUB_USERNAME}/supreme:production-{service}-v{version}`
+
+Example: `sewaca/supreme:production-backend-v1.2.3`

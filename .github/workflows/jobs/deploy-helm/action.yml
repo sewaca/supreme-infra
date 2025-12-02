@@ -1,0 +1,83 @@
+name: 'Deploy with Helm'
+description: 'Deploy service using Helm chart'
+
+inputs:
+  service-name:
+    description: 'Name of the service to deploy'
+    required: true
+  service-type:
+    description: 'Type of service (nest or next)'
+    required: true
+  version:
+    description: 'Version tag for the Docker image'
+    required: true
+  docker-hub-username:
+    description: 'Docker Hub username'
+    required: true
+  canary-enabled:
+    description: 'Enable canary deployment'
+    required: false
+    default: 'false'
+  canary-replicas:
+    description: 'Number of canary replicas'
+    required: false
+    default: '1'
+  atomic:
+    description: 'Use atomic deployment'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Deploy with Helm
+      shell: bash
+      run: |
+        SERVICE_NAME="${{ inputs.service-name }}"
+        SERVICE_TYPE="${{ inputs.service-type }}"
+        VERSION="${{ inputs.version }}"
+        DOCKER_HUB_USERNAME="${{ inputs.docker-hub-username }}"
+        CANARY_ENABLED="${{ inputs.canary-enabled }}"
+        CANARY_REPLICAS="${{ inputs.canary-replicas }}"
+        USE_ATOMIC="${{ inputs.atomic }}"
+
+        # Determine Helm chart path
+        if [ "$SERVICE_TYPE" = "nest" ]; then
+          CHART_PATH="./infra/helmcharts/backend-service"
+        elif [ "$SERVICE_TYPE" = "next" ]; then
+          CHART_PATH="./infra/helmcharts/frontend-service"
+        else
+          echo "Error: Unknown service type $SERVICE_TYPE"
+          exit 1
+        fi
+
+        OVERRIDES_FILE="./infra/overrides/production/$SERVICE_NAME.yaml"
+
+        echo "Deploying $SERVICE_NAME"
+        echo "Chart: $CHART_PATH"
+        echo "Version: $VERSION"
+        echo "Canary enabled: $CANARY_ENABLED"
+
+        # Build helm command
+        HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH -f $OVERRIDES_FILE"
+        HELM_CMD="$HELM_CMD --set image.tag=production-${SERVICE_NAME}-v${VERSION}"
+        HELM_CMD="$HELM_CMD --set image.repository=$DOCKER_HUB_USERNAME/supreme"
+        HELM_CMD="$HELM_CMD --set canary.enabled=$CANARY_ENABLED"
+
+        if [ "$CANARY_ENABLED" = "true" ]; then
+          HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
+          HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
+          HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
+        fi
+
+        HELM_CMD="$HELM_CMD --install --wait --timeout 5m"
+
+        if [ "$USE_ATOMIC" = "true" ]; then
+          HELM_CMD="$HELM_CMD --atomic"
+        fi
+
+        eval $HELM_CMD
+
+        echo "Deployment completed"
+        kubectl get pods -l app.kubernetes.io/name="$SERVICE_NAME"
+
