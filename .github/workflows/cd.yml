@@ -11,13 +11,6 @@ on:
           - backend
           - frontend
         default: 'backend'
-      release_branch:
-        description: 'Release branch for rollback (e.g.
-          releases/production/frontend-3.1.5). Leave empty for normal release
-          from main'
-        required: false
-        type: string
-        default: ''
 
 env:
   HELM_VERSION: 'v3.13.0'
@@ -38,29 +31,31 @@ jobs:
       - name: Detect release mode
         id: detect
         run: |
-          RELEASE_BRANCH="${{ github.event.inputs.release_branch }}"
+          BRANCH_NAME="${{ github.ref_name }}"
           SERVICE_NAME="${{ github.event.inputs.service }}"
-
-          if [ -n "$RELEASE_BRANCH" ]; then
+          
+          echo "Workflow triggered from branch: $BRANCH_NAME"
+          
+          # Check if this is a release branch (rollback) or main branch (normal release)
+          if [[ "$BRANCH_NAME" =~ ^releases/production/${SERVICE_NAME}-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            VERSION="${BASH_REMATCH[1]}"
             echo "Rollback mode detected"
-            echo "is_rollback=true" >> $GITHUB_OUTPUT
-            
-            VERSION=$(echo "$RELEASE_BRANCH" | sed -E "s|releases/production/${SERVICE_NAME}-([0-9]+\.[0-9]+\.[0-9]+)|\1|")
-            
-            if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-              echo "Error: Could not extract valid version from branch $RELEASE_BRANCH"
-              echo "Expected format: releases/production/${SERVICE_NAME}-X.Y.Z"
-              exit 1
-            fi
-            
             echo "Rollback version: $VERSION"
+            echo "is_rollback=true" >> $GITHUB_OUTPUT
             echo "rollback_version=$VERSION" >> $GITHUB_OUTPUT
-            echo "source_branch=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
-          else
+            echo "source_branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          elif [ "$BRANCH_NAME" = "main" ]; then
             echo "Normal release mode from main"
             echo "is_rollback=false" >> $GITHUB_OUTPUT
             echo "rollback_version=" >> $GITHUB_OUTPUT
             echo "source_branch=main" >> $GITHUB_OUTPUT
+          else
+            echo "Error: Workflow must be run from 'main' branch for normal release"
+            echo "       or from 'releases/production/{service}-{version}' branch for rollback"
+            echo ""
+            echo "Current branch: $BRANCH_NAME"
+            echo "Expected rollback branch format: releases/production/${SERVICE_NAME}-X.Y.Z"
+            exit 1
           fi
 
   prepare-services:
@@ -73,8 +68,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.detect-release-mode.outputs.source_branch }}
 
       - name: Set services list
         id: set-services
@@ -106,258 +99,16 @@ jobs:
           echo "service-type=$SERVICE_TYPE" >> $GITHUB_OUTPUT
 
   # ============================================
-  # ROLLBACK FLOW
-  # ============================================
-
-  validate-rollback:
-    name: Validate rollback for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'true'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.detect-release-mode.outputs.source_branch }}
-          fetch-depth: 0
-
-      - name: Validate rollback branch exists
-        run: |
-          BRANCH="${{ needs.detect-release-mode.outputs.source_branch }}"
-          if ! git rev-parse --verify "origin/$BRANCH" >/dev/null 2>&1; then
-            echo "Error: Branch $BRANCH does not exist"
-            exit 1
-          fi
-          echo "Branch $BRANCH exists and is valid"
-
-      - name: Check Docker image exists
-        env:
-          SERVICE_NAME: ${{ matrix.service-name }}
-          VERSION: ${{ needs.detect-release-mode.outputs.rollback_version }}
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-        run: |
-          IMAGE_TAG="production-${SERVICE_NAME}-v${VERSION}"
-          echo "Checking if Docker image exists: $DOCKER_HUB_USERNAME/supreme:$IMAGE_TAG"
-
-          TOKEN=$(curl -s "https://hub.docker.com/v2/users/login/" \
-            -H "Content-Type: application/json" \
-            -d '{"username": "'"$DOCKER_HUB_USERNAME"'", "password": "'"$DOCKER_HUB_TOKEN"'"}' | jq -r .token)
-
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
-            "https://hub.docker.com/v2/repositories/$DOCKER_HUB_USERNAME/supreme/tags/$IMAGE_TAG" \
-            -H "Authorization: Bearer $TOKEN")
-
-          if [ "$RESPONSE" != "200" ]; then
-            echo "Error: Docker image $DOCKER_HUB_USERNAME/supreme:$IMAGE_TAG not found!"
-            exit 1
-          fi
-
-          echo "Docker image found: $DOCKER_HUB_USERNAME/supreme:$IMAGE_TAG"
-
-  rebase-rollback-branch:
-    name: Rebase rollback branch onto main
-    needs: [ detect-release-mode, prepare-services, validate-rollback ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    strategy:
-      matrix:
-        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
-    steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure Git
-        run: |
-          git config --global user.email "246592117+madara-robot@users.noreply.github.com"
-          git config --global user.name "madara-robot"
-
-      - name: Rebase rollback branch onto main
-        env:
-          BRANCH: ${{ needs.detect-release-mode.outputs.source_branch }}
-        run: |
-          git fetch origin "$BRANCH"
-          git checkout "$BRANCH"
-          echo "Rebasing $BRANCH onto main..."
-          git rebase origin/main
-          git push origin "$BRANCH" --force
-          echo "Successfully rebased $BRANCH onto main"
-
-  create-rollback-release:
-    name: Create rollback GitHub release
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        validate-rollback,
-        rebase-rollback-branch
-      ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'true'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.detect-release-mode.outputs.source_branch }}
-
-      - name: Install GitHub CLI
-        uses: ./.github/workflows/jobs/install-github-cli
-
-      - name: Create rollback release
-        env:
-          SERVICE_NAME: ${{ matrix.service-name }}
-          VERSION: ${{ needs.detect-release-mode.outputs.rollback_version }}
-          SOURCE_BRANCH: ${{ needs.detect-release-mode.outputs.source_branch }}
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          COMMIT_SHA=$(git rev-parse HEAD)
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          TAG_NAME="${SERVICE_NAME}-rollback-v${VERSION}-${SHORT_SHA}"
-          RELEASE_NAME="Rollback ${SERVICE_NAME} to v${VERSION}"
-
-          cat > release_body.txt << EOF
-          # $RELEASE_NAME
-
-          ## Rollback Details
-          - **Target Version:** v${VERSION}
-          - **Commit:** \`${COMMIT_SHA}\`
-          - **Source Branch:** ${SOURCE_BRANCH}
-
-          ## Docker Image
-          \`$DOCKER_HUB_USERNAME/supreme:production-${SERVICE_NAME}-v${VERSION}\`
-          EOF
-
-          if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Release $TAG_NAME already exists, skipping creation"
-            exit 0
-          fi
-
-          echo "Creating rollback release $TAG_NAME"
-          gh release create "$TAG_NAME" \
-            --title "$RELEASE_NAME" \
-            --notes-file release_body.txt \
-            --repo "$GITHUB_REPOSITORY" \
-            --target "$COMMIT_SHA"
-
-  deploy-rollback-canary:
-    name: Deploy rollback canary for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services, create-rollback-release ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'true'
-    runs-on: ubuntu-latest
-    environment: canary
-    strategy:
-      matrix:
-        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.detect-release-mode.outputs.source_branch }}
-
-      - name: Setup Yandex Cloud
-        uses: ./.github/workflows/jobs/setup-yandex-cloud
-        with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
-          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
-          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
-
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: ${{ env.HELM_VERSION }}
-
-      - name: Get current replica count
-        id: get-replicas
-        env:
-          SERVICE_NAME: ${{ matrix.service-name }}
-        run: |
-          CURRENT_REPLICAS=$(kubectl get deployment "$SERVICE_NAME" -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "2")
-          CANARY_REPLICAS=$(( (CURRENT_REPLICAS + 1) / 2 ))
-          [ "$CANARY_REPLICAS" -lt 1 ] && CANARY_REPLICAS=1
-          echo "Current replicas: $CURRENT_REPLICAS, Canary replicas (50%): $CANARY_REPLICAS"
-          echo "canary_replicas=$CANARY_REPLICAS" >> $GITHUB_OUTPUT
-
-      - name: Deploy canary with Helm
-        uses: ./.github/workflows/jobs/deploy-helm
-        with:
-          service-name: ${{ matrix.service-name }}
-          service-type: ${{ needs.prepare-services.outputs.service-type }}
-          version: ${{ needs.detect-release-mode.outputs.rollback_version }}
-          docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          canary-enabled: 'true'
-          canary-replicas: ${{ steps.get-replicas.outputs.canary_replicas }}
-
-  approve-rollback-canary:
-    name: Approve rollback canary promotion
-    needs: [ detect-release-mode, prepare-services, deploy-rollback-canary ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'true'
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Canary approved
-        run: echo "Rollback canary approved for promotion to production"
-
-  promote-rollback-to-production:
-    name: Promote rollback to production for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services, approve-rollback-canary ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'true'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.detect-release-mode.outputs.source_branch }}
-
-      - name: Setup Yandex Cloud
-        uses: ./.github/workflows/jobs/setup-yandex-cloud
-        with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
-          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
-          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
-
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: ${{ env.HELM_VERSION }}
-
-      - name: Promote to production
-        uses: ./.github/workflows/jobs/deploy-helm
-        with:
-          service-name: ${{ matrix.service-name }}
-          service-type: ${{ needs.prepare-services.outputs.service-type }}
-          version: ${{ needs.detect-release-mode.outputs.rollback_version }}
-          docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          canary-enabled: 'false'
-          atomic: 'true'
-
-  # ============================================
-  # NORMAL RELEASE FLOW
+  # VERSION CALCULATION
   # ============================================
 
   get-latest-release-version:
     name: Get latest release version for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    needs: [detect-release-mode, prepare-services]
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.save-output.outputs.version }}
+      release_tag: ${{ steps.save-output.outputs.release_tag }}
     strategy:
       matrix:
         service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
@@ -366,45 +117,28 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Install GitHub CLI
-        uses: ./.github/workflows/jobs/install-github-cli
 
       - name: Get latest release version
         id: get-version
         env:
           SERVICE_NAME: ${{ matrix.service-name }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ALL_RELEASES=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 100 || echo "")
-          LATEST_RELEASE=$(echo "$ALL_RELEASES" | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+\s" | head -n 1 | awk '{print $1}' || echo "")
-
-          if [ -z "$LATEST_RELEASE" ]; then
-            echo "Trying to find release via git tags..."
-            ALL_TAGS=$(git tag -l "${SERVICE_NAME}-v*" || echo "")
-            LATEST_NON_ROLLBACK=$(echo "$ALL_TAGS" | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 || echo "")
-            LATEST_ROLLBACK_TAG=$(echo "$ALL_TAGS" | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]+$" | sort -V | tail -n 1 || echo "")
-
-            if [ -n "$LATEST_NON_ROLLBACK" ]; then
-              LATEST_RELEASE="$LATEST_NON_ROLLBACK"
-            elif [ -n "$LATEST_ROLLBACK_TAG" ]; then
-              LATEST_RELEASE="$LATEST_ROLLBACK_TAG"
-            fi
-          fi
-
-          if [ -z "$LATEST_RELEASE" ]; then
+          # Get all tags for this service, sorted by version
+          ALL_TAGS=$(git tag -l "${SERVICE_NAME}-v*" 2>/dev/null | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
+          
+          echo "All tags for ${SERVICE_NAME}:"
+          echo "$ALL_TAGS"
+          
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+          
+          if [ -z "$LATEST_TAG" ]; then
             VERSION="0.0.0"
             RELEASE_TAG=""
-            echo "No previous release found for $SERVICE_NAME, using version: $VERSION"
+            echo "No previous release found for $SERVICE_NAME, starting from version: $VERSION"
           else
-            if echo "$LATEST_RELEASE" | grep -qE "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]+$"; then
-              VERSION=$(echo "$LATEST_RELEASE" | sed -E "s/^${SERVICE_NAME}-v([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/")
-            else
-              VERSION=$(echo "$LATEST_RELEASE" | sed "s/^${SERVICE_NAME}-v//")
-            fi
-            RELEASE_TAG="$LATEST_RELEASE"
-            echo "Latest release for $SERVICE_NAME: $LATEST_RELEASE, base version: $VERSION"
+            VERSION=$(echo "$LATEST_TAG" | sed "s/^${SERVICE_NAME}-v//")
+            RELEASE_TAG="$LATEST_TAG"
+            echo "Latest release for $SERVICE_NAME: $LATEST_TAG, version: $VERSION"
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -419,6 +153,15 @@ jobs:
           echo "$VERSION" > "version_${SERVICE_NAME}.txt"
           echo "$RELEASE_TAG" > "release_tag_${SERVICE_NAME}.txt"
 
+      - name: Save output for next jobs
+        id: save-output
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
+          RELEASE_TAG: ${{ steps.get-version.outputs.release_tag }}
+        run: |
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+
       - name: Upload version files
         uses: actions/upload-artifact@v4
         with:
@@ -429,9 +172,10 @@ jobs:
 
   calculate-new-version:
     name: Calculate new version for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services, get-latest-release-version ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    needs: [detect-release-mode, prepare-services, get-latest-release-version]
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.save-output.outputs.version }}
     strategy:
       matrix:
         service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
@@ -446,7 +190,20 @@ jobs:
         with:
           name: version-${{ matrix.service-name }}
 
+      - name: Handle rollback version
+        if: needs.detect-release-mode.outputs.is_rollback == 'true'
+        id: rollback-version
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          ROLLBACK_VERSION: ${{ needs.detect-release-mode.outputs.rollback_version }}
+        run: |
+          echo "Rollback mode: using version $ROLLBACK_VERSION"
+          echo "$ROLLBACK_VERSION" > "new_version_${SERVICE_NAME}.txt"
+          echo "" > "changelog_${SERVICE_NAME}.txt"
+          echo "version=$ROLLBACK_VERSION" >> $GITHUB_OUTPUT
+
       - name: Calculate new version from commits
+        if: needs.detect-release-mode.outputs.is_rollback == 'false'
         id: calculate-version
         env:
           SERVICE_NAME: ${{ matrix.service-name }}
@@ -454,53 +211,63 @@ jobs:
           CURRENT_VERSION=$(cat "version_${SERVICE_NAME}.txt")
           RELEASE_TAG=$(cat "release_tag_${SERVICE_NAME}.txt")
 
+          echo "Current version: $CURRENT_VERSION"
+          echo "Release tag: $RELEASE_TAG"
+
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
 
           if [ -z "$RELEASE_TAG" ]; then
+            echo "No previous release tag, getting all commits"
             COMMITS=$(git log --pretty=format:"%s" --reverse)
           else
-            COMMITS=$(git log $RELEASE_TAG..HEAD --pretty=format:"%s" --reverse || git log --pretty=format:"%s" --reverse)
+            echo "Getting commits since $RELEASE_TAG"
+            COMMITS=$(git log "$RELEASE_TAG"..HEAD --pretty=format:"%s" --reverse 2>/dev/null || git log --pretty=format:"%s" --reverse)
           fi
 
-          HAS_MAJOR=false HAS_MINOR=false HAS_FIX=false HAS_CHORE=false
+          echo "Commits to analyze:"
+          echo "$COMMITS"
+
+          HAS_MAJOR=false
+          HAS_MINOR=false
+          HAS_FIX=false
           CHANGELOG=""
 
           while IFS= read -r commit_msg; do
             [ -z "$commit_msg" ] && continue
             CHANGELOG="${CHANGELOG}- ${commit_msg}\n"
             case "$commit_msg" in
-              major:*) HAS_MAJOR=true ;;
-              minor:*) HAS_MINOR=true ;;
-              fix:*) HAS_FIX=true ;;
-              chore:*) HAS_CHORE=true ;;
+              major:*|BREAKING*) HAS_MAJOR=true ;;
+              minor:*|feat:*) HAS_MINOR=true ;;
+              fix:*|patch:*) HAS_FIX=true ;;
             esac
           done <<< "$COMMITS"
 
-          IS_ROLLBACK=false ROLLBACK_HASH=""
-
-          if [ "$HAS_CHORE" = true ] && [ "$HAS_MAJOR" = false ] && [ "$HAS_MINOR" = false ] && [ "$HAS_FIX" = false ]; then
-            IS_ROLLBACK=true
-            ROLLBACK_HASH=$(date +%s | sha256sum | head -c 8)
-            NEW_VERSION="$CURRENT_VERSION"
-          elif [ "$HAS_MAJOR" = true ]; then
+          if [ "$HAS_MAJOR" = true ]; then
             NEW_VERSION="$((MAJOR + 1)).0.0"
           elif [ "$HAS_MINOR" = true ]; then
             NEW_VERSION="${MAJOR}.$((MINOR + 1)).0"
           elif [ "$HAS_FIX" = true ]; then
             NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
           else
-            NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+            # Default: increment patch
+            NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
           fi
 
-          echo "Current: $CURRENT_VERSION -> New: $NEW_VERSION"
+          echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "is_rollback=$IS_ROLLBACK" >> $GITHUB_OUTPUT
-          echo "rollback_hash=$ROLLBACK_HASH" >> $GITHUB_OUTPUT
 
           echo "$NEW_VERSION" > "new_version_${SERVICE_NAME}.txt"
-          echo "$IS_ROLLBACK" > "is_rollback_${SERVICE_NAME}.txt"
-          echo "$ROLLBACK_HASH" > "rollback_hash_${SERVICE_NAME}.txt"
           echo -e "$CHANGELOG" > "changelog_${SERVICE_NAME}.txt"
+
+      - name: Save output for next jobs
+        id: save-output
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          IS_ROLLBACK: ${{ needs.detect-release-mode.outputs.is_rollback }}
+        run: |
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
+          echo "Final version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Upload new version files
         uses: actions/upload-artifact@v4
@@ -508,13 +275,15 @@ jobs:
           name: new-version-${{ matrix.service-name }}
           path: |
             new_version_${{ matrix.service-name }}.txt
-            is_rollback_${{ matrix.service-name }}.txt
-            rollback_hash_${{ matrix.service-name }}.txt
             changelog_${{ matrix.service-name }}.txt
+
+  # ============================================
+  # SECURITY & BUILD (Skip for rollback)
+  # ============================================
 
   security-checks:
     name: Security checks for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services ]
+    needs: [detect-release-mode, prepare-services]
     if: needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
     strategy:
@@ -538,13 +307,7 @@ jobs:
 
   build-image-to-docker-hub:
     name: Build and push image for ${{ matrix.service-name }}
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        security-checks,
-        calculate-new-version
-      ]
+    needs: [detect-release-mode, prepare-services, security-checks, calculate-new-version]
     if: needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
     strategy:
@@ -567,7 +330,7 @@ jobs:
           VERSION=$(cat "new_version_${SERVICE_NAME}.txt" | tr -d '[:space:]')
 
           if [ -z "$VERSION" ] || ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Error: Invalid version format: $VERSION"
+            echo "Error: Invalid version format: '$VERSION'"
             exit 1
           fi
 
@@ -589,14 +352,20 @@ jobs:
           context: .
           file: ./services/${{ matrix.service-name }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{
-            matrix.service-name }}-v${{ steps.get-version.outputs.version }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{ matrix.service-name }}-v${{ steps.get-version.outputs.version }}
           cache-to: type=inline
+
+  # ============================================
+  # RELEASE BRANCH & GITHUB RELEASE
+  # ============================================
 
   create-release-branch:
     name: Create release branch for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services, calculate-new-version ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    needs: [detect-release-mode, prepare-services, calculate-new-version, build-image-to-docker-hub]
+    if: |
+      always() &&
+      needs.calculate-new-version.result == 'success' &&
+      (needs.build-image-to-docker-hub.result == 'success' || needs.detect-release-mode.outputs.is_rollback == 'true')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -607,6 +376,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.detect-release-mode.outputs.source_branch }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -620,16 +390,30 @@ jobs:
           git config --global user.email "246592117+madara-robot@users.noreply.github.com"
           git config --global user.name "madara-robot"
 
-      - name: Create release branch
+      - name: Create or update release branch
         env:
           SERVICE_NAME: ${{ matrix.service-name }}
+          IS_ROLLBACK: ${{ needs.detect-release-mode.outputs.is_rollback }}
         run: |
           VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
           BRANCH_NAME="releases/production/${SERVICE_NAME}-${VERSION}"
 
+          # Fetch all branches
+          git fetch origin
+
           if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
             echo "Branch $BRANCH_NAME already exists"
+            
+            # For rollback: rebase onto main
+            if [ "$IS_ROLLBACK" = "true" ]; then
+              echo "Rebasing $BRANCH_NAME onto main..."
+              git checkout "$BRANCH_NAME"
+              git rebase origin/main
+              git push origin "$BRANCH_NAME" --force
+              echo "Successfully rebased $BRANCH_NAME onto main"
+            fi
           else
+            echo "Creating new branch $BRANCH_NAME"
             git checkout -b "$BRANCH_NAME"
             git push -u origin "$BRANCH_NAME"
             echo "Created branch $BRANCH_NAME"
@@ -637,15 +421,11 @@ jobs:
 
   create-github-release:
     name: Create GitHub release for ${{ matrix.service-name }}
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        build-image-to-docker-hub,
-        calculate-new-version,
-        create-release-branch
-      ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch]
+    if: |
+      always() &&
+      needs.create-release-branch.result == 'success' &&
+      needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -669,22 +449,15 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
         run: |
           VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
-          IS_ROLLBACK=$(cat "is_rollback_${SERVICE_NAME}.txt" 2>/dev/null || echo "false")
-          ROLLBACK_HASH=$(cat "rollback_hash_${SERVICE_NAME}.txt" 2>/dev/null || echo "")
           CHANGELOG=$(cat "changelog_${SERVICE_NAME}.txt" 2>/dev/null || echo "")
 
-          if [ "$IS_ROLLBACK" = "true" ] && [ -n "$ROLLBACK_HASH" ]; then
-            TAG_NAME="${SERVICE_NAME}-v${VERSION}-${ROLLBACK_HASH}"
-            RELEASE_NAME="Rollback ${SERVICE_NAME} v${VERSION}"
-          else
-            TAG_NAME="${SERVICE_NAME}-v${VERSION}"
-            RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}"
-          fi
+          TAG_NAME="${SERVICE_NAME}-v${VERSION}"
+          RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}"
 
           echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
 
-            CHANGELOG_LINES=$(echo "$CHANGELOG" | wc -l)
+          CHANGELOG_LINES=$(echo "$CHANGELOG" | wc -l)
 
           {
             echo "$RELEASE_NAME"
@@ -730,20 +503,16 @@ jobs:
             --repo "$GITHUB_REPOSITORY"
 
   # ============================================
-  # CANARY DEPLOYMENT (Normal Release)
+  # CANARY DEPLOYMENT (Skip for rollback)
   # ============================================
 
   deploy-canary:
     name: Deploy canary for ${{ matrix.service-name }}
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        build-image-to-docker-hub,
-        create-github-release,
-        calculate-new-version
-      ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, create-github-release]
+    if: |
+      always() &&
+      needs.create-release-branch.result == 'success' &&
+      needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
     environment: canary
     strategy:
@@ -801,31 +570,38 @@ jobs:
 
   approve-canary:
     name: Approve canary promotion to production
-    needs: [ detect-release-mode, prepare-services, deploy-canary ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    needs: [detect-release-mode, prepare-services, deploy-canary]
+    if: |
+      always() &&
+      needs.deploy-canary.result == 'success' &&
+      needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
     environment: production
     steps:
       - name: Canary approved
         run: echo "Canary approved for promotion to production"
 
+  # ============================================
+  # PRODUCTION DEPLOYMENT
+  # ============================================
+
   promote-to-production:
     name: Promote to production for ${{ matrix.service-name }}
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        approve-canary,
-        calculate-new-version
-      ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, approve-canary]
+    if: |
+      always() &&
+      needs.create-release-branch.result == 'success' &&
+      (needs.approve-canary.result == 'success' || needs.detect-release-mode.outputs.is_rollback == 'true')
     runs-on: ubuntu-latest
+    environment: ${{ needs.detect-release-mode.outputs.is_rollback == 'true' && 'production' || '' }}
     strategy:
       matrix:
         service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.detect-release-mode.outputs.source_branch }}
 
       - name: Download new version file
         uses: actions/download-artifact@v4
