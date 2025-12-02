@@ -424,8 +424,7 @@ jobs:
     needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch]
     if: |
       always() &&
-      needs.create-release-branch.result == 'success' &&
-      needs.detect-release-mode.outputs.is_rollback == 'false'
+      needs.create-release-branch.result == 'success'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -447,12 +446,22 @@ jobs:
         env:
           SERVICE_NAME: ${{ matrix.service-name }}
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          IS_ROLLBACK: ${{ needs.detect-release-mode.outputs.is_rollback }}
         run: |
           VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
           CHANGELOG=$(cat "changelog_${SERVICE_NAME}.txt" 2>/dev/null || echo "")
 
-          TAG_NAME="${SERVICE_NAME}-v${VERSION}"
-          RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}"
+          if [ "$IS_ROLLBACK" = "true" ]; then
+            # For rollback: create unique tag with hash
+            SALT="Rollback ${SERVICE_NAME} to ${VERSION}"
+            TIMESTAMP=$(date +%s)
+            HASH=$(echo -n "${SALT}${TIMESTAMP}" | sha256sum | head -c 8)
+            TAG_NAME="${SERVICE_NAME}-rollback-v${VERSION}-${HASH}"
+            RELEASE_NAME="Rollback ${SERVICE_NAME} to v${VERSION}"
+          else
+            TAG_NAME="${SERVICE_NAME}-v${VERSION}"
+            RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}"
+          fi
 
           echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
@@ -460,10 +469,15 @@ jobs:
           CHANGELOG_LINES=$(echo "$CHANGELOG" | wc -l)
 
           {
-            echo "$RELEASE_NAME"
+            echo "# $RELEASE_NAME"
             echo ""
+            if [ "$IS_ROLLBACK" = "true" ]; then
+              echo "## ⚠️ Rollback"
+              echo "This is a rollback to a previous version."
+              echo ""
+            fi
             echo "## Changelog"
-            if [ -n "$CHANGELOG" ]; then
+            if [ -n "$CHANGELOG" ] && [ "$IS_ROLLBACK" != "true" ]; then
               if [ "$CHANGELOG_LINES" -gt 12 ]; then
                 echo "<details><summary>view full changelog</summary>"
                 echo ""
@@ -615,10 +629,11 @@ jobs:
 
   promote-to-production:
     name: Promote to production for ${{ matrix.service-name }}
-    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, approve-canary]
+    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, create-github-release, approve-canary]
     if: |
       always() &&
       needs.create-release-branch.result == 'success' &&
+      needs.create-github-release.result == 'success' &&
       (needs.approve-canary.result == 'success' || needs.detect-release-mode.outputs.is_rollback == 'true')
     runs-on: ubuntu-latest
     strategy:
