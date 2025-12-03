@@ -35,14 +35,29 @@ victoria-metrics-single:
                   names:
                     - default
             relabel_configs:
-              # Keep only pods with app=backend label
-              - source_labels: [__meta_kubernetes_pod_label_app]
+              # Keep only pods with prometheus.io/scrape=true annotation
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
                 action: keep
-                regex: backend
+                regex: true
+              # Keep only pods with app.kubernetes.io/name=backend-service label
+              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+                action: keep
+                regex: backend-service
+              # Use the port from prometheus.io/port annotation
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+                action: replace
+                target_label: __meta_kubernetes_pod_container_port_number
               # Set address to pod IP and metrics port
-              - source_labels: [__meta_kubernetes_pod_ip]
+              - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_pod_annotation_prometheus_io_port]
+                action: replace
                 target_label: __address__
-                replacement: ${1}:9464
+                regex: ([^:]+)(?::\d+)?;(\d+)
+                replacement: $1:$2
+              # Use path from annotation
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                action: replace
+                target_label: __metrics_path__
+                regex: (.+)
               # Add pod name label
               - source_labels: [__meta_kubernetes_pod_name]
                 target_label: pod
@@ -50,7 +65,7 @@ victoria-metrics-single:
               - source_labels: [__meta_kubernetes_namespace]
                 target_label: namespace
               # Add service label
-              - source_labels: [__meta_kubernetes_pod_label_app]
+              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
                 target_label: service
           
           # Frontend service (если понадобится)
@@ -61,17 +76,37 @@ victoria-metrics-single:
                   names:
                     - default
             relabel_configs:
-              - source_labels: [__meta_kubernetes_pod_label_app]
+              # Keep only pods with prometheus.io/scrape=true annotation
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
                 action: keep
-                regex: frontend
-              - source_labels: [__meta_kubernetes_pod_ip]
+                regex: true
+              # Keep only pods with app.kubernetes.io/name=frontend-service label
+              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+                action: keep
+                regex: frontend-service
+              # Use the port from prometheus.io/port annotation
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+                action: replace
+                target_label: __meta_kubernetes_pod_container_port_number
+              # Set address to pod IP and metrics port
+              - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_pod_annotation_prometheus_io_port]
+                action: replace
                 target_label: __address__
-                replacement: ${1}:9464
+                regex: ([^:]+)(?::\d+)?;(\d+)
+                replacement: $1:$2
+              # Use path from annotation
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                action: replace
+                target_label: __metrics_path__
+                regex: (.+)
+              # Add pod name label
               - source_labels: [__meta_kubernetes_pod_name]
                 target_label: pod
+              # Add namespace label
               - source_labels: [__meta_kubernetes_namespace]
                 target_label: namespace
-              - source_labels: [__meta_kubernetes_pod_label_app]
+              # Add service label
+              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
                 target_label: service
     
     # Service configuration
