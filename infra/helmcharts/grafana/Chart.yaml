@@ -2,7 +2,7 @@ apiVersion: v2
 name: grafana
 description: Grafana for metrics visualization
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: "11.4.0"
 
 dependencies:
