@@ -1,0 +1,88 @@
+grafana:
+  # Admin credentials
+  adminUser: admin
+  adminPassword: admin
+  
+  # Persistence
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: ""
+  
+  # Resources
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  
+  # Service configuration - отдельный LoadBalancer
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 3000
+    annotations: {}
+  
+  # Datasources
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: VictoriaMetrics
+          type: prometheus
+          url: http://victoria-metrics-victoria-metrics-single-server.monitoring.svc.cluster.local:8428
+          access: proxy
+          isDefault: true
+          editable: true
+          jsonData:
+            timeInterval: 15s
+            httpMethod: POST
+  
+  # Dashboards providers
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+  
+  # Dashboards
+  dashboardsConfigMaps:
+    default: grafana-dashboards
+  
+  # Grafana ini configuration
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s/"
+    analytics:
+      check_for_updates: false
+    alerting:
+      enabled: true
+    unified_alerting:
+      enabled: true
+  
+  # Plugins
+  plugins:
+    - grafana-piechart-panel
+  
+  # Environment variables
+  env: {}
+  
+  # Ingress (опционально)
+  ingress:
+    enabled: false
+    annotations: {}
+    hosts:
+      - host: grafana.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+

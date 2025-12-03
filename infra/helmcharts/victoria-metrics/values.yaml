@@ -1,0 +1,93 @@
+victoria-metrics-single:
+  server:
+    # Retention period для метрик
+    retentionPeriod: 30d
+    
+    # Persistent storage
+    persistentVolume:
+      enabled: true
+      size: 30Gi
+      storageClass: ""
+    
+    # Resources
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    
+    # Scraping configuration
+    scrape:
+      enabled: true
+      config:
+        global:
+          scrape_interval: 15s
+          scrape_timeout: 10s
+          evaluation_interval: 15s
+        
+        scrape_configs:
+          # Backend service
+          - job_name: 'backend'
+            kubernetes_sd_configs:
+              - role: pod
+                namespaces:
+                  names:
+                    - default
+            relabel_configs:
+              # Keep only pods with app=backend label
+              - source_labels: [__meta_kubernetes_pod_label_app]
+                action: keep
+                regex: backend
+              # Set address to pod IP and metrics port
+              - source_labels: [__meta_kubernetes_pod_ip]
+                target_label: __address__
+                replacement: ${1}:9464
+              # Add pod name label
+              - source_labels: [__meta_kubernetes_pod_name]
+                target_label: pod
+              # Add namespace label
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: namespace
+              # Add service label
+              - source_labels: [__meta_kubernetes_pod_label_app]
+                target_label: service
+          
+          # Frontend service (если понадобится)
+          - job_name: 'frontend'
+            kubernetes_sd_configs:
+              - role: pod
+                namespaces:
+                  names:
+                    - default
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_pod_label_app]
+                action: keep
+                regex: frontend
+              - source_labels: [__meta_kubernetes_pod_ip]
+                target_label: __address__
+                replacement: ${1}:9464
+              - source_labels: [__meta_kubernetes_pod_name]
+                target_label: pod
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: namespace
+              - source_labels: [__meta_kubernetes_pod_label_app]
+                target_label: service
+    
+    # Service configuration
+    service:
+      type: ClusterIP
+      port: 8428
+      annotations: {}
+    
+    # Ingress (опционально)
+    ingress:
+      enabled: false
+      annotations: {}
+      hosts:
+        - host: victoria-metrics.example.com
+          paths:
+            - path: /
+              pathType: Prefix
+

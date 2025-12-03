@@ -12,6 +12,9 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 4000
+metrics:
+  enabled: true
+  port: 9464
 env:
   PORT: "4000"
   NODE_ENV: development

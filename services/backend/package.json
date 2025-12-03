@@ -16,6 +16,11 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/sdk-node": "catalog:",
+    "@opentelemetry/auto-instrumentations-node": "catalog:",
+    "@opentelemetry/exporter-prometheus": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
     "@types/node": "catalog:",
     "@nestjs/cli": "catalog:",
     "@nestjs/common": "catalog:",
