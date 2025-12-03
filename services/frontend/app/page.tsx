@@ -1,15 +1,25 @@
 import { backendApi } from '../src/shared/api/backendApi';
-import { PostsListPage } from '../src/views/PostsListPage/PostsListPage';
+import { RecipesListPage } from '../src/views/RecipesListPage/RecipesListPage';
 
 interface HomeProps {
-  searchParams: Promise<{ userId?: string }>;
+  searchParams: Promise<{ search?: string; ingredients?: string }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
-  const userId = params.userId ? Number.parseInt(params.userId, 10) : undefined;
+  const searchQuery = params.search;
+  const ingredientsString = params.ingredients;
+  const ingredientsArray = ingredientsString
+    ? ingredientsString.split(',').map((i) => i.trim())
+    : undefined;
 
-  const posts = await backendApi.getPostsSummary(userId);
+  const recipes = await backendApi.getRecipes(searchQuery, ingredientsArray);
 
-  return <PostsListPage posts={posts} userId={userId} />;
+  return (
+    <RecipesListPage
+      recipes={recipes}
+      searchQuery={searchQuery}
+      selectedIngredients={ingredientsArray}
+    />
+  );
 }

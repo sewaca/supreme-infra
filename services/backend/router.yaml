@@ -3,7 +3,15 @@ type: nest
 routes:
   - path: /api/status
     method: GET
-  - path: /posts/[^/]+
+  - path: /auth/login
+    method: POST
+  - path: /auth/me
     method: GET
-  - path: /posts/get-summary
+  - path: /auth/register
+    method: POST
+  - path: /recipes
     method: GET
+  - path: /recipes/[^/]+
+    method: GET
+  - path: /recipes/[^/]+/like
+    method: POST

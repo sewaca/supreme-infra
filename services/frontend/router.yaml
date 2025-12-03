@@ -3,7 +3,13 @@ type: next
 routes:
   - path: /
     method: GET
-  - path: /[^/]+
-    method: GET
   - path: /api/status
+    method: GET
+  - path: /login
+    method: GET
+  - path: /profile
+    method: GET
+  - path: /recipes/[^/]+
+    method: GET
+  - path: /register
     method: GET
