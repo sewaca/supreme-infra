@@ -19,6 +19,12 @@ spec:
     metadata:
       labels:
         {{- include "service.selectorLabels" . | nindent 8 }}
+      {{- if .Values.metrics.enabled }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+        prometheus.io/path: "/metrics"
+      {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -28,6 +34,11 @@ spec:
         - name: http
           containerPort: {{ .Values.service.targetPort }}
           protocol: TCP
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          containerPort: {{ .Values.metrics.port }}
+          protocol: TCP
+        {{- end }}
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key }}
