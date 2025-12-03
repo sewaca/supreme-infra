@@ -16,13 +16,13 @@
   "dependencies": {
     "@types/node": "catalog:",
     "@types/react": "catalog:",
-    "classnames": "^2.5.1",
-    "js-cookie": "^3.0.5",
+    "classnames": "catalog:",
+    "js-cookie": "catalog:",
     "next": "catalog:",
-    "react": "catalog:",
     "react-dom": "catalog:",
-    "react-markdown": "^10.1.0",
-    "remark-gfm": "^4.0.1",
+    "react-markdown": "catalog:",
+    "react": "catalog:",
+    "remark-gfm": "catalog:",
     "typescript": "catalog:"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
-    "@types/js-cookie": "^3.0.6",
+    "@types/js-cookie": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
