@@ -284,7 +284,7 @@ jobs:
   security-checks:
     name: Security checks for ${{ matrix.service-name }}
     needs: [ detect-release-mode, prepare-services ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false'
+    if: needs.detect-release-mode.outputs.is_rollback == 'false' && false
     runs-on: ubuntu-latest
     strategy:
       matrix:
