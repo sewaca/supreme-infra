@@ -20,6 +20,8 @@ async function bootstrap() {
       'http://localhost:3001',
       'http://127.0.0.1:3000',
       'http://127.0.0.1:3001',
+      'http://84.252.134.216',
+      'https://84.252.134.216',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
