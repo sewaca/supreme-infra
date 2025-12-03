@@ -923,9 +923,7 @@
             "minVizWidth": 75,
             "orientation": "auto",
             "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
+              "calcs": ["lastNotNull"],
               "fields": "",
               "values": false
             },
@@ -980,15 +978,11 @@
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "values": [
-                "value"
-              ]
+              "values": ["value"]
             },
             "pieType": "pie",
             "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
+              "calcs": ["lastNotNull"],
               "fields": "",
               "values": false
             },
@@ -1078,10 +1072,7 @@
           "id": 5,
           "options": {
             "legend": {
-              "calcs": [
-                "mean",
-                "max"
-              ],
+              "calcs": ["mean", "max"],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true
@@ -1172,10 +1163,7 @@
           "id": 6,
           "options": {
             "legend": {
-              "calcs": [
-                "mean",
-                "max"
-              ],
+              "calcs": ["mean", "max"],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true
@@ -1208,10 +1196,7 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": [
-    "backend",
-    "opentelemetry"
-  ],
+  "tags": ["backend", "opentelemetry"],
   "templating": {
     "list": []
   },
