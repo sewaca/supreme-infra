@@ -39,10 +39,6 @@ victoria-metrics-single:
               - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
                 action: keep
                 regex: true
-              # Keep only pods with app.kubernetes.io/name=backend-service label
-              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-                action: keep
-                regex: backend-service
               # Use the port from prometheus.io/port annotation
               - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
                 action: replace
@@ -80,10 +76,6 @@ victoria-metrics-single:
               - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
                 action: keep
                 regex: true
-              # Keep only pods with app.kubernetes.io/name=frontend-service label
-              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-                action: keep
-                regex: frontend-service
               # Use the port from prometheus.io/port annotation
               - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
                 action: replace
