@@ -281,29 +281,29 @@ jobs:
   # SECURITY & BUILD (Skip for rollback)
   # ============================================
 
-  security-checks:
-    name: Security checks for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services ]
-    if: needs.detect-release-mode.outputs.is_rollback == 'false' && false
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # security-checks:
+  #   name: Security checks for ${{ matrix.service-name }}
+  #   needs: [ detect-release-mode, prepare-services ]
+  #   if: needs.detect-release-mode.outputs.is_rollback == 'false'
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Security scan check for NestJS
-        if: needs.prepare-services.outputs.service-type == 'nest'
-        uses: ./.github/workflows/jobs/nest-application-security-check
-        with:
-          service-name: ${{ matrix.service-name }}
+  #     - name: Security scan check for NestJS
+  #       if: needs.prepare-services.outputs.service-type == 'nest'
+  #       uses: ./.github/workflows/jobs/nest-application-security-check
+  #       with:
+  #         service-name: ${{ matrix.service-name }}
 
-      - name: Security scan check for Next.js
-        if: needs.prepare-services.outputs.service-type == 'next'
-        uses: ./.github/workflows/jobs/next-application-security-check
-        with:
-          service-name: ${{ matrix.service-name }}
+  #     - name: Security scan check for Next.js
+  #       if: needs.prepare-services.outputs.service-type == 'next'
+  #       uses: ./.github/workflows/jobs/next-application-security-check
+  #       with:
+  #         service-name: ${{ matrix.service-name }}
 
   build-image-to-docker-hub:
     name: Build and push image for ${{ matrix.service-name }}
@@ -311,7 +311,7 @@ jobs:
       [
         detect-release-mode,
         prepare-services,
-        security-checks,
+        # security-checks,
         calculate-new-version
       ]
     if: needs.detect-release-mode.outputs.is_rollback == 'false'
