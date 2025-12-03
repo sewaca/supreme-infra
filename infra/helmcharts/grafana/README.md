@@ -96,11 +96,17 @@ absent(up{service="backend"}) == 1
 ## Обновление дашбордов
 
 ```bash
-# Обновить ConfigMap с дашбордами
-kubectl create configmap grafana-dashboards \
-  --from-file=./infra/helmcharts/grafana/dashboards/ \
-  --namespace monitoring \
-  --dry-run=client -o yaml | kubectl apply -f -
+# # Обновить ConfigMap с дашбордами
+# kubectl create configmap grafana-dashboards \
+#   --from-file=./infra/helmcharts/grafana/dashboards/ \
+#   --namespace monitoring \
+#   --dry-run=client -o yaml | kubectl apply -f -
+
+```
+kubectl create configmap grafana-dashboards --from-file=./infra/helmcharts/grafana/dashboards/ --namespace monitoring --dry-run=client -o yaml > kk.yaml
+kubectl apply -f kk.yaml
+kubectl rollout restart deployment grafana -n monitoring 
+```
 
 # Перезапустить Grafana pod
 kubectl rollout restart deployment -n monitoring grafana
