@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+
+never use kubectl, helm and etc without asking me
+also, dont write documentation, until i will ask about this
