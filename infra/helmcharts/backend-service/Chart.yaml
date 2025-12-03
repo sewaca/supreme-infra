@@ -2,6 +2,6 @@ apiVersion: v2
 name: backend-service
 description: Universal Helm chart for backend services (NestJS applications)
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "1.0.0"
 
