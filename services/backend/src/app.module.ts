@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { PostsModule } from './features/Posts/Posts.module';
+import { AuthModule } from './features/Auth/Auth.module';
+import { RecipesModule } from './features/Recipes/Recipes.module';
 import { HealthController } from './health.controller';
 
 @Module({
-  imports: [PostsModule],
+  imports: [RecipesModule, AuthModule],
   controllers: [HealthController],
   providers: [],
 })
