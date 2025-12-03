@@ -60,3 +60,19 @@ catalog:
   '@opentelemetry/auto-instrumentations-node': ^0.67.2
   '@opentelemetry/exporter-prometheus': ^0.56.0
   '@opentelemetry/sdk-metrics': ^1.29.0
+
+  # Backend specific
+  '@nestjs/jwt': ^11.0.1
+  '@nestjs/passport': ^11.0.5
+  '@types/passport-jwt': ^4.0.1
+  '@types/bcryptjs': ^3.0.0
+  bcryptjs: ^3.0.3
+  passport: ^0.7.0
+  passport-jwt: ^4.0.1
+
+  # Frontend specific
+  classnames: ^2.5.1
+  js-cookie: ^3.0.5
+  '@types/js-cookie': ^3.0.6
+  react-markdown: ^10.1.0
+  remark-gfm: ^4.0.1
