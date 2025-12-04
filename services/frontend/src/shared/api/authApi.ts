@@ -1,6 +1,9 @@
 import { AuthResponse } from '../lib/auth.client';
 
-// const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+const isProduction = process.env.NODE_ENV === 'production';
+const baseUrl = isProduction
+  ? 'http://84.252.134.216/api'
+  : 'http://localhost:4000';
 
 export interface RegisterData {
   email: string;
@@ -14,9 +17,6 @@ export interface LoginData {
 }
 
 export async function register(data: RegisterData): Promise<AuthResponse> {
-  // todo: fixme
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || 'http://84.252.134.216/api';
   const response = await fetch(`${baseUrl}/auth/register`, {
     method: 'POST',
     headers: {
@@ -34,9 +34,6 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
 }
 
 export async function login(data: LoginData): Promise<AuthResponse> {
-  // TODO: fixme
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || 'http://84.252.134.216/api';
   const response = await fetch(`${baseUrl}/auth/login`, {
     method: 'POST',
     headers: {
