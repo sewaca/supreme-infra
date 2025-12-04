@@ -28,7 +28,12 @@
     "moduleResolution": "node",
 
     "jsx": "react-jsx",
-    "lib": ["dom", "esnext"]
+    "lib": ["dom", "esnext"],
+
+    "baseUrl": ".",
+    "paths": {
+      "@supreme-int/*": ["packages/*/src"]
+    }
   },
   "exclude": ["**/node_modules"],
   "ts-node": {

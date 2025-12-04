@@ -4,20 +4,15 @@ import {
   Get,
   NotFoundException,
   Param,
-  Post,
   Query,
-  Req,
-  UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../Auth/guards/jwt-auth.guard';
-import { UsersService } from '../Auth/Users.service';
 import { RecipesService } from './Recipes.service';
 
 @Controller('recipes')
 export class RecipesController {
   constructor(
     private readonly recipesService: RecipesService,
-    private readonly usersService: UsersService,
+    // private readonly usersService: UsersService,
   ) {}
 
   @Get()
@@ -52,27 +47,27 @@ export class RecipesController {
     }
   }
 
-  @Post(':id/like')
-  @UseGuards(JwtAuthGuard)
-  public async toggleRecipeLike(
-    @Param('id') id: string,
-    @Req() req: { user: { userId: number } },
-  ): Promise<{ liked: boolean; totalLikes: number }> {
-    const recipeId = Number.parseInt(id, 10);
+  // @Post(':id/like')
+  // @UseGuards(JwtAuthGuard)
+  // public async toggleRecipeLike(
+  //   @Param('id') id: string,
+  //   @Req() req: { user: { userId: number } },
+  // ): Promise<{ liked: boolean; totalLikes: number }> {
+  //   const recipeId = Number.parseInt(id, 10);
 
-    if (Number.isNaN(recipeId)) {
-      throw new BadRequestException('Invalid recipe id parameter');
-    }
+  //   if (Number.isNaN(recipeId)) {
+  //     throw new BadRequestException('Invalid recipe id parameter');
+  //   }
 
-    try {
-      this.recipesService.getRecipeById(recipeId);
-    } catch (error) {
-      if (error instanceof Error && error.message === 'Recipe not found') {
-        throw new NotFoundException('Recipe not found');
-      }
-      throw error;
-    }
+  //   try {
+  //     this.recipesService.getRecipeById(recipeId);
+  //   } catch (error) {
+  //     if (error instanceof Error && error.message === 'Recipe not found') {
+  //       throw new NotFoundException('Recipe not found');
+  //     }
+  //     throw error;
+  //   }
 
-    return this.usersService.toggleRecipeLike(req.user.userId, recipeId);
-  }
+  //   return this.usersService.toggleRecipeLike(req.user.userId, recipeId);
+  // }
 }
