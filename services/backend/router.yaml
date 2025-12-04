@@ -13,5 +13,3 @@ routes:
     method: GET
   - path: /recipes/[^/]+
     method: GET
-  - path: /recipes/[^/]+/like
-    method: POST
