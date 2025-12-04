@@ -28,16 +28,16 @@ livenessProbe:
     path: /api/status
     port: http
   initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 3
   failureThreshold: 5
 readinessProbe:
   httpGet:
     path: /api/status
     port: http
   initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 3
   failureThreshold: 5
 nodeSelector: {}
 tolerations: []
