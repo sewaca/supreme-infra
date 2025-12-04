@@ -14,6 +14,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   // Enable CORS
+  // TODO: сделать по человечески
   app.enableCors({
     origin: [
       'http://localhost:3000',
@@ -26,12 +27,6 @@ async function bootstrap() {
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-  });
-
-  // Add a simple health check endpoint
-  const fastifyInstance = app.getHttpAdapter().getInstance();
-  fastifyInstance.get('/', async () => {
-    return { status: 'ok', message: 'Backend service is running' };
   });
 
   await app.listen(process.env.PORT ?? 4000, '0.0.0.0');
