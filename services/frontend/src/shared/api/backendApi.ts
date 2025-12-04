@@ -44,7 +44,9 @@ class BackendApi {
 
   private constructor() {
     this.baseUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+      process.env.NODE_ENV === 'production'
+        ? 'http://84.252.134.216/api'
+        : 'http://localhost:4000';
   }
 
   private static instance: BackendApi | null = null;
