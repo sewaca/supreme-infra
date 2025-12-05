@@ -189,6 +189,8 @@ class BackendApi {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
+        // TODO: fixme – need to fix method to update or etc
+        body: '{}',
       },
     });
 
