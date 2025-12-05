@@ -6,16 +6,18 @@ import styles from './LikeButton.module.css';
 interface LikeButtonProps {
   recipeId: number;
   initialLikes: number;
+  initialIsLiked?: boolean;
   onLike: (recipeId: number) => Promise<{ liked: boolean; totalLikes: number }>;
 }
 
 export function LikeButton({
   recipeId,
   initialLikes,
+  initialIsLiked = false,
   onLike,
 }: LikeButtonProps) {
   const [likes, setLikes] = useState(initialLikes);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLike = async () => {

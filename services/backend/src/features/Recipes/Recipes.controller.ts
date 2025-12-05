@@ -19,6 +19,7 @@ import { z } from 'zod';
 import { Roles } from '../Auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../Auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../Auth/guards/roles.guard';
+import { UsersService } from '../Auth/Users.service';
 import { RecipeDetails, RecipesService } from './Recipes.service';
 
 const submitRecipeSchema = z.object({
@@ -48,7 +49,7 @@ const submitRecipeSchema = z.object({
 export class RecipesController {
   constructor(
     private readonly recipesService: RecipesService,
-    // private readonly usersService: UsersService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Get()
@@ -63,12 +64,21 @@ export class RecipesController {
     return this.recipesService.getRecipes(search, ingredientsArray);
   }
 
+  @Get('proposed/all')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('moderator', 'admin')
+  public getProposedRecipes(): ReturnType<
+    RecipesService['getProposedRecipes']
+  > {
+    return this.recipesService.getProposedRecipes();
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  public getRecipeById(
+  public async getRecipeById(
     @Param('id') id: string,
-    @Request() req: { user?: { role: string } },
-  ): ReturnType<RecipesService['getRecipeById']> {
+    @Request() req: { user?: { id: number; role: string } },
+  ): Promise<RecipeDetails & { isLiked?: boolean }> {
     const recipeId = Number.parseInt(id, 10);
 
     if (Number.isNaN(recipeId)) {
@@ -84,22 +94,24 @@ export class RecipesController {
     }
 
     try {
-      return this.recipesService.getRecipeById(recipeId, isProposed);
+      const recipe = this.recipesService.getRecipeById(recipeId, isProposed);
+      const totalLikes = await this.usersService.getRecipeLikesCount(recipeId);
+      const updatedRecipe = { ...recipe, likes: totalLikes };
+
+      if (req.user?.id) {
+        const isLiked = await this.usersService.isRecipeLikedByUser(
+          req.user.id,
+          recipeId,
+        );
+        return { ...updatedRecipe, isLiked };
+      }
+      return updatedRecipe;
     } catch (error) {
       if (error instanceof Error && error.message === 'Recipe not found') {
         throw new NotFoundException('Recipe not found');
       }
       throw error;
     }
-  }
-
-  @Get('proposed/all')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('moderator', 'admin')
-  public getProposedRecipes(): ReturnType<
-    RecipesService['getProposedRecipes']
-  > {
-    return this.recipesService.getProposedRecipes();
   }
 
   @Post('proposed/:id/publish')
@@ -139,6 +151,34 @@ export class RecipesController {
 
     const id = this.recipesService.submitRecipe(validationResult.data);
     return { success: true, id };
+  }
+
+  @Post(':id/like')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  public async toggleRecipeLike(
+    @Param('id') id: string,
+    @Request() req: {
+      user: { id: number; email: string; name: string; role: string };
+    },
+  ): Promise<{ liked: boolean; totalLikes: number }> {
+    const recipeId = Number.parseInt(id, 10);
+
+    if (Number.isNaN(recipeId)) {
+      throw new BadRequestException('Invalid recipe id parameter');
+    }
+
+    try {
+      const isProposed = recipeId >= 1_000_000;
+      this.recipesService.getRecipeById(recipeId, isProposed);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Recipe not found') {
+        throw new NotFoundException('Recipe not found');
+      }
+      throw error;
+    }
+
+    return this.usersService.toggleRecipeLike(req.user.id, recipeId);
   }
 
   @Put(':id')
@@ -192,28 +232,4 @@ export class RecipesController {
       throw error;
     }
   }
-
-  // @Post(':id/like')
-  // @UseGuards(JwtAuthGuard)
-  // public async toggleRecipeLike(
-  //   @Param('id') id: string,
-  //   @Req() req: { user: { userId: number } },
-  // ): Promise<{ liked: boolean; totalLikes: number }> {
-  //   const recipeId = Number.parseInt(id, 10);
-
-  //   if (Number.isNaN(recipeId)) {
-  //     throw new BadRequestException('Invalid recipe id parameter');
-  //   }
-
-  //   try {
-  //     this.recipesService.getRecipeById(recipeId);
-  //   } catch (error) {
-  //     if (error instanceof Error && error.message === 'Recipe not found') {
-  //       throw new NotFoundException('Recipe not found');
-  //     }
-  //     throw error;
-  //   }
-
-  //   return this.usersService.toggleRecipeLike(req.user.userId, recipeId);
-  // }
 }
