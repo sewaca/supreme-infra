@@ -214,6 +214,61 @@ class BackendApi {
     return response.json() as Promise<RecipeDetails>;
   }
 
+  public async updateRecipe(
+    id: number,
+    recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
+    token: string,
+  ): Promise<RecipeDetails> {
+    const url = `${this.baseUrl}/recipes/${id}`;
+
+    const response = await this.fetch(url, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(recipe),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      if (response.status === 404) {
+        throw new Error('Recipe not found');
+      }
+      throw new Error(`Failed to update recipe: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<RecipeDetails>;
+  }
+
+  public async deleteRecipe(
+    id: number,
+    token: string,
+  ): Promise<{ success: boolean }> {
+    const url = `${this.baseUrl}/recipes/${id}`;
+
+    const response = await this.fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      if (response.status === 404) {
+        throw new Error('Recipe not found');
+      }
+      throw new Error(`Failed to delete recipe: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<{ success: boolean }>;
+  }
+
   public async getUserById(id: number, token: string): Promise<User> {
     const url = `${this.baseUrl}/auth/users/${id}`;
 

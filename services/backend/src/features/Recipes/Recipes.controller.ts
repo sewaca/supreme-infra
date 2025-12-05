@@ -2,12 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
   Request,
   UnauthorizedException,
@@ -17,7 +19,7 @@ import { z } from 'zod';
 import { Roles } from '../Auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../Auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../Auth/guards/roles.guard';
-import { RecipesService } from './Recipes.service';
+import { RecipesService, RecipeDetails } from './Recipes.service';
 
 const submitRecipeSchema = z.object({
   title: z.string().min(1),
@@ -137,6 +139,60 @@ export class RecipesController {
 
     const id = this.recipesService.submitRecipe(validationResult.data);
     return { success: true, id };
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('moderator', 'admin')
+  @HttpCode(HttpStatus.OK)
+  public updateRecipe(
+    @Param('id') id: string,
+    @Body() body: unknown,
+  ): RecipeDetails {
+    const recipeId = Number.parseInt(id, 10);
+
+    if (Number.isNaN(recipeId)) {
+      throw new BadRequestException('Invalid recipe id parameter');
+    }
+
+    const validationResult = submitRecipeSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      throw new BadRequestException('Invalid recipe format');
+    }
+
+    try {
+      return this.recipesService.updateRecipe(recipeId, validationResult.data);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Recipe not found') {
+        throw new NotFoundException('Recipe not found');
+      }
+      throw error;
+    }
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('moderator', 'admin')
+  @HttpCode(HttpStatus.OK)
+  public deleteRecipe(
+    @Param('id') id: string,
+  ): { success: boolean } {
+    const recipeId = Number.parseInt(id, 10);
+
+    if (Number.isNaN(recipeId)) {
+      throw new BadRequestException('Invalid recipe id parameter');
+    }
+
+    try {
+      this.recipesService.deleteRecipe(recipeId);
+      return { success: true };
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Recipe not found') {
+        throw new NotFoundException('Recipe not found');
+      }
+      throw error;
+    }
   }
 
   // @Post(':id/like')

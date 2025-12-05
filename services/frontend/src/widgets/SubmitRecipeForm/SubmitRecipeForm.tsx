@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   backendApi,
+  RecipeDetails,
   RecipeIngredient,
   RecipeStep,
 } from '../../shared/api/backendApi';
@@ -12,24 +13,48 @@ import styles from './SubmitRecipeForm.module.css';
 
 type SubmitStatus = 'idle' | 'success' | 'error';
 
-export function SubmitRecipeForm() {
+interface SubmitRecipeFormProps {
+  recipe?: RecipeDetails;
+  onSuccess?: () => void;
+}
+
+export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   const router = useRouter();
   const [status, setStatus] = useState<SubmitStatus>('idle');
   const [isLoading, setIsLoading] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string>('');
+  const isEditMode = !!recipe;
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    ingredients: [''],
-    cookingTime: 0,
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
-    imageUrl: '',
-    servings: 0,
-    calories: 0,
-    detailedIngredients: [{ name: '', amount: '' }] as RecipeIngredient[],
-    steps: [{ stepNumber: 1, instruction: '' }] as RecipeStep[],
-    author: '',
+    title: recipe?.title || '',
+    description: recipe?.description || '',
+    ingredients: recipe?.ingredients.length > 0 ? recipe.ingredients : [''],
+    cookingTime: recipe?.cookingTime || 0,
+    difficulty: (recipe?.difficulty || 'medium') as 'easy' | 'medium' | 'hard',
+    imageUrl: recipe?.imageUrl || '',
+    servings: recipe?.servings || 0,
+    calories: recipe?.calories || 0,
+    detailedIngredients: recipe?.detailedIngredients.length > 0 ? recipe.detailedIngredients : [{ name: '', amount: '' }] as RecipeIngredient[],
+    steps: recipe?.steps.length > 0 ? recipe.steps : [{ stepNumber: 1, instruction: '' }] as RecipeStep[],
+    author: recipe?.author || '',
   });
+
+  useEffect(() => {
+    if (recipe) {
+      setFormData({
+        title: recipe.title,
+        description: recipe.description,
+        ingredients: recipe.ingredients.length > 0 ? recipe.ingredients : [''],
+        cookingTime: recipe.cookingTime,
+        difficulty: recipe.difficulty,
+        imageUrl: recipe.imageUrl,
+        servings: recipe.servings,
+        calories: recipe.calories,
+        detailedIngredients: recipe.detailedIngredients.length > 0 ? recipe.detailedIngredients : [{ name: '', amount: '' }],
+        steps: recipe.steps.length > 0 ? recipe.steps : [{ stepNumber: 1, instruction: '' }],
+        author: recipe.author,
+      });
+    }
+  }, [recipe]);
 
   useEffect(() => {
     const token = getAuthToken();
@@ -43,16 +68,25 @@ export function SubmitRecipeForm() {
       return;
     }
     setCurrentUserName(decoded.name);
-    setFormData((prev) => ({ ...prev, author: decoded.name }));
-  }, [router]);
+    if (!isEditMode) {
+      setFormData((prev) => ({ ...prev, author: decoded.name }));
+    }
+  }, [router, isEditMode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('idle');
     setIsLoading(true);
 
+    const token = getAuthToken();
+    if (!token) {
+      setStatus('error');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      await backendApi.submitRecipe({
+      const recipeData = {
         title: formData.title,
         description: formData.description,
         ingredients: formData.ingredients.filter((ing) => ing.trim() !== ''),
@@ -66,8 +100,21 @@ export function SubmitRecipeForm() {
         ),
         steps: formData.steps.filter((step) => step.instruction.trim() !== ''),
         author: formData.author,
-      });
-      setStatus('success');
+      };
+
+      if (isEditMode && recipe) {
+        await backendApi.updateRecipe(recipe.id, recipeData, token);
+        setStatus('success');
+        if (onSuccess) {
+          setTimeout(() => {
+            onSuccess();
+            router.refresh();
+          }, 1000);
+        }
+      } else {
+        await backendApi.submitRecipe(recipeData);
+        setStatus('success');
+      }
     } catch (_err) {
       setStatus('error');
     } finally {
@@ -154,7 +201,7 @@ export function SubmitRecipeForm() {
     return (
       <div className={styles.statusContainer}>
         <div className={styles.successMessage}>
-          Приняли предложение. В ближайшее время всё проверим и опубликуем
+          {isEditMode ? 'Успешно сохранено' : 'Приняли предложение. В ближайшее время всё проверим и опубликуем'}
         </div>
       </div>
     );
@@ -172,7 +219,7 @@ export function SubmitRecipeForm() {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.title}>Предложить рецепт</h2>
+      <h2 className={styles.title}>{isEditMode ? 'Редактировать рецепт' : 'Предложить рецепт'}</h2>
 
       <div className={styles.field}>
         <label htmlFor="title" className={styles.label}>
@@ -206,7 +253,7 @@ export function SubmitRecipeForm() {
 
       <div className={styles.field}>
         <label className={styles.label}>Автор</label>
-        <div className={styles.authorDisplay}>{currentUserName}</div>
+        <div className={styles.authorDisplay}>{isEditMode ? formData.author : currentUserName}</div>
       </div>
 
       <div className={styles.field}>
@@ -421,7 +468,7 @@ export function SubmitRecipeForm() {
       </div>
 
       <button type="submit" className={styles.submit} disabled={isLoading}>
-        {isLoading ? 'Отправка...' : 'Отправить рецепт'}
+        {isLoading ? (isEditMode ? 'Сохранение...' : 'Отправка...') : (isEditMode ? 'Сохранить изменения' : 'Отправить рецепт')}
       </button>
     </form>
   );

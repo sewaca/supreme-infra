@@ -47,6 +47,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
     <RecipeDetailsPage
       recipe={recipe}
       isProposed={isProposed && isModeratorOrAdmin}
+      isModeratorOrAdmin={isModeratorOrAdmin}
     />
   );
 }
