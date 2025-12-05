@@ -15,8 +15,6 @@ routes:
     method: DELETE
   - path: /recipes
     method: GET
-  - path: /recipes/submit
-    method: POST
   - path: /recipes/[^/]+
     method: GET
   - path: /recipes/[^/]+
