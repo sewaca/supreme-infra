@@ -35,6 +35,7 @@ describe('BackendApi', () => {
 
       expect(global.fetch).toHaveBeenCalledWith(
         'http://localhost:4000/recipes',
+        undefined,
       );
       expect(result).toEqual(mockRecipes);
     });
@@ -64,6 +65,7 @@ describe('BackendApi', () => {
 
       expect(global.fetch).toHaveBeenCalledWith(
         'http://localhost:4000/recipes?search=test',
+        undefined,
       );
       expect(result).toEqual(mockRecipes);
     });
@@ -109,6 +111,7 @@ describe('BackendApi', () => {
 
       expect(global.fetch).toHaveBeenCalledWith(
         'http://localhost:4000/recipes/1',
+        expect.any(Object),
       );
       expect(result).toEqual(mockRecipe);
     });

@@ -79,7 +79,7 @@ class BackendApi {
 
     const response = await this.fetch(url);
     if (!response.ok) {
-      throw new Error(`Failed to this.fetch recipes: ${response.statusText}`);
+      throw new Error(`Failed to fetch recipes: ${response.statusText}`);
     }
 
     return response.json() as Promise<Recipe[]>;
@@ -104,7 +104,7 @@ class BackendApi {
       if (response.status === 401) {
         throw new Error('Unauthorized');
       }
-      throw new Error(`Failed to this.fetch recipe: ${response.statusText}`);
+      throw new Error(`Failed to fetch recipe: ${response.statusText}`);
     }
 
     return response.json() as Promise<RecipeDetails>;
@@ -171,7 +171,7 @@ class BackendApi {
         throw new Error('Unauthorized');
       }
       throw new Error(
-        `Failed to this.fetch proposed recipes: ${response.statusText}`,
+        `Failed to fetch proposed recipes: ${response.statusText}`,
       );
     }
 
