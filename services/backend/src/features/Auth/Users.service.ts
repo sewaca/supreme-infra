@@ -129,4 +129,14 @@ export class UsersService {
       .filter((like) => like.userId === userId)
       .map((like) => like.recipeId);
   }
+
+  async delete(id: number): Promise<boolean> {
+    const userIndex = this.users.findIndex((u) => u.id === id);
+    if (userIndex === -1) {
+      return false;
+    }
+    this.users.splice(userIndex, 1);
+    this.recipeLikes = this.recipeLikes.filter((like) => like.userId !== id);
+    return true;
+  }
 }
