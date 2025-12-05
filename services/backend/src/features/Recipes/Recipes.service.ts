@@ -45,9 +45,11 @@ export interface RecipeDetails extends Recipe {
 @Injectable()
 export class RecipesService {
   private proposedRecipes: RecipeDetails[] = [];
+  private publishedRecipes: RecipeDetails[] = [];
   private nextProposedRecipeId = 1_000_000;
   public getRecipes(searchQuery?: string, ingredients?: string[]): Recipe[] {
-    let filteredRecipes = recipesMock;
+    const allRecipes = [...recipesMock, ...this.publishedRecipes];
+    let filteredRecipes = allRecipes;
 
     // Фильтрация по поисковой строке
     if (searchQuery?.trim()) {
@@ -91,12 +93,61 @@ export class RecipesService {
     }));
   }
 
-  public getRecipeById(id: number): RecipeDetails {
-    const recipe = recipesMock.find((recipe) => recipe.id === id);
-    if (!recipe) {
-      throw new NotFoundException('Recipe not found');
+  public getRecipeById(id: number, includeProposed = false): RecipeDetails {
+    const allRecipes = [...recipesMock, ...this.publishedRecipes];
+    const recipe = allRecipes.find((recipe) => recipe.id === id);
+    if (recipe) {
+      return recipe as RecipeDetails;
     }
-    return recipe as RecipeDetails;
+
+    if (includeProposed) {
+      const proposedRecipe = this.proposedRecipes.find(
+        (recipe) => recipe.id === id,
+      );
+      if (proposedRecipe) {
+        return proposedRecipe;
+      }
+    }
+
+    throw new NotFoundException('Recipe not found');
+  }
+
+  public getProposedRecipes(): Recipe[] {
+    return this.proposedRecipes.map((recipe) => ({
+      id: recipe.id,
+      title: recipe.title,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      cookingTime: recipe.cookingTime,
+      difficulty: recipe.difficulty as 'easy' | 'medium' | 'hard',
+      imageUrl: recipe.imageUrl,
+      servings: recipe.servings,
+      calories: recipe.calories,
+    }));
+  }
+
+  public publishRecipe(id: number): RecipeDetails {
+    const proposedRecipeIndex = this.proposedRecipes.findIndex(
+      (recipe) => recipe.id === id,
+    );
+
+    if (proposedRecipeIndex === -1) {
+      throw new NotFoundException('Proposed recipe not found');
+    }
+
+    const recipe = this.proposedRecipes[proposedRecipeIndex];
+    const allRecipes = [...recipesMock, ...this.publishedRecipes];
+    const maxId = Math.max(...allRecipes.map((r) => r.id));
+    const publishedRecipe: RecipeDetails = {
+      ...recipe,
+      id: maxId + 1,
+    };
+
+    this.publishedRecipes.push(publishedRecipe);
+    this.proposedRecipes.splice(proposedRecipeIndex, 1);
+
+    return publishedRecipe;
   }
 
   public submitRecipe(

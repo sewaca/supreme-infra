@@ -9,8 +9,14 @@ import {
   Param,
   Post,
   Query,
+  Request,
+  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { z } from 'zod';
+import { Roles } from '../Auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../Auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../Auth/guards/roles.guard';
 import { RecipesService } from './Recipes.service';
 
 const submitRecipeSchema = z.object({
@@ -62,8 +68,10 @@ export class RecipesController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   public getRecipeById(
     @Param('id') id: string,
+    @Request() req: { user?: { role: string } },
   ): ReturnType<RecipesService['getRecipeById']> {
     const recipeId = Number.parseInt(id, 10);
 
@@ -71,11 +79,54 @@ export class RecipesController {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
+    const isProposed = recipeId >= 1_000_000;
+    const isModeratorOrAdmin =
+      req.user?.role === 'moderator' || req.user?.role === 'admin';
+
+    if (isProposed && !isModeratorOrAdmin) {
+      throw new UnauthorizedException('Insufficient permissions');
+    }
+
     try {
-      return this.recipesService.getRecipeById(recipeId);
+      return this.recipesService.getRecipeById(recipeId, isProposed);
     } catch (error) {
       if (error instanceof Error && error.message === 'Recipe not found') {
         throw new NotFoundException('Recipe not found');
+      }
+      throw error;
+    }
+  }
+
+  @Get('proposed/all')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('moderator', 'admin')
+  public getProposedRecipes(): ReturnType<
+    RecipesService['getProposedRecipes']
+  > {
+    return this.recipesService.getProposedRecipes();
+  }
+
+  @Post('proposed/:id/publish')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('moderator', 'admin')
+  @HttpCode(HttpStatus.OK)
+  public publishRecipe(
+    @Param('id') id: string,
+  ): ReturnType<RecipesService['publishRecipe']> {
+    const recipeId = Number.parseInt(id, 10);
+
+    if (Number.isNaN(recipeId)) {
+      throw new BadRequestException('Invalid recipe id parameter');
+    }
+
+    try {
+      return this.recipesService.publishRecipe(recipeId);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === 'Proposed recipe not found'
+      ) {
+        throw new NotFoundException('Proposed recipe not found');
       }
       throw error;
     }
