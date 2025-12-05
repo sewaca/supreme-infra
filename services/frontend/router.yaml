@@ -13,3 +13,5 @@ routes:
     method: GET
   - path: /register
     method: GET
+  - path: /submit-recipe
+    method: GET

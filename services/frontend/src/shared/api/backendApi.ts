@@ -120,6 +120,26 @@ class BackendApi {
 
     return response.json() as Promise<{ liked: boolean; totalLikes: number }>;
   }
+
+  public async submitRecipe(
+    recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments'>,
+  ): Promise<{ success: boolean }> {
+    const url = `${this.baseUrl}/recipes/submit`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(recipe),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to submit recipe: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<{ success: boolean }>;
+  }
 }
 
 export const backendApi = BackendApi.getInstance();
