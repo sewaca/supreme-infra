@@ -20,6 +20,9 @@
       "recommended": true,
       "style": {
         "useImportType": "off"
+      },
+      "a11y": {
+        "recommended": false
       }
     },
     "domains": {

@@ -13,5 +13,9 @@ routes:
     method: GET
   - path: /recipes/[^/]+
     method: GET
+  - path: /recipes/proposed/[^/]+/publish
+    method: POST
+  - path: /recipes/proposed/all
+    method: GET
   - path: /recipes/submit
     method: POST

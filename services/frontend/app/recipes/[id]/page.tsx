@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
-import { backendApi, RecipeDetails } from '../../../src/shared/api/backendApi';
-import { getUser } from '../../../src/shared/lib/auth.server';
+import { RecipeDetails, serverApi } from '../../../src/shared/api/backendApi';
+import { getAuthToken, getUser } from '../../../src/shared/lib/auth.server';
 import { RecipeDetailsPage } from '../../../src/views/RecipeDetailsPage/RecipeDetailsPage';
 
 interface RecipePageProps {
@@ -21,15 +21,32 @@ export default async function RecipePage({ params }: RecipePageProps) {
     notFound();
   }
 
+  const token = await getAuthToken();
+  if (!token) {
+    redirect('/login');
+  }
+
+  const isModeratorOrAdmin = user.role === 'moderator' || user.role === 'admin';
+
   let recipe: RecipeDetails;
   try {
-    recipe = await backendApi.getRecipeById(recipeId);
+    recipe = await serverApi.getRecipeById(recipeId, token);
   } catch (error) {
     if (error instanceof Error && error.message === 'Recipe not found') {
       notFound();
     }
+    if (error instanceof Error && error.message === 'Unauthorized') {
+      redirect('/login');
+    }
     throw error;
   }
 
-  return <RecipeDetailsPage recipe={recipe} />;
+  const isProposed = recipeId >= 1_000_000;
+
+  return (
+    <RecipeDetailsPage
+      recipe={recipe}
+      isProposed={isProposed && isModeratorOrAdmin}
+    />
+  );
 }

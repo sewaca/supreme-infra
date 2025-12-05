@@ -7,5 +7,6 @@ import { RecipesService } from './Recipes.service';
   imports: [AuthModule],
   controllers: [RecipesController],
   providers: [RecipesService],
+  exports: [RecipesService],
 })
 export class RecipesModule {}
