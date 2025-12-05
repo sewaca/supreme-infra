@@ -31,14 +31,24 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   const [formData, setFormData] = useState({
     title: recipe?.title || '',
     description: recipe?.description || '',
-    ingredients: recipe?.ingredients.length > 0 ? recipe.ingredients : [''],
+    ingredients:
+      recipe?.ingredients.length && recipe?.ingredients.length > 0
+        ? recipe.ingredients
+        : [''],
     cookingTime: recipe?.cookingTime || 0,
     difficulty: (recipe?.difficulty || 'medium') as 'easy' | 'medium' | 'hard',
     imageUrl: recipe?.imageUrl || '',
     servings: recipe?.servings || 0,
     calories: recipe?.calories || 0,
-    detailedIngredients: recipe?.detailedIngredients.length > 0 ? recipe.detailedIngredients : [{ name: '', amount: '' }] as RecipeIngredient[],
-    steps: recipe?.steps.length > 0 ? recipe.steps : [{ stepNumber: 1, instruction: '' }] as RecipeStep[],
+    detailedIngredients:
+      recipe?.detailedIngredients.length &&
+      recipe?.detailedIngredients.length > 0
+        ? recipe.detailedIngredients
+        : ([{ name: '', amount: '' }] as RecipeIngredient[]),
+    steps:
+      recipe?.steps.length && recipe?.steps.length > 0
+        ? recipe.steps
+        : ([{ stepNumber: 1, instruction: '' }] as RecipeStep[]),
     author: recipe?.author || '',
   });
 
@@ -59,8 +69,14 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
         imageUrl: recipe.imageUrl,
         servings: recipe.servings,
         calories: recipe.calories,
-        detailedIngredients: recipe.detailedIngredients.length > 0 ? recipe.detailedIngredients : [{ name: '', amount: '' }],
-        steps: recipe.steps.length > 0 ? recipe.steps : [{ stepNumber: 1, instruction: '' }],
+        detailedIngredients:
+          recipe.detailedIngredients.length > 0
+            ? recipe.detailedIngredients
+            : [{ name: '', amount: '' }],
+        steps:
+          recipe.steps.length > 0
+            ? recipe.steps
+            : [{ stepNumber: 1, instruction: '' }],
         author: recipe.author,
       });
       setIngredientIds(
@@ -228,7 +244,9 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
     return (
       <div className={styles.statusContainer}>
         <div className={styles.successMessage}>
-          {isEditMode ? 'Успешно сохранено' : 'Приняли предложение. В ближайшее время всё проверим и опубликуем'}
+          {isEditMode
+            ? 'Успешно сохранено'
+            : 'Приняли предложение. В ближайшее время всё проверим и опубликуем'}
         </div>
       </div>
     );
@@ -246,7 +264,9 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.title}>{isEditMode ? 'Редактировать рецепт' : 'Предложить рецепт'}</h2>
+      <h2 className={styles.title}>
+        {isEditMode ? 'Редактировать рецепт' : 'Предложить рецепт'}
+      </h2>
 
       <div className={styles.field}>
         <label htmlFor="title" className={styles.label}>
@@ -280,7 +300,9 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
 
       <div className={styles.field}>
         <label className={styles.label}>Автор</label>
-        <div className={styles.authorDisplay}>{isEditMode ? formData.author : currentUserName}</div>
+        <div className={styles.authorDisplay}>
+          {isEditMode ? formData.author : currentUserName}
+        </div>
       </div>
 
       <div className={styles.field}>
@@ -495,7 +517,13 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <button type="submit" className={styles.submit} disabled={isLoading}>
-        {isLoading ? (isEditMode ? 'Сохранение...' : 'Отправка...') : (isEditMode ? 'Сохранить изменения' : 'Отправить рецепт')}
+        {isLoading
+          ? isEditMode
+            ? 'Сохранение...'
+            : 'Отправка...'
+          : isEditMode
+            ? 'Сохранить изменения'
+            : 'Отправить рецепт'}
       </button>
     </form>
   );

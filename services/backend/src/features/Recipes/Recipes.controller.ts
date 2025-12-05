@@ -19,7 +19,7 @@ import { z } from 'zod';
 import { Roles } from '../Auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../Auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../Auth/guards/roles.guard';
-import { RecipesService, RecipeDetails } from './Recipes.service';
+import { RecipeDetails, RecipesService } from './Recipes.service';
 
 const submitRecipeSchema = z.object({
   title: z.string().min(1),
@@ -214,9 +214,7 @@ export class RecipesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('moderator', 'admin')
   @HttpCode(HttpStatus.OK)
-  public deleteRecipe(
-    @Param('id') id: string,
-  ): { success: boolean } {
+  public deleteRecipe(@Param('id') id: string): { success: boolean } {
     const recipeId = Number.parseInt(id, 10);
 
     if (Number.isNaN(recipeId)) {
