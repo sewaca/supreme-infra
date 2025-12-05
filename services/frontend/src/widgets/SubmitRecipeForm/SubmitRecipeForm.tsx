@@ -1,23 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   backendApi,
   RecipeIngredient,
   RecipeStep,
 } from '../../shared/api/backendApi';
+import { decodeToken, getAuthToken } from '../../shared/lib/auth.client';
 import styles from './SubmitRecipeForm.module.css';
 
 type SubmitStatus = 'idle' | 'success' | 'error';
 
 export function SubmitRecipeForm() {
+  const router = useRouter();
   const [status, setStatus] = useState<SubmitStatus>('idle');
   const [isLoading, setIsLoading] = useState(false);
+  const [currentUserName, setCurrentUserName] = useState<string>('');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     ingredients: [''],
-    instructions: '',
     cookingTime: 0,
     difficulty: 'medium' as 'easy' | 'medium' | 'hard',
     imageUrl: '',
@@ -27,6 +30,21 @@ export function SubmitRecipeForm() {
     steps: [{ stepNumber: 1, instruction: '' }] as RecipeStep[],
     author: '',
   });
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      router.replace('/login');
+      return;
+    }
+    const decoded = decodeToken(token);
+    if (!decoded) {
+      router.replace('/login');
+      return;
+    }
+    setCurrentUserName(decoded.name);
+    setFormData((prev) => ({ ...prev, author: decoded.name }));
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +56,7 @@ export function SubmitRecipeForm() {
         title: formData.title,
         description: formData.description,
         ingredients: formData.ingredients.filter((ing) => ing.trim() !== ''),
-        instructions: formData.instructions,
+        instructions: '',
         cookingTime: formData.cookingTime,
         difficulty: formData.difficulty,
         imageUrl: formData.imageUrl,
@@ -188,17 +206,8 @@ export function SubmitRecipeForm() {
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="author" className={styles.label}>
-          Автор *
-        </label>
-        <input
-          id="author"
-          type="text"
-          value={formData.author}
-          onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-          className={styles.input}
-          required
-        />
+        <label className={styles.label}>Автор</label>
+        <div className={styles.authorDisplay}>{currentUserName}</div>
       </div>
 
       <div className={styles.field}>
@@ -302,22 +311,6 @@ export function SubmitRecipeForm() {
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="instructions" className={styles.label}>
-          Инструкции *
-        </label>
-        <textarea
-          id="instructions"
-          value={formData.instructions}
-          onChange={(e) =>
-            setFormData({ ...formData, instructions: e.target.value })
-          }
-          className={styles.textarea}
-          rows={3}
-          required
-        />
-      </div>
-
-      <div className={styles.field}>
         {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Ингредиенты (список) *</label>
         {formData.ingredients.map((ingredient, index) => (
@@ -402,7 +395,7 @@ export function SubmitRecipeForm() {
         {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Шаги приготовления *</label>
         {formData.steps.map((step, index) => (
-          <div key={`${step.instruction}-${index}`} className={styles.stepRow}>
+          <div key={step.stepNumber} className={styles.stepRow}>
             <div className={styles.stepNumber}>Шаг {step.stepNumber}</div>
             <textarea
               value={step.instruction}
