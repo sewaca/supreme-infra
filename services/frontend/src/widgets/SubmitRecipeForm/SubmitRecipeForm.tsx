@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   backendApi,
   RecipeIngredient,
@@ -207,9 +207,7 @@ export function SubmitRecipeForm() {
 
       <div className={styles.field}>
         <label className={styles.label}>Автор</label>
-        <div className={styles.authorDisplay}>
-          {currentUserName}
-        </div>
+        <div className={styles.authorDisplay}>{currentUserName}</div>
       </div>
 
       <div className={styles.field}>
