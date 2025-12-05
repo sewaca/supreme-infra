@@ -9,6 +9,10 @@ routes:
     method: GET
   - path: /auth/register
     method: POST
+  - path: /auth/users/[^/]+
+    method: GET
+  - path: /auth/users/[^/]+
+    method: DELETE
   - path: /recipes
     method: GET
   - path: /recipes/[^/]+
@@ -18,8 +22,4 @@ routes:
   - path: /recipes/proposed/all
     method: GET
   - path: /recipes/submit
-    method: POST
-  - path: /recipes/proposed/all
-    method: GET
-  - path: /recipes/proposed/[^/]+/publish
     method: POST
