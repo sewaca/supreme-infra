@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { backendApi } from '../../shared/api/backendApi';
 import {
-  getAuthToken,
+  getAuthTokenClient,
   removeAuthToken,
   User,
 } from '../../shared/lib/auth.client';
@@ -35,7 +35,7 @@ export function ProfilePage({
 
     setIsDeleting(true);
     try {
-      const token = getAuthToken();
+      const token = getAuthTokenClient();
       if (!token) {
         router.push('/login');
         return;
