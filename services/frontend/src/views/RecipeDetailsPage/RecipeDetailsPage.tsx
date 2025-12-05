@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { LikeButton } from '../../components/LikeButton/LikeButton';
 import { backendApi, RecipeDetails } from '../../shared/api/backendApi';
 import { MarkdownContent } from '../../shared/components/MarkdownContent/MarkdownContent';
@@ -14,9 +16,39 @@ import styles from './RecipeDetailsPage.module.css';
 
 interface RecipeDetailsPageProps {
   recipe: RecipeDetails;
+  isProposed?: boolean;
 }
 
-export function RecipeDetailsPage({ recipe }: RecipeDetailsPageProps) {
+export function RecipeDetailsPage({
+  recipe,
+  isProposed = false,
+}: RecipeDetailsPageProps) {
+  const router = useRouter();
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishError, setPublishError] = useState('');
+
+  const handlePublish = async () => {
+    const token = getAuthToken();
+    if (!token) {
+      setPublishError('Необходима авторизация');
+      return;
+    }
+
+    setIsPublishing(true);
+    setPublishError('');
+
+    try {
+      await backendApi.publishRecipe(recipe.id, token);
+      router.push('/proposed-recipes');
+      router.refresh();
+    } catch (error) {
+      setPublishError(
+        error instanceof Error ? error.message : 'Ошибка при публикации',
+      );
+    } finally {
+      setIsPublishing(false);
+    }
+  };
   const handleLike = async (recipeId: number) => {
     const token = getAuthToken();
     if (!token) {
@@ -27,9 +59,33 @@ export function RecipeDetailsPage({ recipe }: RecipeDetailsPageProps) {
 
   return (
     <div className={styles.container}>
-      <Link href="/" className={styles.backLink}>
-        ← Назад к рецептам
+      <Link
+        href={isProposed ? '/proposed-recipes' : '/'}
+        className={styles.backLink}
+      >
+        ← Назад {isProposed ? 'к предложенным рецептам' : 'к рецептам'}
       </Link>
+
+      {isProposed && (
+        <div className={styles.proposedBanner}>
+          <div className={styles.proposedBannerContent}>
+            <span className={styles.proposedBadge}>Предложен</span>
+            <p className={styles.proposedText}>
+              Этот рецепт ожидает модерации и публикации
+            </p>
+          </div>
+          <button
+            onClick={handlePublish}
+            disabled={isPublishing}
+            className={styles.publishButton}
+          >
+            {isPublishing ? 'Публикация...' : 'Опубликовать'}
+          </button>
+          {publishError && (
+            <div className={styles.publishError}>{publishError}</div>
+          )}
+        </div>
+      )}
 
       <RecipeHeader
         title={

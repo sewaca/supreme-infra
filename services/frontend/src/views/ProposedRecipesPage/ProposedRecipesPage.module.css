@@ -21,39 +21,6 @@
   color: var(--color-text-secondary);
 }
 
-.actions {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: center;
-  margin-bottom: var(--spacing-lg);
-  flex-wrap: wrap;
-}
-
-.submitButton,
-.proposedButton {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  text-decoration: none;
-  transition: background var(--transition-fast);
-  display: inline-block;
-}
-
-.submitButton:hover {
-  background: var(--color-primary-hover);
-}
-
-.proposedButton {
-  background: var(--color-secondary);
-}
-
-.proposedButton:hover {
-  background: var(--color-secondary-hover);
-}
-
 .recipesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

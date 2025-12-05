@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { RecipeCard } from '../../entities/recipe/RecipeCard';
 import { Recipe } from '../../shared/api/backendApi';
+import { getUserRole } from '../../shared/lib/auth.client';
 import { RecipeFilters } from '../../widgets/RecipeFilters/RecipeFilters';
 import styles from './RecipesListPage.module.css';
 
@@ -16,6 +18,9 @@ export function RecipesListPage({
   searchQuery,
   selectedIngredients,
 }: RecipesListPageProps) {
+  const userRole = getUserRole();
+  const isModeratorOrAdmin = userRole === 'moderator' || userRole === 'admin';
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -24,6 +29,17 @@ export function RecipesListPage({
           Найдите идеальный рецепт для вашего стола
         </p>
       </header>
+
+      <div className={styles.actions}>
+        <Link href="/submit-recipe" className={styles.submitButton}>
+          Предложить рецепт
+        </Link>
+        {isModeratorOrAdmin && (
+          <Link href="/proposed-recipes" className={styles.proposedButton}>
+            Посмотреть предложенные рецепты
+          </Link>
+        )}
+      </div>
 
       <RecipeFilters
         initialSearch={searchQuery}

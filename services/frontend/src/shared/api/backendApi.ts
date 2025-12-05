@@ -68,13 +68,24 @@ class BackendApi {
     return response.json() as Promise<Recipe[]>;
   }
 
-  public async getRecipeById(id: number): Promise<RecipeDetails> {
+  public async getRecipeById(
+    id: number,
+    token?: string,
+  ): Promise<RecipeDetails> {
     const url = `${this.baseUrl}/recipes/${id}`;
 
-    const response = await fetch(url);
+    const headers: HeadersInit = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(url, { headers });
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error('Recipe not found');
+      }
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
       }
       throw new Error(`Failed to fetch recipe: ${response.statusText}`);
     }
@@ -127,6 +138,54 @@ class BackendApi {
     }
 
     return response.json() as Promise<{ success: boolean }>;
+  }
+
+  public async getProposedRecipes(token: string): Promise<Recipe[]> {
+    const url = `${this.baseUrl}/recipes/proposed/all`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      throw new Error(
+        `Failed to fetch proposed recipes: ${response.statusText}`,
+      );
+    }
+
+    return response.json() as Promise<Recipe[]>;
+  }
+
+  public async publishRecipe(
+    id: number,
+    token: string,
+  ): Promise<RecipeDetails> {
+    const url = `${this.baseUrl}/recipes/proposed/${id}/publish`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      if (response.status === 404) {
+        throw new Error('Proposed recipe not found');
+      }
+      throw new Error(`Failed to publish recipe: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<RecipeDetails>;
   }
 }
 
