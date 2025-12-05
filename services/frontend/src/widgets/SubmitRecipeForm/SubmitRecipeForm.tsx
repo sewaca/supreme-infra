@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   backendApi,
   RecipeIngredient,
   RecipeStep,
 } from '../../shared/api/backendApi';
+import { decodeToken, getAuthToken } from '../../shared/lib/auth.client';
 import styles from './SubmitRecipeForm.module.css';
 
 type SubmitStatus = 'idle' | 'success' | 'error';
@@ -258,7 +260,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       <div className={styles.field}>
         <label className={styles.label}>Автор</label>
         <div className={styles.authorDisplay}>
-          {isEditMode ? formData.author : currentUserName}
+          {currentUserName}
         </div>
       </div>
 
@@ -363,22 +365,6 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="instructions" className={styles.label}>
-          Инструкции *
-        </label>
-        <textarea
-          id="instructions"
-          value={formData.instructions}
-          onChange={(e) =>
-            setFormData({ ...formData, instructions: e.target.value })
-          }
-          className={styles.textarea}
-          rows={3}
-          required
-        />
-      </div>
-
-      <div className={styles.field}>
         {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Ингредиенты (список) *</label>
         {formData.ingredients.map((ingredient, index) => (
@@ -463,7 +449,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
         {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Шаги приготовления *</label>
         {formData.steps.map((step, index) => (
-          <div key={`${step.instruction}-${index}`} className={styles.stepRow}>
+          <div key={step.stepNumber} className={styles.stepRow}>
             <div className={styles.stepNumber}>Шаг {step.stepNumber}</div>
             <textarea
               value={step.instruction}
