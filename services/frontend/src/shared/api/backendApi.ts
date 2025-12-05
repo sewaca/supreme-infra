@@ -1,3 +1,10 @@
+export interface User {
+  id: number;
+  email: string;
+  name: string;
+  role: 'user' | 'moderator' | 'admin';
+}
+
 export interface Recipe {
   id: number;
   title: string;
@@ -205,6 +212,54 @@ class BackendApi {
     }
 
     return response.json() as Promise<RecipeDetails>;
+  }
+
+  public async getUserById(id: number, token: string): Promise<User> {
+    const url = `${this.baseUrl}/auth/users/${id}`;
+
+    const response = await this.fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      if (response.status === 404) {
+        throw new Error('User not found');
+      }
+      throw new Error(`Failed to fetch user: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<User>;
+  }
+
+  public async deleteUser(
+    id: number,
+    token: string,
+  ): Promise<{ success: boolean }> {
+    const url = `${this.baseUrl}/auth/users/${id}`;
+
+    const response = await this.fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      if (response.status === 404) {
+        throw new Error('User not found');
+      }
+      throw new Error(`Failed to delete user: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<{ success: boolean }>;
   }
 }
 

@@ -9,6 +9,8 @@ routes:
     method: GET
   - path: /profile
     method: GET
+  - path: /profile/[^/]+
+    method: GET
   - path: /proposed-recipes
     method: GET
   - path: /recipes/[^/]+
