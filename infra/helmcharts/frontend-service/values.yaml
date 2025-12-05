@@ -17,6 +17,7 @@ service:
 env:
   PORT: "3000"
   NODE_ENV: "production"
+  # BACKEND_SERVICE_NAMESPACE: ""  # Опционально: namespace для backend сервиса. Если не указан, используется тот же namespace, что и у frontend
 
 resources:
   limits:
