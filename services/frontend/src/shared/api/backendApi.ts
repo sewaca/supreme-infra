@@ -103,7 +103,7 @@ class BackendApi {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await this.fetch(url, { headers });
+    const response = await fetch(url, { headers });
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error('Recipe not found');
@@ -167,7 +167,7 @@ class BackendApi {
   public async getProposedRecipes(token: string): Promise<Recipe[]> {
     const url = `${this.baseUrl}/recipes/proposed/all`;
 
-    const response = await this.fetch(url, {
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -191,7 +191,7 @@ class BackendApi {
   ): Promise<RecipeDetails> {
     const url = `${this.baseUrl}/recipes/proposed/${id}/publish`;
 
-    const response = await this.fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
