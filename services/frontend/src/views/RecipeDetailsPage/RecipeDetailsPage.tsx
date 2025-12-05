@@ -163,6 +163,7 @@ export function RecipeDetailsPage({
             <LikeButton
               recipeId={recipe.id}
               initialLikes={recipe.likes}
+              initialIsLiked={recipe.isLiked}
               onLike={handleLike}
             />
           </div>
