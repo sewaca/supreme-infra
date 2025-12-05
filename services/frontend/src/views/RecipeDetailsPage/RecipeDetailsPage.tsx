@@ -12,20 +12,25 @@ import { RecipeHeader } from '../../widgets/RecipeHeader/RecipeHeader';
 import { RecipeIngredients } from '../../widgets/RecipeIngredients/RecipeIngredients';
 import { RecipeMeta } from '../../widgets/RecipeMeta/RecipeMeta';
 import { RecipeSteps } from '../../widgets/RecipeSteps/RecipeSteps';
+import { SubmitRecipeForm } from '../../widgets/SubmitRecipeForm/SubmitRecipeForm';
 import styles from './RecipeDetailsPage.module.css';
 
 interface RecipeDetailsPageProps {
   recipe: RecipeDetails;
   isProposed?: boolean;
+  isModeratorOrAdmin?: boolean;
 }
 
 export function RecipeDetailsPage({
   recipe,
   isProposed = false,
+  isModeratorOrAdmin = false,
 }: RecipeDetailsPageProps) {
   const router = useRouter();
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishError, setPublishError] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handlePublish = async () => {
     const token = getAuthToken();
@@ -57,14 +62,78 @@ export function RecipeDetailsPage({
     return backendApi.toggleRecipeLike(recipeId, token);
   };
 
+  const handleDelete = async () => {
+    const token = getAuthToken();
+    if (!token) {
+      return;
+    }
+
+    if (!confirm('Вы уверены, что хотите удалить этот рецепт?')) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await backendApi.deleteRecipe(recipe.id, token);
+      alert('Пост успешно удален');
+      router.push('/');
+      router.refresh();
+    } catch (error) {
+      alert(
+        error instanceof Error ? error.message : 'Ошибка при удалении рецепта',
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className={styles.container}>
+        <button
+          onClick={() => setIsEditing(false)}
+          className={styles.backLink}
+          type="button"
+        >
+          ← Отменить редактирование
+        </button>
+        <SubmitRecipeForm
+          recipe={recipe}
+          onSuccess={() => setIsEditing(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
-      <Link
-        href={isProposed ? '/proposed-recipes' : '/'}
-        className={styles.backLink}
-      >
-        ← Назад {isProposed ? 'к предложенным рецептам' : 'к рецептам'}
-      </Link>
+      <div className={styles.headerActions}>
+        <Link
+          href={isProposed ? '/proposed-recipes' : '/'}
+          className={styles.backLink}
+        >
+          ← Назад {isProposed ? 'к предложенным рецептам' : 'к рецептам'}
+        </Link>
+        {isModeratorOrAdmin && (
+          <div className={styles.adminActions}>
+            <button
+              onClick={() => setIsEditing(true)}
+              className={styles.editButton}
+              type="button"
+            >
+              ✏️ редактировать
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className={styles.deleteButton}
+              type="button"
+            >
+              🗑️ удалить
+            </button>
+          </div>
+        )}
+      </div>
 
       {isProposed && (
         <div className={styles.proposedBanner}>

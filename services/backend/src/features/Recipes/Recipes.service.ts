@@ -47,8 +47,20 @@ export class RecipesService {
   private proposedRecipes: RecipeDetails[] = [];
   private publishedRecipes: RecipeDetails[] = [];
   private nextProposedRecipeId = 1_000_000;
+  private deletedMockRecipeIds = new Set<number>();
+  private updatedMockRecipes = new Map<number, RecipeDetails>();
+  private getMockRecipes(): RecipeDetails[] {
+    return recipesMock
+      .filter((recipe) => !this.deletedMockRecipeIds.has(recipe.id))
+      .map((recipe) => {
+        const updated = this.updatedMockRecipes.get(recipe.id);
+        return (updated || recipe) as RecipeDetails;
+      });
+  }
+
   public getRecipes(searchQuery?: string, ingredients?: string[]): Recipe[] {
-    const allRecipes = [...recipesMock, ...this.publishedRecipes];
+    const mockRecipes = this.getMockRecipes();
+    const allRecipes = [...mockRecipes, ...this.publishedRecipes];
     let filteredRecipes = allRecipes;
 
     // Фильтрация по поисковой строке
@@ -94,7 +106,11 @@ export class RecipesService {
   }
 
   public getRecipeById(id: number, includeProposed = false): RecipeDetails {
-    const allRecipes = [...recipesMock, ...this.publishedRecipes];
+    if (this.deletedMockRecipeIds.has(id)) {
+      throw new NotFoundException('Recipe not found');
+    }
+    const mockRecipes = this.getMockRecipes();
+    const allRecipes = [...mockRecipes, ...this.publishedRecipes];
     const recipe = allRecipes.find((recipe) => recipe.id === id);
     if (recipe) {
       return recipe as RecipeDetails;
@@ -137,7 +153,8 @@ export class RecipesService {
     }
 
     const recipe = this.proposedRecipes[proposedRecipeIndex];
-    const allRecipes = [...recipesMock, ...this.publishedRecipes];
+    const mockRecipes = this.getMockRecipes();
+    const allRecipes = [...mockRecipes, ...this.publishedRecipes];
     const maxId = Math.max(...allRecipes.map((r) => r.id));
     const publishedRecipe: RecipeDetails = {
       ...recipe,
@@ -169,5 +186,107 @@ export class RecipesService {
     };
     this.proposedRecipes.push(recipe);
     return id;
+  }
+
+  public updateRecipe(
+    id: number,
+    recipeData: Omit<
+      RecipeDetails,
+      'id' | 'likes' | 'comments' | 'instructions'
+    >,
+  ): RecipeDetails {
+    const isProposed = id >= 1_000_000;
+
+    if (isProposed) {
+      const recipeIndex = this.proposedRecipes.findIndex(
+        (recipe) => recipe.id === id,
+      );
+      if (recipeIndex === -1) {
+        throw new NotFoundException('Recipe not found');
+      }
+      const existingRecipe = this.proposedRecipes[recipeIndex];
+      const instructions = recipeData.steps
+        .map((step) => step.instruction)
+        .join('\n');
+      const updatedRecipe: RecipeDetails = {
+        ...recipeData,
+        instructions,
+        id: existingRecipe.id,
+        likes: existingRecipe.likes,
+        comments: existingRecipe.comments,
+      };
+      this.proposedRecipes[recipeIndex] = updatedRecipe;
+      return updatedRecipe;
+    }
+
+    if (this.deletedMockRecipeIds.has(id)) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    const mockIndex = recipesMock.findIndex((r) => r.id === id);
+    if (mockIndex !== -1) {
+      const existingRecipe = (this.updatedMockRecipes.get(id) ||
+        recipesMock[mockIndex]) as RecipeDetails;
+      const instructions = recipeData.steps
+        .map((step) => step.instruction)
+        .join('\n');
+      const updatedRecipe: RecipeDetails = {
+        ...recipeData,
+        instructions,
+        id: existingRecipe.id,
+        likes: existingRecipe.likes || 0,
+        comments: existingRecipe.comments || [],
+      };
+      this.updatedMockRecipes.set(id, updatedRecipe);
+      return updatedRecipe;
+    }
+
+    const publishedIndex = this.publishedRecipes.findIndex((r) => r.id === id);
+    if (publishedIndex === -1) {
+      throw new NotFoundException('Recipe not found');
+    }
+    const existingRecipe = this.publishedRecipes[publishedIndex];
+    const instructions = recipeData.steps
+      .map((step) => step.instruction)
+      .join('\n');
+    const updatedRecipe: RecipeDetails = {
+      ...recipeData,
+      instructions,
+      id: existingRecipe.id,
+      likes: existingRecipe.likes,
+      comments: existingRecipe.comments,
+    };
+    this.publishedRecipes[publishedIndex] = updatedRecipe;
+    return updatedRecipe;
+  }
+
+  public deleteRecipe(id: number): boolean {
+    const isProposed = id >= 1_000_000;
+
+    if (isProposed) {
+      const proposedIndex = this.proposedRecipes.findIndex(
+        (recipe) => recipe.id === id,
+      );
+      if (proposedIndex === -1) {
+        throw new NotFoundException('Recipe not found');
+      }
+      this.proposedRecipes.splice(proposedIndex, 1);
+      return true;
+    }
+
+    const mockIndex = recipesMock.findIndex((r) => r.id === id);
+    if (mockIndex !== -1) {
+      this.deletedMockRecipeIds.add(id);
+      this.updatedMockRecipes.delete(id);
+      return true;
+    }
+
+    const publishedIndex = this.publishedRecipes.findIndex((r) => r.id === id);
+    if (publishedIndex === -1) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    this.publishedRecipes.splice(publishedIndex, 1);
+    return true;
   }
 }

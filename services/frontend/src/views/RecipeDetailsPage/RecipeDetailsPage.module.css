@@ -148,3 +148,53 @@
   font-size: var(--font-size-sm);
   margin-top: var(--spacing-sm);
 }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.adminActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.editButton,
+.deleteButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.editButton {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.editButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.deleteButton {
+  background: var(--color-error);
+  color: var(--color-text-inverse);
+}
+
+.deleteButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
