@@ -1,4 +1,4 @@
-import { backendApi } from '../src/shared/api/backendApi';
+import { serverApi } from '../src/shared/api/backendApi';
 import { RecipesListPage } from '../src/views/RecipesListPage/RecipesListPage';
 
 interface HomeProps {
@@ -13,7 +13,7 @@ export default async function Home({ searchParams }: HomeProps) {
     ? ingredientsString.split(',').map((i) => i.trim())
     : undefined;
 
-  const recipes = await backendApi.getRecipes(searchQuery, ingredientsArray);
+  const recipes = await serverApi.getRecipes(searchQuery, ingredientsArray);
 
   return (
     <RecipesListPage
