@@ -151,10 +151,22 @@ export class RecipesService {
   }
 
   public submitRecipe(
-    recipeData: Omit<RecipeDetails, 'id' | 'likes' | 'comments'>,
+    recipeData: Omit<
+      RecipeDetails,
+      'id' | 'likes' | 'comments' | 'instructions'
+    >,
   ): number {
     const id = this.nextProposedRecipeId++;
-    const recipe: RecipeDetails = { ...recipeData, id, likes: 0, comments: [] };
+    const instructions = recipeData.steps
+      .map((step) => step.instruction)
+      .join('\n');
+    const recipe: RecipeDetails = {
+      ...recipeData,
+      instructions,
+      id,
+      likes: 0,
+      comments: [],
+    };
     this.proposedRecipes.push(recipe);
     return id;
   }

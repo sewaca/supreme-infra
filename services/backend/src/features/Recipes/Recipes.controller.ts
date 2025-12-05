@@ -23,19 +23,13 @@ const submitRecipeSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   ingredients: z.array(z.string().min(1)).min(1),
-  instructions: z.string().min(1),
   cookingTime: z.number().int().positive(),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   imageUrl: z.string().url(),
   servings: z.number().int().positive(),
   calories: z.number().int().nonnegative(),
   detailedIngredients: z
-    .array(
-      z.object({
-        name: z.string().min(1),
-        amount: z.string().min(1),
-      }),
-    )
+    .array(z.object({ name: z.string().min(1), amount: z.string().min(1) }))
     .min(1),
   steps: z
     .array(

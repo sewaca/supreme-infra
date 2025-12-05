@@ -56,7 +56,6 @@ export function SubmitRecipeForm() {
         title: formData.title,
         description: formData.description,
         ingredients: formData.ingredients.filter((ing) => ing.trim() !== ''),
-        instructions: '',
         cookingTime: formData.cookingTime,
         difficulty: formData.difficulty,
         imageUrl: formData.imageUrl,
