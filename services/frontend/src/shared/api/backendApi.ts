@@ -44,6 +44,7 @@ export interface RecipeDetails extends Recipe {
   author: string;
   likes: number;
   comments: RecipeComment[];
+  isLiked?: boolean;
 }
 
 class BackendApi {
@@ -132,13 +133,16 @@ class BackendApi {
     });
 
     if (!response.ok) {
+      const errorText = await response.text().catch(() => response.statusText);
       if (response.status === 401) {
         throw new Error('Unauthorized');
       }
       if (response.status === 404) {
         throw new Error('Recipe not found');
       }
-      throw new Error(`Failed to toggle like: ${response.statusText}`);
+      throw new Error(
+        `Failed to toggle like: ${errorText || response.statusText}`,
+      );
     }
 
     return response.json() as Promise<{ liked: boolean; totalLikes: number }>;
