@@ -33,7 +33,11 @@ export function RecipesListPage({
       <div className={styles.recipesGrid}>
         {recipes.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>Рецепты не найдены</p>
+            <p>
+              {searchQuery || selectedIngredients?.length
+                ? 'Рецепты не найдены по заданным критериям. Попробуйте изменить параметры поиска.'
+                : 'Рецепты не найдены'}
+            </p>
           </div>
         ) : (
           recipes.map((recipe) => (
