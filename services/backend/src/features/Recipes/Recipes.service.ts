@@ -44,8 +44,38 @@ export interface RecipeDetails extends Recipe {
 
 @Injectable()
 export class RecipesService {
-  public getRecipes(_searchQuery?: string, _ingredients?: string[]): Recipe[] {
-    return recipesMock.map((recipe) => ({
+  public getRecipes(searchQuery?: string, ingredients?: string[]): Recipe[] {
+    let filteredRecipes = recipesMock;
+
+    // Фильтрация по поисковой строке
+    if (searchQuery?.trim()) {
+      const query = searchQuery.trim().toLowerCase();
+      filteredRecipes = filteredRecipes.filter(
+        (recipe) =>
+          recipe.title.toLowerCase().includes(query) ||
+          recipe.description.toLowerCase().includes(query),
+      );
+    }
+
+    // Фильтрация по ингредиентам
+    if (ingredients && ingredients.length > 0) {
+      const normalizedIngredients = ingredients
+        .map((ing) => ing.trim())
+        .filter((ing) => ing.length > 0);
+
+      if (normalizedIngredients.length > 0) {
+        filteredRecipes = filteredRecipes.filter((recipe) => {
+          const recipeIngredients = recipe.ingredients.map((ing) =>
+            ing.toLowerCase(),
+          );
+          return normalizedIngredients.every((ingredient) =>
+            recipeIngredients.includes(ingredient.toLowerCase()),
+          );
+        });
+      }
+    }
+
+    return filteredRecipes.map((recipe) => ({
       id: recipe.id,
       title: recipe.title,
       description: recipe.description,
