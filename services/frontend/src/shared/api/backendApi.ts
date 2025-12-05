@@ -42,20 +42,8 @@ export interface RecipeDetails extends Recipe {
 class BackendApi {
   private readonly baseUrl: string;
 
-  private constructor() {
-    this.baseUrl =
-      process.env.NODE_ENV === 'production'
-        ? 'http://84.252.134.216/api'
-        : 'http://localhost:4000';
-  }
-
-  private static instance: BackendApi | null = null;
-
-  public static getInstance(): BackendApi {
-    if (!BackendApi.instance) {
-      BackendApi.instance = new BackendApi();
-    }
-    return BackendApi.instance;
+  constructor(shiturl: string) {
+    this.baseUrl = shiturl;
   }
 
   public async getRecipes(
@@ -142,4 +130,31 @@ class BackendApi {
   }
 }
 
-export const backendApi = BackendApi.getInstance();
+const isProd = process.env.NODE_ENV === 'production';
+
+const createServerApi = () => {
+  if (!isProd) {
+    return new BackendApi('http://localhost:4000');
+  }
+
+  // Используем POD_NAMESPACE из Kubernetes Downward API
+  // Если указан BACKEND_SERVICE_NAMESPACE и он отличается от текущего namespace,
+  // используем полный формат DNS имени
+  const podNamespace = process.env.POD_NAMESPACE;
+  const backendNamespace = process.env.BACKEND_SERVICE_NAMESPACE;
+
+  const backendUrl =
+    backendNamespace && backendNamespace !== podNamespace
+      ? `http://backend.${backendNamespace}.svc.cluster.local`
+      : 'http://backend'; // Короткий формат для того же namespace
+
+  return new BackendApi(backendUrl);
+};
+
+const createClientApi = () =>
+  new BackendApi(
+    isProd ? 'http://84.252.134.216/api' : 'http://localhost:4000',
+  );
+
+export const serverApi = createServerApi();
+export const backendApi = createClientApi();
