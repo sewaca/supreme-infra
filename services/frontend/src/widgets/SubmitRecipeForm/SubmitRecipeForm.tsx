@@ -1,7 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { backendApi, RecipeIngredient, RecipeStep } from '../../shared/api/backendApi';
+import {
+  backendApi,
+  RecipeIngredient,
+  RecipeStep,
+} from '../../shared/api/backendApi';
 import styles from './SubmitRecipeForm.module.css';
 
 type SubmitStatus = 'idle' | 'success' | 'error';
@@ -127,7 +131,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
         author: formData.author,
       });
       setStatus('success');
-    } catch (err) {
+    } catch (_err) {
       setStatus('error');
     } finally {
       setIsLoading(false);
@@ -162,7 +166,10 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
     setDetailedIngredientIds([...detailedIngredientIds, newId]);
     setFormData({
       ...formData,
-      detailedIngredients: [...formData.detailedIngredients, { name: '', amount: '' }],
+      detailedIngredients: [
+        ...formData.detailedIngredients,
+        { name: '', amount: '' },
+      ],
     });
   };
 
@@ -172,7 +179,9 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
     );
     setFormData({
       ...formData,
-      detailedIngredients: formData.detailedIngredients.filter((_, i) => i !== index),
+      detailedIngredients: formData.detailedIngredients.filter(
+        (_, i) => i !== index,
+      ),
     });
   };
 
@@ -197,10 +206,12 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   };
 
   const removeStep = (index: number) => {
-    const newSteps = formData.steps.filter((_, i) => i !== index).map((step, i) => ({
-      ...step,
-      stepNumber: i + 1,
-    }));
+    const newSteps = formData.steps
+      .filter((_, i) => i !== index)
+      .map((step, i) => ({
+        ...step,
+        stepNumber: i + 1,
+      }));
     setFormData({ ...formData, steps: newSteps });
   };
 
@@ -392,9 +403,10 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Ингредиенты (список) *</label>
         {formData.ingredients.map((ingredient, index) => (
-          <div key={index} className={styles.ingredientRow}>
+          <div key={`${index}-${ingredient}`} className={styles.ingredientRow}>
             <input
               type="text"
               value={ingredient}
@@ -424,9 +436,13 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Детальные ингредиенты *</label>
         {formData.detailedIngredients.map((ingredient, index) => (
-          <div key={index} className={styles.detailedIngredientRow}>
+          <div
+            key={`${ingredient.name}-${index}`}
+            className={styles.detailedIngredientRow}
+          >
             <input
               type="text"
               value={ingredient.name}
@@ -468,9 +484,10 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Шаги приготовления *</label>
         {formData.steps.map((step, index) => (
-          <div key={index} className={styles.stepRow}>
+          <div key={`${step.instruction}-${index}`} className={styles.stepRow}>
             <div className={styles.stepNumber}>Шаг {step.stepNumber}</div>
             <textarea
               value={step.instruction}
@@ -508,4 +525,3 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
     </form>
   );
 }
-
