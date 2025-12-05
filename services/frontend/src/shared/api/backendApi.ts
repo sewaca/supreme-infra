@@ -145,7 +145,7 @@ class BackendApi {
   }
 
   public async submitRecipe(
-    recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments'>,
+    recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
   ): Promise<{ success: boolean }> {
     const url = `${this.baseUrl}/recipes/submit`;
 
