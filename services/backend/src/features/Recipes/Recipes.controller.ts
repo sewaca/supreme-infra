@@ -19,6 +19,7 @@ import { z } from 'zod';
 import { Roles } from '../Auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../Auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../Auth/guards/roles.guard';
+import { UsersService } from '../Auth/Users.service';
 import { RecipeDetails, RecipesService } from './Recipes.service';
 
 const submitRecipeSchema = z.object({
