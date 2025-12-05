@@ -1,0 +1,6 @@
+.container {
+  min-height: 100vh;
+  padding: var(--spacing-xl) var(--spacing-md);
+  background: var(--color-background-secondary);
+}
+

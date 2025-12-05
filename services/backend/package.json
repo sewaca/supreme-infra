@@ -30,12 +30,13 @@
     "@types/node": "catalog:",
     "@types/passport-jwt": "catalog:",
     "bcryptjs": "catalog:",
-    "passport-jwt": "catalog:",
     "passport": "catalog:",
+    "passport-jwt": "catalog:",
     "reflect-metadata": "catalog:",
     "rxjs": "catalog:",
     "ts-loader": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@nestjs/schematics": "catalog:",
