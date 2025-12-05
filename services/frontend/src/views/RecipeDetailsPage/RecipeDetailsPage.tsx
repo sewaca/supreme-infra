@@ -97,10 +97,7 @@ export function RecipeDetailsPage({
         >
           ← Отменить редактирование
         </button>
-        <SubmitRecipeForm
-          recipe={recipe}
-          onSuccess={() => setIsEditing(false)}
-        />
+        <SubmitRecipeForm recipe={recipe} onSuccess={() => setIsEditing(false)} />
       </div>
     );
   }

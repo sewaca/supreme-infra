@@ -196,11 +196,9 @@ export class RecipesService {
     >,
   ): RecipeDetails {
     const isProposed = id >= 1_000_000;
-
+    
     if (isProposed) {
-      const recipeIndex = this.proposedRecipes.findIndex(
-        (recipe) => recipe.id === id,
-      );
+      const recipeIndex = this.proposedRecipes.findIndex((recipe) => recipe.id === id);
       if (recipeIndex === -1) {
         throw new NotFoundException('Recipe not found');
       }
@@ -225,8 +223,7 @@ export class RecipesService {
 
     const mockIndex = recipesMock.findIndex((r) => r.id === id);
     if (mockIndex !== -1) {
-      const existingRecipe = (this.updatedMockRecipes.get(id) ||
-        recipesMock[mockIndex]) as RecipeDetails;
+      const existingRecipe = (this.updatedMockRecipes.get(id) || recipesMock[mockIndex]) as RecipeDetails;
       const instructions = recipeData.steps
         .map((step) => step.instruction)
         .join('\n');
