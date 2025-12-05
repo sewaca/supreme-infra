@@ -1,12 +1,46 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   NotFoundException,
   Param,
+  Post,
   Query,
 } from '@nestjs/common';
+import { z } from 'zod';
 import { RecipesService } from './Recipes.service';
+
+const submitRecipeSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  ingredients: z.array(z.string().min(1)).min(1),
+  instructions: z.string().min(1),
+  cookingTime: z.number().int().positive(),
+  difficulty: z.enum(['easy', 'medium', 'hard']),
+  imageUrl: z.string().url(),
+  servings: z.number().int().positive(),
+  calories: z.number().int().nonnegative(),
+  detailedIngredients: z
+    .array(
+      z.object({
+        name: z.string().min(1),
+        amount: z.string().min(1),
+      }),
+    )
+    .min(1),
+  steps: z
+    .array(
+      z.object({
+        stepNumber: z.number().int().positive(),
+        instruction: z.string().min(1),
+      }),
+    )
+    .min(1),
+  author: z.string().min(1),
+});
 
 @Controller('recipes')
 export class RecipesController {
@@ -45,6 +79,19 @@ export class RecipesController {
       }
       throw error;
     }
+  }
+
+  @Post('submit')
+  @HttpCode(HttpStatus.OK)
+  public submitRecipe(@Body() body: unknown): { success: boolean; id: number } {
+    const validationResult = submitRecipeSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      throw new BadRequestException('Invalid recipe format');
+    }
+
+    const id = this.recipesService.submitRecipe(validationResult.data);
+    return { success: true, id };
   }
 
   // @Post(':id/like')

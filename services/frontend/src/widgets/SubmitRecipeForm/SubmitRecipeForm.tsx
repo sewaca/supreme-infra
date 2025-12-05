@@ -1,0 +1,436 @@
+'use client';
+
+import { useState } from 'react';
+import {
+  backendApi,
+  RecipeIngredient,
+  RecipeStep,
+} from '../../shared/api/backendApi';
+import styles from './SubmitRecipeForm.module.css';
+
+type SubmitStatus = 'idle' | 'success' | 'error';
+
+export function SubmitRecipeForm() {
+  const [status, setStatus] = useState<SubmitStatus>('idle');
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    ingredients: [''],
+    instructions: '',
+    cookingTime: 0,
+    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    imageUrl: '',
+    servings: 0,
+    calories: 0,
+    detailedIngredients: [{ name: '', amount: '' }] as RecipeIngredient[],
+    steps: [{ stepNumber: 1, instruction: '' }] as RecipeStep[],
+    author: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('idle');
+    setIsLoading(true);
+
+    try {
+      await backendApi.submitRecipe({
+        title: formData.title,
+        description: formData.description,
+        ingredients: formData.ingredients.filter((ing) => ing.trim() !== ''),
+        instructions: formData.instructions,
+        cookingTime: formData.cookingTime,
+        difficulty: formData.difficulty,
+        imageUrl: formData.imageUrl,
+        servings: formData.servings,
+        calories: formData.calories,
+        detailedIngredients: formData.detailedIngredients.filter(
+          (ing) => ing.name.trim() !== '' && ing.amount.trim() !== '',
+        ),
+        steps: formData.steps.filter((step) => step.instruction.trim() !== ''),
+        author: formData.author,
+      });
+      setStatus('success');
+    } catch (_err) {
+      setStatus('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const addIngredient = () => {
+    setFormData({
+      ...formData,
+      ingredients: [...formData.ingredients, ''],
+    });
+  };
+
+  const removeIngredient = (index: number) => {
+    setFormData({
+      ...formData,
+      ingredients: formData.ingredients.filter((_, i) => i !== index),
+    });
+  };
+
+  const updateIngredient = (index: number, value: string) => {
+    const newIngredients = [...formData.ingredients];
+    newIngredients[index] = value;
+    setFormData({ ...formData, ingredients: newIngredients });
+  };
+
+  const addDetailedIngredient = () => {
+    setFormData({
+      ...formData,
+      detailedIngredients: [
+        ...formData.detailedIngredients,
+        { name: '', amount: '' },
+      ],
+    });
+  };
+
+  const removeDetailedIngredient = (index: number) => {
+    setFormData({
+      ...formData,
+      detailedIngredients: formData.detailedIngredients.filter(
+        (_, i) => i !== index,
+      ),
+    });
+  };
+
+  const updateDetailedIngredient = (
+    index: number,
+    field: 'name' | 'amount',
+    value: string,
+  ) => {
+    const newIngredients = [...formData.detailedIngredients];
+    newIngredients[index] = { ...newIngredients[index], [field]: value };
+    setFormData({ ...formData, detailedIngredients: newIngredients });
+  };
+
+  const addStep = () => {
+    setFormData({
+      ...formData,
+      steps: [
+        ...formData.steps,
+        { stepNumber: formData.steps.length + 1, instruction: '' },
+      ],
+    });
+  };
+
+  const removeStep = (index: number) => {
+    const newSteps = formData.steps
+      .filter((_, i) => i !== index)
+      .map((step, i) => ({
+        ...step,
+        stepNumber: i + 1,
+      }));
+    setFormData({ ...formData, steps: newSteps });
+  };
+
+  const updateStep = (index: number, value: string) => {
+    const newSteps = [...formData.steps];
+    newSteps[index] = { ...newSteps[index], instruction: value };
+    setFormData({ ...formData, steps: newSteps });
+  };
+
+  if (status === 'success') {
+    return (
+      <div className={styles.statusContainer}>
+        <div className={styles.successMessage}>
+          Приняли предложение. В ближайшее время всё проверим и опубликуем
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className={styles.statusContainer}>
+        <div className={styles.errorMessage}>
+          Что-то пошло не так. Попробуйте позже
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <h2 className={styles.title}>Предложить рецепт</h2>
+
+      <div className={styles.field}>
+        <label htmlFor="title" className={styles.label}>
+          Название рецепта *
+        </label>
+        <input
+          id="title"
+          type="text"
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          className={styles.input}
+          required
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="description" className={styles.label}>
+          Описание *
+        </label>
+        <textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
+          className={styles.textarea}
+          rows={5}
+          required
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="author" className={styles.label}>
+          Автор *
+        </label>
+        <input
+          id="author"
+          type="text"
+          value={formData.author}
+          onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+          className={styles.input}
+          required
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="imageUrl" className={styles.label}>
+          URL изображения *
+        </label>
+        <input
+          id="imageUrl"
+          type="url"
+          value={formData.imageUrl}
+          onChange={(e) =>
+            setFormData({ ...formData, imageUrl: e.target.value })
+          }
+          className={styles.input}
+          required
+        />
+      </div>
+
+      <div className={styles.row}>
+        <div className={styles.field}>
+          <label htmlFor="cookingTime" className={styles.label}>
+            Время приготовления (мин) *
+          </label>
+          <input
+            id="cookingTime"
+            type="number"
+            min="1"
+            value={formData.cookingTime || ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                cookingTime: Number.parseInt(e.target.value, 10) || 0,
+              })
+            }
+            className={styles.input}
+            required
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="servings" className={styles.label}>
+            Количество порций *
+          </label>
+          <input
+            id="servings"
+            type="number"
+            min="1"
+            value={formData.servings || ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                servings: Number.parseInt(e.target.value, 10) || 0,
+              })
+            }
+            className={styles.input}
+            required
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="calories" className={styles.label}>
+            Калории *
+          </label>
+          <input
+            id="calories"
+            type="number"
+            min="0"
+            value={formData.calories || ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                calories: Number.parseInt(e.target.value, 10) || 0,
+              })
+            }
+            className={styles.input}
+            required
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="difficulty" className={styles.label}>
+            Сложность *
+          </label>
+          <select
+            id="difficulty"
+            value={formData.difficulty}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                difficulty: e.target.value as 'easy' | 'medium' | 'hard',
+              })
+            }
+            className={styles.input}
+            required
+          >
+            <option value="easy">Легко</option>
+            <option value="medium">Средне</option>
+            <option value="hard">Сложно</option>
+          </select>
+        </div>
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="instructions" className={styles.label}>
+          Инструкции *
+        </label>
+        <textarea
+          id="instructions"
+          value={formData.instructions}
+          onChange={(e) =>
+            setFormData({ ...formData, instructions: e.target.value })
+          }
+          className={styles.textarea}
+          rows={3}
+          required
+        />
+      </div>
+
+      <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
+        <label className={styles.label}>Ингредиенты (список) *</label>
+        {formData.ingredients.map((ingredient, index) => (
+          <div key={`${index}-${ingredient}`} className={styles.ingredientRow}>
+            <input
+              type="text"
+              value={ingredient}
+              onChange={(e) => updateIngredient(index, e.target.value)}
+              className={styles.input}
+              placeholder="Название ингредиента"
+              required={index === 0}
+            />
+            {formData.ingredients.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeIngredient(index)}
+                className={styles.removeButton}
+              >
+                Удалить
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addIngredient}
+          className={styles.addButton}
+        >
+          + Добавить ингредиент
+        </button>
+      </div>
+
+      <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
+        <label className={styles.label}>Детальные ингредиенты *</label>
+        {formData.detailedIngredients.map((ingredient, index) => (
+          <div
+            key={`${ingredient.name}-${index}`}
+            className={styles.detailedIngredientRow}
+          >
+            <input
+              type="text"
+              value={ingredient.name}
+              onChange={(e) =>
+                updateDetailedIngredient(index, 'name', e.target.value)
+              }
+              className={styles.input}
+              placeholder="Название"
+              required={index === 0}
+            />
+            <input
+              type="text"
+              value={ingredient.amount}
+              onChange={(e) =>
+                updateDetailedIngredient(index, 'amount', e.target.value)
+              }
+              className={styles.input}
+              placeholder="Количество"
+              required={index === 0}
+            />
+            {formData.detailedIngredients.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeDetailedIngredient(index)}
+                className={styles.removeButton}
+              >
+                Удалить
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addDetailedIngredient}
+          className={styles.addButton}
+        >
+          + Добавить детальный ингредиент
+        </button>
+      </div>
+
+      <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
+        <label className={styles.label}>Шаги приготовления *</label>
+        {formData.steps.map((step, index) => (
+          <div key={`${step.instruction}-${index}`} className={styles.stepRow}>
+            <div className={styles.stepNumber}>Шаг {step.stepNumber}</div>
+            <textarea
+              value={step.instruction}
+              onChange={(e) => updateStep(index, e.target.value)}
+              className={styles.textarea}
+              rows={3}
+              placeholder="Описание шага"
+              required={index === 0}
+            />
+            {formData.steps.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeStep(index)}
+                className={styles.removeButton}
+              >
+                Удалить
+              </button>
+            )}
+          </div>
+        ))}
+        <button type="button" onClick={addStep} className={styles.addButton}>
+          + Добавить шаг
+        </button>
+      </div>
+
+      <button type="submit" className={styles.submit} disabled={isLoading}>
+        {isLoading ? 'Отправка...' : 'Отправить рецепт'}
+      </button>
+    </form>
+  );
+}

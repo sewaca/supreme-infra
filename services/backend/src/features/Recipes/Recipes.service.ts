@@ -44,6 +44,8 @@ export interface RecipeDetails extends Recipe {
 
 @Injectable()
 export class RecipesService {
+  private proposedRecipes: RecipeDetails[] = [];
+  private nextProposedRecipeId = 1_000_000;
   public getRecipes(searchQuery?: string, ingredients?: string[]): Recipe[] {
     let filteredRecipes = recipesMock;
 
@@ -95,5 +97,14 @@ export class RecipesService {
       throw new NotFoundException('Recipe not found');
     }
     return recipe as RecipeDetails;
+  }
+
+  public submitRecipe(
+    recipeData: Omit<RecipeDetails, 'id' | 'likes' | 'comments'>,
+  ): number {
+    const id = this.nextProposedRecipeId++;
+    const recipe: RecipeDetails = { ...recipeData, id, likes: 0, comments: [] };
+    this.proposedRecipes.push(recipe);
+    return id;
   }
 }
