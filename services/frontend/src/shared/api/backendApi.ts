@@ -79,7 +79,7 @@ class BackendApi {
 
     const response = await this.fetch(url);
     if (!response.ok) {
-      throw new Error(`Failed to fetch recipes: ${response.statusText}`);
+      throw new Error(`Failed to this.fetch recipes: ${response.statusText}`);
     }
 
     return response.json() as Promise<Recipe[]>;
@@ -96,7 +96,7 @@ class BackendApi {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await fetch(url, { headers });
+    const response = await this.fetch(url, { headers });
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error('Recipe not found');
@@ -104,7 +104,7 @@ class BackendApi {
       if (response.status === 401) {
         throw new Error('Unauthorized');
       }
-      throw new Error(`Failed to fetch recipe: ${response.statusText}`);
+      throw new Error(`Failed to this.fetch recipe: ${response.statusText}`);
     }
 
     return response.json() as Promise<RecipeDetails>;
@@ -160,7 +160,7 @@ class BackendApi {
   public async getProposedRecipes(token: string): Promise<Recipe[]> {
     const url = `${this.baseUrl}/recipes/proposed/all`;
 
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -171,7 +171,7 @@ class BackendApi {
         throw new Error('Unauthorized');
       }
       throw new Error(
-        `Failed to fetch proposed recipes: ${response.statusText}`,
+        `Failed to this.fetch proposed recipes: ${response.statusText}`,
       );
     }
 
@@ -184,7 +184,7 @@ class BackendApi {
   ): Promise<RecipeDetails> {
     const url = `${this.baseUrl}/recipes/proposed/${id}/publish`;
 
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
