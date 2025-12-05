@@ -24,6 +24,10 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string>('');
   const isEditMode = !!recipe;
+  const [ingredientIds, setIngredientIds] = useState<string[]>([]);
+  const [detailedIngredientIds, setDetailedIngredientIds] = useState<string[]>(
+    [],
+  );
   const [formData, setFormData] = useState({
     title: recipe?.title || '',
     description: recipe?.description || '',
@@ -50,25 +54,37 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
 
   useEffect(() => {
     if (recipe) {
+      const ingredients =
+        recipe.ingredients.length > 0 ? recipe.ingredients : [''];
+      const detailedIngredients =
+        recipe.detailedIngredients.length > 0
+          ? recipe.detailedIngredients
+          : [{ name: '', amount: '' }];
       setFormData({
         title: recipe.title,
         description: recipe.description,
-        ingredients: recipe.ingredients.length > 0 ? recipe.ingredients : [''],
+        ingredients,
         cookingTime: recipe.cookingTime,
         difficulty: recipe.difficulty,
         imageUrl: recipe.imageUrl,
         servings: recipe.servings,
         calories: recipe.calories,
-        detailedIngredients:
-          recipe.detailedIngredients.length > 0
-            ? recipe.detailedIngredients
-            : [{ name: '', amount: '' }],
+        detailedIngredients,
         steps:
           recipe.steps.length > 0
             ? recipe.steps
             : [{ stepNumber: 1, instruction: '' }],
         author: recipe.author,
       });
+      setIngredientIds(
+        ingredients.map((_, i) => `ingredient-${i}-${Date.now()}`),
+      );
+      setDetailedIngredientIds(
+        detailedIngredients.map((_, i) => `detailed-${i}-${Date.now()}`),
+      );
+    } else {
+      setIngredientIds(['ingredient-0']);
+      setDetailedIngredientIds(['detailed-0']);
     }
   }, [recipe]);
 
@@ -139,6 +155,8 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   };
 
   const addIngredient = () => {
+    const newId = `ingredient-${Date.now()}-${Math.random()}`;
+    setIngredientIds([...ingredientIds, newId]);
     setFormData({
       ...formData,
       ingredients: [...formData.ingredients, ''],
@@ -146,6 +164,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   };
 
   const removeIngredient = (index: number) => {
+    setIngredientIds(ingredientIds.filter((_, i) => i !== index));
     setFormData({
       ...formData,
       ingredients: formData.ingredients.filter((_, i) => i !== index),
@@ -159,6 +178,8 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   };
 
   const addDetailedIngredient = () => {
+    const newId = `detailed-${Date.now()}-${Math.random()}`;
+    setDetailedIngredientIds([...detailedIngredientIds, newId]);
     setFormData({
       ...formData,
       detailedIngredients: [
@@ -169,6 +190,9 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   };
 
   const removeDetailedIngredient = (index: number) => {
+    setDetailedIngredientIds(
+      detailedIngredientIds.filter((_, i) => i !== index),
+    );
     setFormData({
       ...formData,
       detailedIngredients: formData.detailedIngredients.filter(
@@ -379,10 +403,12 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
-        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Ингредиенты (список) *</label>
         {formData.ingredients.map((ingredient, index) => (
-          <div key={`${index}-${ingredient}`} className={styles.ingredientRow}>
+          <div
+            key={ingredientIds[index] || `ingredient-${index}`}
+            className={styles.ingredientRow}
+          >
             <input
               type="text"
               value={ingredient}
@@ -412,11 +438,10 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
-        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Детальные ингредиенты *</label>
         {formData.detailedIngredients.map((ingredient, index) => (
           <div
-            key={`${ingredient.name}-${index}`}
+            key={detailedIngredientIds[index] || `detailed-${index}`}
             className={styles.detailedIngredientRow}
           >
             <input
@@ -460,7 +485,6 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
-        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Шаги приготовления *</label>
         {formData.steps.map((step, index) => (
           <div key={step.stepNumber} className={styles.stepRow}>
