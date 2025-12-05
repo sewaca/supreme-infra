@@ -69,7 +69,10 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
         imageUrl: recipe.imageUrl,
         servings: recipe.servings,
         calories: recipe.calories,
-        detailedIngredients,
+        detailedIngredients:
+          recipe.detailedIngredients.length > 0
+            ? recipe.detailedIngredients
+            : [{ name: '', amount: '' }],
         steps:
           recipe.steps.length > 0
             ? recipe.steps
@@ -403,12 +406,10 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Ингредиенты (список) *</label>
         {formData.ingredients.map((ingredient, index) => (
-          <div
-            key={ingredientIds[index] || `ingredient-${index}`}
-            className={styles.ingredientRow}
-          >
+          <div key={`${index}-${ingredient}`} className={styles.ingredientRow}>
             <input
               type="text"
               value={ingredient}
@@ -438,10 +439,11 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Детальные ингредиенты *</label>
         {formData.detailedIngredients.map((ingredient, index) => (
           <div
-            key={detailedIngredientIds[index] || `detailed-${index}`}
+            key={`${ingredient.name}-${index}`}
             className={styles.detailedIngredientRow}
           >
             <input
@@ -485,6 +487,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
+        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Шаги приготовления *</label>
         {formData.steps.map((step, index) => (
           <div key={step.stepNumber} className={styles.stepRow}>
