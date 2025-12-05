@@ -22,14 +22,30 @@ export class UsersService {
   private users: User[] = [
     {
       id: 1,
+      email: 'admin@example.com',
+      password: '$2b$10$Nkntdhghajml3edGWucny.xSRRLId2nv70E7hKzvjEQsythcN.ZpC',
+      name: 'Admin User',
+      role: 'admin',
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      email: 'moder@example.com',
+      password: '$2b$10$RnWxr3HzK4KVuAv854g/k.AiwlFKaT/NDQQuulMkF1EzxvqNsmxn6',
+      name: 'Moderator User',
+      role: 'moderator',
+      createdAt: new Date(),
+    },
+    {
+      id: 3,
       email: 'user@example.com',
-      password: '$2b$10$rKjXZ9YqH3xK4vN8xJ5xYe5xK4vN8xJ5xYe5xK4vN8xJ5xYe5xK4v',
-      name: 'Test User',
+      password: '$2b$10$4INUj5alxEjHmoM/szXUBeIMDLowl42WnqOxJoULh.3qDFmnj/e9.',
+      name: 'Regular User',
       role: 'user',
       createdAt: new Date(),
     },
   ];
-  private currentId = 2;
+  private currentId = 4;
   private recipeLikes: UserRecipeLike[] = [];
 
   async findByEmail(email: string): Promise<User | undefined> {
