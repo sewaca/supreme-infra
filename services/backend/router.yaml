@@ -21,6 +21,8 @@ routes:
     method: PUT
   - path: /recipes/[^/]+
     method: DELETE
+  - path: /recipes/[^/]+/like
+    method: POST
   - path: /recipes/proposed/[^/]+/publish
     method: POST
   - path: /recipes/proposed/all
