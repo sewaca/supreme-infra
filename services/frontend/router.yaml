@@ -17,5 +17,3 @@ routes:
     method: GET
   - path: /submit-recipe
     method: GET
-  - path: /proposed-recipes
-    method: GET
