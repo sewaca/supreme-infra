@@ -55,7 +55,7 @@ class BackendApi {
   }
 
   private async fetch(url: string, options?: RequestInit): Promise<Response> {
-    console.log('outgoing request started', url, options);
+    console.log('outgoing request started', url);
     return fetch(url, options)
       .then((response) => {
         console.log(
@@ -333,13 +333,13 @@ const createServerApi = () => {
   // Используем POD_NAMESPACE из Kubernetes Downward API
   // Если указан BACKEND_SERVICE_NAMESPACE и он отличается от текущего namespace,
   // используем полный формат DNS имени
-  const podNamespace = process.env.POD_NAMESPACE;
-  const backendNamespace = process.env.BACKEND_SERVICE_NAMESPACE;
+  const backendNamespace =
+    process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
 
-  const backendUrl =
-    backendNamespace && backendNamespace !== podNamespace
-      ? `http://backend.${backendNamespace}.svc.cluster.local`
-      : 'http://backend'; // Короткий формат для того же namespace
+  const backendUrl = `http://backend.${backendNamespace}.svc.cluster.local`;
+  // backendNamespace && backendNamespace !== podNamespace
+  //   ? `http://backend.${backendNamespace}.svc.cluster.local`
+  //   : 'http://backend'; // Короткий формат для того же namespace
 
   return new BackendApi(backendUrl);
 };

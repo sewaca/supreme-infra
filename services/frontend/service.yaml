@@ -19,6 +19,7 @@ metrics:
 env:
   PORT: "3000"
   NODE_ENV: "production"
+  BACKEND_SERVICE_NAMESPACE: "default"
 
 resources:
   limits:

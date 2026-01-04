@@ -15,6 +15,7 @@ service:
 env:
   PORT: "3000"
   NODE_ENV: production
+  BACKEND_SERVICE_NAMESPACE: default
   NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/api
 resources:
   limits:
