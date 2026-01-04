@@ -12,6 +12,9 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 3000
+metrics:
+  enabled: true
+  port: 9464
 env:
   PORT: "3000"
   NODE_ENV: production
@@ -77,6 +80,3 @@ canary:
   image:
     repository: ""
     tag: ""
-metrics:
-  enabled: true
-  port: 9464
