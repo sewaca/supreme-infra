@@ -26,7 +26,9 @@ export async function register() {
     sdk = new NodeSDK({
       serviceName: 'frontend',
       metricReader: prometheusExporter,
-      instrumentations: [getNodeAutoInstrumentations(nextInstrumentationConfig)],
+      instrumentations: [
+        getNodeAutoInstrumentations(nextInstrumentationConfig),
+      ],
     });
 
     sdk.start();

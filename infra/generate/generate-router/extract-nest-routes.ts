@@ -7,12 +7,14 @@ interface Route {
 
 export async function extractNestRoutes(servicePath: string): Promise<Route[]> {
   const routes: Route[] = [];
-  
+
   try {
     const output = await runDevServerAndCaptureOutput(servicePath);
     const cleanOutput = stripAnsiCodes(output);
     const logLines = cleanOutput.split('\n');
-    
+
+    console.log(logLines);
+
     for (const line of logLines) {
       const route = parseRouteFromLog(line);
       if (route) {
@@ -22,7 +24,7 @@ export async function extractNestRoutes(servicePath: string): Promise<Route[]> {
   } catch (error) {
     console.error(`Failed to extract routes from ${servicePath}:`, error);
   }
-  
+
   return routes;
 }
 
@@ -33,26 +35,42 @@ function stripAnsiCodes(text: string): string {
 
 function runDevServerAndCaptureOutput(servicePath: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    const child = spawn('pnpm', ['run', 'print-routes'], {
+    const child = spawn('pnpm', ['run', 'dev'], {
       cwd: servicePath,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
 
     let output = '';
+    let foundRoutes = false;
     const timeout = setTimeout(() => {
       child.kill('SIGTERM');
       setTimeout(() => child.kill('SIGKILL'), 1000);
-      reject(new Error('Timeout: route extraction took too long'));
-    }, 15000);
+
+      if (foundRoutes) {
+        resolve(output);
+      } else {
+        reject(new Error('Timeout: no routes found'));
+      }
+    }, 20000);
 
     const handleData = (data: Buffer) => {
       const chunk = data.toString();
       output += chunk;
-      
-      if (chunk.includes('___ROUTES_EXTRACTION_COMPLETE___')) {
+
+      if (chunk.includes('[RouterExplorer]')) {
+        foundRoutes = true;
+      }
+
+      if (
+        chunk.includes('Nest application successfully started') &&
+        foundRoutes
+      ) {
         clearTimeout(timeout);
-        child.kill('SIGTERM');
-        resolve(output);
+        setTimeout(() => {
+          child.kill('SIGTERM');
+          setTimeout(() => child.kill('SIGKILL'), 500);
+          resolve(output);
+        }, 500);
       }
     };
 
@@ -63,30 +81,24 @@ function runDevServerAndCaptureOutput(servicePath: string): Promise<string> {
       clearTimeout(timeout);
       reject(error);
     });
-
-    child.on('exit', (code) => {
-      clearTimeout(timeout);
-      if (code === 0 && output.includes('___ROUTES_EXTRACTION_COMPLETE___')) {
-        resolve(output);
-      }
-    });
   });
 }
 
 function parseRouteFromLog(logLine: string): Route | null {
-  const routePattern = /\[RouterExplorer\]\s+Mapped\s+\{([^,]+),\s+([^}]+)\}\s+route/;
+  const routePattern =
+    /\[RouterExplorer\]\s+Mapped\s+\{([^,]+),\s+([^}]+)\}\s+route/;
   const match = logLine.match(routePattern);
-  
+
   if (!match) {
     return null;
   }
-  
+
   const [, routePath, method] = match;
   const cleanPath = routePath.trim();
   const cleanMethod = method.trim();
-  
+
   const pathWithRegex = convertPathToRegex(cleanPath);
-  
+
   return {
     path: pathWithRegex,
     method: cleanMethod,

@@ -5,9 +5,11 @@
 ## Описание
 
 Этот генератор объединяет функциональность всех генераторов инфраструктуры:
-1. **Security Checks** - обновление GitHub Actions workflow для security проверок
-2. **CD Workflow** - обновление GitHub Actions workflow для continuous deployment
-3. **Values Files** - генерация Helm values файлов для всех окружений
+1. **Router Configurations** - извлечение роутов из NestJS и Next.js сервисов
+2. **Ingress Values** - генерация конфигурации ingress-nginx на основе роутов
+3. **Security Checks** - обновление GitHub Actions workflow для security проверок
+4. **CD Workflow** - обновление GitHub Actions workflow для continuous deployment
+5. **Values Files** - генерация Helm values файлов для всех окружений
 
 ## Использование
 
@@ -17,19 +19,33 @@ pnpm run generate
 
 ## Что делает генератор
 
-### Step 1: Updating security checks
+### Step 1: Generating router configurations
+- Запускает NestJS сервисы через специальный скрипт `print-routes`
+- Извлекает роуты из логов `[RouterExplorer]`
+- Для Next.js сканирует `app` директорию и находит `page.tsx` и `route.ts` файлы
+- Конвертирует параметры роутов (`:id` → `[^/]+`) для ingress-nginx regex
+- Сохраняет результаты в `services/${service}/router.yaml`
+
+### Step 2: Updating ingress values
+- Читает все `services/*/router.yaml` файлы
+- Генерирует правила маршрутизации для ingress-nginx
+- NestJS сервисы: `/api` → backend (с rewrite)
+- Next.js сервисы: `/` → frontend (без rewrite)
+- Сохраняет результаты в `infra/helmcharts/ingress-nginx/values.yaml`
+
+### Step 3: Updating security checks
 - Читает список сервисов из `infra/services.yaml`
 - Обновляет `.github/workflows/security-checks.yml`
 - Добавляет все NestJS сервисы в matrix для security-scan-nest
 - Добавляет все Next.js сервисы в matrix для security-scan-next
 
-### Step 2: Updating CD workflow
+### Step 4: Updating CD workflow
 - Читает список сервисов из `infra/services.yaml`
 - Обновляет `.github/workflows/cd.yml`
 - Добавляет все сервисы в список options для manual deployment
 - Устанавливает первый сервис как default
 
-### Step 3: Generating values files
+### Step 5: Generating values files
 - Читает список сервисов из `infra/services.yaml`
 - Для каждого сервиса генерирует полные Helm values файлы
 - Создает файлы для всех окружений (development, staging, production)
@@ -43,19 +59,36 @@ pnpm run generate
 🚀 Supreme Infrastructure Generator
 ═══════════════════════════════════════════════════════════
 
-📋 Step 1/3: Updating security checks...
+📋 Step 1/5: Generating router configurations...
+───────────────────────────────────────────────────────────
+→ Starting router configuration generation
+→ Processing NestJS service: backend
+→   Found 14 route(s)
+✓ Generated: services/backend/router.yaml
+→ Processing Next.js service: frontend
+→   Found 9 route(s)
+✓ Generated: services/frontend/router.yaml
+
+📋 Step 2/5: Updating ingress values...
+───────────────────────────────────────────────────────────
+→ Starting ingress values generation
+→ Found 2 service(s) with routers
+✓ Generated: infra/helmcharts/ingress-nginx/values.yaml
+→   Total ingress rules: 2
+
+📋 Step 3/5: Updating security checks...
 ───────────────────────────────────────────────────────────
 ✓ Security checks updated successfully!
   Nest services: backend
   Next services: frontend
 
-📋 Step 2/3: Updating CD workflow...
+📋 Step 4/5: Updating CD workflow...
 ───────────────────────────────────────────────────────────
 ✓ CD workflow updated successfully!
   Services: backend, frontend
   Default service: backend
 
-📋 Step 3/3: Generating values files...
+📋 Step 5/5: Generating values files...
 ───────────────────────────────────────────────────────────
 → Starting values generation process
 → Found 2 service(s) to process:
@@ -65,7 +98,7 @@ pnpm run generate
 [... подробные логи генерации ...]
 
 → Generation summary:
-✓   Total files generated: 6
+✓   Total files generated: 4
 
 ═══════════════════════════════════════════════════════════
 ✅ All generation tasks completed successfully!
