@@ -1,5 +1,3 @@
-# Конфигурация для backend сервиса
-# Используется при деплое через: helm install backend ./infra/helmcharts/service -f services/backend/service.yaml
 
 image:
   repository: backend
