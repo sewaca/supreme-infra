@@ -2,7 +2,6 @@
 // Check Next.js runtime environment variable
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    const nodeInstrumentation = await import('./instrumentation.nodejs');
-    nodeInstrumentation.register();
+    await import('./instrumentation.nodejs');
   }
 }
