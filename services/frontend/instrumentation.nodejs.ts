@@ -1,11 +1,9 @@
-import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import {
-  HttpInstrumentation,
-  type HttpRequestCustomAttributeFunction,
-} from '@opentelemetry/instrumentation-http';
-import { Resource } from '@opentelemetry/resources';
+  getNodeAutoInstrumentations,
+  type InstrumentationConfigMap,
+} from '@opentelemetry/auto-instrumentations-node';
+import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 
 let sdk: NodeSDK | null = null;
 
@@ -16,40 +14,25 @@ export async function register() {
       endpoint: '/metrics',
     });
 
-    const requestHook: HttpRequestCustomAttributeFunction = (span, request) => {
-      const req = request as { method?: string; url?: string };
-      if (req.url) {
-        try {
-          const url = new URL(req.url, 'http://localhost');
-          span.updateName(`${req.method} ${url.pathname}`);
-          span.setAttribute('http.route', url.pathname);
-          span.setAttribute('http.target', url.pathname);
-        } catch {
-          // Игнорируем ошибки парсинга URL
-        }
-      }
+    const nextInstrumentationConfig: InstrumentationConfigMap = {
+      '@opentelemetry/instrumentation-fs': {
+        enabled: false,
+      },
+      '@opentelemetry/instrumentation-http': {
+        enabled: true,
+      },
     };
 
-    // Создаем HTTP инструментацию с явной конфигурацией
-    const httpInstrumentation = new HttpInstrumentation({
-      enabled: true,
-      ignoreIncomingRequestHook: () => false,
-      ignoreOutgoingRequestHook: () => false,
-      requestHook,
-    });
-
     sdk = new NodeSDK({
-      resource: new Resource({ [ATTR_SERVICE_NAME]: 'frontend' }),
+      serviceName: 'frontend',
       metricReader: prometheusExporter,
-      instrumentations: [httpInstrumentation],
+      instrumentations: [getNodeAutoInstrumentations(nextInstrumentationConfig)],
     });
 
     sdk.start();
+
     console.log('OpenTelemetry SDK started for frontend service');
     console.log('Prometheus metrics endpoint: http://localhost:9464/metrics');
-    console.log(
-      'HTTP instrumentation enabled for incoming and outgoing requests',
-    );
 
     process.on('SIGTERM', () => {
       if (sdk) {
