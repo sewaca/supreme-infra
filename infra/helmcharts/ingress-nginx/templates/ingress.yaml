@@ -1,33 +1,31 @@
 {{- if .Values.ingress.enabled }}
-{{- range .Values.ingress.rules }}
+{{- range $rule := .Values.ingress.rules }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $.Values.ingress.name }}-{{ .service }}
+  name: {{ $.Values.ingress.name }}-{{ $rule.service }}
   namespace: {{ $.Values.ingress.namespace }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    {{- if eq .type "nest" }}
     nginx.ingress.kubernetes.io/use-regex: "true"
-    {{- end }}
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      {{- range .paths }}
+      {{- range $rule.paths }}
       - path: {{ .path }}
-        {{- if eq $.type "nest" }}
+        {{- if eq $rule.type "nest" }}
         pathType: ImplementationSpecific
         {{- else }}
         pathType: Prefix
         {{- end }}
         backend:
           service:
-            name: {{ $.service }}
+            name: {{ $rule.service }}
             port:
-              number: {{ $.port }}
+              number: {{ $rule.port }}
       {{- end }}
 {{- end }}
 {{- end }}
