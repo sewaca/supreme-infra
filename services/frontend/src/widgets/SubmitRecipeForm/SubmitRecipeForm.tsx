@@ -143,7 +143,6 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
         if (onSuccess) {
           setTimeout(() => {
             onSuccess();
-            router.refresh();
           }, 1000);
         }
       } else {

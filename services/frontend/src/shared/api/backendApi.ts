@@ -329,7 +329,7 @@ const commonBackendPostfix = '/main-api';
 
 const createServerApi = () => {
   if (!isProd) {
-    return new BackendApi('http://localhost:4000');
+    return new BackendApi('http://localhost:4000/main-api');
   }
 
   // Используем POD_NAMESPACE из Kubernetes Downward API
