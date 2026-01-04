@@ -19,7 +19,7 @@ env:
   PORT: "3000"
   NODE_ENV: production
   BACKEND_SERVICE_NAMESPACE: default
-  NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216
+  NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/main-api
 resources:
   limits:
     cpu: 600m
