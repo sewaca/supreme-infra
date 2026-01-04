@@ -1,60 +1,74 @@
-import {
-  getNodeAutoInstrumentations,
-  type InstrumentationConfigMap,
-} from '@opentelemetry/auto-instrumentations-node';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { Resource } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 
-const prometheusExporter = new PrometheusExporter({
-  port: 9464,
-  endpoint: '/metrics',
-});
-
-type Request = { method?: string; url?: string };
-
-const nextInstrumentationConfig: InstrumentationConfigMap = {
-  '@opentelemetry/instrumentation-fs': { enabled: false },
-  '@opentelemetry/instrumentation-http': {
-    enabled: true,
-    // Включаем экспорт метрик для HTTP запросов
-    ignoreIncomingRequestHook: () => false,
-    requestHook: (span, request) => {
-      const req = request as Request;
-      if (req.url) {
-        const url = new URL(req.url, 'http://localhost');
-        span.updateName(`${req.method} ${url.pathname}`);
-        span.setAttribute('http.route', url.pathname);
-        span.setAttribute('http.target', url.pathname);
-      }
-    },
-  },
-};
-
-const sdk = new NodeSDK({
-  serviceName: 'frontend',
-  metricReader: prometheusExporter,
-  instrumentations: [getNodeAutoInstrumentations(nextInstrumentationConfig)],
-});
-
-// Создаем счетчик для ошибок запросов
-// const meter = metrics.getMeter('frontend', '1.0.0');
-// const requestErrorsCounter = meter.createCounter('http_request_errors_total', {
-//   description: 'Total number of HTTP request errors',
-// });
+let sdk: NodeSDK | null = null;
 
 export async function register() {
-  sdk.start();
-  console.log('OpenTelemetry SDK started');
+  try {
+    const prometheusExporter = new PrometheusExporter({
+      port: 9464,
+      endpoint: '/metrics',
+    });
 
-  process.on('SIGTERM', () => {
-    sdk
-      .shutdown()
-      .then(() => console.log('OpenTelemetry SDK shut down successfully'))
-      .catch((error) =>
-        console.log('Error shutting down OpenTelemetry SDK', error),
-      )
-      .finally(() => process.exit(0));
-  });
+    // Создаем HTTP инструментацию с явной конфигурацией
+    const httpInstrumentation = new HttpInstrumentation({
+      enabled: true,
+      ignoreIncomingRequestHook: () => false,
+      ignoreOutgoingRequestHook: () => false,
+      requestHook: (
+        span: {
+          updateName: (name: string) => void;
+          setAttribute: (key: string, value: string) => void;
+        },
+        request: { method?: string; url?: string },
+      ) => {
+        const req = request as { method?: string; url?: string };
+        if (req.url) {
+          try {
+            const url = new URL(req.url, 'http://localhost');
+            span.updateName(`${req.method} ${url.pathname}`);
+            span.setAttribute('http.route', url.pathname);
+            span.setAttribute('http.target', url.pathname);
+          } catch {
+            // Игнорируем ошибки парсинга URL
+          }
+        }
+      },
+    });
+
+    sdk = new NodeSDK({
+      resource: new Resource({
+        [ATTR_SERVICE_NAME]: 'frontend',
+      }),
+      metricReader: prometheusExporter,
+      instrumentations: [httpInstrumentation],
+    });
+
+    sdk.start();
+    console.log('OpenTelemetry SDK started for frontend service');
+    console.log('Prometheus metrics endpoint: http://localhost:9464/metrics');
+    console.log(
+      'HTTP instrumentation enabled for incoming and outgoing requests',
+    );
+
+    process.on('SIGTERM', () => {
+      if (sdk) {
+        sdk
+          .shutdown()
+          .then(() => console.log('OpenTelemetry SDK shut down successfully'))
+          .catch((error) =>
+            console.log('Error shutting down OpenTelemetry SDK', error),
+          )
+          .finally(() => process.exit(0));
+      }
+    });
+  } catch (error) {
+    console.error('Failed to initialize OpenTelemetry SDK:', error);
+    throw error;
+  }
 }
 
 // export const onRequestError: import('next').Instrumentation.onRequestError =

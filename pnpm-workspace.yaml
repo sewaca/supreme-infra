@@ -60,6 +60,9 @@ catalog:
   '@opentelemetry/auto-instrumentations-node': ^0.67.2
   '@opentelemetry/exporter-prometheus': ^0.56.0
   '@opentelemetry/sdk-metrics': ^1.29.0
+  '@opentelemetry/instrumentation-http': ^0.56.0
+  '@opentelemetry/resources': ^1.29.0
+  '@opentelemetry/semantic-conventions': ^1.29.0
 
   # Backend specific
   '@nestjs/jwt': ^11.0.1
