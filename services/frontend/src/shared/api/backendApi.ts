@@ -51,7 +51,15 @@ class BackendApi {
       throw new Error(`Failed to fetch recipes: ${response.statusText}`);
     }
 
-    return response.json() as Promise<Recipe[]>;
+    const text = await response.text();
+    console.log('response text is', text);
+
+    try {
+      return response.json() as Promise<Recipe[]>;
+    } catch (e) {
+      console.error('failed to parse json', e);
+      throw new Error('Failed to parse json');
+    }
   }
 
   public async getRecipeById(
@@ -335,30 +343,29 @@ class BackendApi {
   }
 }
 
-/** namespace в котором находятся поды бекенда */
-const backendNamespace =
-  process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
-
 /** Общий преффикс для всех ручек бекенда */
 const commonBackendPostfix = '/main-api';
-
-/** Клиентский хост бекенда */
-const backendClientHost = isProd ? '84.252.134.216' : 'localhost:4000';
 
 const createServerApi = () => {
   if (!isProd) {
     return new BackendApi('http://localhost:4000');
   }
 
+  /** namespace в котором находятся поды бекенда */
+  const backendNamespace =
+    process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
+
   const backendUrl = `http://backend.${backendNamespace}.svc.cluster.local${commonBackendPostfix}`;
   return new BackendApi(backendUrl);
 };
 
 const createClientApi = () =>
-  new BackendApi(`http://${backendClientHost}${commonBackendPostfix}`);
+  new BackendApi(
+    `http://${isProd ? '84.252.134.216' : 'localhost:4000'}${commonBackendPostfix}`,
+  );
 
 export const serverApi = createServerApi();
 export const backendApi = createClientApi();
 
-export const api =
-  typeof window === 'undefined' ? createServerApi() : createClientApi();
+// export const api =
+//   typeof window === 'undefined' ? createServerApi() : createClientApi();
