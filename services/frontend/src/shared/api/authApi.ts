@@ -2,8 +2,8 @@ import { AuthResponse } from '../lib/auth.client';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const baseUrl = isProduction
-  ? 'http://84.252.134.216/api'
-  : 'http://localhost:4000';
+  ? 'http://84.252.134.216/main-api'
+  : 'http://localhost:4000/main-api';
 
 export interface RegisterData {
   email: string;
