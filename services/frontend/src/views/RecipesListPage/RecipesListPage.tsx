@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { RecipeCard } from '../../entities/recipe/RecipeCard';
-import { Recipe } from '../../shared/api/backendApi';
+import type { Recipe } from '../../shared/api/backendApi.types';
 import { getUserRole } from '../../shared/lib/auth.client';
 import { RecipeFilters } from '../../widgets/RecipeFilters/RecipeFilters';
 import styles from './RecipesListPage.module.css';

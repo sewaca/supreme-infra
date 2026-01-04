@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
-import { RecipeDetails, serverApi } from '../../../src/shared/api/backendApi';
+import { serverApi } from '../../../src/shared/api/backendApi';
+import type { RecipeDetails } from '../../../src/shared/api/backendApi.types';
 import { getAuthToken, getUser } from '../../../src/shared/lib/auth.server';
 import { RecipeDetailsPage } from '../../../src/views/RecipeDetailsPage/RecipeDetailsPage';
 

@@ -1,4 +1,4 @@
-import { RecipeComment } from '../../shared/api/backendApi';
+import type { RecipeComment } from '../../shared/api/backendApi.types';
 import { MarkdownContent } from '../../shared/components/MarkdownContent/MarkdownContent';
 import styles from './RecipeComments.module.css';
 
