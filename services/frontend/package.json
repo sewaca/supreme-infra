@@ -24,9 +24,9 @@
     "classnames": "catalog:",
     "js-cookie": "catalog:",
     "next": "catalog:",
+    "react": "catalog:",
     "react-dom": "catalog:",
     "react-markdown": "catalog:",
-    "react": "catalog:",
     "remark-gfm": "catalog:",
     "typescript": "catalog:"
   },
@@ -40,6 +40,7 @@
     "@vitejs/plugin-react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
+    "baseline-browser-mapping": "^2.9.11",
     "identity-obj-proxy": "catalog:",
     "jsdom": "catalog:",
     "vite": "catalog:",
