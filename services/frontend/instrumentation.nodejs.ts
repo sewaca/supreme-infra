@@ -1,5 +1,8 @@
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import {
+  HttpInstrumentation,
+  type HttpRequestCustomAttributeFunction,
+} from '@opentelemetry/instrumentation-http';
 import { Resource } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
@@ -13,36 +16,30 @@ export async function register() {
       endpoint: '/metrics',
     });
 
+    const requestHook: HttpRequestCustomAttributeFunction = (span, request) => {
+      const req = request as { method?: string; url?: string };
+      if (req.url) {
+        try {
+          const url = new URL(req.url, 'http://localhost');
+          span.updateName(`${req.method} ${url.pathname}`);
+          span.setAttribute('http.route', url.pathname);
+          span.setAttribute('http.target', url.pathname);
+        } catch {
+          // Игнорируем ошибки парсинга URL
+        }
+      }
+    };
+
     // Создаем HTTP инструментацию с явной конфигурацией
     const httpInstrumentation = new HttpInstrumentation({
       enabled: true,
       ignoreIncomingRequestHook: () => false,
       ignoreOutgoingRequestHook: () => false,
-      requestHook: (
-        span: {
-          updateName: (name: string) => void;
-          setAttribute: (key: string, value: string) => void;
-        },
-        request: { method?: string; url?: string },
-      ) => {
-        const req = request as { method?: string; url?: string };
-        if (req.url) {
-          try {
-            const url = new URL(req.url, 'http://localhost');
-            span.updateName(`${req.method} ${url.pathname}`);
-            span.setAttribute('http.route', url.pathname);
-            span.setAttribute('http.target', url.pathname);
-          } catch {
-            // Игнорируем ошибки парсинга URL
-          }
-        }
-      },
+      requestHook,
     });
 
     sdk = new NodeSDK({
-      resource: new Resource({
-        [ATTR_SERVICE_NAME]: 'frontend',
-      }),
+      resource: new Resource({ [ATTR_SERVICE_NAME]: 'frontend' }),
       metricReader: prometheusExporter,
       instrumentations: [httpInstrumentation],
     });
@@ -70,23 +67,3 @@ export async function register() {
     throw error;
   }
 }
-
-// export const onRequestError: import('next').Instrumentation.onRequestError =
-//   async (error, request, context) => {
-//     // Записываем метрику об ошибке
-//     const errorName = error instanceof Error ? error.name : 'UnknownError';
-//     const errorDigest =
-//       typeof error === 'object' && error !== null && 'digest' in error
-//         ? String(error.digest)
-//         : 'unknown';
-
-//     requestErrorsCounter.add(1, {
-//       method: request.method,
-//       path: request.path,
-//       route_path: context.routePath,
-//       route_type: context.routeType,
-//       router_kind: context.routerKind,
-//       error_name: errorName,
-//       error_digest: errorDigest,
-//     });
-//   };
