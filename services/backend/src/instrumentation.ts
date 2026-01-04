@@ -4,11 +4,36 @@ import {
 } from '@opentelemetry/auto-instrumentations-node';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
+import {
+  LoggerProvider,
+  BatchLogRecordProcessor,
+} from '@opentelemetry/sdk-logs';
+import { Resource } from '@opentelemetry/resources';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 
 const prometheusExporter = new PrometheusExporter({
   port: 9464,
   endpoint: '/metrics',
 });
+
+// Configure logs export to Loki via OTLP
+const lokiEndpoint =
+  process.env.LOKI_ENDPOINT ||
+  'http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs';
+
+const logExporter = new OTLPLogExporter({
+  url: lokiEndpoint,
+  headers: {},
+});
+
+const loggerProvider = new LoggerProvider({
+  resource: new Resource({
+    [ATTR_SERVICE_NAME]: 'backend',
+  }),
+});
+
+loggerProvider.addLogRecordProcessor(new BatchLogRecordProcessor(logExporter));
 
 const nestInstrumentationConfig: InstrumentationConfigMap = {
   '@opentelemetry/instrumentation-fs': {
@@ -45,14 +70,18 @@ const nestInstrumentationConfig: InstrumentationConfigMap = {
 const sdk = new NodeSDK({
   serviceName: 'backend',
   metricReader: prometheusExporter,
+  logRecordProcessor: new BatchLogRecordProcessor(logExporter),
   instrumentations: [getNodeAutoInstrumentations(nestInstrumentationConfig)],
 });
 
 sdk.start();
 
+console.log('OpenTelemetry SDK started for backend service');
+console.log('Prometheus metrics endpoint: http://localhost:9464/metrics');
+console.log(`Logs exporter endpoint: ${lokiEndpoint}`);
+
 process.on('SIGTERM', () => {
-  sdk
-    .shutdown()
+  Promise.all([sdk.shutdown(), loggerProvider.shutdown()])
     .then(() => console.log('OpenTelemetry SDK shut down successfully'))
     .catch((error) =>
       console.log('Error shutting down OpenTelemetry SDK', error),
@@ -61,3 +90,4 @@ process.on('SIGTERM', () => {
 });
 
 export default sdk;
+export { loggerProvider };
