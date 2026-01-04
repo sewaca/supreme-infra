@@ -22,6 +22,14 @@ env:
   PORT: "4000"
   NODE_ENV: "production"
 
+livenessProbe:
+  httpGet:
+    path: /main-api/api/status
+
+readinessProbe:
+  httpGet:
+    path: /main-api/api/status
+
 resources:
   limits:
     cpu: 500m

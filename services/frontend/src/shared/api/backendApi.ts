@@ -325,6 +325,8 @@ class BackendApi {
 
 const isProd = process.env.NODE_ENV === 'production';
 
+const commonBackendPostfix = '/main-api';
+
 const createServerApi = () => {
   if (!isProd) {
     return new BackendApi('http://localhost:4000');
@@ -336,17 +338,16 @@ const createServerApi = () => {
   const backendNamespace =
     process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
 
-  const backendUrl = `http://backend.${backendNamespace}.svc.cluster.local`;
-  // backendNamespace && backendNamespace !== podNamespace
-  //   ? `http://backend.${backendNamespace}.svc.cluster.local`
-  //   : 'http://backend'; // Короткий формат для того же namespace
+  const backendUrl = `http://backend.${backendNamespace}.svc.cluster.local${commonBackendPostfix}`;
 
   return new BackendApi(backendUrl);
 };
 
 const createClientApi = () =>
   new BackendApi(
-    isProd ? 'http://84.252.134.216/api' : 'http://localhost:4000',
+    isProd
+      ? `http://84.252.134.216${commonBackendPostfix}`
+      : `http://localhost:4000${commonBackendPostfix}`,
   );
 
 export const serverApi = createServerApi();

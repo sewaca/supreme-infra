@@ -1,31 +1,31 @@
 service: backend
 type: nest
 routes:
-  - path: /api/status
+  - path: /main-api/api/status
     method: GET
-  - path: /auth/login
+  - path: /main-api/auth/login
     method: POST
-  - path: /auth/me
+  - path: /main-api/auth/me
     method: GET
-  - path: /auth/register
+  - path: /main-api/auth/register
     method: POST
-  - path: /auth/users/[^/]+
+  - path: /main-api/auth/users/[^/]+
     method: GET
-  - path: /auth/users/[^/]+
+  - path: /main-api/auth/users/[^/]+
     method: DELETE
-  - path: /recipes
+  - path: /main-api/recipes
     method: GET
-  - path: /recipes/[^/]+
+  - path: /main-api/recipes/[^/]+
     method: GET
-  - path: /recipes/[^/]+
+  - path: /main-api/recipes/[^/]+
     method: PUT
-  - path: /recipes/[^/]+
+  - path: /main-api/recipes/[^/]+
     method: DELETE
-  - path: /recipes/[^/]+/like
+  - path: /main-api/recipes/[^/]+/like
     method: POST
-  - path: /recipes/proposed/[^/]+/publish
+  - path: /main-api/recipes/proposed/[^/]+/publish
     method: POST
-  - path: /recipes/proposed/all
+  - path: /main-api/recipes/proposed/all
     method: GET
-  - path: /recipes/submit
+  - path: /main-api/recipes/submit
     method: POST

@@ -12,6 +12,7 @@ async function bootstrap() {
     { bufferLogs: true },
   );
   app.enableShutdownHooks();
+  app.setGlobalPrefix('main-api');
 
   // Enable CORS
   // TODO: сделать по человечески
