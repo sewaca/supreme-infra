@@ -406,7 +406,6 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
-        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Ингредиенты (список) *</label>
         {formData.ingredients.map((ingredient, index) => (
           <div key={`${index}-${ingredient}`} className={styles.ingredientRow}>
@@ -439,7 +438,6 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
-        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Детальные ингредиенты *</label>
         {formData.detailedIngredients.map((ingredient, index) => (
           <div
