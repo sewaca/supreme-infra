@@ -343,9 +343,7 @@ const backendNamespace =
 const commonBackendPostfix = '/main-api';
 
 /** Клиентский хост бекенда */
-const backendClientHost = isProd
-  ? process.env.NEXT_PUBLIC_BACKEND_URL
-  : 'localhost:4000';
+const backendClientHost = isProd ? '84.252.134.216' : 'localhost:4000';
 
 const createServerApi = () => {
   if (!isProd) {
