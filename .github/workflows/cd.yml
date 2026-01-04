@@ -11,6 +11,7 @@ on:
           - backend
           - frontend
         default: 'backend'
+      # TODO: remove after development (or comment me)
       skip-canary:
         description: 'Skip canary deployment and go directly to production'
         required: false
