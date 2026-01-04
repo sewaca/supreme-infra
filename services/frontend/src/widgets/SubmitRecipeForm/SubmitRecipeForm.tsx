@@ -2,12 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  backendApi,
+import { backendApi } from '../../shared/api/backendApi';
+import type {
   RecipeDetails,
   RecipeIngredient,
   RecipeStep,
-} from '../../shared/api/backendApi';
+} from '../../shared/api/backendApi.types';
 import { decodeToken, getAuthToken } from '../../shared/lib/auth.client';
 import styles from './SubmitRecipeForm.module.css';
 

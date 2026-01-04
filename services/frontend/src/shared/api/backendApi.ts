@@ -1,51 +1,12 @@
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-  role: 'user' | 'moderator' | 'admin';
-}
-
-export interface Recipe {
-  id: number;
-  title: string;
-  description: string;
-  ingredients: string[];
-  instructions: string;
-  cookingTime: number;
-  difficulty: 'easy' | 'medium' | 'hard';
-  imageUrl: string;
-  servings: number;
-  calories: number;
-}
-
-export interface RecipeIngredient {
-  name: string;
-  amount: string;
-}
-
-export interface RecipeStep {
-  stepNumber: number;
-  instruction: string;
-}
-
-export interface RecipeComment {
-  id: number;
-  author: string;
-  content: string;
-  createdAt: string;
-  rating: number;
-}
-
-export interface RecipeDetails extends Recipe {
-  detailedIngredients: RecipeIngredient[];
-  steps: RecipeStep[];
-  servings: number;
-  calories: number;
-  author: string;
-  likes: number;
-  comments: RecipeComment[];
-  isLiked?: boolean;
-}
+import { isProd } from '../lib/environment';
+import type {
+  AuthResponse,
+  LoginData,
+  Recipe,
+  RecipeDetails,
+  RegisterData,
+  User,
+} from './backendApi.types';
 
 class BackendApi {
   private readonly baseUrl: string;
@@ -156,9 +117,7 @@ class BackendApi {
 
     const response = await this.fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(recipe),
     });
 
@@ -173,9 +132,7 @@ class BackendApi {
     const url = `${this.baseUrl}/recipes/proposed/all`;
 
     const response = await this.fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     if (!response.ok) {
@@ -321,34 +278,89 @@ class BackendApi {
 
     return response.json() as Promise<{ success: boolean }>;
   }
+
+  public async register(data: RegisterData): Promise<AuthResponse> {
+    const url = `${this.baseUrl}/auth/register`;
+
+    const response = await this.fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ message: 'Registration failed' }));
+      throw new Error(error.message || 'Registration failed');
+    }
+
+    return response.json() as Promise<AuthResponse>;
+  }
+
+  public async login(data: LoginData): Promise<AuthResponse> {
+    const url = `${this.baseUrl}/auth/login`;
+
+    const response = await this.fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ message: 'Login failed' }));
+      throw new Error(error.message || 'Login failed');
+    }
+
+    return response.json() as Promise<AuthResponse>;
+  }
+
+  public async getCurrentUser(token: string): Promise<User> {
+    const url = `${this.baseUrl}/auth/me`;
+
+    const response = await this.fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      throw new Error(`Failed to fetch current user: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<User>;
+  }
 }
 
-const isProd = process.env.NODE_ENV === 'production';
+/** namespace в котором находятся поды бекенда */
+const backendNamespace =
+  process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
 
+/** Общий преффикс для всех ручек бекенда */
 const commonBackendPostfix = '/main-api';
+
+/** Клиентский хост бекенда */
+const backendClientHost = isProd
+  ? process.env.NEXT_PUBLIC_BACKEND_URL
+  : 'localhost:4000';
 
 const createServerApi = () => {
   if (!isProd) {
     return new BackendApi('http://localhost:4000');
   }
 
-  // Используем POD_NAMESPACE из Kubernetes Downward API
-  // Если указан BACKEND_SERVICE_NAMESPACE и он отличается от текущего namespace,
-  // используем полный формат DNS имени
-  const backendNamespace =
-    process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
-
   const backendUrl = `http://backend.${backendNamespace}.svc.cluster.local${commonBackendPostfix}`;
-
   return new BackendApi(backendUrl);
 };
 
 const createClientApi = () =>
-  new BackendApi(
-    isProd
-      ? `http://84.252.134.216${commonBackendPostfix}`
-      : `http://localhost:4000${commonBackendPostfix}`,
-  );
+  new BackendApi(`http://${backendClientHost}${commonBackendPostfix}`);
 
 export const serverApi = createServerApi();
 export const backendApi = createClientApi();
+
+export const api =
+  typeof window === 'undefined' ? createServerApi() : createClientApi();

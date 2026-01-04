@@ -1,4 +1,3 @@
-import { resolve } from 'node:path';
 import react from '@vitejs/plugin-react';
 import { defineConfig, mergeConfig } from 'vitest/config';
 import baseConfig from '../../vitest.config.global';
@@ -13,11 +12,6 @@ export default mergeConfig(
       globals: true,
       setupFiles: ['./vitest.setup.ts'],
       css: true,
-    },
-    resolve: {
-      alias: {
-        '@': resolve(__dirname, './src'),
-      },
     },
   }),
 );

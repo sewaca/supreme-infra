@@ -48,7 +48,7 @@ overrides:
       maxReplicas: 5
     env:
       NODE_ENV: "production"
-      NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/main-api # TODO: унести в другую node-env
+      NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216
   staging:
     # В staging можем использовать меньше ресурсов
     resources:

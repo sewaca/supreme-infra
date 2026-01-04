@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { backendApi, Recipe, RecipeDetails } from './backendApi';
+import { backendApi } from './backendApi';
+import type { Recipe, RecipeDetails } from './backendApi.types';
 
 // Mock global fetch
 global.fetch = vi.fn();
@@ -34,7 +35,7 @@ describe('BackendApi', () => {
       const result = await backendApi.getRecipes();
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:4000/recipes',
+        'http://localhost:4000/main-api/recipes',
         undefined,
       );
       expect(result).toEqual(mockRecipes);
@@ -64,7 +65,7 @@ describe('BackendApi', () => {
       const result = await backendApi.getRecipes('test');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:4000/recipes?search=test',
+        'http://localhost:4000/main-api/recipes?search=test',
         undefined,
       );
       expect(result).toEqual(mockRecipes);
@@ -110,7 +111,7 @@ describe('BackendApi', () => {
       const result = await backendApi.getRecipeById(1);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:4000/recipes/1',
+        'http://localhost:4000/main-api/recipes/1',
         expect.any(Object),
       );
       expect(result).toEqual(mockRecipe);

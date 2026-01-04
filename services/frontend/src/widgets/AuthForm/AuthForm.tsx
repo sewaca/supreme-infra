@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { login, register } from '../../shared/api/authApi';
+import { backendApi } from '../../shared/api/backendApi';
 import { setAuthToken } from '../../shared/lib/auth.client';
 import styles from './AuthForm.module.css';
 
@@ -28,10 +28,13 @@ export function AuthForm({ mode }: AuthFormProps) {
     try {
       const response =
         mode === 'login'
-          ? await login({ email: formData.email, password: formData.password })
-          : await register(formData);
+          ? await backendApi.login({
+              email: formData.email,
+              password: formData.password,
+            })
+          : await backendApi.register(formData);
 
-      setAuthToken(response.accessToken);
+      setAuthToken(response.access_token);
       router.push('/profile');
       router.refresh();
     } catch (err) {
