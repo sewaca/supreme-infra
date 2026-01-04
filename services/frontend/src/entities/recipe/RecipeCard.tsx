@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Recipe } from '../../shared/api/backendApi';
+import type { Recipe } from '../../shared/api/backendApi.types';
 import styles from './RecipeCard.module.css';
 
 interface RecipeCardProps {

@@ -3,11 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { backendApi } from '../../shared/api/backendApi';
-import {
-  getAuthToken,
-  removeAuthToken,
-  User,
-} from '../../shared/lib/auth.client';
+import type { User } from '../../shared/api/backendApi.types';
+import { getAuthToken, removeAuthToken } from '../../shared/lib/auth.client';
 import styles from './ProfilePage.module.css';
 
 interface ProfilePageProps {

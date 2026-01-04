@@ -1,4 +1,4 @@
-import { RecipeStep } from '../../shared/api/backendApi';
+import type { RecipeStep } from '../../shared/api/backendApi.types';
 import { MarkdownContent } from '../../shared/components/MarkdownContent/MarkdownContent';
 import styles from './RecipeSteps.module.css';
 

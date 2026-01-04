@@ -1,4 +1,4 @@
-import { RecipeIngredient } from '../../shared/api/backendApi';
+import type { RecipeIngredient } from '../../shared/api/backendApi.types';
 import styles from './RecipeIngredients.module.css';
 
 interface RecipeIngredientsProps {

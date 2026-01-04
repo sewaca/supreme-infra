@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
-import { serverApi, User } from '../../../src/shared/api/backendApi';
+import { serverApi } from '../../../src/shared/api/backendApi';
+import type { User } from '../../../src/shared/api/backendApi.types';
 import { getAuthToken, getUser } from '../../../src/shared/lib/auth.server';
 import { ProfilePage } from '../../../src/views/ProfilePage/ProfilePage';
 
