@@ -51,15 +51,7 @@ class BackendApi {
       throw new Error(`Failed to fetch recipes: ${response.statusText}`);
     }
 
-    const text = await response.text();
-    console.log('response text is', text);
-
-    try {
-      return response.json() as Promise<Recipe[]>;
-    } catch (e) {
-      console.error('failed to parse json', e);
-      throw new Error('Failed to parse json');
-    }
+    return response.json() as Promise<Recipe[]>;
   }
 
   public async getRecipeById(
