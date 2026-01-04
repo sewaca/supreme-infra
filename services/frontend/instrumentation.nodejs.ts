@@ -44,6 +44,7 @@ const sdk = new NodeSDK({
 
 export async function register() {
   sdk.start();
+  console.log('OpenTelemetry SDK started');
 
   process.on('SIGTERM', () => {
     sdk
