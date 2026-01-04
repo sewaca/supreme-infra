@@ -16,11 +16,7 @@ spec:
       paths:
       {{- range $rule.paths }}
       - path: {{ .path }}
-        {{- if eq $rule.type "nest" }}
         pathType: ImplementationSpecific
-        {{- else }}
-        pathType: Prefix
-        {{- end }}
         backend:
           service:
             name: {{ $rule.service }}
