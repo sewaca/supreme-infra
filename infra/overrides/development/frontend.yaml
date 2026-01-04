@@ -75,3 +75,6 @@ canary:
   image:
     repository: ""
     tag: ""
+metrics:
+  enabled: true
+  port: 9464
