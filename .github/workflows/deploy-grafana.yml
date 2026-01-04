@@ -1,0 +1,81 @@
+name: Deploy Grafana
+
+on:
+  workflow_dispatch:
+
+env:
+  HELM_VERSION: 'v3.13.0'
+  GRAFANA_NAMESPACE: 'monitoring'
+  GRAFANA_RELEASE_NAME: 'grafana'
+  DASHBOARDS_CONFIGMAP_NAME: 'grafana-dashboards'
+
+jobs:
+  deploy-grafana:
+    name: Deploy Grafana
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Yandex Cloud
+        uses: ./.github/workflows/jobs/setup-yandex-cloud
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
+          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
+          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Add Grafana Helm repository
+        run: |
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update
+
+      - name: Update Helm dependencies
+        run: |
+          helm dependency update ./infra/helmcharts/grafana
+
+      - name: Create or update namespace
+        run: |
+          kubectl create namespace ${{ env.GRAFANA_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create or update ConfigMap with dashboards
+        run: |
+          kubectl create configmap ${{ env.DASHBOARDS_CONFIGMAP_NAME }} \
+            --from-file=./infra/helmcharts/grafana/dashboards/ \
+            --namespace ${{ env.GRAFANA_NAMESPACE }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy Grafana with Helm
+        run: |
+          CHART_PATH="./infra/helmcharts/grafana"
+          
+          echo "Deploying Grafana..."
+          echo "Chart: $CHART_PATH"
+          echo "Namespace: ${{ env.GRAFANA_NAMESPACE }}"
+          
+          helm upgrade ${{ env.GRAFANA_RELEASE_NAME }} $CHART_PATH \
+            --namespace ${{ env.GRAFANA_NAMESPACE }} \
+            --install \
+            --wait \
+            --timeout 5m
+          
+          echo "Grafana deployment completed"
+
+      - name: Verify Grafana deployment
+        run: |
+          echo "Checking Grafana pods..."
+          kubectl get pods -n ${{ env.GRAFANA_NAMESPACE }} -l app.kubernetes.io/name=grafana
+          
+          echo ""
+          echo "Checking Grafana service..."
+          kubectl get svc -n ${{ env.GRAFANA_NAMESPACE }} ${{ env.GRAFANA_RELEASE_NAME }}
+          
+          echo ""
+          echo "Checking ConfigMap..."
+          kubectl get configmap -n ${{ env.GRAFANA_NAMESPACE }} ${{ env.DASHBOARDS_CONFIGMAP_NAME }}
+
