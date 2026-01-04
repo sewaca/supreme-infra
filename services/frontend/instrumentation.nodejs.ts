@@ -16,12 +16,15 @@ const nextInstrumentationConfig: InstrumentationConfigMap = {
   '@opentelemetry/instrumentation-fs': { enabled: false },
   '@opentelemetry/instrumentation-http': {
     enabled: true,
+    // Включаем экспорт метрик для HTTP запросов
+    ignoreIncomingRequestHook: () => false,
     requestHook: (span, request) => {
       const req = request as Request;
       if (req.url) {
         const url = new URL(req.url, 'http://localhost');
         span.updateName(`${req.method} ${url.pathname}`);
         span.setAttribute('http.route', url.pathname);
+        span.setAttribute('http.target', url.pathname);
       }
     },
   },
