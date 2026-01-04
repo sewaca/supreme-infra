@@ -45,7 +45,6 @@ export function RecipeDetailsPage({
     try {
       await backendApi.publishRecipe(recipe.id, token);
       router.push('/proposed-recipes');
-      router.refresh();
     } catch (error) {
       setPublishError(
         error instanceof Error ? error.message : 'Ошибка при публикации',
@@ -77,7 +76,6 @@ export function RecipeDetailsPage({
       await backendApi.deleteRecipe(recipe.id, token);
       alert('Пост успешно удален');
       router.push('/');
-      router.refresh();
     } catch (error) {
       alert(
         error instanceof Error ? error.message : 'Ошибка при удалении рецепта',

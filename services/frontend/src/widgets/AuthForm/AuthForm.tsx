@@ -33,7 +33,6 @@ export function AuthForm({ mode }: AuthFormProps) {
 
       setAuthToken(response.accessToken);
       router.push('/profile');
-      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {

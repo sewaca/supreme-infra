@@ -25,7 +25,6 @@ export function ProfilePage({
   const handleLogout = () => {
     removeAuthToken();
     router.push('/');
-    router.refresh();
   };
 
   const handleDelete = async () => {
@@ -43,7 +42,6 @@ export function ProfilePage({
 
       await backendApi.deleteUser(user.id, token);
       router.push('/');
-      router.refresh();
     } catch (error) {
       console.error('Failed to delete user:', error);
       alert('Не удалось удалить пользователя');
