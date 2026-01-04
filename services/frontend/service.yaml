@@ -12,6 +12,10 @@ service:
   port: 80
   targetPort: 3000
 
+metrics:
+  enabled: true
+  port: 9464
+
 env:
   PORT: "3000"
   NODE_ENV: "production"
