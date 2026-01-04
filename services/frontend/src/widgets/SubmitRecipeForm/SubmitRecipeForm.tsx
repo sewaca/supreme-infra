@@ -487,7 +487,6 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       </div>
 
       <div className={styles.field}>
-        {/** biome-ignore lint/a11y/noLabelWithoutControl: TODO: */}
         <label className={styles.label}>Шаги приготовления *</label>
         {formData.steps.map((step, index) => (
           <div key={step.stepNumber} className={styles.stepRow}>
