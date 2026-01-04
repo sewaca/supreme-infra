@@ -9,6 +9,7 @@
     "build": "nest build",
     "dev": "nest start --watch",
     "prod": "node dist/main",
+    "print-routes": "tsx src/print-routes.ts",
     "lint": "pnpm -w run lint",
     "format": "pnpm -w run format",
     "unit": "vitest run --passWithNoTests",

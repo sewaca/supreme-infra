@@ -28,7 +28,7 @@ function log(
   console.log(`${prefix[level]} ${message}`);
 }
 
-export function generateRouterConfigs(): void {
+export async function generateRouterConfigs(): Promise<void> {
   log('Starting router configuration generation', 'info');
   log('', 'info');
 
@@ -49,7 +49,7 @@ export function generateRouterConfigs(): void {
         '../../../services',
         service.name,
       );
-      const routes = extractNestRoutes(servicePath);
+      const routes = await extractNestRoutes(servicePath);
 
       log(`  Found ${routes.length} route(s)`, 'info');
 
