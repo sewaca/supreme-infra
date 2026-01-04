@@ -11,6 +11,11 @@ on:
           - backend
           - frontend
         default: 'backend'
+      skip-canary:
+        description: 'Skip canary deployment and go directly to production'
+        required: false
+        type: boolean
+        default: false
 
 env:
   HELM_VERSION: 'v3.13.0'
@@ -551,7 +556,8 @@ jobs:
     if: |
       always() &&
       needs.create-release-branch.result == 'success' &&
-      needs.detect-release-mode.outputs.is_rollback == 'false'
+      needs.detect-release-mode.outputs.is_rollback == 'false' &&
+      github.event.inputs.skip-canary != 'true'
     runs-on: ubuntu-latest
     environment: canary
     strategy:
@@ -619,7 +625,8 @@ jobs:
     if: |
       always() &&
       needs.deploy-canary.result == 'success' &&
-      needs.detect-release-mode.outputs.is_rollback == 'false'
+      needs.detect-release-mode.outputs.is_rollback == 'false' &&
+      github.event.inputs.skip-canary != 'true'
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -674,7 +681,7 @@ jobs:
       always() &&
       needs.create-release-branch.result == 'success' &&
       needs.create-github-release.result == 'success' &&
-      (needs.approve-canary.result == 'success' || needs.detect-release-mode.outputs.is_rollback == 'true')
+      (needs.approve-canary.result == 'success' || needs.approve-canary.result == 'skipped' || needs.detect-release-mode.outputs.is_rollback == 'true' || github.event.inputs.skip-canary == 'true')
     runs-on: ubuntu-latest
     strategy:
       matrix:

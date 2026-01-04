@@ -23,6 +23,9 @@
       },
       "a11y": {
         "recommended": false
+      },
+      "performance": {
+        "noImgElement": "off"
       }
     },
     "domains": {

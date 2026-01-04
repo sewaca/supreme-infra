@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('node:fs');
 const recipes = JSON.parse(
   fs.readFileSync('services/backend/src/shared/recipes-mock.json', 'utf8'),
 );
@@ -27,7 +27,7 @@ sortedIngredients.slice(0, 30).forEach((item, index) => {
   console.log(`${index + 1}. ${item.name} (${item.count})`);
 });
 
-console.log('\nВсе уникальные ингредиенты (' + sortedIngredients.length + '):');
+console.log(`\nВсе уникальные ингредиенты (${sortedIngredients.length}):`);
 sortedIngredients.forEach((item, index) => {
   console.log(`${index + 1}. ${item.name} (${item.count})`);
 });
