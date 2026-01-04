@@ -31,8 +31,6 @@ export function AuthForm({ mode }: AuthFormProps) {
           ? await backendApi.login(formData)
           : await backendApi.register(formData);
 
-      console.log('response is', response);
-
       setAuthToken(response.accessToken);
       router.push('/profile');
     } catch (err) {
