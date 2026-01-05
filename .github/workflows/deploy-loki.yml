@@ -176,8 +176,8 @@ jobs:
           kubectl get svc -n ${{ env.LOKI_NAMESPACE }} -l app.kubernetes.io/name=loki
           
           echo ""
-          echo "Checking Loki gateway..."
-          kubectl get svc -n ${{ env.LOKI_NAMESPACE }} ${{ env.LOKI_RELEASE_NAME }}-gateway
+          echo "Checking Loki StatefulSet..."
+          kubectl get statefulset -n ${{ env.LOKI_NAMESPACE }} ${{ env.LOKI_RELEASE_NAME }}
 
   create-github-release:
     name: Create GitHub release
@@ -226,11 +226,11 @@ jobs:
             echo "- **Deployment Mode**: SingleBinary"
             echo "- **Storage**: Filesystem with persistent volumes (10Gi)"
             echo "- **Retention**: 31 days"
+            echo "- **Gateway**: Disabled (direct access)"
             echo ""
             echo "## Accessing Loki"
-            echo "- Gateway: \`http://loki-gateway.monitoring.svc.cluster.local\`"
             echo "- Direct: \`http://loki.monitoring.svc.cluster.local:3100\`"
-            echo "- OTLP endpoint: \`http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs\`"
+            echo "- OTLP endpoint: \`http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs\`"
           } > "release_body.txt"
 
       - name: Create GitHub Release

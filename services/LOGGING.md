@@ -113,8 +113,10 @@ LOKI_ENDPOINT=http://custom-loki:3100/otlp/v1/logs
 ### По умолчанию
 
 ```
-http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
+http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs
 ```
+
+**Примечание**: Gateway отключен для упрощения деплоя на single-node кластере. Сервисы обращаются напрямую к Loki.
 
 ## Troubleshooting
 
@@ -133,7 +135,7 @@ kubectl logs -n default -l app=backend --tail=50
 3. Проверь, что OTLP endpoint доступен:
 ```bash
 kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
-  curl -v http://loki-gateway/otlp/v1/logs
+  curl -v http://loki:3100/otlp/v1/logs
 ```
 
 ### Слишком много логов
