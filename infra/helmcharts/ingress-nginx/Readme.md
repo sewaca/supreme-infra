@@ -11,6 +11,7 @@ pnpm generate
 ```
 
 This will:
+
 1. Extract routes from NestJS and Next.js services
 2. Generate `router.yaml` files for each service
 3. Update `values.yaml` with ingress rules
@@ -38,6 +39,7 @@ gh workflow run deploy-ingress-nginx.yml
 ```
 
 This will:
+
 - Create a new version tag
 - Deploy to Kubernetes cluster
 - Create a GitHub release
@@ -45,6 +47,7 @@ This will:
 ## Configuration
 
 The `values.yaml` file contains:
+
 - **ingress-nginx**: Controller configuration (replicas, annotations)
 - **ingress.rules**: Auto-generated routing rules for services
 

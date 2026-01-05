@@ -5,6 +5,7 @@
 ## Описание
 
 Этот генератор объединяет функциональность всех генераторов инфраструктуры:
+
 1. **Router Configurations** - извлечение роутов из NestJS и Next.js сервисов
 2. **Ingress Values** - генерация конфигурации ingress-nginx на основе роутов
 3. **Security Checks** - обновление GitHub Actions workflow для security проверок
@@ -20,6 +21,7 @@ pnpm run generate
 ## Что делает генератор
 
 ### Step 1: Generating router configurations
+
 - Запускает NestJS сервисы через специальный скрипт `print-routes`
 - Извлекает роуты из логов `[RouterExplorer]`
 - Для Next.js сканирует `app` директорию и находит `page.tsx` и `route.ts` файлы
@@ -27,6 +29,7 @@ pnpm run generate
 - Сохраняет результаты в `services/${service}/router.yaml`
 
 ### Step 2: Updating ingress values
+
 - Читает все `services/*/router.yaml` файлы
 - Генерирует правила маршрутизации для ingress-nginx
 - NestJS сервисы: `/api` → backend (с rewrite)
@@ -34,18 +37,21 @@ pnpm run generate
 - Сохраняет результаты в `infra/helmcharts/ingress-nginx/values.yaml`
 
 ### Step 3: Updating security checks
+
 - Читает список сервисов из `infra/services.yaml`
 - Обновляет `.github/workflows/security-checks.yml`
 - Добавляет все NestJS сервисы в matrix для security-scan-nest
 - Добавляет все Next.js сервисы в matrix для security-scan-next
 
 ### Step 4: Updating CD workflow
+
 - Читает список сервисов из `infra/services.yaml`
 - Обновляет `.github/workflows/cd.yml`
 - Добавляет все сервисы в список options для manual deployment
 - Устанавливает первый сервис как default
 
 ### Step 5: Generating values files
+
 - Читает список сервисов из `infra/services.yaml`
 - Для каждого сервиса генерирует полные Helm values файлы
 - Создает файлы для всех окружений (development, staging, production)
@@ -114,7 +120,7 @@ services:
   - name: backend
     type: nest
     description: Backend service (NestJS)
-  
+
   - name: frontend
     type: next
     description: Frontend service (Next.js)
@@ -123,21 +129,24 @@ services:
 ## Добавление нового сервиса
 
 1. Добавьте сервис в `infra/services.yaml`:
+
 ```yaml
 services:
   - name: my-new-service
-    type: nest  # или next
+    type: nest # или next
     description: My new service description
 ```
 
 2. Создайте `services/my-new-service/service.yaml` с настройками
 
 3. Запустите генератор:
+
 ```bash
 pnpm run generate
 ```
 
 Генератор автоматически:
+
 - Добавит сервис в security checks workflow
 - Добавит сервис в CD workflow
 - Сгенерирует values файлы для всех окружений
@@ -186,6 +195,7 @@ infra/
 ## Когда запускать
 
 Запускайте генератор после:
+
 - Добавления нового сервиса
 - Изменения настроек сервиса в `service.yaml`
 - Изменения базовых значений в `defaults.yaml`
@@ -204,4 +214,3 @@ infra/
 ### Ошибка при генерации values
 
 Убедитесь, что для каждого сервиса существует файл `services/${service_name}/service.yaml`.
-

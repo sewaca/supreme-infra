@@ -5,11 +5,13 @@ This document shows examples of what Kubernetes Ingress manifests will be genera
 ## Backend Service (NestJS)
 
 For backend service with type `nest`, the ingress will be created with:
+
 - Routes extracted from running dev server (includes global prefix)
 - Regex support: enabled for dynamic parameters (`[^/]+`)
 - No rewriting: paths forwarded as-is
 
 Example routes from `services/backend/router.yaml`:
+
 ```yaml
 - path: /api/api/status
   method: GET
@@ -20,6 +22,7 @@ Example routes from `services/backend/router.yaml`:
 ```
 
 Generated Ingress paths:
+
 ```yaml
 paths:
   - path: /api/api/status
@@ -46,17 +49,20 @@ paths:
 ```
 
 **Note**: Routes are extracted from the running NestJS application, so they automatically include any global prefixes set via `app.setGlobalPrefix('api')`:
+
 - Request: `GET /api/auth/login`
 - Forwarded to backend: `GET /api/auth/login`
 
 ## Frontend Service (Next.js)
 
 For frontend service with type `next`, the ingress will be created with:
+
 - No path prefix
 - No rewrite
 - Simple prefix matching
 
 Example routes from `services/frontend/router.yaml`:
+
 ```yaml
 - path: /
   method: GET
@@ -67,6 +73,7 @@ Example routes from `services/frontend/router.yaml`:
 ```
 
 Generated Ingress paths:
+
 ```yaml
 paths:
   - path: /
@@ -93,6 +100,7 @@ paths:
 ```
 
 **Note**: No rewriting, requests are forwarded as-is:
+
 - Request: `GET /login`
 - Forwarded to frontend: `GET /login`
 
@@ -112,30 +120,30 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
-      paths:
-      - path: /api/api/status
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: backend
-            port:
-              number: 80
-      - path: /api/auth/login
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: backend
-            port:
-              number: 80
-      - path: /api/recipes/[^/]+
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: backend
-            port:
-              number: 80
-      # ... all other routes
+    - http:
+        paths:
+          - path: /api/api/status
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+          - path: /api/auth/login
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+          - path: /api/recipes/[^/]+
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+        # ... all other routes
 ```
 
 ## Routing Priority
@@ -146,6 +154,6 @@ Ingress NGINX processes routes in order, with more specific paths taking precede
 2. **Frontend routes** (catch-all `/`) - processed last
 
 This ensures:
+
 - `/api/*` requests go to backend
 - All other requests go to frontend
-

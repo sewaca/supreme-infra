@@ -4,22 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       service:
-        description: 'Select service to deploy'
+        description: "Select service to deploy"
         required: true
         type: choice
         options:
           - backend
           - frontend
-        default: 'backend'
+        default: "backend"
       # TODO: remove after development (or comment me)
       skip-canary:
-        description: 'Skip canary deployment and go directly to production'
+        description: "Skip canary deployment and go directly to production"
         required: false
         type: boolean
         default: false
 
 env:
-  HELM_VERSION: 'v3.16.3'
+  HELM_VERSION: "v3.16.3"
 
 jobs:
   # ============================================
@@ -611,7 +611,7 @@ jobs:
           service-type: ${{ needs.prepare-services.outputs.service-type }}
           version: ${{ steps.get-version.outputs.version }}
           docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          canary-enabled: 'true'
+          canary-enabled: "true"
           canary-replicas: ${{ steps.get-replicas.outputs.canary_replicas }}
 
   approve-canary:
@@ -726,5 +726,5 @@ jobs:
           service-type: ${{ needs.prepare-services.outputs.service-type }}
           version: ${{ steps.get-version.outputs.version }}
           docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          canary-enabled: 'false'
-          atomic: 'true'
+          canary-enabled: "false"
+          atomic: "true"

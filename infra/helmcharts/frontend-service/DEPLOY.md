@@ -141,7 +141,7 @@ on:
     branches:
       - main
     paths:
-      - 'services/frontend/**'
+      - "services/frontend/**"
 
 jobs:
   deploy:
@@ -180,9 +180,9 @@ deploy:frontend:
   image: alpine/helm:latest
   script:
     - helm upgrade --install frontend ./infra/helmcharts/frontend-service
-        -f services/frontend/service.yaml
-        --set image.tag=${CI_COMMIT_SHA}
-        --namespace production
+      -f services/frontend/service.yaml
+      --set image.tag=${CI_COMMIT_SHA}
+      --namespace production
   only:
     - main
   environment:
@@ -327,7 +327,7 @@ kubectl delete namespace <namespace-name>
 ## Support
 
 For additional help or questions:
+
 - Check the main README.md
 - Review Kubernetes documentation
 - Contact the DevOps team
-

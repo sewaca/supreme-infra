@@ -5,48 +5,48 @@ packages:
 lockfileIncludeTarballUrl: false
 catalog:
   # Common dependencies
-  '@types/node': ^22.10.7
+  "@types/node": ^22.10.7
   typescript: ^5.7.3
 
   # Build tools
-  '@biomejs/biome': ^2.2.5
+  "@biomejs/biome": ^2.2.5
   tsx: ^4.20.6
   vite: ^6.0.7
 
   # Testing
   vitest: ^2.1.8
-  '@vitest/coverage-v8': ^2.1.8
-  '@vitest/ui': ^2.1.8
-  '@testing-library/jest-dom': ^6.9.1
-  '@testing-library/react': ^16.3.0
-  '@testing-library/user-event': ^14.6.1
-  '@vitejs/plugin-react': ^4.7.0
+  "@vitest/coverage-v8": ^2.1.8
+  "@vitest/ui": ^2.1.8
+  "@testing-library/jest-dom": ^6.9.1
+  "@testing-library/react": ^16.3.0
+  "@testing-library/user-event": ^14.6.1
+  "@vitejs/plugin-react": ^4.7.0
   identity-obj-proxy: ^3.0.0
   jsdom: ^25.0.1
   globals: ^16.0.0
   supertest: ^7.0.0
-  '@types/supertest': ^6.0.2
-  '@playwright/test': ^1.48.0
+  "@types/supertest": ^6.0.2
+  "@playwright/test": ^1.48.0
 
   # NestJS
-  '@nestjs/cli': ^11.0.0
-  '@nestjs/common': ^11.0.1
-  '@nestjs/core': ^11.0.1
-  '@nestjs/platform-fastify': ^11.0.1
-  '@nestjs/schematics': ^11.0.0
-  '@nestjs/testing': ^11.0.1
+  "@nestjs/cli": ^11.0.0
+  "@nestjs/common": ^11.0.1
+  "@nestjs/core": ^11.0.1
+  "@nestjs/platform-fastify": ^11.0.1
+  "@nestjs/schematics": ^11.0.0
+  "@nestjs/testing": ^11.0.1
   reflect-metadata: ^0.2.2
   rxjs: ^7.8.1
   ts-loader: ^9.5.2
-  '@types/express': ^5.0.0
+  "@types/express": ^5.0.0
   source-map-support: ^0.5.21
   ts-node: ^10.9.2
   tsconfig-paths: ^4.2.0
   unplugin-swc: ^1.5.9
 
   # React & Next.js
-  '@types/react': ^19
-  '@types/react-dom': ^19
+  "@types/react": ^19
+  "@types/react-dom": ^19
   next: 16.1.1
   react: 19.1.0
   react-dom: 19.1.0
@@ -56,23 +56,23 @@ catalog:
   nestjs-security-scan: ^1.1.0
 
   # OpenTelemetry
-  '@opentelemetry/api': ^1.9.0
-  '@opentelemetry/sdk-node': ^0.56.0
-  '@opentelemetry/auto-instrumentations-node': ^0.67.2
-  '@opentelemetry/exporter-prometheus': ^0.56.0
-  '@opentelemetry/sdk-metrics': ^1.29.0
-  '@opentelemetry/instrumentation-http': ^0.56.0
-  '@opentelemetry/resources': ^1.29.0
-  '@opentelemetry/semantic-conventions': ^1.29.0
-  '@opentelemetry/sdk-logs': ^0.56.0
-  '@opentelemetry/exporter-logs-otlp-http': ^0.56.0
-  '@opentelemetry/api-logs': ^0.56.0
+  "@opentelemetry/api": ^1.9.0
+  "@opentelemetry/sdk-node": ^0.56.0
+  "@opentelemetry/auto-instrumentations-node": ^0.67.2
+  "@opentelemetry/exporter-prometheus": ^0.56.0
+  "@opentelemetry/sdk-metrics": ^1.29.0
+  "@opentelemetry/instrumentation-http": ^0.56.0
+  "@opentelemetry/resources": ^1.29.0
+  "@opentelemetry/semantic-conventions": ^1.29.0
+  "@opentelemetry/sdk-logs": ^0.56.0
+  "@opentelemetry/exporter-logs-otlp-http": ^0.56.0
+  "@opentelemetry/api-logs": ^0.56.0
 
   # Backend specific
-  '@nestjs/jwt': ^11.0.1
-  '@nestjs/passport': ^11.0.5
-  '@types/passport-jwt': ^4.0.1
-  '@types/bcryptjs': ^3.0.0
+  "@nestjs/jwt": ^11.0.1
+  "@nestjs/passport": ^11.0.5
+  "@types/passport-jwt": ^4.0.1
+  "@types/bcryptjs": ^3.0.0
   bcryptjs: ^3.0.3
   passport: ^0.7.0
   passport-jwt: ^4.0.1
@@ -80,6 +80,15 @@ catalog:
   # Frontend specific
   classnames: ^2.5.1
   js-cookie: ^3.0.5
-  '@types/js-cookie': ^3.0.6
+  "@types/js-cookie": ^3.0.6
   react-markdown: ^10.1.0
   remark-gfm: ^4.0.1
+
+  # Additional dependencies
+  "@fastify/helmet": ^12.0.1
+  "@types/handlebars": ^4.1.0
+  chromium: ^3.0.3
+  handlebars: ^4.7.8
+  prettier: ^3.4.2
+  yaml: ^2.6.1
+  zod: ^4.1.13

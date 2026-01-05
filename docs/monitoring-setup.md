@@ -186,8 +186,8 @@ rate(http_server_duration_count{service="backend", http_status_code=~"[45].."}[1
 histogram_quantile(0.95, rate(http_server_duration_bucket{service="backend"}[5m]))
 
 # Error Rate
-rate(http_server_duration_count{service="backend", http_status_code=~"5.."}[1m]) 
-/ 
+rate(http_server_duration_count{service="backend", http_status_code=~"5.."}[1m])
+/
 rate(http_server_duration_count{service="backend"}[1m])
 ```
 
@@ -201,18 +201,21 @@ rate(http_server_duration_count{service="backend"}[1m])
 4. Настроить условие, например:
 
 **High Error Rate:**
+
 ```promql
-rate(http_server_duration_count{service="backend", http_status_code=~"5.."}[5m]) 
-/ 
+rate(http_server_duration_count{service="backend", http_status_code=~"5.."}[5m])
+/
 rate(http_server_duration_count{service="backend"}[5m]) > 0.05
 ```
 
 **High Latency:**
+
 ```promql
 histogram_quantile(0.95, rate(http_server_duration_bucket{service="backend"}[5m])) > 1000
 ```
 
 **Service Down:**
+
 ```promql
 absent(up{service="backend"}) == 1
 ```
@@ -262,17 +265,20 @@ helm upgrade backend ./infra/helmcharts/backend-service \
 ### Victoria Metrics не собирает метрики
 
 1. Проверить что backend pod имеет annotations:
+
 ```bash
 kubectl get pod -l app=backend -o yaml | grep -A 3 annotations
 ```
 
 2. Проверить targets в Victoria Metrics:
+
 ```bash
 kubectl port-forward -n monitoring svc/victoria-metrics-victoria-metrics-single-server 8428:8428
 open http://localhost:8428/targets
 ```
 
 3. Проверить логи Victoria Metrics:
+
 ```bash
 kubectl logs -n monitoring -l app.kubernetes.io/name=victoria-metrics-single
 ```
@@ -285,6 +291,7 @@ kubectl logs -n monitoring -l app.kubernetes.io/name=victoria-metrics-single
    - Нажать "Test" - должно быть "Data source is working"
 
 2. Проверить что метрики есть в Victoria Metrics:
+
 ```bash
 curl 'http://localhost:8428/api/v1/query?query=up{service="backend"}'
 ```
@@ -292,12 +299,14 @@ curl 'http://localhost:8428/api/v1/query?query=up{service="backend"}'
 ### Backend не экспортирует метрики
 
 1. Проверить что порт 9464 открыт:
+
 ```bash
 kubectl port-forward svc/backend 9464:9464
 curl http://localhost:9464/metrics
 ```
 
 2. Проверить логи backend:
+
 ```bash
 kubectl logs -l app=backend
 ```
@@ -343,4 +352,3 @@ helm install victoria-metrics vm/victoria-metrics-cluster \
   --set vminsert.replicaCount=2 \
   --set vmstorage.replicaCount=2
 ```
-

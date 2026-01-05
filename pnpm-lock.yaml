@@ -9,6 +9,9 @@ catalogs:
     '@biomejs/biome':
       specifier: ^2.2.5
       version: 2.2.6
+    '@fastify/helmet':
+      specifier: ^12.0.1
+      version: 12.0.1
     '@nestjs/cli':
       specifier: ^11.0.0
       version: 11.0.10
@@ -84,6 +87,9 @@ catalogs:
     '@types/express':
       specifier: ^5.0.0
       version: 5.0.3
+    '@types/handlebars':
+      specifier: ^4.1.0
+      version: 4.1.0
     '@types/js-cookie':
       specifier: ^3.0.6
       version: 3.0.6
@@ -117,12 +123,18 @@ catalogs:
     bcryptjs:
       specifier: ^3.0.3
       version: 3.0.3
+    chromium:
+      specifier: ^3.0.3
+      version: 3.0.3
     classnames:
       specifier: ^2.5.1
       version: 2.5.1
     globals:
       specifier: ^16.0.0
       version: 16.4.0
+    handlebars:
+      specifier: ^4.7.8
+      version: 4.7.8
     identity-obj-proxy:
       specifier: ^3.0.0
       version: 3.0.0
@@ -144,6 +156,9 @@ catalogs:
     passport-jwt:
       specifier: ^4.0.1
       version: 4.0.1
+    prettier:
+      specifier: ^3.4.2
+      version: 3.7.4
     react:
       specifier: 19.1.0
       version: 19.1.0
@@ -192,6 +207,12 @@ catalogs:
     vitest:
       specifier: ^2.1.8
       version: 2.1.9
+    yaml:
+      specifier: ^2.6.1
+      version: 2.8.2
+    zod:
+      specifier: ^4.1.13
+      version: 4.1.13
 
 importers:
 
@@ -201,7 +222,7 @@ importers:
         specifier: 'catalog:'
         version: 2.2.6
       '@types/handlebars':
-        specifier: ^4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       '@types/node':
         specifier: 'catalog:'
@@ -213,11 +234,14 @@ importers:
         specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9)
       handlebars:
-        specifier: ^4.7.8
+        specifier: 'catalog:'
         version: 4.7.8
       nestjs-security-scan:
         specifier: 'catalog:'
         version: 1.1.0(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@types/node@22.18.11)
+      prettier:
+        specifier: 'catalog:'
+        version: 3.7.4
       tsx:
         specifier: 'catalog:'
         version: 4.20.6
@@ -231,13 +255,13 @@ importers:
         specifier: 'catalog:'
         version: 2.1.9(@types/node@22.18.11)(@vitest/ui@2.1.9)(jsdom@25.0.1)(terser@5.44.0)
       yaml:
-        specifier: ^2.6.1
+        specifier: 'catalog:'
         version: 2.8.2
 
   e2e:
     dependencies:
       chromium:
-        specifier: ^3.0.3
+        specifier: 'catalog:'
         version: 3.0.3
     devDependencies:
       '@playwright/test':
@@ -281,7 +305,7 @@ importers:
   services/backend:
     dependencies:
       '@fastify/helmet':
-        specifier: ^12.0.1
+        specifier: 'catalog:'
         version: 12.0.1
       '@nestjs/cli':
         specifier: 'catalog:'
@@ -359,7 +383,7 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
       zod:
-        specifier: ^4.1.13
+        specifier: 'catalog:'
         version: 4.1.13
     devDependencies:
       '@nestjs/schematics':
@@ -4668,6 +4692,11 @@ packages:
   postgres-interval@1.2.0:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
+
+  prettier@3.7.4:
+    resolution: {integrity: sha512-v6UNi1+3hSlVvv8fSaoUbggEM5VErKmmpGA7Pl3HF8V6uKY7rvClBOJlH6yNwQtfTueNkGVpOv/mtWL9L4bgRA==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   pretty-format@27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
@@ -10333,6 +10362,8 @@ snapshots:
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
+
+  prettier@3.7.4: {}
 
   pretty-format@27.5.1:
     dependencies:

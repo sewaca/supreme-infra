@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
 
 env:
-  HELM_VERSION: 'v3.16.3'
-  GRAFANA_NAMESPACE: 'monitoring'
-  GRAFANA_RELEASE_NAME: 'grafana'
-  DASHBOARDS_CONFIGMAP_NAME: 'grafana-dashboards'
-  SERVICE_NAME: 'grafana'
+  HELM_VERSION: "v3.16.3"
+  GRAFANA_NAMESPACE: "monitoring"
+  GRAFANA_RELEASE_NAME: "grafana"
+  DASHBOARDS_CONFIGMAP_NAME: "grafana-dashboards"
+  SERVICE_NAME: "grafana"
 
 jobs:
   get-latest-version:
@@ -60,13 +60,13 @@ jobs:
           CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
         run: |
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-          
+
           # Simple patch version increment for Grafana
           NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
-          
+
           echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          
+
           echo "$NEW_VERSION" > "new_version.txt"
 
       - name: Upload version file
@@ -161,28 +161,28 @@ jobs:
       - name: Deploy Grafana with Helm
         run: |
           CHART_PATH="./infra/helmcharts/grafana"
-          
+
           echo "Deploying Grafana..."
           echo "Chart: $CHART_PATH"
           echo "Namespace: ${{ env.GRAFANA_NAMESPACE }}"
-          
+
           helm upgrade ${{ env.GRAFANA_RELEASE_NAME }} $CHART_PATH \
             --namespace ${{ env.GRAFANA_NAMESPACE }} \
             --install \
             --wait \
             --timeout 5m
-          
+
           echo "Grafana deployment completed"
 
       - name: Verify Grafana deployment
         run: |
           echo "Checking Grafana pods..."
           kubectl get pods -n ${{ env.GRAFANA_NAMESPACE }} -l app.kubernetes.io/name=grafana
-          
+
           echo ""
           echo "Checking Grafana service..."
           kubectl get svc -n ${{ env.GRAFANA_NAMESPACE }} ${{ env.GRAFANA_RELEASE_NAME }}
-          
+
           echo ""
           echo "Checking ConfigMap..."
           kubectl get configmap -n ${{ env.GRAFANA_NAMESPACE }} ${{ env.DASHBOARDS_CONFIGMAP_NAME }}
@@ -256,4 +256,3 @@ jobs:
             --notes-file "$BODY_FILE" \
             --target "$BRANCH_NAME" \
             --repo "$GITHUB_REPOSITORY"
-

@@ -1,4 +1,4 @@
-name: 'Validate PR title'
+name: "Validate PR title"
 on:
   pull_request_target:
     types:
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: "3.9"
       - name: Run Python script
         env:
           GH_TOKEN: ${{ github.token }}

@@ -3,9 +3,10 @@
 Repository with fully setted up infrastructure settings. Was designed as monorepo for microservice application with Next and Nest js. But actually, it can be easily scaled for any other tech stack.
 
 What we support now:
-* Nginx (as reverse-proxy)
-* Next
-* Nest
+
+- Nginx (as reverse-proxy)
+- Next
+- Nest
 
 ## Prerequisites
 
@@ -14,35 +15,38 @@ What we support now:
 Initially you have to define some secrets in repository, for correct work of actions and jobs.
 
 All secrets you need are:
-* PAT – GitHub personal access token <br />
+
+- PAT – GitHub personal access token <br />
   This token neccessary for all Madara Robot operations. (i.e. commit pre-commit diff, generate services, etc) <br />
   Format of secret is: `PAT=github_pat_XXX`
-* DOCKER_HUB_USERNAME – Docker Hub repository owners' username <br />
+- DOCKER_HUB_USERNAME – Docker Hub repository owners' username <br />
   We use this token to: authenticate in Docker Hub, when pushing image to regestry, and also we calculate Docker Hub repo name with this token <br />
   Format of secret is: `DOCKER_HUB_USERNAME=xxxxxxxxx`
-* DOCKER_HUB_TOKEN – Access token for user, whos username was provided in DOCKER_HUB_USERNAME <br />
+- DOCKER_HUB_TOKEN – Access token for user, whos username was provided in DOCKER_HUB_USERNAME <br />
   With this token we push builded images to the regestry. So, sure we need **write** access <br />
   Format of secret is: `DOCKER_HUB_TOKEN=xxx_xxxxxxxxxxx`
-* YC_SA_JSON_CREDENTIALS – Yandex Cloud service account JSON credentials <br />
+- YC_SA_JSON_CREDENTIALS – Yandex Cloud service account JSON credentials <br />
   Required for Kubernetes deployments
-* YC_CLOUD_ID – Yandex Cloud ID
-* YC_FOLDER_ID – Yandex Cloud folder ID
-* YC_K8S_CLUSTER_ID – Kubernetes cluster ID in Yandex Cloud
+- YC_CLOUD_ID – Yandex Cloud ID
+- YC_FOLDER_ID – Yandex Cloud folder ID
+- YC_K8S_CLUSTER_ID – Kubernetes cluster ID in Yandex Cloud
 
 ### GitHub Environments
 
 You need to create two environments in GitHub repository settings:
-* **canary** – Environment for canary deployments (can be auto-approved or with reviewers)
-* **production** – Environment with required reviewers for production promotion
+
+- **canary** – Environment for canary deployments (can be auto-approved or with reviewers)
+- **production** – Environment with required reviewers for production promotion
 
 ## Infra:
 
 ### Build services
 
 To make your service ready for production:
+
 1. Create Dockerfile (i.e. services/frontend/Dockerfile)
 2. Run Dockerfile from root <br />
-  `docker build -f services/frontend/Dockerfile -t supreme-frontend-v1.0.0`
+   `docker build -f services/frontend/Dockerfile -t supreme-frontend-v1.0.0`
 3. Add release pipeline
 
 It's required to correctly deploy application to k8s managed cluster
@@ -52,6 +56,7 @@ It's required to correctly deploy application to k8s managed cluster
 To run production release of your service run [Create Release Pipeline](https://github.com/sewaca/supreme-infra/actions/workflows/cd.yml)
 
 It will make all neccessary tasks:
+
 1. Detect current version-tag of service
 2. Calculate neccessary new version-tag of service by diff
 3. Create release/production/{service_name}-v{service_version-tag}
@@ -62,8 +67,9 @@ It will make all neccessary tasks:
 8. Promote to production (update main deployment, remove canary)
 
 Edge-cases:
-* If you start release and there is 0 new commits since last release – pipeline will fall down
-* If you start release where presented only `chore` new changes – release will be called rollback and will not create new version in registry
+
+- If you start release and there is 0 new commits since last release – pipeline will fall down
+- If you start release where presented only `chore` new changes – release will be called rollback and will not create new version in registry
 
 ### Canary Deployments
 
@@ -97,6 +103,7 @@ To rollback to a previous version:
 5. Run the workflow
 
 **What happens during rollback:**
+
 1. Validates that the release branch exists
 2. Checks that Docker image for that version exists in registry
 3. Rebases the release branch onto main (to get fresh helm overrides)
@@ -106,6 +113,7 @@ To rollback to a previous version:
 7. Promotes rollback to production
 
 **Important notes:**
+
 - The Docker image must exist in the registry for the rollback to work
 - Rebase ensures you get the latest infrastructure configuration
 - Rollback also goes through canary stage for safety
@@ -117,6 +125,7 @@ For easy manage of all infra files, there is common [infra generator](https://gi
 His only purpose – generate infra files in correct state by services config.
 
 So, if you want to generate overrides for your service (i.e. wanna see your service in release flow), you need:
+
 1. Make sure your service is inside services config in right place.
 2. Run `pnpm ingra:generate` in root of monorepo
 3. Commit all changes
@@ -131,6 +140,7 @@ We use Helm for Kubernetes deployments. Charts are located in `infra/helmcharts/
 Each service has its overrides in `infra/overrides/{environment}/{service}.yaml`
 
 **Key Helm values:**
+
 ```yaml
 image:
   repository: sewaca/supreme
@@ -155,16 +165,18 @@ PR title MUST start with one of the configured pattern, meaning which release cu
 Otherwise PR will not pass checks.
 
 Available starting tags:
-* **major** <br /> breaking changes for application
-* **minor** <br /> minor changes or refactoring
-* **fix** <br /> fir or local improvement. will create patch release
-* **chore** <br /> any changes, has no affect on applcation (i.e. tests, docs, ci) <br /> will not create release
+
+- **major** <br /> breaking changes for application
+- **minor** <br /> minor changes or refactoring
+- **fix** <br /> fir or local improvement. will create patch release
+- **chore** <br /> any changes, has no affect on applcation (i.e. tests, docs, ci) <br /> will not create release
 
 Examples of correctly named PRs:
-* minor(ui): Changed Button color
-* major: Refactored X functionality
-* major: Added Y functionality
-* chore: Added ai memory-bank
+
+- minor(ui): Changed Button color
+- major: Refactored X functionality
+- major: Added Y functionality
+- chore: Added ai memory-bank
 
 ### Style conventions
 
@@ -179,6 +191,7 @@ We use **Biome** as our primary code formatter and linter:
 - **Trailing commas**: Required in multiline structures
 
 **Biome configuration** (`biome.json`):
+
 ```json
 {
   "formatter": {
@@ -205,6 +218,7 @@ We use **Biome** as our primary code formatter and linter:
 #### TypeScript Configuration
 
 **Strict TypeScript settings** (`tsconfig.base.json`):
+
 - Strict mode enabled
 - No unused locals/parameters
 - No implicit returns/overrides
@@ -239,11 +253,13 @@ services/
 #### Naming Conventions
 
 **Files & Directories**:
+
 - PascalCase for components: `PostCard.tsx`, `PostsService.ts`
 - camelCase for utilities: `backendApi.ts`, `jsonplaceholderDatasource.ts`
 - kebab-case for CSS modules: `PostCard.module.css`
 
 **Code**:
+
 - PascalCase for classes, interfaces, types: `PostsController`, `PostSummary`
 - camelCase for variables, functions, methods: `getPostsSummary()`, `postId`
 - Private methods start with lowercase: `countCommentsByPostId()`
@@ -252,6 +268,7 @@ services/
 #### React Components
 
 **Functional components** with TypeScript:
+
 ```tsx
 interface PostCardProps {
   post: PostSummary;
@@ -270,12 +287,13 @@ export function PostCard({ post }: PostCardProps) {
 #### Backend (NestJS)
 
 **Controller structure**:
+
 ```ts
-@Controller('posts')
+@Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('summary')
+  @Get("summary")
   public async getSummary(): Promise<PostSummary[]> {
     return this.postsService.getPostsSummary();
   }
@@ -283,6 +301,7 @@ export class PostsController {
 ```
 
 **Service structure**:
+
 ```ts
 @Injectable()
 export class PostsService {
@@ -299,6 +318,7 @@ export class PostsService {
 #### API Layer
 
 **Backend API client** (Singleton pattern):
+
 ```ts
 class BackendApi {
   private static instance: BackendApi | null = null;
@@ -320,28 +340,30 @@ class BackendApi {
 #### Testing
 
 **Unit tests** with Vitest:
+
 - Mock all external dependencies
 - Write mocks in single line format
 - Use descriptive test names
 - Follow AAA pattern (Arrange, Act, Assert)
 
 ```ts
-describe('PostsService', () => {
-  it('should return posts summary with truncated body', async () => {
+describe("PostsService", () => {
+  it("should return posts summary with truncated body", async () => {
     // Arrange
-    const mockPosts = [{ userId: 1, id: 1, title: 'Test', body: 'Long body text' }];
+    const mockPosts = [{ userId: 1, id: 1, title: "Test", body: "Long body text" }];
     datasource.getPosts.mockResolvedValue(mockPosts);
 
     // Act
     const result = await service.getPostsSummary();
 
     // Assert
-    expect(result[0].body).toBe('Long body ...');
+    expect(result[0].body).toBe("Long body ...");
   });
 });
 ```
 
 **Test commands**:
+
 ```bash
 # Run unit tests for specific service
 cd services/backend && pnpm run unit --verbose
@@ -353,20 +375,22 @@ cd services/frontend && pnpm run unit --verbose
 #### Import Organization
 
 **Import grouping order**:
+
 1. External libraries (React, NestJS, etc.)
 2. Internal shared modules
 3. Relative imports (parent/child directories)
 4. Type imports (when needed)
 
 ```ts
-import { Injectable } from '@nestjs/common';
-import { JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
-import { PostSummary } from './types';
+import { Injectable } from "@nestjs/common";
+import { JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostSummary } from "./types";
 ```
 
 #### Scripts
 
 **Available commands**:
+
 ```bash
 pnpm lint              # Run Biome linting
 pnpm format            # Run Biome formatting

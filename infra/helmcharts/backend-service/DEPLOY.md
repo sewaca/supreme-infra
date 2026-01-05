@@ -100,4 +100,3 @@ helm template backend ./infra/helmcharts/backend-service \
 1. **image.tag обязателен**: Всегда передавайте `image.tag` через `--set`, так как он не хранится в service.yaml
 2. **Разные HPA настройки**: Каждый сервис имеет свои настройки HPA в своем `service.yaml`
 3. **Именование**: Используйте `nameOverride` и `fullnameOverride` в `service.yaml` для правильного именования ресурсов
-

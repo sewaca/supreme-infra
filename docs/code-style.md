@@ -52,6 +52,7 @@
 ```
 
 **Основные правила:**
+
 - Отступы: 2 пробела
 - Одинарные кавычки для JS/TS, двойные для JSX
 - Включены рекомендуемые правила линтинга
@@ -90,6 +91,7 @@
 ```
 
 **Основные настройки:**
+
 - Строгий режим включен
 - Запрещены неиспользуемые переменные/параметры
 - Запрещены неявные возвраты или переопределения
@@ -150,12 +152,14 @@ services/
 ## Соглашения по именованию
 
 ### Файлы и директории
+
 - **Компоненты**: PascalCase (`PostCard.tsx`, `PostsController.ts`)
 - **Утилиты**: camelCase (`backendApi.ts`, `jsonplaceholderDatasource.ts`)
 - **CSS модули**: kebab-case (`PostCard.module.css`)
 - **Файлы тестов**: То же имя, что и тестируемый файл + `.spec.ts/tsx`
 
 ### Элементы кода
+
 - **Классы/Интерфейсы/Типы**: PascalCase (`PostsController`, `PostSummary`)
 - **Переменные/Функции/Методы**: camelCase (`getPostsSummary()`, `postId`)
 - **Константы**: UPPER_SNAKE_CASE (`BASE_URL`)
@@ -175,15 +179,14 @@ export function PostCard({ post }: PostCardProps) {
     <Link href={`/${post.id}`} className={styles.card}>
       <h2 className={styles.title}>{post.title}</h2>
       <p className={styles.body}>{post.body}</p>
-      <div className={styles.commentsCount}>
-        Комментарии: {post.commentsCount}
-      </div>
+      <div className={styles.commentsCount}>Комментарии: {post.commentsCount}</div>
     </Link>
   );
 }
 ```
 
 **Основные паттерны:**
+
 - Предпочитаются именованные экспорты
 - Интерфейсы пропсов определяются над компонентом
 - CSS модули для стилизации
@@ -192,29 +195,21 @@ export function PostCard({ post }: PostCardProps) {
 ## Backend (NestJS)
 
 ### Контроллеры
-```ts
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Query,
-} from '@nestjs/common';
-import { PostsService } from './Posts.service';
 
-@Controller('posts')
+```ts
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from "@nestjs/common";
+import { PostsService } from "./Posts.service";
+
+@Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('get-summary')
-  public async getSummary(
-    @Query('userId') userId?: string,
-  ): Promise<ReturnType<PostsService['getPostsSummary']>> {
+  @Get("get-summary")
+  public async getSummary(@Query("userId") userId?: string): Promise<ReturnType<PostsService["getPostsSummary"]>> {
     const userIdNumber = userId ? Number.parseInt(userId, 10) : undefined;
 
     if (userId && Number.isNaN(userIdNumber)) {
-      throw new BadRequestException('Invalid userId parameter');
+      throw new BadRequestException("Invalid userId parameter");
     }
 
     return this.postsService.getPostsSummary(userIdNumber);
@@ -223,12 +218,10 @@ export class PostsController {
 ```
 
 ### Сервисы
+
 ```ts
-import { Injectable } from '@nestjs/common';
-import {
-  Comment,
-  JsonplaceholderDatasource,
-} from '../../shared/api/jsonplaceholderDatasource';
+import { Injectable } from "@nestjs/common";
+import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
 
 export interface PostSummary {
   userId: number;
@@ -240,9 +233,7 @@ export interface PostSummary {
 
 @Injectable()
 export class PostsService {
-  constructor(
-    private readonly jsonplaceholderDatasource: JsonplaceholderDatasource,
-  ) {}
+  constructor(private readonly jsonplaceholderDatasource: JsonplaceholderDatasource) {}
 
   public async getPostsSummary(userId?: number): Promise<PostSummary[]> {
     const [posts, comments] = await Promise.all([
@@ -282,6 +273,7 @@ export class PostsService {
 ```
 
 **Основные паттерны:**
+
 - Внедрение зависимостей для сервисов
 - Явные типы возврата
 - Приватные методы для внутренней логики
@@ -291,6 +283,7 @@ export class PostsService {
 ## Паттерны API слоя
 
 ### Backend API клиент (Singleton)
+
 ```ts
 export interface PostSummary {
   userId: number;
@@ -304,8 +297,7 @@ class BackendApi {
   private readonly baseUrl: string;
 
   private constructor() {
-    this.baseUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
   }
 
   private static instance: BackendApi | null = null;
@@ -318,9 +310,7 @@ class BackendApi {
   }
 
   public async getPostsSummary(userId?: number): Promise<PostSummary[]> {
-    const url = userId
-      ? `${this.baseUrl}/posts/get-summary?userId=${userId}`
-      : `${this.baseUrl}/posts/get-summary`;
+    const url = userId ? `${this.baseUrl}/posts/get-summary?userId=${userId}` : `${this.baseUrl}/posts/get-summary`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -336,7 +326,7 @@ class BackendApi {
     const response = await fetch(url);
     if (!response.ok) {
       if (response.status === 404) {
-        throw new Error('Post not found');
+        throw new Error("Post not found");
       }
       throw new Error(`Failed to fetch post: ${response.statusText}`);
     }
@@ -349,8 +339,9 @@ export const backendApi = BackendApi.getInstance();
 ```
 
 ### Внешние API источники данных
+
 ```ts
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 export interface Comment {
   postId: number;
@@ -362,12 +353,10 @@ export interface Comment {
 
 @Injectable()
 export class JsonplaceholderDatasource {
-  private readonly baseUrl = 'https://jsonplaceholder.typicode.com';
+  private readonly baseUrl = "https://jsonplaceholder.typicode.com";
 
   public async getPosts(userId?: number): Promise<Post[]> {
-    const url = userId
-      ? `${this.baseUrl}/posts?userId=${userId}`
-      : `${this.baseUrl}/posts`;
+    const url = userId ? `${this.baseUrl}/posts?userId=${userId}` : `${this.baseUrl}/posts`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -411,36 +400,34 @@ export class JsonplaceholderDatasource {
 ### Unit тесты с Vitest
 
 **Конфигурация** (`vitest.config.global.ts`):
+
 ```ts
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
+    environment: "node",
     root: cwd(),
-    include: ['**/*.spec.{ts,tsx,mts,cts}', '!**/*.screen.spec.{ts,tsx}'],
+    include: ["**/*.spec.{ts,tsx,mts,cts}", "!**/*.screen.spec.{ts,tsx}"],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'html', 'json'],
-      reportsDirectory: 'coverage',
-      include: collectCoverageFrom.filter(
-        (pattern) => !pattern.startsWith('!'),
-      ),
-      exclude: collectCoverageFrom
-        .filter((pattern) => pattern.startsWith('!'))
-        .map((pattern) => pattern.slice(1)),
+      provider: "v8",
+      reporter: ["text", "lcov", "html", "json"],
+      reportsDirectory: "coverage",
+      include: collectCoverageFrom.filter((pattern) => !pattern.startsWith("!")),
+      exclude: collectCoverageFrom.filter((pattern) => pattern.startsWith("!")).map((pattern) => pattern.slice(1)),
     },
   },
 });
 ```
 
 **Пример теста Backend сервиса**:
-```ts
-import { Test } from '@nestjs/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
-import { PostsService } from './Posts.service';
 
-describe('PostsService', () => {
+```ts
+import { Test } from "@nestjs/testing";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostsService } from "./Posts.service";
+
+describe("PostsService", () => {
   let service: PostsService;
   let datasource: {
     getPosts: ReturnType<typeof vi.fn>;
@@ -470,39 +457,39 @@ describe('PostsService', () => {
     service = module.get<PostsService>(PostsService);
   });
 
-  describe('getPostsSummary', () => {
-    it('should return posts summary with truncated body and comments count', async () => {
+  describe("getPostsSummary", () => {
+    it("should return posts summary with truncated body and comments count", async () => {
       const mockPosts = [
         {
           userId: 1,
           id: 1,
-          title: 'Test',
-          body: 'This is a very long body text',
+          title: "Test",
+          body: "This is a very long body text",
         },
-        { userId: 1, id: 2, title: 'Test 2', body: 'Short' },
+        { userId: 1, id: 2, title: "Test 2", body: "Short" },
       ];
 
       const mockComments = [
         {
           postId: 1,
           id: 1,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 1',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 1",
         },
         {
           postId: 1,
           id: 2,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 2',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 2",
         },
         {
           postId: 2,
           id: 3,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 3',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 3",
         },
       ];
 
@@ -515,15 +502,15 @@ describe('PostsService', () => {
         {
           userId: 1,
           id: 1,
-          title: 'Test',
-          body: 'This is a very long ...',
+          title: "Test",
+          body: "This is a very long ...",
           commentsCount: 2,
         },
         {
           userId: 1,
           id: 2,
-          title: 'Test 2',
-          body: 'Short',
+          title: "Test 2",
+          body: "Short",
           commentsCount: 1,
         },
       ]);
@@ -533,14 +520,15 @@ describe('PostsService', () => {
 ```
 
 **Пример теста Frontend компонента**:
+
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { PostSummary } from '../../shared/api/backendApi';
-import { PostCard } from './PostCard';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { PostSummary } from "../../shared/api/backendApi";
+import { PostCard } from "./PostCard";
 
 // Mock Next.js Link component
-vi.mock('next/link', () => {
+vi.mock("next/link", () => {
   return {
     default: function MockLink({
       children,
@@ -560,33 +548,34 @@ vi.mock('next/link', () => {
   };
 });
 
-describe('PostCard', () => {
+describe("PostCard", () => {
   const mockPost: PostSummary = {
     userId: 1,
     id: 1,
-    title: 'Test Post',
-    body: 'Test body',
+    title: "Test Post",
+    body: "Test body",
     commentsCount: 5,
   };
 
-  it('should render post card with correct props', () => {
+  it("should render post card with correct props", () => {
     render(<PostCard post={mockPost} />);
 
-    expect(screen.getByText('Test Post')).toBeInTheDocument();
-    expect(screen.getByText('Test body')).toBeInTheDocument();
-    expect(screen.getByText('Comments: 5')).toBeInTheDocument();
+    expect(screen.getByText("Test Post")).toBeInTheDocument();
+    expect(screen.getByText("Test body")).toBeInTheDocument();
+    expect(screen.getByText("Comments: 5")).toBeInTheDocument();
   });
 
-  it('should have correct link href', () => {
+  it("should have correct link href", () => {
     render(<PostCard post={mockPost} />);
 
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/1');
+    const link = screen.getByRole("link");
+    expect(link).toHaveAttribute("href", "/1");
   });
 });
 ```
 
 **Основные принципы тестирования:**
+
 - Мокировать ВСЕ внешние зависимости
 - Писать моки в однострочном формате
 - Использовать описательные имена тестов
@@ -595,6 +584,7 @@ describe('PostCard', () => {
 - Использовать `beforeEach` для настройки тестов
 
 **Команды для тестирования**:
+
 ```bash
 # Запуск unit тестов для конкретного сервиса
 cd services/backend && pnpm run unit --verbose
@@ -604,6 +594,7 @@ cd services/frontend && pnpm run unit --verbose
 ## Организация импортов
 
 **Группировка и порядок импортов**:
+
 1. **Внешние библиотеки** (React, NestJS, библиотеки тестирования)
 2. **Внутренние общие модули** (из shared/)
 3. **Относительные импорты** (родительские/дочерние директории)
@@ -612,33 +603,34 @@ cd services/frontend && pnpm run unit --verbose
 **Примеры**:
 
 Backend сервис:
+
 ```ts
-import { Injectable } from '@nestjs/common';
-import {
-  Comment,
-  JsonplaceholderDatasource,
-} from '../../shared/api/jsonplaceholderDatasource';
-import { PostsService } from './Posts.service';
+import { Injectable } from "@nestjs/common";
+import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostsService } from "./Posts.service";
 ```
 
 Frontend компонент:
+
 ```tsx
-import Link from 'next/link';
-import { PostSummary } from '../../shared/api/backendApi';
-import styles from './PostCard.module.css';
+import Link from "next/link";
+import { PostSummary } from "../../shared/api/backendApi";
+import styles from "./PostCard.module.css";
 ```
 
 Файл теста:
+
 ```ts
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { PostSummary } from '../../shared/api/backendApi';
-import { PostCard } from './PostCard';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { PostSummary } from "../../shared/api/backendApi";
+import { PostCard } from "./PostCard";
 ```
 
 ## Скрипты и команды
 
 **Команды корневого уровня** (`package.json`):
+
 ```json
 {
   "scripts": {
@@ -652,11 +644,13 @@ import { PostCard } from './PostCard';
 ```
 
 **Управление пакетами**:
+
 - Используется `pnpm` как менеджер пакетов
 - Требуется Node.js версии 22
 - Требуется pnpm версии 9
 
 **Доступные команды**:
+
 ```bash
 pnpm lint              # Запуск Biome линтинга
 pnpm format            # Запуск Biome форматирования (авто-исправление)
@@ -668,6 +662,7 @@ pnpm generate          # Запуск всех генераторов
 ## Pre-commit хуки
 
 Проект использует pre-commit хуки для обеспечения качества кода:
+
 - Проверки Biome линтинга
 - Валидация форматирования кода
 - Проверки компиляции TypeScript

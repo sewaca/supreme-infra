@@ -15,26 +15,26 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.PAT }}
           fetch-depth: 0
-      
+
       - uses: actions/setup-node@v3
         with:
-          node-version: '22'
-      
+          node-version: "22"
+
       - uses: pnpm/action-setup@v2
         with:
           version: 9
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Run infrastructure generator
         run: pnpm run generate
-      
+
       # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
       - id: check_changes
         run: |
           git diff --quiet && echo "::set-output name=changes_detected::false" || echo "::set-output name=changes_detected::true"
-      
+
       - name: Commit and push changes
         if: steps.check_changes.outputs.changes_detected == 'true'
         run: |
@@ -43,4 +43,3 @@ jobs:
           git add .
           git commit -m "<Madara Robot>: Apply infrastructure generator" || true
           git push
-
