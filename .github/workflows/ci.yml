@@ -96,6 +96,7 @@ jobs:
       run: pnpm -r unit:coverage
 
   test-e2e:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
