@@ -56,12 +56,7 @@ export class UsersService {
     return this.users.find((user) => user.id === id);
   }
 
-  async create(
-    email: string,
-    hashedPassword: string,
-    name: string,
-    role: UserRole = 'user',
-  ): Promise<User> {
+  async create(email: string, hashedPassword: string, name: string, role: UserRole = 'user'): Promise<User> {
     const user: User = {
       id: this.currentId++,
       email,
@@ -74,10 +69,7 @@ export class UsersService {
     return user;
   }
 
-  async update(
-    id: number,
-    updates: Partial<Omit<User, 'id' | 'createdAt'>>,
-  ): Promise<User | undefined> {
+  async update(id: number, updates: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User | undefined> {
     const userIndex = this.users.findIndex((u) => u.id === id);
     if (userIndex === -1) {
       return undefined;
@@ -86,28 +78,17 @@ export class UsersService {
     return this.users[userIndex];
   }
 
-  async toggleRecipeLike(
-    userId: number,
-    recipeId: number,
-  ): Promise<{ liked: boolean; totalLikes: number }> {
-    const existingLike = this.recipeLikes.find(
-      (like) => like.userId === userId && like.recipeId === recipeId,
-    );
+  async toggleRecipeLike(userId: number, recipeId: number): Promise<{ liked: boolean; totalLikes: number }> {
+    const existingLike = this.recipeLikes.find((like) => like.userId === userId && like.recipeId === recipeId);
 
     if (existingLike) {
-      this.recipeLikes = this.recipeLikes.filter(
-        (like) => !(like.userId === userId && like.recipeId === recipeId),
-      );
-      const totalLikes = this.recipeLikes.filter(
-        (like) => like.recipeId === recipeId,
-      ).length;
+      this.recipeLikes = this.recipeLikes.filter((like) => !(like.userId === userId && like.recipeId === recipeId));
+      const totalLikes = this.recipeLikes.filter((like) => like.recipeId === recipeId).length;
       return { liked: false, totalLikes };
     }
 
     this.recipeLikes.push({ userId, recipeId, likedAt: new Date() });
-    const totalLikes = this.recipeLikes.filter(
-      (like) => like.recipeId === recipeId,
-    ).length;
+    const totalLikes = this.recipeLikes.filter((like) => like.recipeId === recipeId).length;
     return { liked: true, totalLikes };
   }
 
@@ -115,19 +96,12 @@ export class UsersService {
     return this.recipeLikes.filter((like) => like.recipeId === recipeId).length;
   }
 
-  async isRecipeLikedByUser(
-    userId: number,
-    recipeId: number,
-  ): Promise<boolean> {
-    return this.recipeLikes.some(
-      (like) => like.userId === userId && like.recipeId === recipeId,
-    );
+  async isRecipeLikedByUser(userId: number, recipeId: number): Promise<boolean> {
+    return this.recipeLikes.some((like) => like.userId === userId && like.recipeId === recipeId);
   }
 
   async getUserLikedRecipes(userId: number): Promise<number[]> {
-    return this.recipeLikes
-      .filter((like) => like.userId === userId)
-      .map((like) => like.recipeId);
+    return this.recipeLikes.filter((like) => like.userId === userId).map((like) => like.recipeId);
   }
 
   async delete(id: number): Promise<boolean> {

@@ -1,23 +1,15 @@
-import { LogRecord, SeverityNumber } from '@opentelemetry/api-logs';
-import {
-  getNodeAutoInstrumentations,
-  type InstrumentationConfigMap,
-} from '@opentelemetry/auto-instrumentations-node';
+import { type LogRecord, SeverityNumber } from '@opentelemetry/api-logs';
+import { getNodeAutoInstrumentations, type InstrumentationConfigMap } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { Resource } from '@opentelemetry/resources';
-import {
-  BatchLogRecordProcessor,
-  LoggerProvider,
-} from '@opentelemetry/sdk-logs';
+import { BatchLogRecordProcessor, LoggerProvider } from '@opentelemetry/sdk-logs';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 
 const resource = new Resource({ [ATTR_SERVICE_NAME]: 'backend' });
 // Configure logs export to Loki via OTLP
-const lokiEndpoint =
-  process.env.LOKI_ENDPOINT ||
-  'http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs';
+const lokiEndpoint = process.env.LOKI_ENDPOINT || 'http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs';
 
 const prometheusExporter = new PrometheusExporter({
   port: 9464,
@@ -35,9 +27,7 @@ export enum SeverityText {
   ERROR = 'ERROR',
 }
 
-export const patchConsle = (
-  customLoggerEmit: (logRecord: LogRecord) => void,
-) => {
+export const patchConsle = (customLoggerEmit: (logRecord: LogRecord) => void) => {
   const originalConsoleLog = console.log;
   const originalConsoleError = console.error;
   const originalConsoleWarn = console.warn;
@@ -45,11 +35,7 @@ export const patchConsle = (
   const originalConsoleDebug = console.debug;
 
   const getBody = (...args: unknown[]) =>
-    args
-      .map((arg) =>
-        typeof arg === 'object' ? JSON.stringify(arg) : String(arg),
-      )
-      .join(' ');
+    args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg) : String(arg))).join(' ');
 
   console.log = (...args: unknown[]) => {
     originalConsoleLog(...args);
@@ -147,9 +133,7 @@ console.log(`Logs exporter endpoint: ${lokiEndpoint}`);
 process.on('SIGTERM', () => {
   Promise.all([sdk.shutdown(), loggerProvider.shutdown()])
     .then(() => console.log('OpenTelemetry SDK shut down successfully'))
-    .catch((error) =>
-      console.log('Error shutting down OpenTelemetry SDK', error),
-    )
+    .catch((error) => console.log('Error shutting down OpenTelemetry SDK', error))
     .finally(() => process.exit(0));
 });
 

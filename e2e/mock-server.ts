@@ -1,4 +1,4 @@
-import { createServer, IncomingMessage, ServerResponse } from 'node:http';
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { mockComments, mockPosts } from './mocks';
 
 function handleRequest(req: IncomingMessage, res: ServerResponse) {

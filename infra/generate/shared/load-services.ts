@@ -33,9 +33,7 @@ export function getAllServiceNames(): string[] {
   return [...nestServices, ...nextServices];
 }
 
-export function getServiceByName(
-  name: string,
-): { service: Service; type: 'nest' | 'next' } | undefined {
+export function getServiceByName(name: string): { service: Service; type: 'nest' | 'next' } | undefined {
   const services = loadServices();
 
   const nestService = services.nest.find((s) => s.name === name);

@@ -44,22 +44,16 @@ const AVAILABLE_INGREDIENTS = [
   'Спагетти',
 ];
 
-export function RecipeFilters({
-  initialSearch = '',
-  initialIngredients = [],
-}: RecipeFiltersProps) {
+export function RecipeFilters({ initialSearch = '', initialIngredients = [] }: RecipeFiltersProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState(initialSearch);
-  const [selectedIngredients, setSelectedIngredients] =
-    useState<string[]>(initialIngredients);
+  const [selectedIngredients, setSelectedIngredients] = useState<string[]>(initialIngredients);
   const [isIngredientsOpen, setIsIngredientsOpen] = useState(false);
 
   const toggleIngredient = (ingredient: string) => {
     setSelectedIngredients((prev) =>
-      prev.includes(ingredient)
-        ? prev.filter((i) => i !== ingredient)
-        : [...prev, ingredient],
+      prev.includes(ingredient) ? prev.filter((i) => i !== ingredient) : [...prev, ingredient],
     );
   };
 
@@ -113,15 +107,9 @@ export function RecipeFilters({
           className={styles.collapseButton}
         >
           <span className={cx(styles.label, styles.collapseButtonText)}>
-            Ингредиенты{' '}
-            {selectedIngredients.length > 0 &&
-              `(${selectedIngredients.length})`}
+            Ингредиенты {selectedIngredients.length > 0 && `(${selectedIngredients.length})`}
           </span>
-          <span
-            className={`${styles.collapseIcon} ${isIngredientsOpen ? styles.collapseIconOpen : ''}`}
-          >
-            ▼
-          </span>
+          <span className={`${styles.collapseIcon} ${isIngredientsOpen ? styles.collapseIconOpen : ''}`}>▼</span>
         </button>
 
         {isIngredientsOpen && (
@@ -142,19 +130,10 @@ export function RecipeFilters({
       </div>
 
       <div className={styles.actions}>
-        <button
-          type="submit"
-          className={styles.submitButton}
-          disabled={isPending}
-        >
+        <button type="submit" className={styles.submitButton} disabled={isPending}>
           {isPending ? 'Поиск...' : 'Найти рецепты'}
         </button>
-        <button
-          type="button"
-          onClick={handleReset}
-          className={styles.resetButton}
-          disabled={isPending}
-        >
+        <button type="button" onClick={handleReset} className={styles.resetButton} disabled={isPending}>
           Сбросить
         </button>
       </div>

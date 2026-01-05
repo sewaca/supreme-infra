@@ -29,9 +29,7 @@ export function RecipeComments({ comments }: RecipeCommentsProps) {
             <div className={styles.commentHeader}>
               <div className={styles.authorInfo}>
                 <span className={styles.author}>{comment.author}</span>
-                <span className={styles.date}>
-                  {formatDate(comment.createdAt)}
-                </span>
+                <span className={styles.date}>{formatDate(comment.createdAt)}</span>
               </div>
               <div className={styles.rating}>{renderStars(comment.rating)}</div>
             </div>

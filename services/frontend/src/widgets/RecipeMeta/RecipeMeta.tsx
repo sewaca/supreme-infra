@@ -9,14 +9,7 @@ interface RecipeMetaProps {
   likes: number;
 }
 
-export function RecipeMeta({
-  servings,
-  calories,
-  cookingTime,
-  difficulty,
-  author,
-  likes,
-}: RecipeMetaProps) {
+export function RecipeMeta({ servings, calories, cookingTime, difficulty, author, likes }: RecipeMetaProps) {
   const difficultyLabels = {
     easy: 'Легко',
     medium: 'Средне',

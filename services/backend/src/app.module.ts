@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './features/Auth/Auth.module';
-import { HealthController } from './features/HealthCheck/health.controller';
-import { RecipesModule } from './features/Recipes/Recipes.module';
+import { AuthModule } from './features/Auth/api/Auth.module';
+import { HealthController } from './features/HealthCheck/api/health.controller';
+import { RecipesModule } from './features/Recipes/api/Recipes.module';
 
 @Module({
   imports: [RecipesModule, AuthModule],

@@ -1,12 +1,5 @@
 import { isProd } from '../lib/environment';
-import type {
-  AuthResponse,
-  LoginData,
-  Recipe,
-  RecipeDetails,
-  RegisterData,
-  User,
-} from './backendApi.types';
+import type { AuthResponse, LoginData, Recipe, RecipeDetails, RegisterData, User } from './backendApi.types';
 
 class BackendApi {
   private readonly baseUrl: string;
@@ -19,11 +12,7 @@ class BackendApi {
     console.log('outgoing request started', url);
     return fetch(url, options)
       .then((response) => {
-        console.log(
-          'outgoing request finished with status',
-          response.status,
-          response.statusText,
-        );
+        console.log('outgoing request finished with status', response.status, response.statusText);
         return response;
       })
       .catch((error) => {
@@ -32,10 +21,7 @@ class BackendApi {
       });
   }
 
-  public async getRecipes(
-    searchQuery?: string,
-    ingredients?: string[],
-  ): Promise<Recipe[]> {
+  public async getRecipes(searchQuery?: string, ingredients?: string[]): Promise<Recipe[]> {
     const params = new URLSearchParams();
     if (searchQuery) {
       params.append('search', searchQuery);
@@ -54,10 +40,7 @@ class BackendApi {
     return response.json() as Promise<Recipe[]>;
   }
 
-  public async getRecipeById(
-    id: number,
-    token?: string,
-  ): Promise<RecipeDetails> {
+  public async getRecipeById(id: number, token?: string): Promise<RecipeDetails> {
     const url = `${this.baseUrl}/recipes/${id}`;
 
     const headers: HeadersInit = {};
@@ -79,10 +62,7 @@ class BackendApi {
     return response.json() as Promise<RecipeDetails>;
   }
 
-  public async toggleRecipeLike(
-    id: number,
-    token: string,
-  ): Promise<{ liked: boolean; totalLikes: number }> {
+  public async toggleRecipeLike(id: number, token: string): Promise<{ liked: boolean; totalLikes: number }> {
     const url = `${this.baseUrl}/recipes/${id}/like`;
 
     const response = await this.fetch(url, {
@@ -102,9 +82,7 @@ class BackendApi {
       if (response.status === 404) {
         throw new Error('Recipe not found');
       }
-      throw new Error(
-        `Failed to toggle like: ${errorText || response.statusText}`,
-      );
+      throw new Error(`Failed to toggle like: ${errorText || response.statusText}`);
     }
 
     return response.json() as Promise<{ liked: boolean; totalLikes: number }>;
@@ -139,18 +117,13 @@ class BackendApi {
       if (response.status === 401) {
         throw new Error('Unauthorized');
       }
-      throw new Error(
-        `Failed to fetch proposed recipes: ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch proposed recipes: ${response.statusText}`);
     }
 
     return response.json() as Promise<Recipe[]>;
   }
 
-  public async publishRecipe(
-    id: number,
-    token: string,
-  ): Promise<RecipeDetails> {
+  public async publishRecipe(id: number, token: string): Promise<RecipeDetails> {
     const url = `${this.baseUrl}/recipes/proposed/${id}/publish`;
 
     const response = await this.fetch(url, {
@@ -205,10 +178,7 @@ class BackendApi {
     return response.json() as Promise<RecipeDetails>;
   }
 
-  public async deleteRecipe(
-    id: number,
-    token: string,
-  ): Promise<{ success: boolean }> {
+  public async deleteRecipe(id: number, token: string): Promise<{ success: boolean }> {
     const url = `${this.baseUrl}/recipes/${id}`;
 
     const response = await this.fetch(url, {
@@ -253,10 +223,7 @@ class BackendApi {
     return response.json() as Promise<User>;
   }
 
-  public async deleteUser(
-    id: number,
-    token: string,
-  ): Promise<{ success: boolean }> {
+  public async deleteUser(id: number, token: string): Promise<{ success: boolean }> {
     const url = `${this.baseUrl}/auth/users/${id}`;
 
     const response = await this.fetch(url, {
@@ -289,9 +256,7 @@ class BackendApi {
     });
 
     if (!response.ok) {
-      const error = await response
-        .json()
-        .catch(() => ({ message: 'Registration failed' }));
+      const error = await response.json().catch(() => ({ message: 'Registration failed' }));
       throw new Error(error.message || 'Registration failed');
     }
 
@@ -308,9 +273,7 @@ class BackendApi {
     });
 
     if (!response.ok) {
-      const error = await response
-        .json()
-        .catch(() => ({ message: 'Login failed' }));
+      const error = await response.json().catch(() => ({ message: 'Login failed' }));
       throw new Error(error.message || 'Login failed');
     }
 
@@ -344,17 +307,14 @@ const createServerApi = () => {
   }
 
   /** namespace в котором находятся поды бекенда */
-  const backendNamespace =
-    process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
+  const backendNamespace = process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
 
   const backendUrl = `http://backend.${backendNamespace}.svc.cluster.local${commonBackendPostfix}`;
   return new BackendApi(backendUrl);
 };
 
 const createClientApi = () =>
-  new BackendApi(
-    `http://${isProd ? '84.252.134.216' : 'localhost:4000'}${commonBackendPostfix}`,
-  );
+  new BackendApi(`http://${isProd ? '84.252.134.216' : 'localhost:4000'}${commonBackendPostfix}`);
 
 export const serverApi = createServerApi();
 export const backendApi = createClientApi();

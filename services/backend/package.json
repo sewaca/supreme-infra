@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "ISC",
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
@@ -16,6 +16,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@fastify/helmet": "^12.0.1",
     "@nestjs/cli": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/core": "catalog:",

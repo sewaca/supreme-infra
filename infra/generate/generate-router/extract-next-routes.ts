@@ -23,12 +23,9 @@ export function extractNextRoutes(servicePath: string): Route[] {
 
       if (entry.isDirectory()) {
         // Обрабатываем динамические роуты [param]
-        const isDynamic =
-          entry.name.startsWith('[') && entry.name.endsWith(']');
+        const isDynamic = entry.name.startsWith('[') && entry.name.endsWith(']');
         // Для ingress-nginx используем regex вместо :param
-        const newPath = isDynamic
-          ? `${basePath}/[^/]+`
-          : `${basePath}/${entry.name}`;
+        const newPath = isDynamic ? `${basePath}/[^/]+` : `${basePath}/${entry.name}`;
 
         scanDirectory(fullPath, newPath);
       } else if (entry.isFile()) {
@@ -44,21 +41,10 @@ export function extractNextRoutes(servicePath: string): Route[] {
           const content = fs.readFileSync(fullPath, 'utf-8');
 
           // Ищем экспортируемые HTTP методы
-          const httpMethods = [
-            'GET',
-            'POST',
-            'PUT',
-            'DELETE',
-            'PATCH',
-            'HEAD',
-            'OPTIONS',
-          ];
+          const httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'];
           for (const method of httpMethods) {
             // Простая проверка на наличие экспорта функции
-            const exportRegex = new RegExp(
-              `export\\s+(async\\s+)?function\\s+${method}\\s*\\(`,
-              'g',
-            );
+            const exportRegex = new RegExp(`export\\s+(async\\s+)?function\\s+${method}\\s*\\(`, 'g');
             if (exportRegex.test(content)) {
               routes.push({
                 path: basePath || '/',

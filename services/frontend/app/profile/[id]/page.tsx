@@ -8,9 +8,7 @@ interface ProfileByIdPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function ProfileByIdPage({
-  params,
-}: ProfileByIdPageProps) {
+export default async function ProfileByIdPage({ params }: ProfileByIdPageProps) {
   const currentUser = await getUser();
 
   if (!currentUser) {

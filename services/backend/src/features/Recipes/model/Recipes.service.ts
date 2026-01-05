@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import recipesMock from '../../shared/recipes-mock.json';
+import recipesMock from '../../../shared/recipes-mock.json';
 
 export interface RecipeIngredient {
   name: string;
@@ -67,26 +67,18 @@ export class RecipesService {
     if (searchQuery?.trim()) {
       const query = searchQuery.trim().toLowerCase();
       filteredRecipes = filteredRecipes.filter(
-        (recipe) =>
-          recipe.title.toLowerCase().includes(query) ||
-          recipe.description.toLowerCase().includes(query),
+        (recipe) => recipe.title.toLowerCase().includes(query) || recipe.description.toLowerCase().includes(query),
       );
     }
 
     // Фильтрация по ингредиентам
     if (ingredients && ingredients.length > 0) {
-      const normalizedIngredients = ingredients
-        .map((ing) => ing.trim())
-        .filter((ing) => ing.length > 0);
+      const normalizedIngredients = ingredients.map((ing) => ing.trim()).filter((ing) => ing.length > 0);
 
       if (normalizedIngredients.length > 0) {
         filteredRecipes = filteredRecipes.filter((recipe) => {
-          const recipeIngredients = recipe.ingredients.map((ing) =>
-            ing.toLowerCase(),
-          );
-          return normalizedIngredients.every((ingredient) =>
-            recipeIngredients.includes(ingredient.toLowerCase()),
-          );
+          const recipeIngredients = recipe.ingredients.map((ing) => ing.toLowerCase());
+          return normalizedIngredients.every((ingredient) => recipeIngredients.includes(ingredient.toLowerCase()));
         });
       }
     }
@@ -117,9 +109,7 @@ export class RecipesService {
     }
 
     if (includeProposed) {
-      const proposedRecipe = this.proposedRecipes.find(
-        (recipe) => recipe.id === id,
-      );
+      const proposedRecipe = this.proposedRecipes.find((recipe) => recipe.id === id);
       if (proposedRecipe) {
         return proposedRecipe;
       }
@@ -144,9 +134,7 @@ export class RecipesService {
   }
 
   public publishRecipe(id: number): RecipeDetails {
-    const proposedRecipeIndex = this.proposedRecipes.findIndex(
-      (recipe) => recipe.id === id,
-    );
+    const proposedRecipeIndex = this.proposedRecipes.findIndex((recipe) => recipe.id === id);
 
     if (proposedRecipeIndex === -1) {
       throw new NotFoundException('Proposed recipe not found');
@@ -167,16 +155,9 @@ export class RecipesService {
     return publishedRecipe;
   }
 
-  public submitRecipe(
-    recipeData: Omit<
-      RecipeDetails,
-      'id' | 'likes' | 'comments' | 'instructions'
-    >,
-  ): number {
+  public submitRecipe(recipeData: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>): number {
     const id = this.nextProposedRecipeId++;
-    const instructions = recipeData.steps
-      .map((step) => step.instruction)
-      .join('\n');
+    const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
     const recipe: RecipeDetails = {
       ...recipeData,
       instructions,
@@ -190,24 +171,17 @@ export class RecipesService {
 
   public updateRecipe(
     id: number,
-    recipeData: Omit<
-      RecipeDetails,
-      'id' | 'likes' | 'comments' | 'instructions'
-    >,
+    recipeData: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
   ): RecipeDetails {
     const isProposed = id >= 1_000_000;
 
     if (isProposed) {
-      const recipeIndex = this.proposedRecipes.findIndex(
-        (recipe) => recipe.id === id,
-      );
+      const recipeIndex = this.proposedRecipes.findIndex((recipe) => recipe.id === id);
       if (recipeIndex === -1) {
         throw new NotFoundException('Recipe not found');
       }
       const existingRecipe = this.proposedRecipes[recipeIndex];
-      const instructions = recipeData.steps
-        .map((step) => step.instruction)
-        .join('\n');
+      const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
       const updatedRecipe: RecipeDetails = {
         ...recipeData,
         instructions,
@@ -225,11 +199,8 @@ export class RecipesService {
 
     const mockIndex = recipesMock.findIndex((r) => r.id === id);
     if (mockIndex !== -1) {
-      const existingRecipe = (this.updatedMockRecipes.get(id) ||
-        recipesMock[mockIndex]) as RecipeDetails;
-      const instructions = recipeData.steps
-        .map((step) => step.instruction)
-        .join('\n');
+      const existingRecipe = (this.updatedMockRecipes.get(id) || recipesMock[mockIndex]) as RecipeDetails;
+      const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
       const updatedRecipe: RecipeDetails = {
         ...recipeData,
         instructions,
@@ -246,9 +217,7 @@ export class RecipesService {
       throw new NotFoundException('Recipe not found');
     }
     const existingRecipe = this.publishedRecipes[publishedIndex];
-    const instructions = recipeData.steps
-      .map((step) => step.instruction)
-      .join('\n');
+    const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
     const updatedRecipe: RecipeDetails = {
       ...recipeData,
       instructions,
@@ -264,9 +233,7 @@ export class RecipesService {
     const isProposed = id >= 1_000_000;
 
     if (isProposed) {
-      const proposedIndex = this.proposedRecipes.findIndex(
-        (recipe) => recipe.id === id,
-      );
+      const proposedIndex = this.proposedRecipes.findIndex((recipe) => recipe.id === id);
       if (proposedIndex === -1) {
         throw new NotFoundException('Recipe not found');
       }

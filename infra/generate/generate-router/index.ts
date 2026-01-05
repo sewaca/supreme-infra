@@ -16,10 +16,7 @@ interface RouterConfig {
   routes: Route[];
 }
 
-function log(
-  message: string,
-  level: 'info' | 'success' | 'error' = 'info',
-): void {
+function log(message: string, level: 'info' | 'success' | 'error' = 'info'): void {
   const prefix = {
     info: '→',
     success: '✓',
@@ -44,11 +41,7 @@ export async function generateRouterConfigs(): Promise<void> {
     try {
       log(`Processing NestJS service: ${service.name}`, 'info');
 
-      const servicePath = path.join(
-        __dirname,
-        '../../../services',
-        service.name,
-      );
+      const servicePath = path.join(__dirname, '../../../services', service.name);
       const routes = await extractNestRoutes(servicePath);
 
       log(`  Found ${routes.length} route(s)`, 'info');
@@ -68,10 +61,7 @@ export async function generateRouterConfigs(): Promise<void> {
       log(`Generated: ${relativePath}`, 'success');
       successCount++;
     } catch (error) {
-      log(
-        `Error processing ${service.name}: ${error instanceof Error ? error.message : error}`,
-        'error',
-      );
+      log(`Error processing ${service.name}: ${error instanceof Error ? error.message : error}`, 'error');
       errorCount++;
     }
   }
@@ -81,11 +71,7 @@ export async function generateRouterConfigs(): Promise<void> {
     try {
       log(`Processing Next.js service: ${service.name}`, 'info');
 
-      const servicePath = path.join(
-        __dirname,
-        '../../../services',
-        service.name,
-      );
+      const servicePath = path.join(__dirname, '../../../services', service.name);
       const routes = extractNextRoutes(servicePath);
 
       log(`  Found ${routes.length} route(s)`, 'info');
@@ -105,10 +91,7 @@ export async function generateRouterConfigs(): Promise<void> {
       log(`Generated: ${relativePath}`, 'success');
       successCount++;
     } catch (error) {
-      log(
-        `Error processing ${service.name}: ${error instanceof Error ? error.message : error}`,
-        'error',
-      );
+      log(`Error processing ${service.name}: ${error instanceof Error ? error.message : error}`, 'error');
       errorCount++;
     }
   }

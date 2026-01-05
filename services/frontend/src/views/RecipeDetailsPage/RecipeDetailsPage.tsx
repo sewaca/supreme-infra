@@ -22,11 +22,7 @@ interface RecipeDetailsPageProps {
   isModeratorOrAdmin?: boolean;
 }
 
-export function RecipeDetailsPage({
-  recipe,
-  isProposed = false,
-  isModeratorOrAdmin = false,
-}: RecipeDetailsPageProps) {
+export function RecipeDetailsPage({ recipe, isProposed = false, isModeratorOrAdmin = false }: RecipeDetailsPageProps) {
   const router = useRouter();
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishError, setPublishError] = useState('');
@@ -47,9 +43,7 @@ export function RecipeDetailsPage({
       await backendApi.publishRecipe(recipe.id, token);
       router.push('/proposed-recipes');
     } catch (error) {
-      setPublishError(
-        error instanceof Error ? error.message : 'Ошибка при публикации',
-      );
+      setPublishError(error instanceof Error ? error.message : 'Ошибка при публикации');
     } finally {
       setIsPublishing(false);
     }
@@ -78,9 +72,7 @@ export function RecipeDetailsPage({
       alert('Пост успешно удален');
       router.push('/');
     } catch (error) {
-      alert(
-        error instanceof Error ? error.message : 'Ошибка при удалении рецепта',
-      );
+      alert(error instanceof Error ? error.message : 'Ошибка при удалении рецепта');
     } finally {
       setIsDeleting(false);
     }
@@ -89,17 +81,10 @@ export function RecipeDetailsPage({
   if (isEditing) {
     return (
       <div className={styles.container}>
-        <button
-          onClick={() => setIsEditing(false)}
-          className={styles.backLink}
-          type="button"
-        >
+        <button onClick={() => setIsEditing(false)} className={styles.backLink} type="button">
           ← Отменить редактирование
         </button>
-        <SubmitRecipeForm
-          recipe={recipe}
-          onSuccess={() => setIsEditing(false)}
-        />
+        <SubmitRecipeForm recipe={recipe} onSuccess={() => setIsEditing(false)} />
       </div>
     );
   }
@@ -107,27 +92,15 @@ export function RecipeDetailsPage({
   return (
     <div className={styles.container}>
       <div className={styles.headerActions}>
-        <Link
-          href={isProposed ? '/proposed-recipes' : '/'}
-          className={styles.backLink}
-        >
+        <Link href={isProposed ? '/proposed-recipes' : '/'} className={styles.backLink}>
           ← Назад {isProposed ? 'к предложенным рецептам' : 'к рецептам'}
         </Link>
         {isModeratorOrAdmin && (
           <div className={styles.adminActions}>
-            <button
-              onClick={() => setIsEditing(true)}
-              className={styles.editButton}
-              type="button"
-            >
+            <button onClick={() => setIsEditing(true)} className={styles.editButton} type="button">
               ✏️ редактировать
             </button>
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className={styles.deleteButton}
-              type="button"
-            >
+            <button onClick={handleDelete} disabled={isDeleting} className={styles.deleteButton} type="button">
               🗑️ удалить
             </button>
           </div>
@@ -138,20 +111,12 @@ export function RecipeDetailsPage({
         <div className={styles.proposedBanner}>
           <div className={styles.proposedBannerContent}>
             <span className={styles.proposedBadge}>Предложен</span>
-            <p className={styles.proposedText}>
-              Этот рецепт ожидает модерации и публикации
-            </p>
+            <p className={styles.proposedText}>Этот рецепт ожидает модерации и публикации</p>
           </div>
-          <button
-            onClick={handlePublish}
-            disabled={isPublishing}
-            className={styles.publishButton}
-          >
+          <button onClick={handlePublish} disabled={isPublishing} className={styles.publishButton}>
             {isPublishing ? 'Публикация...' : 'Опубликовать'}
           </button>
-          {publishError && (
-            <div className={styles.publishError}>{publishError}</div>
-          )}
+          {publishError && <div className={styles.publishError}>{publishError}</div>}
         </div>
       )}
 

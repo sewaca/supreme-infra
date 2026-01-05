@@ -13,9 +13,7 @@ export function ProposedRecipesPage({ recipes }: ProposedRecipesPageProps) {
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>Предложенные рецепты</h1>
-        <p className={styles.subtitle}>
-          Рецепты, ожидающие модерации и публикации
-        </p>
+        <p className={styles.subtitle}>Рецепты, ожидающие модерации и публикации</p>
       </header>
 
       <div className={styles.recipesGrid}>
@@ -24,9 +22,7 @@ export function ProposedRecipesPage({ recipes }: ProposedRecipesPageProps) {
             <p>Нет предложенных рецептов</p>
           </div>
         ) : (
-          recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))
+          recipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)
         )}
       </div>
     </div>

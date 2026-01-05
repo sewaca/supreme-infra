@@ -10,12 +10,7 @@ interface LikeButtonProps {
   onLike: (recipeId: number) => Promise<{ liked: boolean; totalLikes: number }>;
 }
 
-export function LikeButton({
-  recipeId,
-  initialLikes,
-  initialIsLiked = false,
-  onLike,
-}: LikeButtonProps) {
+export function LikeButton({ recipeId, initialLikes, initialIsLiked = false, onLike }: LikeButtonProps) {
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [isLoading, setIsLoading] = useState(false);

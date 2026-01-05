@@ -22,9 +22,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           role="img"
           aria-label={recipe.title}
         />
-        <div className={styles.difficulty}>
-          {difficultyLabels[recipe.difficulty]}
-        </div>
+        <div className={styles.difficulty}>{difficultyLabels[recipe.difficulty]}</div>
       </div>
       <div className={styles.content}>
         <h3 className={styles.title}>{recipe.title}</h3>
@@ -37,10 +35,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           </div>
           <div className={styles.ingredientsList}>
             {recipe.ingredients.map((ingredient, index) => (
-              <span
-                key={`${index}-${ingredient}`}
-                className={styles.ingredient}
-              >
+              <span key={`${index}-${ingredient}`} className={styles.ingredient}>
                 {ingredient}
               </span>
             ))}
