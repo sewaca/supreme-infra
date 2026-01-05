@@ -50,33 +50,48 @@
 ## Project setup
 
 ```bash
-$ npm install
+$ pnpm install
 ```
+
+## Environment Configuration
+
+Before running the application, you need to set up environment variables:
+
+1. Copy the example environment file:
+
+```bash
+$ cp .env.example .env.local
+```
+
+2. Edit `.env.local` and set your values:
+
+```bash
+JWT_SECRET="your-secret-key-here"
+```
+
+**Important:** `.env.local` is ignored by git and should never be committed to the repository.
 
 ## Compile and run the project
 
 ```bash
-# development
-$ npm run start
+# development with watch mode
+$ pnpm dev
 
-# watch mode
-$ npm run start:dev
+# build
+$ pnpm build
 
 # production mode
-$ npm run start:prod
+$ pnpm prod
 ```
 
 ## Run tests
 
 ```bash
 # unit tests
-$ npm run test
+$ pnpm unit
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# unit tests with coverage
+$ pnpm unit:coverage
 ```
 
 ## Deployment

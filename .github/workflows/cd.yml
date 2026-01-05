@@ -593,6 +593,7 @@ jobs:
           docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           canary-enabled: "true"
           canary-replicas: ${{ steps.get-replicas.outputs.canary_replicas }}
+          jwt-secret: ${{ secrets.JWT_SECRET }}
 
   approve-canary:
     name: Approve canary promotion to production
@@ -702,3 +703,4 @@ jobs:
           docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           canary-enabled: "false"
           atomic: "true"
+          jwt-secret: ${{ secrets.JWT_SECRET }}

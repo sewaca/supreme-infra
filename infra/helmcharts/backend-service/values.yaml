@@ -23,6 +23,10 @@ env:
   NODE_ENV: "production"
   LOKI_ENDPOINT: "http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs"
 
+# Secrets that should be passed from external sources (e.g., GitHub Secrets)
+# These will be stored in Kubernetes Secrets and mounted as environment variables
+secrets: {}
+
 resources:
   limits:
     cpu: 1000m
