@@ -18,7 +18,7 @@ metrics:
 env:
   PORT: "3000"
   NODE_ENV: production
-  LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
+  LOKI_ENDPOINT: http://loki.monitoring.svc.cluster.local/otlp/v1/logs
   BACKEND_SERVICE_NAMESPACE: default
   NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/main-api
 resources:
