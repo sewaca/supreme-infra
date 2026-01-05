@@ -4,4 +4,13 @@ node_modules
 infra/helmcharts/**/charts/**/*
 e2e/playwright-report
 e2e/test-results
-infra/helmcharts/**/charts/**/*
+
+# Build outputs
+dist
+build
+.next
+coverage
+
+# Cache
+.cache
+.turbo

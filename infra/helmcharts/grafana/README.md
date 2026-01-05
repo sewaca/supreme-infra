@@ -89,6 +89,7 @@ kubectl port-forward -n monitoring svc/grafana 3000:80
 ### Создать алерт для недоступности сервиса
 
 Создать новый alert rule:
+
 ```promql
 absent(up{service="backend"}) == 1
 ```
@@ -103,9 +104,11 @@ absent(up{service="backend"}) == 1
 #   --dry-run=client -o yaml | kubectl apply -f -
 
 ```
+
 kubectl create configmap grafana-dashboards --from-file=./infra/helmcharts/grafana/dashboards/ --namespace monitoring --dry-run=client -o yaml > kk.yaml
 kubectl apply -f kk.yaml
-kubectl rollout restart deployment grafana -n monitoring 
+kubectl rollout restart deployment grafana -n monitoring
+
 ```
 
 # Перезапустить Grafana pod
@@ -148,4 +151,3 @@ kubectl get configmap -n monitoring grafana-dashboards -o yaml
 helm uninstall grafana --namespace monitoring
 kubectl delete configmap grafana-dashboards --namespace monitoring
 ```
-

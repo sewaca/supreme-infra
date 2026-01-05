@@ -5,12 +5,12 @@ on:
     inputs:
       version-tag:
         required: true
-        description: 'Release version'
+        description: "Release version"
         type: string
       service-name:
         required: true
         type: string
-        description: 'Service name'
+        description: "Service name"
 
 jobs:
   build-service:

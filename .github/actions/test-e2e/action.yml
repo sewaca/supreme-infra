@@ -1,5 +1,5 @@
 name: Test E2E
-description: 'Run e2e tests for provided services'
+description: "Run e2e tests for provided services"
 
 inputs:
   services:
@@ -39,4 +39,3 @@ runs:
           pnpm --filter e2e run e2e
         fi
       shell: bash
-

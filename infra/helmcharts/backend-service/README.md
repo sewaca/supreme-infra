@@ -54,10 +54,10 @@ helm upgrade --install backend2 ./infra/helmcharts/backend-service \
 
 ```yaml
 image:
-  repository: backend  # имя образа
+  repository: backend # имя образа
 
-nameOverride: "backend"  # имя для ресурсов Kubernetes
-fullnameOverride: "backend"  # полное имя (если нужно переопределить)
+nameOverride: "backend" # имя для ресурсов Kubernetes
+fullnameOverride: "backend" # полное имя (если нужно переопределить)
 
 service:
   type: ClusterIP
@@ -89,18 +89,18 @@ autoscaling:
     scaleDown:
       stabilizationWindowSeconds: 300
       policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60
+        - type: Percent
+          value: 50
+          periodSeconds: 60
     scaleUp:
       stabilizationWindowSeconds: 0
       policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 30
-      - type: Pods
-        value: 2
-        periodSeconds: 30
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+        - type: Pods
+          value: 2
+          periodSeconds: 30
       selectPolicy: Max
 ```
 
@@ -108,49 +108,49 @@ autoscaling:
 
 ### Основные параметры
 
-| Параметр | Описание | Значение по умолчанию |
-|----------|----------|----------------------|
-| `replicaCount` | Количество реплик | `2` |
-| `image.repository` | Репозиторий образа | `""` (обязательно указать) |
-| `image.tag` | Тег образа (обязательно передавать извне) | `""` |
-| `image.pullPolicy` | Политика загрузки образа | `IfNotPresent` |
-| `nameOverride` | Переопределение имени | `""` |
-| `fullnameOverride` | Переопределение полного имени | `""` |
+| Параметр           | Описание                                  | Значение по умолчанию      |
+| ------------------ | ----------------------------------------- | -------------------------- |
+| `replicaCount`     | Количество реплик                         | `2`                        |
+| `image.repository` | Репозиторий образа                        | `""` (обязательно указать) |
+| `image.tag`        | Тег образа (обязательно передавать извне) | `""`                       |
+| `image.pullPolicy` | Политика загрузки образа                  | `IfNotPresent`             |
+| `nameOverride`     | Переопределение имени                     | `""`                       |
+| `fullnameOverride` | Переопределение полного имени             | `""`                       |
 
 ### Service параметры
 
-| Параметр | Описание | Значение по умолчанию |
-|----------|----------|----------------------|
-| `service.type` | Тип сервиса | `ClusterIP` |
-| `service.port` | Порт сервиса | `80` |
-| `service.targetPort` | Порт контейнера | `4000` |
+| Параметр             | Описание        | Значение по умолчанию |
+| -------------------- | --------------- | --------------------- |
+| `service.type`       | Тип сервиса     | `ClusterIP`           |
+| `service.port`       | Порт сервиса    | `80`                  |
+| `service.targetPort` | Порт контейнера | `4000`                |
 
 ### Переменные окружения
 
-| Параметр | Описание | Значение по умолчанию |
-|----------|----------|----------------------|
-| `env.PORT` | Порт приложения | `4000` |
-| `env.NODE_ENV` | Окружение | `production` |
+| Параметр       | Описание        | Значение по умолчанию |
+| -------------- | --------------- | --------------------- |
+| `env.PORT`     | Порт приложения | `4000`                |
+| `env.NODE_ENV` | Окружение       | `production`          |
 
 ### Ресурсы
 
-| Параметр | Описание | Значение по умолчанию |
-|----------|----------|----------------------|
-| `resources.limits.cpu` | Лимит CPU | `500m` |
-| `resources.limits.memory` | Лимит памяти | `512Mi` |
-| `resources.requests.cpu` | Запрос CPU | `100m` |
-| `resources.requests.memory` | Запрос памяти | `128Mi` |
+| Параметр                    | Описание      | Значение по умолчанию |
+| --------------------------- | ------------- | --------------------- |
+| `resources.limits.cpu`      | Лимит CPU     | `500m`                |
+| `resources.limits.memory`   | Лимит памяти  | `512Mi`               |
+| `resources.requests.cpu`    | Запрос CPU    | `100m`                |
+| `resources.requests.memory` | Запрос памяти | `128Mi`               |
 
 ### HPA (Horizontal Pod Autoscaler)
 
-| Параметр | Описание | Значение по умолчанию |
-|----------|----------|----------------------|
-| `autoscaling.enabled` | Включить HPA | `false` |
-| `autoscaling.minReplicas` | Минимальное количество реплик | `2` |
-| `autoscaling.maxReplicas` | Максимальное количество реплик | `10` |
-| `autoscaling.targetCPUUtilizationPercentage` | Целевая утилизация CPU | `80` |
-| `autoscaling.targetMemoryUtilizationPercentage` | Целевая утилизация памяти | `80` |
-| `autoscaling.behavior` | Поведение масштабирования | См. values.yaml |
+| Параметр                                        | Описание                       | Значение по умолчанию |
+| ----------------------------------------------- | ------------------------------ | --------------------- |
+| `autoscaling.enabled`                           | Включить HPA                   | `false`               |
+| `autoscaling.minReplicas`                       | Минимальное количество реплик  | `2`                   |
+| `autoscaling.maxReplicas`                       | Максимальное количество реплик | `10`                  |
+| `autoscaling.targetCPUUtilizationPercentage`    | Целевая утилизация CPU         | `80`                  |
+| `autoscaling.targetMemoryUtilizationPercentage` | Целевая утилизация памяти      | `80`                  |
+| `autoscaling.behavior`                          | Поведение масштабирования      | См. values.yaml       |
 
 ## Примеры использования
 
@@ -214,5 +214,6 @@ Chart включает настройки для health checks:
 - **Readiness Probe**: проверяет, что приложение готово принимать трафик
 
 Настройки по умолчанию:
+
 - Liveness: `/` endpoint, задержка 30s, период 10s
 - Readiness: `/` endpoint, задержка 10s, период 5s

@@ -52,6 +52,7 @@ Located in `biome.json`:
 ```
 
 **Key rules:**
+
 - 2-space indentation
 - Single quotes for JS/TS, double quotes for JSX
 - Recommended linting rules enabled
@@ -90,6 +91,7 @@ Base configuration in `tsconfig.base.json`:
 ```
 
 **Key settings:**
+
 - Strict mode enabled
 - No unused variables/parameters
 - No implicit returns or overrides
@@ -150,12 +152,14 @@ services/
 ## Naming Conventions
 
 ### Files & Directories
+
 - **Components**: PascalCase (`PostCard.tsx`, `PostsController.ts`)
 - **Utilities**: camelCase (`backendApi.ts`, `jsonplaceholderDatasource.ts`)
 - **CSS Modules**: kebab-case (`PostCard.module.css`)
 - **Test files**: Same name as tested file + `.spec.ts/tsx`
 
 ### Code Elements
+
 - **Classes/Interfaces/Types**: PascalCase (`PostsController`, `PostSummary`)
 - **Variables/Functions/Methods**: camelCase (`getPostsSummary()`, `postId`)
 - **Constants**: UPPER_SNAKE_CASE (`BASE_URL`)
@@ -175,15 +179,14 @@ export function PostCard({ post }: PostCardProps) {
     <Link href={`/${post.id}`} className={styles.card}>
       <h2 className={styles.title}>{post.title}</h2>
       <p className={styles.body}>{post.body}</p>
-      <div className={styles.commentsCount}>
-        Comments: {post.commentsCount}
-      </div>
+      <div className={styles.commentsCount}>Comments: {post.commentsCount}</div>
     </Link>
   );
 }
 ```
 
 **Key patterns:**
+
 - Named exports preferred
 - Props interfaces defined above component
 - CSS modules for styling
@@ -192,29 +195,21 @@ export function PostCard({ post }: PostCardProps) {
 ## Backend (NestJS)
 
 ### Controllers
-```ts
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Query,
-} from '@nestjs/common';
-import { PostsService } from './Posts.service';
 
-@Controller('posts')
+```ts
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from "@nestjs/common";
+import { PostsService } from "./Posts.service";
+
+@Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('get-summary')
-  public async getSummary(
-    @Query('userId') userId?: string,
-  ): Promise<ReturnType<PostsService['getPostsSummary']>> {
+  @Get("get-summary")
+  public async getSummary(@Query("userId") userId?: string): Promise<ReturnType<PostsService["getPostsSummary"]>> {
     const userIdNumber = userId ? Number.parseInt(userId, 10) : undefined;
 
     if (userId && Number.isNaN(userIdNumber)) {
-      throw new BadRequestException('Invalid userId parameter');
+      throw new BadRequestException("Invalid userId parameter");
     }
 
     return this.postsService.getPostsSummary(userIdNumber);
@@ -223,12 +218,10 @@ export class PostsController {
 ```
 
 ### Services
+
 ```ts
-import { Injectable } from '@nestjs/common';
-import {
-  Comment,
-  JsonplaceholderDatasource,
-} from '../../shared/api/jsonplaceholderDatasource';
+import { Injectable } from "@nestjs/common";
+import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
 
 export interface PostSummary {
   userId: number;
@@ -240,9 +233,7 @@ export interface PostSummary {
 
 @Injectable()
 export class PostsService {
-  constructor(
-    private readonly jsonplaceholderDatasource: JsonplaceholderDatasource,
-  ) {}
+  constructor(private readonly jsonplaceholderDatasource: JsonplaceholderDatasource) {}
 
   public async getPostsSummary(userId?: number): Promise<PostSummary[]> {
     const [posts, comments] = await Promise.all([
@@ -282,6 +273,7 @@ export class PostsService {
 ```
 
 **Key patterns:**
+
 - Dependency injection for services
 - Explicit return types
 - Private methods for internal logic
@@ -291,6 +283,7 @@ export class PostsService {
 ## API Layer Patterns
 
 ### Backend API Client (Singleton)
+
 ```ts
 export interface PostSummary {
   userId: number;
@@ -304,8 +297,7 @@ class BackendApi {
   private readonly baseUrl: string;
 
   private constructor() {
-    this.baseUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
   }
 
   private static instance: BackendApi | null = null;
@@ -318,9 +310,7 @@ class BackendApi {
   }
 
   public async getPostsSummary(userId?: number): Promise<PostSummary[]> {
-    const url = userId
-      ? `${this.baseUrl}/posts/get-summary?userId=${userId}`
-      : `${this.baseUrl}/posts/get-summary`;
+    const url = userId ? `${this.baseUrl}/posts/get-summary?userId=${userId}` : `${this.baseUrl}/posts/get-summary`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -336,7 +326,7 @@ class BackendApi {
     const response = await fetch(url);
     if (!response.ok) {
       if (response.status === 404) {
-        throw new Error('Post not found');
+        throw new Error("Post not found");
       }
       throw new Error(`Failed to fetch post: ${response.statusText}`);
     }
@@ -349,8 +339,9 @@ export const backendApi = BackendApi.getInstance();
 ```
 
 ### External API Datasources
+
 ```ts
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 export interface Comment {
   postId: number;
@@ -362,12 +353,10 @@ export interface Comment {
 
 @Injectable()
 export class JsonplaceholderDatasource {
-  private readonly baseUrl = 'https://jsonplaceholder.typicode.com';
+  private readonly baseUrl = "https://jsonplaceholder.typicode.com";
 
   public async getPosts(userId?: number): Promise<Post[]> {
-    const url = userId
-      ? `${this.baseUrl}/posts?userId=${userId}`
-      : `${this.baseUrl}/posts`;
+    const url = userId ? `${this.baseUrl}/posts?userId=${userId}` : `${this.baseUrl}/posts`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -411,36 +400,34 @@ export class JsonplaceholderDatasource {
 ### Unit Tests with Vitest
 
 **Configuration** (`vitest.config.global.ts`):
+
 ```ts
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
+    environment: "node",
     root: cwd(),
-    include: ['**/*.spec.{ts,tsx,mts,cts}', '!**/*.screen.spec.{ts,tsx}'],
+    include: ["**/*.spec.{ts,tsx,mts,cts}", "!**/*.screen.spec.{ts,tsx}"],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'html', 'json'],
-      reportsDirectory: 'coverage',
-      include: collectCoverageFrom.filter(
-        (pattern) => !pattern.startsWith('!'),
-      ),
-      exclude: collectCoverageFrom
-        .filter((pattern) => pattern.startsWith('!'))
-        .map((pattern) => pattern.slice(1)),
+      provider: "v8",
+      reporter: ["text", "lcov", "html", "json"],
+      reportsDirectory: "coverage",
+      include: collectCoverageFrom.filter((pattern) => !pattern.startsWith("!")),
+      exclude: collectCoverageFrom.filter((pattern) => pattern.startsWith("!")).map((pattern) => pattern.slice(1)),
     },
   },
 });
 ```
 
 **Backend Service Test Example**:
-```ts
-import { Test } from '@nestjs/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
-import { PostsService } from './Posts.service';
 
-describe('PostsService', () => {
+```ts
+import { Test } from "@nestjs/testing";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostsService } from "./Posts.service";
+
+describe("PostsService", () => {
   let service: PostsService;
   let datasource: {
     getPosts: ReturnType<typeof vi.fn>;
@@ -470,39 +457,39 @@ describe('PostsService', () => {
     service = module.get<PostsService>(PostsService);
   });
 
-  describe('getPostsSummary', () => {
-    it('should return posts summary with truncated body and comments count', async () => {
+  describe("getPostsSummary", () => {
+    it("should return posts summary with truncated body and comments count", async () => {
       const mockPosts = [
         {
           userId: 1,
           id: 1,
-          title: 'Test',
-          body: 'This is a very long body text',
+          title: "Test",
+          body: "This is a very long body text",
         },
-        { userId: 1, id: 2, title: 'Test 2', body: 'Short' },
+        { userId: 1, id: 2, title: "Test 2", body: "Short" },
       ];
 
       const mockComments = [
         {
           postId: 1,
           id: 1,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 1',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 1",
         },
         {
           postId: 1,
           id: 2,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 2',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 2",
         },
         {
           postId: 2,
           id: 3,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 3',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 3",
         },
       ];
 
@@ -515,22 +502,22 @@ describe('PostsService', () => {
         {
           userId: 1,
           id: 1,
-          title: 'Test',
-          body: 'This is a very long ...',
+          title: "Test",
+          body: "This is a very long ...",
           commentsCount: 2,
         },
         {
           userId: 1,
           id: 2,
-          title: 'Test 2',
-          body: 'Short',
+          title: "Test 2",
+          body: "Short",
           commentsCount: 1,
         },
       ]);
     });
 
-    it('should filter posts by userId when provided', async () => {
-      const mockPosts = [{ userId: 1, id: 1, title: 'Test', body: 'Body' }];
+    it("should filter posts by userId when provided", async () => {
+      const mockPosts = [{ userId: 1, id: 1, title: "Test", body: "Body" }];
 
       const mockComments: never[] = [];
 
@@ -542,8 +529,8 @@ describe('PostsService', () => {
       expect(datasource.getPosts).toHaveBeenCalledWith(1);
     });
 
-    it('should return 0 comments count when no comments exist', async () => {
-      const mockPosts = [{ userId: 1, id: 1, title: 'Test', body: 'Body' }];
+    it("should return 0 comments count when no comments exist", async () => {
+      const mockPosts = [{ userId: 1, id: 1, title: "Test", body: "Body" }];
 
       const mockComments: never[] = [];
 
@@ -556,22 +543,22 @@ describe('PostsService', () => {
     });
   });
 
-  describe('getPostDetails', () => {
-    it('should return post details with full body and comments', async () => {
+  describe("getPostDetails", () => {
+    it("should return post details with full body and comments", async () => {
       const mockPost = {
         userId: 1,
         id: 1,
-        title: 'Test',
-        body: 'Full body text',
+        title: "Test",
+        body: "Full body text",
       };
 
       const mockComments = [
         {
           postId: 1,
           id: 1,
-          name: 'Test User',
-          email: 'test@test.com',
-          body: 'Comment text',
+          name: "Test User",
+          email: "test@test.com",
+          body: "Comment text",
         },
       ];
 
@@ -583,8 +570,8 @@ describe('PostsService', () => {
       expect(result).toEqual({
         userId: 1,
         id: 1,
-        title: 'Test',
-        body: 'Full body text',
+        title: "Test",
+        body: "Full body text",
         comments: mockComments,
       });
     });
@@ -593,14 +580,15 @@ describe('PostsService', () => {
 ```
 
 **Frontend Component Test Example**:
+
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { PostSummary } from '../../shared/api/backendApi';
-import { PostCard } from './PostCard';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { PostSummary } from "../../shared/api/backendApi";
+import { PostCard } from "./PostCard";
 
 // Mock Next.js Link component
-vi.mock('next/link', () => {
+vi.mock("next/link", () => {
   return {
     default: function MockLink({
       children,
@@ -620,33 +608,34 @@ vi.mock('next/link', () => {
   };
 });
 
-describe('PostCard', () => {
+describe("PostCard", () => {
   const mockPost: PostSummary = {
     userId: 1,
     id: 1,
-    title: 'Test Post',
-    body: 'Test body',
+    title: "Test Post",
+    body: "Test body",
     commentsCount: 5,
   };
 
-  it('should render post card with correct props', () => {
+  it("should render post card with correct props", () => {
     render(<PostCard post={mockPost} />);
 
-    expect(screen.getByText('Test Post')).toBeInTheDocument();
-    expect(screen.getByText('Test body')).toBeInTheDocument();
-    expect(screen.getByText('Comments: 5')).toBeInTheDocument();
+    expect(screen.getByText("Test Post")).toBeInTheDocument();
+    expect(screen.getByText("Test body")).toBeInTheDocument();
+    expect(screen.getByText("Comments: 5")).toBeInTheDocument();
   });
 
-  it('should have correct link href', () => {
+  it("should have correct link href", () => {
     render(<PostCard post={mockPost} />);
 
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/1');
+    const link = screen.getByRole("link");
+    expect(link).toHaveAttribute("href", "/1");
   });
 });
 ```
 
 **Key testing principles:**
+
 - Mock ALL external dependencies
 - Write mocks in single line format
 - Use descriptive test names
@@ -655,6 +644,7 @@ describe('PostCard', () => {
 - Use `beforeEach` for test setup
 
 **Test commands**:
+
 ```bash
 # Run unit tests for specific service
 cd services/backend && pnpm run unit --verbose
@@ -664,6 +654,7 @@ cd services/frontend && pnpm run unit --verbose
 ## Import Organization
 
 **Import grouping and ordering**:
+
 1. **External libraries** (React, NestJS, testing libraries)
 2. **Internal shared modules** (from shared/)
 3. **Relative imports** (parent/child directories)
@@ -672,28 +663,28 @@ cd services/frontend && pnpm run unit --verbose
 **Examples**:
 
 Backend service:
+
 ```ts
-import { Injectable } from '@nestjs/common';
-import {
-  Comment,
-  JsonplaceholderDatasource,
-} from '../../shared/api/jsonplaceholderDatasource';
-import { PostsService } from './Posts.service';
+import { Injectable } from "@nestjs/common";
+import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostsService } from "./Posts.service";
 ```
 
 Frontend component:
+
 ```tsx
-import Link from 'next/link';
-import { PostSummary } from '../../shared/api/backendApi';
-import styles from './PostCard.module.css';
+import Link from "next/link";
+import { PostSummary } from "../../shared/api/backendApi";
+import styles from "./PostCard.module.css";
 ```
 
 Test file:
+
 ```ts
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { PostSummary } from '../../shared/api/backendApi';
-import { PostCard } from './PostCard';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { PostSummary } from "../../shared/api/backendApi";
+import { PostCard } from "./PostCard";
 ```
 
 ## User Rules
@@ -709,6 +700,7 @@ These are specific rules set by the user that must be followed:
 ## Scripts and Commands
 
 **Root level commands** (`package.json`):
+
 ```json
 {
   "scripts": {
@@ -722,11 +714,13 @@ These are specific rules set by the user that must be followed:
 ```
 
 **Package management**:
+
 - Uses `pnpm` as package manager
 - Node.js version 22 required
 - pnpm version 9 required
 
 **Available commands**:
+
 ```bash
 pnpm lint              # Run Biome linting
 pnpm format            # Run Biome formatting (auto-fix)
@@ -738,6 +732,7 @@ pnpm generate          # Run all generators
 ## Pre-commit Hooks
 
 The project uses pre-commit hooks to ensure code quality:
+
 - Biome linting checks
 - Code formatting validation
 - TypeScript compilation checks

@@ -1,18 +1,18 @@
-name: 'Next Application Security Check'
-description: 'Run security scan for Next.js application using njsscan'
+name: "Next Application Security Check"
+description: "Run security scan for Next.js application using njsscan"
 
 inputs:
   service-name:
-    description: 'Service name'
+    description: "Service name"
     required: true
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: "3.9"
     - name: Install njsscan
       run: |
         pip install --upgrade pip

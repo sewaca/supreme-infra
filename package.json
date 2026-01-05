@@ -8,24 +8,27 @@
   },
   "scripts": {
     "lint": "biome check",
-    "format": "biome format --fix",
+    "format": "pnpm run format:biome && pnpm run format:prettier",
+    "format:biome": "biome format --fix",
+    "format:prettier": "prettier --write \"**/*.{md,yaml,yml}\" --ignore-unknown",
     "generate:router": "tsx infra/generate/generate-router/index.ts",
     "generate:overrides": "tsx infra/generate-overrides/index.ts",
     "generate": "tsx infra/generate/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
+    "@types/handlebars": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
-    "@types/handlebars": "^4.1.0",
-    "handlebars": "^4.7.8",
+    "handlebars": "catalog:",
     "nestjs-security-scan": "catalog:",
+    "prettier": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
-    "yaml": "^2.6.1"
+    "yaml": "catalog:"
   },
   "author": "sewaca",
   "license": "ISC"
