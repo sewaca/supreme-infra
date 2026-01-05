@@ -17,7 +17,7 @@ const resource = new Resource({ [ATTR_SERVICE_NAME]: 'backend' });
 // Configure logs export to Loki via OTLP
 const lokiEndpoint =
   process.env.LOKI_ENDPOINT ||
-  'http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs';
+  'http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs';
 
 const prometheusExporter = new PrometheusExporter({
   port: 9464,
