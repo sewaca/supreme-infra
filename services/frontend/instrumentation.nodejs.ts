@@ -99,7 +99,7 @@ export const patchConsle = (
 };
 
 const logger = loggerProvider.getLogger('console-interceptor');
-patchConsle(logger.emit);
+patchConsle((logRecord: LogRecord) => logger.emit(logRecord));
 
 const nextInstrumentationConfig: InstrumentationConfigMap = {
   '@opentelemetry/instrumentation-fs': {

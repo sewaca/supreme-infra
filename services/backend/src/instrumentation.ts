@@ -98,7 +98,7 @@ export const patchConsle = (
 };
 
 const logger = loggerProvider.getLogger('console-interceptor');
-patchConsle(logger.emit);
+patchConsle((logRecord: LogRecord) => logger.emit(logRecord));
 
 type Request = { method?: string; routeOptions?: { url?: string } };
 
