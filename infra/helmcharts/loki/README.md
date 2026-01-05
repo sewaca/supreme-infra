@@ -94,8 +94,40 @@ kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring
 # Port-forward to Loki
 kubectl port-forward -n monitoring svc/loki-gateway 3100:80
 
-# Query logs
+# Query logs from backend service
 curl -G -s "http://localhost:3100/loki/api/v1/query" \
   --data-urlencode 'query={service_name="backend"}' | jq
+
+# Query logs from frontend service
+curl -G -s "http://localhost:3100/loki/api/v1/query" \
+  --data-urlencode 'query={service_name="frontend"}' | jq
+
+# List all available labels
+curl -s "http://localhost:3100/loki/api/v1/labels" | jq
+```
+
+### Verify OTLP endpoint
+
+```bash
+# Check if Loki is accepting OTLP logs
+kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
+  curl -v -X POST http://loki-gateway/otlp/v1/logs \
+  -H "Content-Type: application/json" \
+  -d '{"resourceLogs":[]}'
+```
+
+### Remove Loki Canary (if it appears)
+
+If you see `loki-canary` pods after deployment, remove them manually:
+
+```bash
+# Delete canary deployment
+kubectl delete deployment loki-canary -n monitoring --ignore-not-found
+
+# Delete canary service
+kubectl delete service loki-canary -n monitoring --ignore-not-found
+
+# Delete canary daemonset (if exists)
+kubectl delete daemonset loki-canary -n monitoring --ignore-not-found
 ```
 
