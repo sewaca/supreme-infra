@@ -18,7 +18,7 @@ import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 const resource = new Resource({ [ATTR_SERVICE_NAME]: 'frontend' });
 const lokiEndpoint =
   process.env.LOKI_ENDPOINT ||
-  'http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs';
+  'http://loki.monitoring.svc.cluster.local/otlp/v1/logs';
 
 const prometheusExporter = new PrometheusExporter({
   port: 9464,
