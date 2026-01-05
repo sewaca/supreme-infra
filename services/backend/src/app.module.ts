@@ -9,11 +9,3 @@ import { RecipesModule } from './features/Recipes/Recipes.module';
   providers: [],
 })
 export class AppModule {}
-
-// TODO: @remove
-setInterval(() => {
-  console.log('Hello, world!');
-}, 10000);
-setInterval(() => {
-  console.error('error, world!');
-}, 20000);
