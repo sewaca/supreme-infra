@@ -28,9 +28,9 @@ helm install loki . -n monitoring --create-namespace
 - **31-day retention**: Logs are kept for 31 days by default
 - **OTLP support**: Accepts logs via OpenTelemetry Protocol
 - **Log volume enabled**: Grafana can show log volume graphs
+- **Gateway enabled**: Nginx gateway for unified access (anti-affinity disabled for single-node)
 - **No caching**: Memcached and chunk caching disabled for simplicity
 - **No canary**: Loki canary monitoring disabled
-- **No gateway**: Direct access to Loki (gateway disabled for single-node clusters)
 
 ### Storage
 
@@ -47,10 +47,11 @@ Default resource configuration:
 ### Accessing Loki
 
 Loki is accessible within the cluster at:
+- Gateway (recommended): `http://loki-gateway.monitoring.svc.cluster.local`
 - Direct (SingleBinary): `http://loki.monitoring.svc.cluster.local:3100`
 
 For OTLP logs, use:
-- Endpoint: `http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs`
+- Endpoint: `http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs`
 
 ## Integration with Grafana
 
@@ -85,6 +86,11 @@ kubectl logs -n monitoring -l app.kubernetes.io/name=loki
 ### Test Loki endpoint
 
 ```bash
+# Test via gateway
+kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
+  curl http://loki-gateway/ready
+
+# Test direct access
 kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
   curl http://loki:3100/ready
 ```
@@ -92,8 +98,8 @@ kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring
 ### Check logs ingestion
 
 ```bash
-# Port-forward to Loki
-kubectl port-forward -n monitoring svc/loki 3100:3100
+# Port-forward to Loki gateway
+kubectl port-forward -n monitoring svc/loki-gateway 3100:80
 
 # Query logs from backend service
 curl -G -s "http://localhost:3100/loki/api/v1/query" \
@@ -110,9 +116,9 @@ curl -s "http://localhost:3100/loki/api/v1/labels" | jq
 ### Verify OTLP endpoint
 
 ```bash
-# Check if Loki is accepting OTLP logs
+# Check if Loki is accepting OTLP logs via gateway
 kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
-  curl -v -X POST http://loki:3100/otlp/v1/logs \
+  curl -v -X POST http://loki-gateway/otlp/v1/logs \
   -H "Content-Type: application/json" \
   -d '{"resourceLogs":[]}'
 ```

@@ -18,7 +18,7 @@ metrics:
 env:
   PORT: "4000"
   NODE_ENV: development
-  LOKI_ENDPOINT: http://loki.monitoring.svc.cluster.local/otlp/v1/logs
+  LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
 resources:
   limits:
     cpu: 500m

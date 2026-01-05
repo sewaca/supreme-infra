@@ -74,8 +74,23 @@ loki:
   
   # Service configuration
   gateway:
-    enabled: false
-    replicas: 0
+    enabled: true
+    replicas: 1
+    
+    # Disable anti-affinity for single-node clusters
+    affinity: {}
+    
+    service:
+      type: ClusterIP
+      port: 80
+    
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
   
   # Monitoring
   monitoring:

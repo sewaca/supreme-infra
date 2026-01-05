@@ -21,7 +21,7 @@ metrics:
 env:
   PORT: "3000"
   NODE_ENV: "production"
-  LOKI_ENDPOINT: "http://loki.monitoring.svc.cluster.local/otlp/v1/logs"
+  LOKI_ENDPOINT: "http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs"
   # BACKEND_SERVICE_NAMESPACE: ""  # Опционально: namespace для backend сервиса. Если не указан, используется тот же namespace, что и у frontend
 
 resources:
