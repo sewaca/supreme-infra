@@ -82,27 +82,8 @@ loki:
   
   # Service configuration
   gateway:
-    enabled: true
-    replicas: 1
-    
-    service:
-      type: ClusterIP
-      port: 80
-    
-    # Enable OTLP path in nginx config
-    nginxConfig:
-      httpSnippet: |
-        client_max_body_size 10M;
-      serverSnippet: |
-        client_max_body_size 10M;
-      
-    resources:
-      limits:
-        cpu: 200m
-        memory: 256Mi
-      requests:
-        cpu: 50m
-        memory: 64Mi
+    enabled: false
+    replicas: 0
   
   # Monitoring
   monitoring:

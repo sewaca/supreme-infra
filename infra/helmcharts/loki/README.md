@@ -29,6 +29,7 @@ helm install loki . -n monitoring --create-namespace
 - **OTLP support**: Accepts logs via OpenTelemetry Protocol
 - **No caching**: Memcached and chunk caching disabled for simplicity
 - **No canary**: Loki canary monitoring disabled
+- **No gateway**: Direct access to Loki (gateway disabled for single-node clusters)
 
 ### Storage
 
@@ -45,11 +46,10 @@ Default resource configuration:
 ### Accessing Loki
 
 Loki is accessible within the cluster at:
-- Gateway: `http://loki-gateway.monitoring.svc.cluster.local`
 - Direct (SingleBinary): `http://loki.monitoring.svc.cluster.local:3100`
 
 For OTLP logs, use:
-- Endpoint: `http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs`
+- Endpoint: `http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs`
 
 ## Integration with Grafana
 
@@ -85,14 +85,14 @@ kubectl logs -n monitoring -l app.kubernetes.io/name=loki
 
 ```bash
 kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
-  curl http://loki-gateway/ready
+  curl http://loki:3100/ready
 ```
 
 ### Check logs ingestion
 
 ```bash
 # Port-forward to Loki
-kubectl port-forward -n monitoring svc/loki-gateway 3100:80
+kubectl port-forward -n monitoring svc/loki 3100:3100
 
 # Query logs from backend service
 curl -G -s "http://localhost:3100/loki/api/v1/query" \
@@ -111,7 +111,7 @@ curl -s "http://localhost:3100/loki/api/v1/labels" | jq
 ```bash
 # Check if Loki is accepting OTLP logs
 kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
-  curl -v -X POST http://loki-gateway/otlp/v1/logs \
+  curl -v -X POST http://loki:3100/otlp/v1/logs \
   -H "Content-Type: application/json" \
   -d '{"resourceLogs":[]}'
 ```
