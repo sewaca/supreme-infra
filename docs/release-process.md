@@ -314,15 +314,15 @@ infra/helmcharts/
 
 ```yaml
 image:
-  repository: 'sewaca/supreme'
-  tag: 'production-backend-v1.2.3'
+  repository: "sewaca/supreme"
+  tag: "production-backend-v1.2.3"
 
 canary:
   enabled: false
   replicas: 1
   image:
-    repository: ''
-    tag: ''
+    repository: ""
+    tag: ""
 
 autoscaling:
   enabled: true

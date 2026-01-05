@@ -7,11 +7,11 @@
 Все вызовы `console.*` автоматически перехватываются и отправляются в Loki:
 
 ```typescript
-console.log('Info message'); // → Loki (severity: INFO)
-console.error('Error occurred'); // → Loki (severity: ERROR)
-console.warn('Warning message'); // → Loki (severity: WARN)
-console.info('Info message'); // → Loki (severity: INFO)
-console.debug('Debug message'); // → Loki (severity: DEBUG)
+console.log("Info message"); // → Loki (severity: INFO)
+console.error("Error occurred"); // → Loki (severity: ERROR)
+console.warn("Warning message"); // → Loki (severity: WARN)
+console.info("Info message"); // → Loki (severity: INFO)
+console.debug("Debug message"); // → Loki (severity: DEBUG)
 ```
 
 **Важно**: Логи также выводятся в stdout/stderr (оригинальное поведение сохранено).
@@ -77,15 +77,15 @@ sum(count_over_time({service_name="backend"} |= "ERROR" [1h]))
 
 ```typescript
 // Просто используй console.log как обычно
-console.log('User logged in', { userId: 123 });
-console.error('Failed to connect to database', error);
+console.log("User logged in", { userId: 123 });
+console.error("Failed to connect to database", error);
 ```
 
 ### Логирование объектов
 
 ```typescript
-const user = { id: 123, name: 'John' };
-console.log('User data:', user);
+const user = { id: 123, name: "John" };
+console.log("User data:", user);
 // → В Loki: "User data: {"id":123,"name":"John"}"
 ```
 
@@ -95,7 +95,7 @@ console.log('User data:', user);
 try {
   // some code
 } catch (error) {
-  console.error('Operation failed:', error);
+  console.error("Operation failed:", error);
   // Ошибка будет в Loki с severity=ERROR
 }
 ```
@@ -147,8 +147,8 @@ kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring
 
 ```typescript
 // Создай wrapper для console.debug
-if (process.env.NODE_ENV !== 'production') {
-  console.debug('Debug info');
+if (process.env.NODE_ENV !== "production") {
+  console.debug("Debug info");
 }
 ```
 
@@ -160,8 +160,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 ```typescript
 // main.ts
-import './instrumentation'; // ПЕРВАЯ строка!
-import { NestFactory } from '@nestjs/core';
+import "./instrumentation"; // ПЕРВАЯ строка!
+import { NestFactory } from "@nestjs/core";
 ```
 
 **Frontend (Next.js):**

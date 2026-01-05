@@ -197,19 +197,19 @@ export function PostCard({ post }: PostCardProps) {
 ### Контроллеры
 
 ```ts
-import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
-import { PostsService } from './Posts.service';
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from "@nestjs/common";
+import { PostsService } from "./Posts.service";
 
-@Controller('posts')
+@Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('get-summary')
-  public async getSummary(@Query('userId') userId?: string): Promise<ReturnType<PostsService['getPostsSummary']>> {
+  @Get("get-summary")
+  public async getSummary(@Query("userId") userId?: string): Promise<ReturnType<PostsService["getPostsSummary"]>> {
     const userIdNumber = userId ? Number.parseInt(userId, 10) : undefined;
 
     if (userId && Number.isNaN(userIdNumber)) {
-      throw new BadRequestException('Invalid userId parameter');
+      throw new BadRequestException("Invalid userId parameter");
     }
 
     return this.postsService.getPostsSummary(userIdNumber);
@@ -220,8 +220,8 @@ export class PostsController {
 ### Сервисы
 
 ```ts
-import { Injectable } from '@nestjs/common';
-import { Comment, JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
+import { Injectable } from "@nestjs/common";
+import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
 
 export interface PostSummary {
   userId: number;
@@ -297,7 +297,7 @@ class BackendApi {
   private readonly baseUrl: string;
 
   private constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
   }
 
   private static instance: BackendApi | null = null;
@@ -326,7 +326,7 @@ class BackendApi {
     const response = await fetch(url);
     if (!response.ok) {
       if (response.status === 404) {
-        throw new Error('Post not found');
+        throw new Error("Post not found");
       }
       throw new Error(`Failed to fetch post: ${response.statusText}`);
     }
@@ -341,7 +341,7 @@ export const backendApi = BackendApi.getInstance();
 ### Внешние API источники данных
 
 ```ts
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 export interface Comment {
   postId: number;
@@ -353,7 +353,7 @@ export interface Comment {
 
 @Injectable()
 export class JsonplaceholderDatasource {
-  private readonly baseUrl = 'https://jsonplaceholder.typicode.com';
+  private readonly baseUrl = "https://jsonplaceholder.typicode.com";
 
   public async getPosts(userId?: number): Promise<Post[]> {
     const url = userId ? `${this.baseUrl}/posts?userId=${userId}` : `${this.baseUrl}/posts`;
@@ -405,15 +405,15 @@ export class JsonplaceholderDatasource {
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
+    environment: "node",
     root: cwd(),
-    include: ['**/*.spec.{ts,tsx,mts,cts}', '!**/*.screen.spec.{ts,tsx}'],
+    include: ["**/*.spec.{ts,tsx,mts,cts}", "!**/*.screen.spec.{ts,tsx}"],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'html', 'json'],
-      reportsDirectory: 'coverage',
-      include: collectCoverageFrom.filter((pattern) => !pattern.startsWith('!')),
-      exclude: collectCoverageFrom.filter((pattern) => pattern.startsWith('!')).map((pattern) => pattern.slice(1)),
+      provider: "v8",
+      reporter: ["text", "lcov", "html", "json"],
+      reportsDirectory: "coverage",
+      include: collectCoverageFrom.filter((pattern) => !pattern.startsWith("!")),
+      exclude: collectCoverageFrom.filter((pattern) => pattern.startsWith("!")).map((pattern) => pattern.slice(1)),
     },
   },
 });
@@ -422,12 +422,12 @@ export default defineConfig({
 **Пример теста Backend сервиса**:
 
 ```ts
-import { Test } from '@nestjs/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
-import { PostsService } from './Posts.service';
+import { Test } from "@nestjs/testing";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostsService } from "./Posts.service";
 
-describe('PostsService', () => {
+describe("PostsService", () => {
   let service: PostsService;
   let datasource: {
     getPosts: ReturnType<typeof vi.fn>;
@@ -457,39 +457,39 @@ describe('PostsService', () => {
     service = module.get<PostsService>(PostsService);
   });
 
-  describe('getPostsSummary', () => {
-    it('should return posts summary with truncated body and comments count', async () => {
+  describe("getPostsSummary", () => {
+    it("should return posts summary with truncated body and comments count", async () => {
       const mockPosts = [
         {
           userId: 1,
           id: 1,
-          title: 'Test',
-          body: 'This is a very long body text',
+          title: "Test",
+          body: "This is a very long body text",
         },
-        { userId: 1, id: 2, title: 'Test 2', body: 'Short' },
+        { userId: 1, id: 2, title: "Test 2", body: "Short" },
       ];
 
       const mockComments = [
         {
           postId: 1,
           id: 1,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 1',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 1",
         },
         {
           postId: 1,
           id: 2,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 2',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 2",
         },
         {
           postId: 2,
           id: 3,
-          name: 'Test',
-          email: 'test@test.com',
-          body: 'Comment 3',
+          name: "Test",
+          email: "test@test.com",
+          body: "Comment 3",
         },
       ];
 
@@ -502,15 +502,15 @@ describe('PostsService', () => {
         {
           userId: 1,
           id: 1,
-          title: 'Test',
-          body: 'This is a very long ...',
+          title: "Test",
+          body: "This is a very long ...",
           commentsCount: 2,
         },
         {
           userId: 1,
           id: 2,
-          title: 'Test 2',
-          body: 'Short',
+          title: "Test 2",
+          body: "Short",
           commentsCount: 1,
         },
       ]);
@@ -522,13 +522,13 @@ describe('PostsService', () => {
 **Пример теста Frontend компонента**:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { PostSummary } from '../../shared/api/backendApi';
-import { PostCard } from './PostCard';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { PostSummary } from "../../shared/api/backendApi";
+import { PostCard } from "./PostCard";
 
 // Mock Next.js Link component
-vi.mock('next/link', () => {
+vi.mock("next/link", () => {
   return {
     default: function MockLink({
       children,
@@ -548,28 +548,28 @@ vi.mock('next/link', () => {
   };
 });
 
-describe('PostCard', () => {
+describe("PostCard", () => {
   const mockPost: PostSummary = {
     userId: 1,
     id: 1,
-    title: 'Test Post',
-    body: 'Test body',
+    title: "Test Post",
+    body: "Test body",
     commentsCount: 5,
   };
 
-  it('should render post card with correct props', () => {
+  it("should render post card with correct props", () => {
     render(<PostCard post={mockPost} />);
 
-    expect(screen.getByText('Test Post')).toBeInTheDocument();
-    expect(screen.getByText('Test body')).toBeInTheDocument();
-    expect(screen.getByText('Comments: 5')).toBeInTheDocument();
+    expect(screen.getByText("Test Post")).toBeInTheDocument();
+    expect(screen.getByText("Test body")).toBeInTheDocument();
+    expect(screen.getByText("Comments: 5")).toBeInTheDocument();
   });
 
-  it('should have correct link href', () => {
+  it("should have correct link href", () => {
     render(<PostCard post={mockPost} />);
 
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/1');
+    const link = screen.getByRole("link");
+    expect(link).toHaveAttribute("href", "/1");
   });
 });
 ```
@@ -605,26 +605,26 @@ cd services/frontend && pnpm run unit --verbose
 Backend сервис:
 
 ```ts
-import { Injectable } from '@nestjs/common';
-import { Comment, JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
-import { PostsService } from './Posts.service';
+import { Injectable } from "@nestjs/common";
+import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostsService } from "./Posts.service";
 ```
 
 Frontend компонент:
 
 ```tsx
-import Link from 'next/link';
-import { PostSummary } from '../../shared/api/backendApi';
-import styles from './PostCard.module.css';
+import Link from "next/link";
+import { PostSummary } from "../../shared/api/backendApi";
+import styles from "./PostCard.module.css";
 ```
 
 Файл теста:
 
 ```ts
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { PostSummary } from '../../shared/api/backendApi';
-import { PostCard } from './PostCard';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { PostSummary } from "../../shared/api/backendApi";
+import { PostCard } from "./PostCard";
 ```
 
 ## Скрипты и команды

@@ -38,6 +38,8 @@ async function main() {
   console.log('═══════════════════════════════════════════════════════════');
   console.log('✅ All generation tasks completed successfully!');
   console.log('═══════════════════════════════════════════════════════════');
+
+  process.exit(0);
 }
 
 main().catch((error) => {

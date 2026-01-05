@@ -1,8 +1,8 @@
-name: 'Install GitHub CLI'
-description: 'Install GitHub CLI on Ubuntu runner'
+name: "Install GitHub CLI"
+description: "Install GitHub CLI on Ubuntu runner"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install GitHub CLI
       shell: bash

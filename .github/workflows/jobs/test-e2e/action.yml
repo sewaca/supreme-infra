@@ -1,13 +1,13 @@
 name: Test E2E
-description: 'Run e2e tests for provided services'
+description: "Run e2e tests for provided services"
 
 inputs:
   services:
-    description: 'Services name to test'
+    description: "Services name to test"
     required: false
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install netstat
       run: sudo apt-get update && sudo apt-get install -y net-tools

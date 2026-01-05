@@ -7,7 +7,7 @@ victoria-metrics-single:
     persistentVolume:
       enabled: true
       size: 30Gi
-      storageClass: ''
+      storageClass: ""
 
     # Resources
     resources:
@@ -28,7 +28,7 @@ victoria-metrics-single:
 
         scrape_configs:
           # Kubernetes pods (backend, frontend, and any other services)
-          - job_name: 'kubernetes-pods'
+          - job_name: "kubernetes-pods"
             kubernetes_sd_configs:
               - role: pod
                 namespaces:

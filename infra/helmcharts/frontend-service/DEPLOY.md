@@ -35,8 +35,8 @@ Create a configuration file for your service at `services/<service-name>/service
 image:
   repository: your-registry/frontend
 
-nameOverride: 'frontend'
-fullnameOverride: 'frontend'
+nameOverride: "frontend"
+fullnameOverride: "frontend"
 
 service:
   type: ClusterIP
@@ -44,9 +44,9 @@ service:
   targetPort: 3000
 
 env:
-  PORT: '3000'
-  NODE_ENV: 'production'
-  NEXT_PUBLIC_API_URL: 'https://api.example.com'
+  PORT: "3000"
+  NODE_ENV: "production"
+  NEXT_PUBLIC_API_URL: "https://api.example.com"
 
 replicaCount: 2
 
@@ -141,7 +141,7 @@ on:
     branches:
       - main
     paths:
-      - 'services/frontend/**'
+      - "services/frontend/**"
 
 jobs:
   deploy:

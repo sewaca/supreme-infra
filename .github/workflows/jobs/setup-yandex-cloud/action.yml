@@ -1,22 +1,22 @@
-name: 'Setup Yandex Cloud'
-description: 'Install and configure Yandex Cloud CLI with Kubernetes access'
+name: "Setup Yandex Cloud"
+description: "Install and configure Yandex Cloud CLI with Kubernetes access"
 
 inputs:
   yc-sa-json-credentials:
-    description: 'Yandex Cloud service account JSON credentials'
+    description: "Yandex Cloud service account JSON credentials"
     required: true
   yc-cloud-id:
-    description: 'Yandex Cloud ID'
+    description: "Yandex Cloud ID"
     required: true
   yc-folder-id:
-    description: 'Yandex Cloud folder ID'
+    description: "Yandex Cloud folder ID"
     required: true
   yc-k8s-cluster-id:
-    description: 'Kubernetes cluster ID'
+    description: "Kubernetes cluster ID"
     required: true
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install Yandex Cloud CLI
       shell: bash

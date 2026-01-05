@@ -18,16 +18,16 @@ Supreme Infrastructure Generator - это всеобъемлющий инстр�
 Главный генератор (`infra/generate/index.ts`) оркестрирует все суб-генераторы в правильном порядке:
 
 ```typescript
-console.log('📋 Step 1/4: Generating router configurations...');
+console.log("📋 Step 1/4: Generating router configurations...");
 generateRouterConfigs();
 
-console.log('📋 Step 2/4: Updating security checks...');
+console.log("📋 Step 2/4: Updating security checks...");
 updateSecurityChecks();
 
-console.log('📋 Step 3/4: Updating CD workflow...');
+console.log("📋 Step 3/4: Updating CD workflow...");
 updateCdWorkflow();
 
-console.log('📋 Step 4/4: Generating values files...');
+console.log("📋 Step 4/4: Generating values files...");
 generateValuesForAllServices();
 ```
 
@@ -199,15 +199,15 @@ services:
 ```yaml
 # Service-specific Helm overrides
 image:
-  tag: 'latest'
+  tag: "latest"
 
 resources:
   requests:
-    cpu: '100m'
-    memory: '128Mi'
+    cpu: "100m"
+    memory: "128Mi"
   limits:
-    cpu: '500m'
-    memory: '512Mi'
+    cpu: "500m"
+    memory: "512Mi"
 
 autoscaling:
   enabled: true
@@ -261,23 +261,23 @@ services:
 ```yaml
 # services/backend/service.yaml
 image:
-  tag: 'latest'
+  tag: "latest"
 
 service:
   port: 4000
   targetPort: 4000
 
 env:
-  NODE_ENV: 'production'
-  PORT: '4000'
+  NODE_ENV: "production"
+  PORT: "4000"
 
 resources:
   requests:
-    cpu: '250m'
-    memory: '256Mi'
+    cpu: "250m"
+    memory: "256Mi"
   limits:
-    cpu: '1000m'
-    memory: '1Gi'
+    cpu: "1000m"
+    memory: "1Gi"
 
 autoscaling:
   enabled: true

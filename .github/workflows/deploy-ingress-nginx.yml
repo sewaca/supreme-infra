@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
 
 env:
-  HELM_VERSION: 'v3.16.3'
-  INGRESS_NAMESPACE: 'ingress-nginx'
-  INGRESS_RELEASE_NAME: 'ingress-nginx'
-  SERVICE_NAME: 'ingress-nginx'
+  HELM_VERSION: "v3.16.3"
+  INGRESS_NAMESPACE: "ingress-nginx"
+  INGRESS_RELEASE_NAME: "ingress-nginx"
+  SERVICE_NAME: "ingress-nginx"
 
 jobs:
   get-latest-version:

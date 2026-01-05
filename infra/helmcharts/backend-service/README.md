@@ -56,8 +56,8 @@ helm upgrade --install backend2 ./infra/helmcharts/backend-service \
 image:
   repository: backend # имя образа
 
-nameOverride: 'backend' # имя для ресурсов Kubernetes
-fullnameOverride: 'backend' # полное имя (если нужно переопределить)
+nameOverride: "backend" # имя для ресурсов Kubernetes
+fullnameOverride: "backend" # полное имя (если нужно переопределить)
 
 service:
   type: ClusterIP
@@ -65,8 +65,8 @@ service:
   targetPort: 4000
 
 env:
-  PORT: '4000'
-  NODE_ENV: 'production'
+  PORT: "4000"
+  NODE_ENV: "production"
 
 replicaCount: 2
 

@@ -3,7 +3,7 @@ name: loki
 description: Grafana Loki for log aggregation
 type: application
 version: 1.0.0
-appVersion: '3.0.0'
+appVersion: "3.0.0"
 
 dependencies:
   - name: loki

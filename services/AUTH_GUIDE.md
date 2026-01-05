@@ -143,9 +143,9 @@ export default async function ProtectedPage() {
 #### Client-side
 
 ```typescript
-'use client';
+"use client";
 
-import { setAuthToken, removeAuthToken, getAuthTokenClient } from '@/shared/lib/auth';
+import { setAuthToken, removeAuthToken, getAuthTokenClient } from "@/shared/lib/auth";
 
 // Сохранить токен после логина
 setAuthToken(response.accessToken);
@@ -160,19 +160,19 @@ const token = getAuthTokenClient();
 ### API клиент
 
 ```typescript
-import { login, register } from '@/shared/api/authApi';
+import { login, register } from "@/shared/api/authApi";
 
 // Регистрация
 const response = await register({
-  email: 'user@example.com',
-  password: 'password123',
-  name: 'John Doe',
+  email: "user@example.com",
+  password: "password123",
+  name: "John Doe",
 });
 
 // Вход
 const response = await login({
-  email: 'user@example.com',
-  password: 'password123',
+  email: "user@example.com",
+  password: "password123",
 });
 
 // Сохранить токен

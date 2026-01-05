@@ -145,8 +145,8 @@ pnpm run generate:overrides
 image:
   repository: frontend
 
-nameOverride: 'frontend'
-fullnameOverride: 'frontend'
+nameOverride: "frontend"
+fullnameOverride: "frontend"
 
 autoscaling:
   enabled: true
@@ -176,12 +176,12 @@ overrides:
 image:
   repository: frontend
 
-nameOverride: 'frontend'
-fullnameOverride: 'frontend'
+nameOverride: "frontend"
+fullnameOverride: "frontend"
 
 env:
-  PORT: '3000'
-  NODE_ENV: 'production'
+  PORT: "3000"
+  NODE_ENV: "production"
 
 autoscaling:
   enabled: true
@@ -205,11 +205,11 @@ replicaCount: 3
 
 image:
   repository: frontend
-  tag: ''
+  tag: ""
   pullPolicy: IfNotPresent
 
-nameOverride: 'frontend'
-fullnameOverride: 'frontend'
+nameOverride: "frontend"
+fullnameOverride: "frontend"
 
 service:
   type: ClusterIP
@@ -217,8 +217,8 @@ service:
   targetPort: 3000
 
 env:
-  PORT: '3000'
-  NODE_ENV: 'production'
+  PORT: "3000"
+  NODE_ENV: "production"
 
 resources:
   limits:

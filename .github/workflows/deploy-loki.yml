@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
 
 env:
-  HELM_VERSION: 'v3.16.3'
-  LOKI_NAMESPACE: 'monitoring'
-  LOKI_RELEASE_NAME: 'loki'
-  SERVICE_NAME: 'loki'
+  HELM_VERSION: "v3.16.3"
+  LOKI_NAMESPACE: "monitoring"
+  LOKI_RELEASE_NAME: "loki"
+  SERVICE_NAME: "loki"
 
 jobs:
   get-latest-version:

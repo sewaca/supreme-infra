@@ -150,8 +150,8 @@ canary:
   enabled: false
   replicas: 1
   image:
-    repository: ''
-    tag: ''
+    repository: ""
+    tag: ""
 
 autoscaling:
   enabled: true
@@ -289,11 +289,11 @@ export function PostCard({ post }: PostCardProps) {
 **Controller structure**:
 
 ```ts
-@Controller('posts')
+@Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('summary')
+  @Get("summary")
   public async getSummary(): Promise<PostSummary[]> {
     return this.postsService.getPostsSummary();
   }
@@ -347,17 +347,17 @@ class BackendApi {
 - Follow AAA pattern (Arrange, Act, Assert)
 
 ```ts
-describe('PostsService', () => {
-  it('should return posts summary with truncated body', async () => {
+describe("PostsService", () => {
+  it("should return posts summary with truncated body", async () => {
     // Arrange
-    const mockPosts = [{ userId: 1, id: 1, title: 'Test', body: 'Long body text' }];
+    const mockPosts = [{ userId: 1, id: 1, title: "Test", body: "Long body text" }];
     datasource.getPosts.mockResolvedValue(mockPosts);
 
     // Act
     const result = await service.getPostsSummary();
 
     // Assert
-    expect(result[0].body).toBe('Long body ...');
+    expect(result[0].body).toBe("Long body ...");
   });
 });
 ```
@@ -382,9 +382,9 @@ cd services/frontend && pnpm run unit --verbose
 4. Type imports (when needed)
 
 ```ts
-import { Injectable } from '@nestjs/common';
-import { JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
-import { PostSummary } from './types';
+import { Injectable } from "@nestjs/common";
+import { JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { PostSummary } from "./types";
 ```
 
 #### Scripts

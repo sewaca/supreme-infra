@@ -1,13 +1,13 @@
-name: 'Nest Application Security Check'
-description: 'Run security scan for NestJS application'
+name: "Nest Application Security Check"
+description: "Run security scan for NestJS application"
 
 inputs:
   service-name:
-    description: 'Service name'
+    description: "Service name"
     required: true
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install pnpm
       uses: pnpm/action-setup@v4
@@ -16,8 +16,8 @@ runs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
-        cache: 'pnpm'
+        node-version: "20"
+        cache: "pnpm"
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
       shell: bash

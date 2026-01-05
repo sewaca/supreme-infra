@@ -49,8 +49,8 @@ Example `services/frontend/service.yaml`:
 image:
   repository: frontend
 
-nameOverride: 'frontend'
-fullnameOverride: 'frontend'
+nameOverride: "frontend"
+fullnameOverride: "frontend"
 
 service:
   type: ClusterIP
@@ -58,8 +58,8 @@ service:
   targetPort: 3000
 
 env:
-  PORT: '3000'
-  NODE_ENV: 'production'
+  PORT: "3000"
+  NODE_ENV: "production"
 
 replicaCount: 2
 
@@ -169,10 +169,10 @@ You can add custom environment variables through the `env` section:
 
 ```yaml
 env:
-  PORT: '3000'
-  NODE_ENV: 'production'
-  NEXT_PUBLIC_API_URL: 'https://api.example.com'
-  CUSTOM_VAR: 'custom-value'
+  PORT: "3000"
+  NODE_ENV: "production"
+  NEXT_PUBLIC_API_URL: "https://api.example.com"
+  CUSTOM_VAR: "custom-value"
 ```
 
 ## Uninstallation

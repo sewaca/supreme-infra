@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
 
 env:
-  HELM_VERSION: 'v3.16.3'
-  GRAFANA_NAMESPACE: 'monitoring'
-  GRAFANA_RELEASE_NAME: 'grafana'
-  DASHBOARDS_CONFIGMAP_NAME: 'grafana-dashboards'
-  SERVICE_NAME: 'grafana'
+  HELM_VERSION: "v3.16.3"
+  GRAFANA_NAMESPACE: "monitoring"
+  GRAFANA_RELEASE_NAME: "grafana"
+  DASHBOARDS_CONFIGMAP_NAME: "grafana-dashboards"
+  SERVICE_NAME: "grafana"
 
 jobs:
   get-latest-version:

@@ -1,13 +1,13 @@
 replicaCount: 1
 
 image:
-  repository: ''
+  repository: ""
   # tag will be provided externally during CD deployment
-  tag: ''
+  tag: ""
   pullPolicy: IfNotPresent
 
-nameOverride: ''
-fullnameOverride: ''
+nameOverride: ""
+fullnameOverride: ""
 
 service:
   type: ClusterIP
@@ -19,9 +19,9 @@ metrics:
   port: 9464
 
 env:
-  PORT: '4000'
-  NODE_ENV: 'production'
-  LOKI_ENDPOINT: 'http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs'
+  PORT: "4000"
+  NODE_ENV: "production"
+  LOKI_ENDPOINT: "http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs"
 
 resources:
   limits:
@@ -89,5 +89,5 @@ canary:
   enabled: false
   replicas: 1
   image:
-    repository: ''
-    tag: ''
+    repository: ""
+    tag: ""
