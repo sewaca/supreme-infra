@@ -30,6 +30,11 @@ All secrets you need are:
 - YC_CLOUD_ID – Yandex Cloud ID
 - YC_FOLDER_ID – Yandex Cloud folder ID
 - YC_K8S_CLUSTER_ID – Kubernetes cluster ID in Yandex Cloud
+- JWT_SECRET – Secret key for JWT token signing and verification <br />
+  Used by backend service for authentication. Generate with: `openssl rand -base64 32` <br />
+  Format of secret is: `JWT_SECRET=your-secure-random-string`
+
+For detailed information about secrets management, see **[Secrets Management](docs/secrets-management.md)**.
 
 ### GitHub Environments
 
@@ -409,6 +414,7 @@ Madara-robot will take care about everything another
 - **[Генератор инфраструктуры](docs/infrastructure-generator.md)** - Автоматизированное управление инфраструктурой
 - **[CI/CD Pipeline](docs/ci.md)** - Настройка непрерывной интеграции и развертывания
 - **[Процесс релиза](docs/release-process.md)** - Полная документация по pipeline релиза
+- **[Управление секретами](docs/secrets-management.md)** - Как работать с секретами и переменными окружения
 
 ## Version Naming
 

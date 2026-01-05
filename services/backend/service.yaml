@@ -18,6 +18,7 @@ metrics:
 env:
   PORT: "4000"
   NODE_ENV: "production"
+  # JWT_SECRET is passed from GitHub Secrets during deployment
 
 livenessProbe:
   httpGet:

@@ -46,6 +46,15 @@ spec:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
+        {{- if .Values.secrets }}
+        {{- range $key, $value := .Values.secrets }}
+        - name: {{ $key }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "service.fullname" $ }}-secrets
+              key: {{ $key }}
+        {{- end }}
+        {{- end }}
         - name: CANARY
           value: "true"
         {{- if .Values.command }}

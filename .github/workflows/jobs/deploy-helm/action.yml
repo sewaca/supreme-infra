@@ -26,6 +26,10 @@ inputs:
     description: "Use atomic deployment"
     required: false
     default: "false"
+  jwt-secret:
+    description: "JWT secret for authentication"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -40,6 +44,7 @@ runs:
         CANARY_ENABLED="${{ inputs.canary-enabled }}"
         CANARY_REPLICAS="${{ inputs.canary-replicas }}"
         USE_ATOMIC="${{ inputs.atomic }}"
+        JWT_SECRET="${{ inputs.jwt-secret }}"
 
         # Determine Helm chart path
         if [ "$SERVICE_TYPE" = "nest" ]; then
@@ -61,6 +66,12 @@ runs:
         # Check if release exists
         RELEASE_EXISTS=$(helm list -q | grep -x "$SERVICE_NAME" || echo "")
 
+        # Build secrets arguments if JWT_SECRET is provided
+        SECRETS_ARGS=""
+        if [ -n "$JWT_SECRET" ]; then
+          SECRETS_ARGS="--set secrets.JWT_SECRET=$JWT_SECRET"
+        fi
+
         if [ "$CANARY_ENABLED" = "true" ]; then
           # CANARY mode: only deploy canary pods, don't touch stable
           echo "Deploying CANARY only (stable deployment unchanged)"
@@ -73,6 +84,7 @@ runs:
             HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
             HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
             HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
+            HELM_CMD="$HELM_CMD $SECRETS_ARGS"
           else
             # First deploy: need full values
             HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH -f $OVERRIDES_FILE"
@@ -81,6 +93,7 @@ runs:
             HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
             HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
             HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
+            HELM_CMD="$HELM_CMD $SECRETS_ARGS"
             HELM_CMD="$HELM_CMD --install"
           fi
         else
@@ -90,6 +103,7 @@ runs:
           HELM_CMD="$HELM_CMD --set image.tag=production-${SERVICE_NAME}-v${VERSION}"
           HELM_CMD="$HELM_CMD --set image.repository=$DOCKER_HUB_USERNAME/supreme"
           HELM_CMD="$HELM_CMD --set canary.enabled=false"
+          HELM_CMD="$HELM_CMD $SECRETS_ARGS"
           HELM_CMD="$HELM_CMD --install"
         fi
 

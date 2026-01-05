@@ -19,6 +19,7 @@
     "@fastify/helmet": "catalog:",
     "@nestjs/cli": "catalog:",
     "@nestjs/common": "catalog:",
+    "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
     "@nestjs/jwt": "catalog:",
     "@nestjs/passport": "catalog:",
