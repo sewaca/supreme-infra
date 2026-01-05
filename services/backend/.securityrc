@@ -1,0 +1,16 @@
+{
+  "ignore": {
+    "rules": [
+      "missing-csrf-protection",
+      "missing-validation-package",
+      "missing-helmet"
+    ],
+    "files": [],
+    "comments": {
+      "missing-csrf-protection": "CSRF protection not required for JWT-based REST API. Tokens are stored in Authorization header, not in cookies.",
+      "missing-validation-package": "Using Zod for validation instead of class-validator. All endpoints have @UsePipes(new ZodValidationPipe(schema)).",
+      "missing-helmet": "Using @fastify/helmet. Configured in main.ts with Content Security Policy."
+    }
+  }
+}
+
