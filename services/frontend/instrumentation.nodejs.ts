@@ -24,6 +24,7 @@ const nextInstrumentationConfig: InstrumentationConfigMap = {
         // @ts-ignore debug reason
         request?.url ?? 'unknown',
       );
+
       if ('url' in request && request.url) {
         // Это server request (IncomingMessage)
         const urlPath = request.url.split('?')[0];
@@ -53,6 +54,8 @@ const nextInstrumentationConfig: InstrumentationConfigMap = {
             // Игнорируем ошибки
           }
         }
+
+        span.updateName(`${clientReq.method} ${clientReq.path}`);
       }
     },
     responseHook: (span: Span, response: IncomingMessage | ServerResponse) => {
