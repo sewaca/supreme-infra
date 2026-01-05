@@ -50,6 +50,7 @@ catalog:
   next: 16.1.1
   react: 19.1.0
   react-dom: 19.1.0
+  baseline-browser-mapping: ^2.9.11
 
   # Security
   nestjs-security-scan: ^1.1.0
@@ -63,6 +64,9 @@ catalog:
   '@opentelemetry/instrumentation-http': ^0.56.0
   '@opentelemetry/resources': ^1.29.0
   '@opentelemetry/semantic-conventions': ^1.29.0
+  '@opentelemetry/sdk-logs': ^0.56.0
+  '@opentelemetry/exporter-logs-otlp-http': ^0.56.0
+  '@opentelemetry/api-logs': ^0.56.0
 
   # Backend specific
   '@nestjs/jwt': ^11.0.1

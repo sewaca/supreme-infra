@@ -36,9 +36,15 @@ catalogs:
     '@opentelemetry/api':
       specifier: ^1.9.0
       version: 1.9.0
+    '@opentelemetry/api-logs':
+      specifier: ^0.56.0
+      version: 0.56.0
     '@opentelemetry/auto-instrumentations-node':
       specifier: ^0.67.2
       version: 0.67.2
+    '@opentelemetry/exporter-logs-otlp-http':
+      specifier: ^0.56.0
+      version: 0.56.0
     '@opentelemetry/exporter-prometheus':
       specifier: ^0.56.0
       version: 0.56.0
@@ -48,6 +54,9 @@ catalogs:
     '@opentelemetry/resources':
       specifier: ^1.29.0
       version: 1.30.1
+    '@opentelemetry/sdk-logs':
+      specifier: ^0.56.0
+      version: 0.56.0
     '@opentelemetry/sdk-metrics':
       specifier: ^1.29.0
       version: 1.30.1
@@ -102,6 +111,9 @@ catalogs:
     '@vitest/ui':
       specifier: ^2.1.8
       version: 2.1.9
+    baseline-browser-mapping:
+      specifier: ^2.9.11
+      version: 2.9.11
     bcryptjs:
       specifier: ^3.0.3
       version: 3.0.3
@@ -289,10 +301,22 @@ importers:
       '@opentelemetry/api':
         specifier: 'catalog:'
         version: 1.9.0
+      '@opentelemetry/api-logs':
+        specifier: 'catalog:'
+        version: 0.56.0
       '@opentelemetry/auto-instrumentations-node':
         specifier: 'catalog:'
         version: 0.67.2(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))
+      '@opentelemetry/exporter-logs-otlp-http':
+        specifier: 'catalog:'
+        version: 0.56.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-prometheus':
+        specifier: 'catalog:'
+        version: 0.56.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources':
+        specifier: 'catalog:'
+        version: 1.30.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-logs':
         specifier: 'catalog:'
         version: 0.56.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-metrics':
@@ -301,6 +325,9 @@ importers:
       '@opentelemetry/sdk-node':
         specifier: 'catalog:'
         version: 0.56.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions':
+        specifier: 'catalog:'
+        version: 1.38.0
       '@types/node':
         specifier: 'catalog:'
         version: 22.18.11
@@ -380,9 +407,15 @@ importers:
       '@opentelemetry/api':
         specifier: 'catalog:'
         version: 1.9.0
+      '@opentelemetry/api-logs':
+        specifier: 'catalog:'
+        version: 0.56.0
       '@opentelemetry/auto-instrumentations-node':
         specifier: 'catalog:'
         version: 0.67.2(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))
+      '@opentelemetry/exporter-logs-otlp-http':
+        specifier: 'catalog:'
+        version: 0.56.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-prometheus':
         specifier: 'catalog:'
         version: 0.56.0(@opentelemetry/api@1.9.0)
@@ -392,6 +425,9 @@ importers:
       '@opentelemetry/resources':
         specifier: 'catalog:'
         version: 1.30.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-logs':
+        specifier: 'catalog:'
+        version: 0.56.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-metrics':
         specifier: 'catalog:'
         version: 1.30.1(@opentelemetry/api@1.9.0)
@@ -460,7 +496,7 @@ importers:
         specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9)
       baseline-browser-mapping:
-        specifier: ^2.9.11
+        specifier: 'catalog:'
         version: 2.9.11
       identity-obj-proxy:
         specifier: 'catalog:'
@@ -2906,10 +2942,6 @@ packages:
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
-
-  baseline-browser-mapping@2.8.18:
-    resolution: {integrity: sha512-UYmTpOBwgPScZpS4A+YbapwWuBwasxvO/2IOHArSsAhL/+ZdmATBXTex3t+l2hXwLVYK382ibr/nKoY9GKe86w==}
-    hasBin: true
 
   baseline-browser-mapping@2.9.11:
     resolution: {integrity: sha512-Sg0xJUNDU1sJNGdfGWhVHX0kkZ+HWcvmVymJbj6NSgZZmW/8S9Y2HQ5euytnIgakgxN6papOAWiwDo1ctFDcoQ==}
@@ -8201,8 +8233,6 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.8.18: {}
-
   baseline-browser-mapping@2.9.11: {}
 
   bcryptjs@3.0.3: {}
@@ -8247,7 +8277,7 @@ snapshots:
 
   browserslist@4.26.3:
     dependencies:
-      baseline-browser-mapping: 2.8.18
+      baseline-browser-mapping: 2.9.11
       caniuse-lite: 1.0.30001751
       electron-to-chromium: 1.5.237
       node-releases: 2.0.25
