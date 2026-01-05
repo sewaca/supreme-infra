@@ -99,9 +99,10 @@ process.on('uncaughtException', (error: Error) => {
 // Перехватываем необработанные отклонения промисов
 process.on('unhandledRejection', (reason: unknown) => {
   console.error('Unhandled Rejection:', reason);
-  const errorMessage = reason instanceof Error 
-    ? `Unhandled Rejection: ${reason.message}\nStack: ${reason.stack}`
-    : `Unhandled Rejection: ${String(reason)}`;
+  const errorMessage =
+    reason instanceof Error
+      ? `Unhandled Rejection: ${reason.message}\nStack: ${reason.stack}`
+      : `Unhandled Rejection: ${String(reason)}`;
   logger.emit({
     severityNumber: SeverityNumber.ERROR,
     severityText: SeverityText.ERROR,

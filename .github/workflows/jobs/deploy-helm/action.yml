@@ -62,15 +62,10 @@ runs:
         echo "Chart: $CHART_PATH"
         echo "Version: $VERSION"
         echo "Canary enabled: $CANARY_ENABLED"
+        echo "Atomic: $USE_ATOMIC"
 
         # Check if release exists
         RELEASE_EXISTS=$(helm list -q | grep -x "$SERVICE_NAME" || echo "")
-
-        # Build secrets arguments if JWT_SECRET is provided
-        SECRETS_ARGS=""
-        if [ -n "$JWT_SECRET" ]; then
-          SECRETS_ARGS="--set secrets.JWT_SECRET=$JWT_SECRET"
-        fi
 
         if [ "$CANARY_ENABLED" = "true" ]; then
           # CANARY mode: only deploy canary pods, don't touch stable
@@ -78,43 +73,52 @@ runs:
           
           if [ -n "$RELEASE_EXISTS" ]; then
             # Release exists: use --reuse-values to keep stable deployment unchanged
-            HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH"
-            HELM_CMD="$HELM_CMD --reuse-values"
-            HELM_CMD="$HELM_CMD --set canary.enabled=true"
-            HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
-            HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
-            HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
-            HELM_CMD="$HELM_CMD $SECRETS_ARGS"
+            helm upgrade "$SERVICE_NAME" "$CHART_PATH" \
+              --reuse-values \
+              --set canary.enabled=true \
+              --set canary.replicas="$CANARY_REPLICAS" \
+              --set canary.image.tag="production-${SERVICE_NAME}-v${VERSION}" \
+              --set canary.image.repository="$DOCKER_HUB_USERNAME/supreme" \
+              --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --wait --timeout 5m
           else
             # First deploy: need full values
-            HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH -f $OVERRIDES_FILE"
-            HELM_CMD="$HELM_CMD --set image.repository=$DOCKER_HUB_USERNAME/supreme"
-            HELM_CMD="$HELM_CMD --set canary.enabled=true"
-            HELM_CMD="$HELM_CMD --set canary.replicas=$CANARY_REPLICAS"
-            HELM_CMD="$HELM_CMD --set canary.image.tag=production-${SERVICE_NAME}-v${VERSION}"
-            HELM_CMD="$HELM_CMD --set canary.image.repository=$DOCKER_HUB_USERNAME/supreme"
-            HELM_CMD="$HELM_CMD $SECRETS_ARGS"
-            HELM_CMD="$HELM_CMD --install"
+            helm upgrade "$SERVICE_NAME" "$CHART_PATH" \
+              -f "$OVERRIDES_FILE" \
+              --set image.repository="$DOCKER_HUB_USERNAME/supreme" \
+              --set canary.enabled=true \
+              --set canary.replicas="$CANARY_REPLICAS" \
+              --set canary.image.tag="production-${SERVICE_NAME}-v${VERSION}" \
+              --set canary.image.repository="$DOCKER_HUB_USERNAME/supreme" \
+              --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --install \
+              --wait --timeout 5m
           fi
         else
           # PRODUCTION mode: update stable deployment, disable canary
           echo "Deploying to PRODUCTION (canary disabled)"
-          HELM_CMD="helm upgrade $SERVICE_NAME $CHART_PATH -f $OVERRIDES_FILE"
-          HELM_CMD="$HELM_CMD --set image.tag=production-${SERVICE_NAME}-v${VERSION}"
-          HELM_CMD="$HELM_CMD --set image.repository=$DOCKER_HUB_USERNAME/supreme"
-          HELM_CMD="$HELM_CMD --set canary.enabled=false"
-          HELM_CMD="$HELM_CMD $SECRETS_ARGS"
-          HELM_CMD="$HELM_CMD --install"
+          
+          if [ "$USE_ATOMIC" = "true" ]; then
+            helm upgrade "$SERVICE_NAME" "$CHART_PATH" \
+              -f "$OVERRIDES_FILE" \
+              --set image.tag="production-${SERVICE_NAME}-v${VERSION}" \
+              --set image.repository="$DOCKER_HUB_USERNAME/supreme" \
+              --set canary.enabled=false \
+              --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --install \
+              --wait --timeout 5m \
+              --atomic
+          else
+            helm upgrade "$SERVICE_NAME" "$CHART_PATH" \
+              -f "$OVERRIDES_FILE" \
+              --set image.tag="production-${SERVICE_NAME}-v${VERSION}" \
+              --set image.repository="$DOCKER_HUB_USERNAME/supreme" \
+              --set canary.enabled=false \
+              --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --install \
+              --wait --timeout 5m
+          fi
         fi
 
-        HELM_CMD="$HELM_CMD --wait --timeout 5m"
-
-        if [ "$USE_ATOMIC" = "true" ]; then
-          HELM_CMD="$HELM_CMD --atomic"
-        fi
-
-        echo "Running: $HELM_CMD"
-        eval $HELM_CMD
-
-        echo "Deployment completed"
+        echo "Deployment completed successfully"
         kubectl get pods -l app.kubernetes.io/name="$SERVICE_NAME"
