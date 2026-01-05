@@ -45,15 +45,6 @@ loki:
       grpc_listen_port: 9095
       log_level: info
     
-    # Enable OTLP receiver for logs
-    distributor:
-      otlp:
-        protocols:
-          http:
-            enabled: true
-          grpc:
-            enabled: true
-    
     # Query configuration
     query_scheduler:
       max_outstanding_requests_per_tenant: 2048
