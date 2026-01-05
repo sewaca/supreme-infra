@@ -104,4 +104,3 @@ runs:
 
         echo "Deployment completed"
         kubectl get pods -l app.kubernetes.io/name="$SERVICE_NAME"
-

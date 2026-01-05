@@ -52,6 +52,7 @@
 ```
 
 **Основные правила:**
+
 - Отступы: 2 пробела
 - Одинарные кавычки для JS/TS, двойные для JSX
 - Включены рекомендуемые правила линтинга
@@ -90,6 +91,7 @@
 ```
 
 **Основные настройки:**
+
 - Строгий режим включен
 - Запрещены неиспользуемые переменные/параметры
 - Запрещены неявные возвраты или переопределения
@@ -150,12 +152,14 @@ services/
 ## Соглашения по именованию
 
 ### Файлы и директории
+
 - **Компоненты**: PascalCase (`PostCard.tsx`, `PostsController.ts`)
 - **Утилиты**: camelCase (`backendApi.ts`, `jsonplaceholderDatasource.ts`)
 - **CSS модули**: kebab-case (`PostCard.module.css`)
 - **Файлы тестов**: То же имя, что и тестируемый файл + `.spec.ts/tsx`
 
 ### Элементы кода
+
 - **Классы/Интерфейсы/Типы**: PascalCase (`PostsController`, `PostSummary`)
 - **Переменные/Функции/Методы**: camelCase (`getPostsSummary()`, `postId`)
 - **Константы**: UPPER_SNAKE_CASE (`BASE_URL`)
@@ -175,15 +179,14 @@ export function PostCard({ post }: PostCardProps) {
     <Link href={`/${post.id}`} className={styles.card}>
       <h2 className={styles.title}>{post.title}</h2>
       <p className={styles.body}>{post.body}</p>
-      <div className={styles.commentsCount}>
-        Комментарии: {post.commentsCount}
-      </div>
+      <div className={styles.commentsCount}>Комментарии: {post.commentsCount}</div>
     </Link>
   );
 }
 ```
 
 **Основные паттерны:**
+
 - Предпочитаются именованные экспорты
 - Интерфейсы пропсов определяются над компонентом
 - CSS модули для стилизации
@@ -192,15 +195,9 @@ export function PostCard({ post }: PostCardProps) {
 ## Backend (NestJS)
 
 ### Контроллеры
+
 ```ts
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
 import { PostsService } from './Posts.service';
 
 @Controller('posts')
@@ -208,9 +205,7 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get('get-summary')
-  public async getSummary(
-    @Query('userId') userId?: string,
-  ): Promise<ReturnType<PostsService['getPostsSummary']>> {
+  public async getSummary(@Query('userId') userId?: string): Promise<ReturnType<PostsService['getPostsSummary']>> {
     const userIdNumber = userId ? Number.parseInt(userId, 10) : undefined;
 
     if (userId && Number.isNaN(userIdNumber)) {
@@ -223,12 +218,10 @@ export class PostsController {
 ```
 
 ### Сервисы
+
 ```ts
 import { Injectable } from '@nestjs/common';
-import {
-  Comment,
-  JsonplaceholderDatasource,
-} from '../../shared/api/jsonplaceholderDatasource';
+import { Comment, JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
 
 export interface PostSummary {
   userId: number;
@@ -240,9 +233,7 @@ export interface PostSummary {
 
 @Injectable()
 export class PostsService {
-  constructor(
-    private readonly jsonplaceholderDatasource: JsonplaceholderDatasource,
-  ) {}
+  constructor(private readonly jsonplaceholderDatasource: JsonplaceholderDatasource) {}
 
   public async getPostsSummary(userId?: number): Promise<PostSummary[]> {
     const [posts, comments] = await Promise.all([
@@ -282,6 +273,7 @@ export class PostsService {
 ```
 
 **Основные паттерны:**
+
 - Внедрение зависимостей для сервисов
 - Явные типы возврата
 - Приватные методы для внутренней логики
@@ -291,6 +283,7 @@ export class PostsService {
 ## Паттерны API слоя
 
 ### Backend API клиент (Singleton)
+
 ```ts
 export interface PostSummary {
   userId: number;
@@ -304,8 +297,7 @@ class BackendApi {
   private readonly baseUrl: string;
 
   private constructor() {
-    this.baseUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
   }
 
   private static instance: BackendApi | null = null;
@@ -318,9 +310,7 @@ class BackendApi {
   }
 
   public async getPostsSummary(userId?: number): Promise<PostSummary[]> {
-    const url = userId
-      ? `${this.baseUrl}/posts/get-summary?userId=${userId}`
-      : `${this.baseUrl}/posts/get-summary`;
+    const url = userId ? `${this.baseUrl}/posts/get-summary?userId=${userId}` : `${this.baseUrl}/posts/get-summary`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -349,6 +339,7 @@ export const backendApi = BackendApi.getInstance();
 ```
 
 ### Внешние API источники данных
+
 ```ts
 import { Injectable } from '@nestjs/common';
 
@@ -365,9 +356,7 @@ export class JsonplaceholderDatasource {
   private readonly baseUrl = 'https://jsonplaceholder.typicode.com';
 
   public async getPosts(userId?: number): Promise<Post[]> {
-    const url = userId
-      ? `${this.baseUrl}/posts?userId=${userId}`
-      : `${this.baseUrl}/posts`;
+    const url = userId ? `${this.baseUrl}/posts?userId=${userId}` : `${this.baseUrl}/posts`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -411,6 +400,7 @@ export class JsonplaceholderDatasource {
 ### Unit тесты с Vitest
 
 **Конфигурация** (`vitest.config.global.ts`):
+
 ```ts
 export default defineConfig({
   test: {
@@ -422,18 +412,15 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov', 'html', 'json'],
       reportsDirectory: 'coverage',
-      include: collectCoverageFrom.filter(
-        (pattern) => !pattern.startsWith('!'),
-      ),
-      exclude: collectCoverageFrom
-        .filter((pattern) => pattern.startsWith('!'))
-        .map((pattern) => pattern.slice(1)),
+      include: collectCoverageFrom.filter((pattern) => !pattern.startsWith('!')),
+      exclude: collectCoverageFrom.filter((pattern) => pattern.startsWith('!')).map((pattern) => pattern.slice(1)),
     },
   },
 });
 ```
 
 **Пример теста Backend сервиса**:
+
 ```ts
 import { Test } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -533,6 +520,7 @@ describe('PostsService', () => {
 ```
 
 **Пример теста Frontend компонента**:
+
 ```tsx
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
@@ -587,6 +575,7 @@ describe('PostCard', () => {
 ```
 
 **Основные принципы тестирования:**
+
 - Мокировать ВСЕ внешние зависимости
 - Писать моки в однострочном формате
 - Использовать описательные имена тестов
@@ -595,6 +584,7 @@ describe('PostCard', () => {
 - Использовать `beforeEach` для настройки тестов
 
 **Команды для тестирования**:
+
 ```bash
 # Запуск unit тестов для конкретного сервиса
 cd services/backend && pnpm run unit --verbose
@@ -604,6 +594,7 @@ cd services/frontend && pnpm run unit --verbose
 ## Организация импортов
 
 **Группировка и порядок импортов**:
+
 1. **Внешние библиотеки** (React, NestJS, библиотеки тестирования)
 2. **Внутренние общие модули** (из shared/)
 3. **Относительные импорты** (родительские/дочерние директории)
@@ -612,16 +603,15 @@ cd services/frontend && pnpm run unit --verbose
 **Примеры**:
 
 Backend сервис:
+
 ```ts
 import { Injectable } from '@nestjs/common';
-import {
-  Comment,
-  JsonplaceholderDatasource,
-} from '../../shared/api/jsonplaceholderDatasource';
+import { Comment, JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
 import { PostsService } from './Posts.service';
 ```
 
 Frontend компонент:
+
 ```tsx
 import Link from 'next/link';
 import { PostSummary } from '../../shared/api/backendApi';
@@ -629,6 +619,7 @@ import styles from './PostCard.module.css';
 ```
 
 Файл теста:
+
 ```ts
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
@@ -639,6 +630,7 @@ import { PostCard } from './PostCard';
 ## Скрипты и команды
 
 **Команды корневого уровня** (`package.json`):
+
 ```json
 {
   "scripts": {
@@ -652,11 +644,13 @@ import { PostCard } from './PostCard';
 ```
 
 **Управление пакетами**:
+
 - Используется `pnpm` как менеджер пакетов
 - Требуется Node.js версии 22
 - Требуется pnpm версии 9
 
 **Доступные команды**:
+
 ```bash
 pnpm lint              # Запуск Biome линтинга
 pnpm format            # Запуск Biome форматирования (авто-исправление)
@@ -668,6 +662,7 @@ pnpm generate          # Запуск всех генераторов
 ## Pre-commit хуки
 
 Проект использует pre-commit хуки для обеспечения качества кода:
+
 - Проверки Biome линтинга
 - Валидация форматирования кода
 - Проверки компиляции TypeScript

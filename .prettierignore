@@ -1,0 +1,23 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+dist
+build
+.next
+coverage
+
+# Helm templates (contain Go templates)
+**/templates/**/*.yaml
+**/templates/**/*.yml
+
+# Generated files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Cache
+.cache
+.turbo
+

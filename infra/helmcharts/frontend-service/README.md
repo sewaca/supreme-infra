@@ -5,6 +5,7 @@ Universal Helm chart for deploying Next.js frontend applications to Kubernetes.
 ## Overview
 
 This Helm chart provides a standardized way to deploy Next.js frontend services with:
+
 - Kubernetes Deployment with configurable replicas
 - ClusterIP Service for internal communication
 - Horizontal Pod Autoscaler (HPA) support
@@ -48,8 +49,8 @@ Example `services/frontend/service.yaml`:
 image:
   repository: frontend
 
-nameOverride: "frontend"
-fullnameOverride: "frontend"
+nameOverride: 'frontend'
+fullnameOverride: 'frontend'
 
 service:
   type: ClusterIP
@@ -57,8 +58,8 @@ service:
   targetPort: 3000
 
 env:
-  PORT: "3000"
-  NODE_ENV: "production"
+  PORT: '3000'
+  NODE_ENV: 'production'
 
 replicaCount: 2
 
@@ -79,32 +80,32 @@ autoscaling:
 
 ### Values
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `replicaCount` | Number of replicas | `2` |
-| `image.repository` | Container image repository | `""` |
-| `image.tag` | Container image tag | `""` |
-| `image.pullPolicy` | Image pull policy | `IfNotPresent` |
-| `nameOverride` | Override chart name | `""` |
-| `fullnameOverride` | Override full name | `""` |
-| `service.type` | Kubernetes service type | `ClusterIP` |
-| `service.port` | Service port | `80` |
-| `service.targetPort` | Container target port | `3000` |
-| `env` | Environment variables as key-value pairs | `PORT: "3000", NODE_ENV: "production"` |
-| `resources.limits.cpu` | CPU limit | `500m` |
-| `resources.limits.memory` | Memory limit | `512Mi` |
-| `resources.requests.cpu` | CPU request | `100m` |
-| `resources.requests.memory` | Memory request | `128Mi` |
-| `livenessProbe` | Liveness probe configuration | See values.yaml |
-| `readinessProbe` | Readiness probe configuration | See values.yaml |
-| `autoscaling.enabled` | Enable HPA | `false` |
-| `autoscaling.minReplicas` | Minimum replicas | `2` |
-| `autoscaling.maxReplicas` | Maximum replicas | `10` |
-| `autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization | `80` |
-| `autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `80` |
-| `nodeSelector` | Node selector labels | `{}` |
-| `tolerations` | Tolerations | `[]` |
-| `affinity` | Affinity rules | `{}` |
+| Parameter                                       | Description                              | Default                                |
+| ----------------------------------------------- | ---------------------------------------- | -------------------------------------- |
+| `replicaCount`                                  | Number of replicas                       | `2`                                    |
+| `image.repository`                              | Container image repository               | `""`                                   |
+| `image.tag`                                     | Container image tag                      | `""`                                   |
+| `image.pullPolicy`                              | Image pull policy                        | `IfNotPresent`                         |
+| `nameOverride`                                  | Override chart name                      | `""`                                   |
+| `fullnameOverride`                              | Override full name                       | `""`                                   |
+| `service.type`                                  | Kubernetes service type                  | `ClusterIP`                            |
+| `service.port`                                  | Service port                             | `80`                                   |
+| `service.targetPort`                            | Container target port                    | `3000`                                 |
+| `env`                                           | Environment variables as key-value pairs | `PORT: "3000", NODE_ENV: "production"` |
+| `resources.limits.cpu`                          | CPU limit                                | `500m`                                 |
+| `resources.limits.memory`                       | Memory limit                             | `512Mi`                                |
+| `resources.requests.cpu`                        | CPU request                              | `100m`                                 |
+| `resources.requests.memory`                     | Memory request                           | `128Mi`                                |
+| `livenessProbe`                                 | Liveness probe configuration             | See values.yaml                        |
+| `readinessProbe`                                | Readiness probe configuration            | See values.yaml                        |
+| `autoscaling.enabled`                           | Enable HPA                               | `false`                                |
+| `autoscaling.minReplicas`                       | Minimum replicas                         | `2`                                    |
+| `autoscaling.maxReplicas`                       | Maximum replicas                         | `10`                                   |
+| `autoscaling.targetCPUUtilizationPercentage`    | Target CPU utilization                   | `80`                                   |
+| `autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization                | `80`                                   |
+| `nodeSelector`                                  | Node selector labels                     | `{}`                                   |
+| `tolerations`                                   | Tolerations                              | `[]`                                   |
+| `affinity`                                      | Affinity rules                           | `{}`                                   |
 
 ## Usage in CI/CD
 
@@ -147,18 +148,18 @@ autoscaling:
     scaleDown:
       stabilizationWindowSeconds: 300
       policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60
+        - type: Percent
+          value: 50
+          periodSeconds: 60
     scaleUp:
       stabilizationWindowSeconds: 0
       policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 30
-      - type: Pods
-        value: 2
-        periodSeconds: 30
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+        - type: Pods
+          value: 2
+          periodSeconds: 30
       selectPolicy: Max
 ```
 
@@ -168,10 +169,10 @@ You can add custom environment variables through the `env` section:
 
 ```yaml
 env:
-  PORT: "3000"
-  NODE_ENV: "production"
-  NEXT_PUBLIC_API_URL: "https://api.example.com"
-  CUSTOM_VAR: "custom-value"
+  PORT: '3000'
+  NODE_ENV: 'production'
+  NEXT_PUBLIC_API_URL: 'https://api.example.com'
+  CUSTOM_VAR: 'custom-value'
 ```
 
 ## Uninstallation
@@ -183,4 +184,3 @@ helm uninstall <release-name>
 ## Support
 
 For issues or questions, please refer to the project documentation or contact the DevOps team.
-

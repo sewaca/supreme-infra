@@ -17,6 +17,6 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "chromium": "^3.0.3"
+    "chromium": "catalog:"
   }
 }

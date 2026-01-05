@@ -1,7 +1,7 @@
 name: CI Pipeline
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
 jobs:
   selective-checks:
@@ -25,7 +25,7 @@ jobs:
             echo "should-skip-service-checks=true" >> $GITHUB_OUTPUT
             echo "no service changes detected"
           fi
-    
+
   check-lint:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
@@ -33,21 +33,21 @@ jobs:
       matrix:
         node-version: [22]
     steps:
-    - uses: actions/checkout@v4
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: "pnpm"
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      shell: bash
-    - name: lint
-      run: pnpm lint
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
+      - name: lint
+        run: pnpm lint
   check-tsc:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
@@ -55,21 +55,21 @@ jobs:
       matrix:
         node-version: [22]
     steps:
-    - uses: actions/checkout@v4
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: "pnpm"
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      shell: bash
-    - name: pnpm tsc
-      run: pnpm -r tsc
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
+      - name: pnpm tsc
+        run: pnpm -r tsc
   check-unit:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
@@ -79,21 +79,21 @@ jobs:
       matrix:
         node-version: [22]
     steps:
-    - uses: actions/checkout@v4
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: "pnpm"
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      shell: bash
-    - name: unit
-      run: pnpm -r unit:coverage
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
+      - name: unit
+        run: pnpm -r unit:coverage
 
   test-e2e:
     if: false
@@ -104,4 +104,4 @@ jobs:
       - name: Run e2e tests
         uses: ./.github/actions/test-e2e
         with:
-          services: ""
+          services: ''

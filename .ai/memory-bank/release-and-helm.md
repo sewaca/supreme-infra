@@ -59,7 +59,7 @@ Each service has its own `service.yaml` in `services/{name}/service.yaml` that d
 3. **get-latest-release-version** - Finds latest GitHub release tag for the service
 4. **calculate-new-version** - Analyzes commits to determine version bump:
    - `major:` prefix → major version bump
-   - `minor:` prefix → minor version bump  
+   - `minor:` prefix → minor version bump
    - `fix:` prefix → patch version bump
    - `chore:` only → rollback release (same version + hash)
 5. **security-checks** - Runs security scans
@@ -88,18 +88,18 @@ Triggered when `release_branch` input is provided (e.g., `releases/production/fr
 
 ```yaml
 image:
-  repository: ""
-  tag: ""
+  repository: ''
+  tag: ''
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 80
-  targetPort: 4000  # 3000 for frontend
+  targetPort: 4000 # 3000 for frontend
 
 env:
-  PORT: "4000"
-  NODE_ENV: "production"
+  PORT: '4000'
+  NODE_ENV: 'production'
 
 resources:
   limits:
@@ -118,13 +118,14 @@ canary:
   enabled: false
   replicas: 1
   image:
-    repository: ""
-    tag: ""
+    repository: ''
+    tag: ''
 ```
 
 ### Canary Deployment
 
 When `canary.enabled=true`:
+
 - Creates separate Deployment `{service}-canary`
 - Canary pods have label `app.kubernetes.io/variant: canary`
 - Canary pods have env `CANARY=true`
@@ -159,24 +160,29 @@ Example: `sewaca/supreme:production-backend-v1.2.3`
 ## GitHub Environments
 
 Required environments with protection rules:
+
 - **canary** - For canary deployments (can be auto-approved)
 - **production** - Requires manual approval for promotion
 
 ## Composite Actions
 
 ### setup-yandex-cloud
+
 Installs YC CLI, configures credentials, gets kubectl config for K8s cluster.
 
 Inputs:
+
 - `yc-sa-json-credentials`
 - `yc-cloud-id`
 - `yc-folder-id`
 - `yc-k8s-cluster-id`
 
 ### deploy-helm
+
 Deploys service using Helm.
 
 Inputs:
+
 - `service-name`
 - `service-type` (nest/next)
 - `version`
@@ -186,6 +192,7 @@ Inputs:
 - `atomic` (default: false)
 
 ### install-github-cli
+
 Installs GitHub CLI on Ubuntu runner.
 
 ## Secrets Required
@@ -212,21 +219,25 @@ Example: `releases/production/frontend-3.1.5`
 ## Troubleshooting
 
 ### Canary pods not receiving traffic
+
 Check that Service selector matches both stable and canary pods:
+
 ```bash
 kubectl get svc $SERVICE -o yaml
 kubectl get pods -l app.kubernetes.io/name=$SERVICE --show-labels
 ```
 
 ### Rollback fails - image not found
+
 Ensure the Docker image for the target version exists in Docker Hub.
 Check: `https://hub.docker.com/r/{username}/supreme/tags`
 
 ### Helm deployment stuck
+
 Check pod status and events:
+
 ```bash
 kubectl get pods -l app.kubernetes.io/name=$SERVICE
 kubectl describe pod $POD_NAME
 kubectl logs $POD_NAME
 ```
-

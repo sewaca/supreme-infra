@@ -2,13 +2,13 @@ grafana:
   # Admin credentials
   adminUser: admin
   adminPassword: admin
-  
+
   # Persistence
   persistence:
     enabled: true
     size: 10Gi
-    storageClassName: ""
-  
+    storageClassName: ''
+
   # Resources
   resources:
     limits:
@@ -17,14 +17,14 @@ grafana:
     requests:
       cpu: 100m
       memory: 128Mi
-  
+
   # Service configuration - отдельный LoadBalancer
   service:
     type: LoadBalancer
     port: 80
     targetPort: 3000
     annotations: {}
-  
+
   # Datasources
   datasources:
     datasources.yaml:
@@ -51,8 +51,8 @@ grafana:
               - datasourceUid: VictoriaMetrics
                 matcherRegex: "trace_id=(\\w+)"
                 name: TraceID
-                url: "$${__value.raw}"
-  
+                url: '$${__value.raw}'
+
   # Dashboards providers
   dashboardProviders:
     dashboardproviders.yaml:
@@ -66,27 +66,27 @@ grafana:
           editable: true
           options:
             path: /var/lib/grafana/dashboards/default
-  
+
   # Dashboards
   dashboardsConfigMaps:
     default: grafana-dashboards
-  
+
   # Grafana ini configuration
   grafana.ini:
     server:
-      root_url: "%(protocol)s://%(domain)s/"
+      root_url: '%(protocol)s://%(domain)s/'
     analytics:
       check_for_updates: false
     unified_alerting:
       enabled: true
-  
+
   # Plugins
   plugins:
     - grafana-piechart-panel
-  
+
   # Environment variables
   env: {}
-  
+
   # Ingress (опционально)
   ingress:
     enabled: false
@@ -96,4 +96,3 @@ grafana:
         paths:
           - path: /
             pathType: Prefix
-

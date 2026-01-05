@@ -30,16 +30,19 @@
 Для тестирования приложения доступны следующие предсозданные пользователи:
 
 ### 1. Администратор
+
 - **Email:** `admin@example.com`
 - **Password:** `admin@example.com`
 - **Role:** `admin`
 
 ### 2. Модератор
+
 - **Email:** `moder@example.com`
 - **Password:** `moder@example.com`
 - **Role:** `moderator`
 
 ### 3. Обычный пользователь
+
 - **Email:** `user@example.com`
 - **Password:** `user@example.com`
 - **Role:** `user`

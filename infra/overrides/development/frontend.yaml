@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: frontend
-  tag: ""
+  tag: ''
   pullPolicy: IfNotPresent
 nameOverride: frontend
 fullnameOverride: frontend
@@ -16,7 +16,7 @@ metrics:
   enabled: true
   port: 9464
 env:
-  PORT: "3000"
+  PORT: '3000'
   NODE_ENV: development
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
   BACKEND_SERVICE_NAMESPACE: default
@@ -78,5 +78,5 @@ canary:
   enabled: false
   replicas: 1
   image:
-    repository: ""
-    tag: ""
+    repository: ''
+    tag: ''

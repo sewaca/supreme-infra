@@ -7,11 +7,11 @@
 Все вызовы `console.*` автоматически перехватываются и отправляются в Loki:
 
 ```typescript
-console.log('Info message');        // → Loki (severity: INFO)
-console.error('Error occurred');    // → Loki (severity: ERROR)
-console.warn('Warning message');    // → Loki (severity: WARN)
-console.info('Info message');       // → Loki (severity: INFO)
-console.debug('Debug message');     // → Loki (severity: DEBUG)
+console.log('Info message'); // → Loki (severity: INFO)
+console.error('Error occurred'); // → Loki (severity: ERROR)
+console.warn('Warning message'); // → Loki (severity: WARN)
+console.info('Info message'); // → Loki (severity: INFO)
+console.debug('Debug message'); // → Loki (severity: DEBUG)
 ```
 
 **Важно**: Логи также выводятся в stdout/stderr (оригинальное поведение сохранено).
@@ -123,16 +123,19 @@ http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
 ### Логи не появляются в Loki
 
 1. Проверь, что Loki запущен:
+
 ```bash
 kubectl get pods -n monitoring -l app.kubernetes.io/name=loki
 ```
 
 2. Проверь логи самого сервиса:
+
 ```bash
 kubectl logs -n default -l app=backend --tail=50
 ```
 
 3. Проверь, что OTLP endpoint доступен:
+
 ```bash
 kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n monitoring -- \
   curl -v http://loki-gateway/otlp/v1/logs
@@ -154,6 +157,7 @@ if (process.env.NODE_ENV !== 'production') {
 Убедись, что `instrumentation.ts` (backend) или `instrumentation.nodejs.ts` (frontend) загружается **первым**:
 
 **Backend (NestJS):**
+
 ```typescript
 // main.ts
 import './instrumentation'; // ПЕРВАЯ строка!
@@ -161,6 +165,7 @@ import { NestFactory } from '@nestjs/core';
 ```
 
 **Frontend (Next.js):**
+
 ```typescript
 // next.config.ts
 export default {
@@ -180,6 +185,5 @@ export default {
 loki:
   loki:
     limits_config:
-      retention_period: 744h  # 31 days
+      retention_period: 744h # 31 days
 ```
-

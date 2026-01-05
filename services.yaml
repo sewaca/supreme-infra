@@ -5,7 +5,7 @@ services:
   nest:
     - name: backend
       description: Backend service (NestJS)
-  
+
   next:
     - name: frontend
       description: Frontend service (Next.js)

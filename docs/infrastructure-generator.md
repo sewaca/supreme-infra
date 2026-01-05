@@ -55,12 +55,14 @@ services:
 **Назначение**: Генерирует конфигурации роутера для сервисов на основе их NestJS контроллеров.
 
 **Что делает**:
+
 - Сканирует NestJS сервисы на файлы контроллеров
 - Извлекает информацию о роутах из декораторов
 - Генерирует файлы конфигурации роутера
 - Обновляет определения роутера сервиса
 
 **Генерируемые файлы**:
+
 - `services/{service}/router.yaml`
 
 ### 2. Обновлятор проверок безопасности
@@ -70,6 +72,7 @@ services:
 **Назначение**: Обновляет GitHub Actions workflows проверок безопасности для включения всех сервисов.
 
 **Что делает**:
+
 - Читает список сервисов из `services.yaml`
 - Обновляет `.github/workflows/security-checks.yml`
 - Добавляет NestJS сервисы в матрицу `security-scan-nest`
@@ -82,6 +85,7 @@ services:
 **Назначение**: Обновляет workflow непрерывного развертывания текущим списком сервисов.
 
 **Что делает**:
+
 - Читает список сервисов из `services.yaml`
 - Обновляет `.github/workflows/cd.yml`
 - Добавляет все сервисы в селектор ручного развертывания
@@ -94,6 +98,7 @@ services:
 **Назначение**: Генерирует полные файлы values Helm чартов для всех сервисов и окружений.
 
 **Что делает**:
+
 - Читает конфигурации сервисов из `services/{service}/service.yaml`
 - Применяет значения по умолчанию из `infra/helmcharts/{service-type}/values.yaml`
 - Применяет специфические для окружения overrides из `infra/helmcharts/{service-type}/environment-overrides.yaml`
@@ -101,6 +106,7 @@ services:
 - Генерирует финальные файлы values для каждого окружения
 
 **Генерируемые файлы**:
+
 - `infra/overrides/development/{service}.yaml`
 - `infra/overrides/production/{service}.yaml`
 
@@ -173,6 +179,7 @@ pnpm run generate:overrides
 Чтобы добавить новый сервис в инфраструктуру:
 
 1. **Добавить в services.yaml**:
+
 ```yaml
 services:
   nest:
@@ -187,19 +194,20 @@ services:
 ```
 
 2. **Создать конфигурацию сервиса**:
-Создать `services/my-new-service/service.yaml` с настройками конкретного сервиса:
+   Создать `services/my-new-service/service.yaml` с настройками конкретного сервиса:
+
 ```yaml
 # Service-specific Helm overrides
 image:
-  tag: "latest"
+  tag: 'latest'
 
 resources:
   requests:
-    cpu: "100m"
-    memory: "128Mi"
+    cpu: '100m'
+    memory: '128Mi'
   limits:
-    cpu: "500m"
-    memory: "512Mi"
+    cpu: '500m'
+    memory: '512Mi'
 
 autoscaling:
   enabled: true
@@ -208,6 +216,7 @@ autoscaling:
 ```
 
 3. **Создать структуру директорий сервиса**:
+
 ```
 services/my-new-service/
 ├── src/
@@ -218,11 +227,13 @@ services/my-new-service/
 ```
 
 4. **Запустить генератор**:
+
 ```bash
 pnpm run generate
 ```
 
 Генератор автоматически:
+
 - Добавит сервис в workflows проверок безопасности
 - Добавит сервис в опции развертывания CD
 - Сгенерирует файлы values Helm для всех окружений
@@ -234,11 +245,11 @@ pnpm run generate
 
 ```yaml
 services:
-  nest:     # NestJS сервисы
+  nest: # NestJS сервисы
     - name: backend
       description: Backend service (NestJS)
 
-  next:     # Next.js сервисы
+  next: # Next.js сервисы
     - name: frontend
       description: Frontend service (Next.js)
 ```
@@ -250,23 +261,23 @@ services:
 ```yaml
 # services/backend/service.yaml
 image:
-  tag: "latest"
+  tag: 'latest'
 
 service:
   port: 4000
   targetPort: 4000
 
 env:
-  NODE_ENV: "production"
-  PORT: "4000"
+  NODE_ENV: 'production'
+  PORT: '4000'
 
 resources:
   requests:
-    cpu: "250m"
-    memory: "256Mi"
+    cpu: '250m'
+    memory: '256Mi'
   limits:
-    cpu: "1000m"
-    memory: "1Gi"
+    cpu: '1000m'
+    memory: '1Gi'
 
 autoscaling:
   enabled: true
@@ -319,6 +330,7 @@ infra/
 ## Когда запускать генератор
 
 Запускайте генератор после:
+
 - Добавления нового сервиса
 - Изменения конфигурации сервиса в `service.yaml`
 - Модификации значений по умолчанию в Helm чартах
@@ -330,6 +342,7 @@ infra/
 ### Ошибка "No services found"
 
 Убедитесь, что `services.yaml` существует и содержит хотя бы один сервис:
+
 ```yaml
 services:
   nest:
@@ -340,12 +353,14 @@ services:
 ### Ошибки обновления workflows
 
 Проверьте, что файлы workflows существуют и имеют правильную структуру:
+
 - `.github/workflows/security-checks.yml`
 - `.github/workflows/cd.yml`
 
 ### Ошибки генерации values
 
 Убедитесь, что каждый сервис имеет файл `service.yaml`:
+
 - `services/{service_name}/service.yaml`
 
 ## Интеграция с CI/CD

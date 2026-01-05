@@ -16,7 +16,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@fastify/helmet": "^12.0.1",
+    "@fastify/helmet": "catalog:",
     "@nestjs/cli": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/core": "catalog:",
@@ -42,7 +42,7 @@
     "rxjs": "catalog:",
     "ts-loader": "catalog:",
     "typescript": "catalog:",
-    "zod": "^4.1.13"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@nestjs/schematics": "catalog:",

@@ -1,17 +1,17 @@
 loki:
   # Deployment mode
   deploymentMode: SingleBinary
-  
+
   # Loki configuration
   loki:
     auth_enabled: false
-    
+
     commonConfig:
       replication_factor: 1
-    
+
     storage:
       type: filesystem
-    
+
     schemaConfig:
       configs:
         - from: 2024-01-01
@@ -21,10 +21,10 @@ loki:
           index:
             prefix: index_
             period: 24h
-    
+
     # Limits configuration
     limits_config:
-      retention_period: 744h  # 31 days
+      retention_period: 744h # 31 days
       max_query_series: 100000
       max_query_lookback: 0
       reject_old_samples: true
@@ -38,29 +38,29 @@ loki:
       max_label_name_length: 1024
       max_label_names_per_series: 30
       volume_enabled: true
-    
+
     # Server configuration
     server:
       http_listen_port: 3100
       grpc_listen_port: 9095
       log_level: info
-    
+
     # Query configuration
     query_scheduler:
       max_outstanding_requests_per_tenant: 2048
-    
+
     querier:
       max_concurrent: 4
-  
+
   # Single binary configuration
   singleBinary:
     replicas: 1
-    
+
     persistence:
       enabled: true
       size: 10Gi
-      storageClass: ""
-    
+      storageClass: ''
+
     resources:
       limits:
         cpu: 1000m
@@ -68,22 +68,22 @@ loki:
       requests:
         cpu: 250m
         memory: 256Mi
-    
+
     # Extra environment variables
     extraEnv: []
-  
+
   # Service configuration
   gateway:
     enabled: true
     replicas: 1
-    
+
     # Disable anti-affinity for single-node clusters
     affinity: {}
-    
+
     service:
       type: ClusterIP
       port: 80
-    
+
     resources:
       limits:
         cpu: 200m
@@ -91,98 +91,97 @@ loki:
       requests:
         cpu: 50m
         memory: 64Mi
-  
+
   # Monitoring
   monitoring:
     serviceMonitor:
       enabled: true
       interval: 30s
-    
+
     selfMonitoring:
       enabled: false
       grafanaAgent:
         installOperator: false
-    
+
     lokiCanary:
       enabled: false
-  
+
   # Explicitly disable canary
   lokiCanary:
     enabled: false
-  
+
   # Test configuration
   test:
     enabled: false
-  
+
   # Disable caching (not needed for SingleBinary mode)
   chunksCache:
     enabled: false
-  
+
   resultsCache:
     enabled: false
-  
+
   # Disable memcached
   memcached:
     enabled: false
-  
+
   memcachedExporter:
     enabled: false
-  
+
   memcachedChunks:
     enabled: false
-  
+
   memcachedFrontend:
     enabled: false
-  
+
   memcachedIndexQueries:
     enabled: false
-  
+
   memcachedIndexWrites:
     enabled: false
-  
+
   # Backend configuration (for read/write/backend modes, not used in SingleBinary)
   backend:
     replicas: 0
-  
+
   read:
     replicas: 0
-  
+
   write:
     replicas: 0
-  
+
   # Ingester configuration
   ingester:
     replicas: 0
-  
-  # Querier configuration  
+
+  # Querier configuration
   querier:
     replicas: 0
-  
+
   # Query frontend configuration
   queryFrontend:
     replicas: 0
-  
+
   # Query scheduler configuration
   queryScheduler:
     replicas: 0
-  
+
   # Distributor configuration
   distributor:
     replicas: 0
-  
+
   # Compactor configuration
   compactor:
     replicas: 0
-  
+
   # Index gateway configuration
   indexGateway:
     replicas: 0
-  
+
   # Bloom compactor configuration
   bloomCompactor:
     replicas: 0
-  
+
   # Bloom gateway configuration
   bloomGateway:
     replicas: 0
-

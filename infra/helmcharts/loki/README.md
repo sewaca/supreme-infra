@@ -35,22 +35,26 @@ helm install loki . -n monitoring --create-namespace
 ### Storage
 
 The chart uses persistent volumes for log storage:
+
 - Default size: 10Gi
 - Can be configured via `loki.singleBinary.persistence.size`
 
 ### Resource Limits
 
 Default resource configuration:
+
 - Loki: 1 CPU / 1Gi memory (limit), 250m CPU / 256Mi memory (request)
 - Gateway: 200m CPU / 256Mi memory (limit), 50m CPU / 64Mi memory (request)
 
 ### Accessing Loki
 
 Loki is accessible within the cluster at:
+
 - Gateway (recommended): `http://loki-gateway.monitoring.svc.cluster.local`
 - Direct (SingleBinary): `http://loki.monitoring.svc.cluster.local:3100`
 
 For OTLP logs, use:
+
 - Endpoint: `http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs`
 
 ## Integration with Grafana
@@ -137,4 +141,3 @@ kubectl delete service loki-canary -n monitoring --ignore-not-found
 # Delete canary daemonset (if exists)
 kubectl delete daemonset loki-canary -n monitoring --ignore-not-found
 ```
-

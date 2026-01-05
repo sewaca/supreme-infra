@@ -44,4 +44,3 @@ runs:
         $HOME/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials --id "${{ inputs.yc-k8s-cluster-id }}" --external --force --no-browser
         rm sa-key.json
         kubectl cluster-info
-

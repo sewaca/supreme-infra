@@ -83,3 +83,12 @@ catalog:
   '@types/js-cookie': ^3.0.6
   react-markdown: ^10.1.0
   remark-gfm: ^4.0.1
+
+  # Additional dependencies
+  '@fastify/helmet': ^12.0.1
+  '@types/handlebars': ^4.1.0
+  chromium: ^3.0.3
+  handlebars: ^4.7.8
+  prettier: ^3.4.2
+  yaml: ^2.6.1
+  zod: ^4.1.13

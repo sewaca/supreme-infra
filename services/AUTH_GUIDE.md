@@ -23,7 +23,9 @@ src/features/Auth/
 ### API Endpoints
 
 #### POST /auth/register
+
 Регистрация нового пользователя
+
 ```json
 {
   "email": "user@example.com",
@@ -33,6 +35,7 @@ src/features/Auth/
 ```
 
 Response:
+
 ```json
 {
   "accessToken": "jwt_token_here",
@@ -45,7 +48,9 @@ Response:
 ```
 
 #### POST /auth/login
+
 Вход пользователя
+
 ```json
 {
   "email": "user@example.com",
@@ -56,14 +61,17 @@ Response:
 Response: аналогичен register
 
 #### GET /auth/me
+
 Получение информации о текущем пользователе (требует авторизации)
 
 Headers:
+
 ```
 Authorization: Bearer <jwt_token>
 ```
 
 Response:
+
 ```json
 {
   "id": 1,
@@ -123,11 +131,11 @@ const token = await getAuthToken(); // string | undefined
 // Пример использования
 export default async function ProtectedPage() {
   const user = await getUser();
-  
+
   if (!user) {
     redirect('/login');
   }
-  
+
   return <div>Hello, {user.name}!</div>;
 }
 ```
@@ -158,13 +166,13 @@ import { login, register } from '@/shared/api/authApi';
 const response = await register({
   email: 'user@example.com',
   password: 'password123',
-  name: 'John Doe'
+  name: 'John Doe',
 });
 
 // Вход
 const response = await login({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 });
 
 // Сохранить токен
@@ -179,11 +187,11 @@ import { getUser } from '@/shared/lib/auth';
 
 export default async function ProtectedPage() {
   const user = await getUser();
-  
+
   if (!user) {
     redirect('/login');
   }
-  
+
   return <YourComponent user={user} />;
 }
 ```
@@ -191,6 +199,7 @@ export default async function ProtectedPage() {
 ### Навигация
 
 Компонент `Header` автоматически показывает:
+
 - Кнопки "Войти" и "Регистрация" для неавторизованных
 - Имя пользователя и кнопку "Профиль" для авторизованных
 
@@ -205,12 +214,14 @@ export default async function ProtectedPage() {
 ## Переменные окружения
 
 ### Backend
+
 ```env
 JWT_SECRET=your-secret-key-change-in-production
 PORT=4000
 ```
 
 ### Frontend
+
 ```env
 NEXT_PUBLIC_BACKEND_URL=http://localhost:4000
 ```
@@ -231,4 +242,3 @@ Password: `password` (хеш уже в базе)
 ### Подключение базы данных
 
 Замените in-memory хранилище в `Users.service.ts` на TypeORM/Prisma/другую ORM.
-

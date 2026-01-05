@@ -86,12 +86,14 @@
 Система анализирует сообщения коммитов для определения повышения версии:
 
 **Паттерны сообщений коммитов**:
+
 - `major:*` или `BREAKING*` → Major версия (X+1.0.0)
 - `minor:*` или `feat:*` → Minor версия (x.Y+1.0)
 - `fix:*` или `patch:*` → Patch версия (x.y.Z+1)
 - `chore:*` → Без повышения версии (релиз отката)
 
 **Примеры**:
+
 ```
 major: Refactored authentication system  → 2.0.0
 minor(ui): Added dark mode toggle      → 1.3.0
@@ -102,14 +104,17 @@ chore: Updated dependencies           → 1.2.3-abc12345 (откат)
 ### Теги версий
 
 **Теги обычных релизов**:
+
 - Формат: `{service}-v{major}.{minor}.{patch}`
 - Пример: `backend-v1.2.3`
 
 **Теги chore/отката**:
+
 - Формат: `{service}-v{version}-{hash}`
 - Пример: `backend-v1.2.3-abc12345`
 
 **Теги отката**:
+
 - Формат: `{service}-rollback-v{version}-{short-sha}`
 - Пример: `backend-rollback-v1.2.3-def456`
 
@@ -118,6 +123,7 @@ chore: Updated dependencies           → 1.2.3-abc12345 (откат)
 ### Что такое Canary развертывание?
 
 Canary развертывание - это стратегия развертывания, при которой:
+
 - Новая версия развертывается рядом со старой версией
 - Трафик разделяется между версиями (50/50 в этой настройке)
 - Позволяет тестирование в production с минимальным риском
@@ -144,6 +150,7 @@ Canary развертывание - это стратегия развертыв
 ### Процесс ручного одобрения
 
 **Workflow одобрения**:
+
 1. Pipeline создает GitHub Issue для одобрения
 2. Заголовок: `"Approve canary promotion: {service} v{version}"`
 3. Тело содержит детали развертывания и инструкции
@@ -162,6 +169,7 @@ Canary развертывание - это стратегия развертыв
    - Масштабирует до полного количества реплик
 
 2. **Используемые Helm команды**:
+
 ```bash
 # Развернуть canary
 helm upgrade $SERVICE $CHART_PATH \
@@ -182,6 +190,7 @@ helm upgrade $SERVICE $CHART_PATH \
 ### Обработка отмены
 
 **Если Canary отклонен**:
+
 - Canary поды очищаются при следующем развертывании
 - Старая версия продолжает обслуживать трафик
 - Нет прерывания обслуживания
@@ -218,6 +227,7 @@ helm upgrade $SERVICE $CHART_PATH \
 ### Rollback Validation
 
 **Pre-rollback Checks**:
+
 - Release branch exists
 - Docker image exists in registry
 - Infrastructure configs are current (via rebase)
@@ -259,6 +269,7 @@ helm upgrade $SERVICE $CHART_PATH \
 ### Конфигурация окружений
 
 Настройка в Settings репозитория → Environments:
+
 - Добавить окружение `canary`
 - Добавить окружение `production`
 - Настроить branch protection при необходимости
@@ -271,6 +282,7 @@ helm upgrade $SERVICE $CHART_PATH \
 **Example**: `releases/production/frontend-3.1.5`
 
 **Purpose**:
+
 - Track which version is deployed where
 - Enable rollbacks to specific versions
 - Maintain deployment history
@@ -302,15 +314,15 @@ infra/helmcharts/
 
 ```yaml
 image:
-  repository: "sewaca/supreme"
-  tag: "production-backend-v1.2.3"
+  repository: 'sewaca/supreme'
+  tag: 'production-backend-v1.2.3'
 
 canary:
   enabled: false
   replicas: 1
   image:
-    repository: ""
-    tag: ""
+    repository: ''
+    tag: ''
 
 autoscaling:
   enabled: true
@@ -323,18 +335,22 @@ autoscaling:
 ### Распространенные проблемы
 
 #### "Нет новых коммитов с момента последнего релиза"
+
 - **Причина**: Нет коммитов с ключевыми словами повышения версии
 - **Решение**: Добавить коммиты с правильными префиксами или форсировать повышение версии
 
 #### "Docker образ не найден"
+
 - **Причина**: Образ был удален или сборка провалилась
 - **Решение**: Проверить Docker Hub repository, пересобрать при необходимости
 
 #### "Таймаут Helm развертывания"
+
 - **Причина**: Поды не становятся ready в течение таймаута
 - **Решение**: Проверить статус подов, логи и ограничения ресурсов
 
 #### "Canary поды не получают трафик"
+
 - **Причина**: Несоответствие селекторов сервиса
 - **Решение**: Убедиться, что лейблы подов соответствуют селекторам сервиса
 
@@ -357,16 +373,19 @@ kubectl get endpoints backend
 ### Восстановление после провала развертывания
 
 1. **Проверить статус пода**:
+
    ```bash
    kubectl describe pod <pod-name>
    ```
 
 2. **Просмотреть события**:
+
    ```bash
    kubectl get events --sort-by=.metadata.creationTimestamp
    ```
 
 3. **Проверить использование ресурсов**:
+
    ```bash
    kubectl top pods
    ```
@@ -381,6 +400,7 @@ kubectl get endpoints backend
 ### Управление секретами
 
 **Требуемые секреты** (GitHub repository secrets):
+
 - `DOCKER_HUB_USERNAME` - Docker Hub username
 - `DOCKER_HUB_TOKEN` - Docker Hub access token
 - `YC_SA_JSON_CREDENTIALS` - Yandex Cloud service account
@@ -400,6 +420,7 @@ kubectl get endpoints backend
 ### Генератор инфраструктуры
 
 Процесс релиза интегрируется с генератором инфраструктуры:
+
 - Обновляет списки сервисов в workflows
 - Генерирует файлы values Helm
 - Поддерживает согласованность конфигурации
@@ -407,6 +428,7 @@ kubectl get endpoints backend
 ### Madara Robot
 
 Автоматизированная поддержка во время релизов:
+
 - Pre-commit исправления
 - Обновления инфраструктуры
 - Обеспечение quality gates
@@ -414,6 +436,7 @@ kubectl get endpoints backend
 ### CI Pipeline
 
 Pipeline релиза зависит от успешного CI:
+
 - Security сканирования должны пройти
 - Тесты должны успешно выполниться
 - Проверки качества кода обязательны

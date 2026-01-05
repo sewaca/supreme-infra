@@ -35,8 +35,8 @@ Create a configuration file for your service at `services/<service-name>/service
 image:
   repository: your-registry/frontend
 
-nameOverride: "frontend"
-fullnameOverride: "frontend"
+nameOverride: 'frontend'
+fullnameOverride: 'frontend'
 
 service:
   type: ClusterIP
@@ -44,9 +44,9 @@ service:
   targetPort: 3000
 
 env:
-  PORT: "3000"
-  NODE_ENV: "production"
-  NEXT_PUBLIC_API_URL: "https://api.example.com"
+  PORT: '3000'
+  NODE_ENV: 'production'
+  NEXT_PUBLIC_API_URL: 'https://api.example.com'
 
 replicaCount: 2
 
@@ -180,9 +180,9 @@ deploy:frontend:
   image: alpine/helm:latest
   script:
     - helm upgrade --install frontend ./infra/helmcharts/frontend-service
-        -f services/frontend/service.yaml
-        --set image.tag=${CI_COMMIT_SHA}
-        --namespace production
+      -f services/frontend/service.yaml
+      --set image.tag=${CI_COMMIT_SHA}
+      --namespace production
   only:
     - main
   environment:
@@ -327,7 +327,7 @@ kubectl delete namespace <namespace-name>
 ## Support
 
 For additional help or questions:
+
 - Check the main README.md
 - Review Kubernetes documentation
 - Contact the DevOps team
-

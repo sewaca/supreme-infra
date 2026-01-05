@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: backend
-  tag: ""
+  tag: ''
   pullPolicy: IfNotPresent
 nameOverride: backend
 fullnameOverride: backend
@@ -16,7 +16,7 @@ metrics:
   enabled: true
   port: 9464
 env:
-  PORT: "4000"
+  PORT: '4000'
   NODE_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
 resources:
@@ -77,6 +77,6 @@ canary:
   enabled: true
   replicas: 1
   image:
-    repository: ""
-    tag: ""
+    repository: ''
+    tag: ''
 replicas: 1

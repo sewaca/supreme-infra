@@ -5,6 +5,7 @@
 ## Описание
 
 Этот генератор автоматически создает полноценные values файлы для каждого сервиса и окружения, объединяя:
+
 - Базовые значения по умолчанию из `defaults.yaml`
 - Настройки типа сервиса (backend/frontend)
 - Настройки из `services/${service_name}/service.yaml`
@@ -45,6 +46,7 @@ pnpm run generate:overrides
 ```
 
 Эта команда:
+
 1. Читает список сервисов из `infra/generate-service/services.json`
 2. Загружает базовые значения из `defaults.yaml`
 3. Загружает переопределения окружений из `environment-overrides.yaml`
@@ -87,18 +89,21 @@ pnpm run generate:overrides
 Генератор создает values файлы для трех окружений:
 
 ### Development
+
 - `replicaCount: 1`
 - Автомасштабирование отключено
 - Минимальные ресурсы (cpu: 200m, memory: 256Mi)
 - `NODE_ENV: development`
 
 ### Staging
+
 - `replicaCount: 2`
 - Автомасштабирование включено (2-5 реплик)
 - Средние ресурсы
 - `NODE_ENV: production`
 
 ### Production
+
 - `replicaCount: 3`
 - Автомасштабирование включено (3-20 реплик)
 - Полные ресурсы (cpu: 1000m, memory: 1Gi)
@@ -109,11 +114,13 @@ pnpm run generate:overrides
 Генератор автоматически определяет тип сервиса на основе `services.json`:
 
 ### Backend (NestJS)
+
 - Порт по умолчанию: `4000`
 - Health check path: `/status`
 - Helm chart: `backend-service`
 
 ### Frontend (Next.js)
+
 - Порт по умолчанию: `3000`
 - Health check path: `/api/status`
 - Helm chart: `frontend-service`
@@ -138,8 +145,8 @@ pnpm run generate:overrides
 image:
   repository: frontend
 
-nameOverride: "frontend"
-fullnameOverride: "frontend"
+nameOverride: 'frontend'
+fullnameOverride: 'frontend'
 
 autoscaling:
   enabled: true
@@ -169,12 +176,12 @@ overrides:
 image:
   repository: frontend
 
-nameOverride: "frontend"
-fullnameOverride: "frontend"
+nameOverride: 'frontend'
+fullnameOverride: 'frontend'
 
 env:
-  PORT: "3000"
-  NODE_ENV: "production"
+  PORT: '3000'
+  NODE_ENV: 'production'
 
 autoscaling:
   enabled: true
@@ -198,11 +205,11 @@ replicaCount: 3
 
 image:
   repository: frontend
-  tag: ""
+  tag: ''
   pullPolicy: IfNotPresent
 
-nameOverride: "frontend"
-fullnameOverride: "frontend"
+nameOverride: 'frontend'
+fullnameOverride: 'frontend'
 
 service:
   type: ClusterIP
@@ -210,8 +217,8 @@ service:
   targetPort: 3000
 
 env:
-  PORT: "3000"
-  NODE_ENV: "production"
+  PORT: '3000'
+  NODE_ENV: 'production'
 
 resources:
   limits:
@@ -241,8 +248,8 @@ readinessProbe:
 
 autoscaling:
   enabled: true
-  minReplicas: 5        # ← Переопределено из overrides.production
-  maxReplicas: 30       # ← Переопределено из overrides.production
+  minReplicas: 5 # ← Переопределено из overrides.production
+  maxReplicas: 30 # ← Переопределено из overrides.production
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
   behavior:

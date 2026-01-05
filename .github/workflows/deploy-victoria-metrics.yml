@@ -59,13 +59,13 @@ jobs:
           CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
         run: |
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-          
+
           # Simple patch version increment for Victoria Metrics
           NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
-          
+
           echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          
+
           echo "$NEW_VERSION" > "new_version.txt"
 
       - name: Upload version file
@@ -153,36 +153,36 @@ jobs:
       - name: Deploy Victoria Metrics with Helm
         run: |
           CHART_PATH="./infra/helmcharts/victoria-metrics"
-          
+
           echo "Deploying Victoria Metrics..."
           echo "Chart: $CHART_PATH"
           echo "Namespace: ${{ env.VM_NAMESPACE }}"
-          
+
           helm upgrade ${{ env.VM_RELEASE_NAME }} $CHART_PATH \
             --namespace ${{ env.VM_NAMESPACE }} \
             --install \
             --wait \
             --timeout 5m
-          
+
           echo "Victoria Metrics deployment completed"
 
       - name: Verify Victoria Metrics deployment
         run: |
           echo "Checking Victoria Metrics pods..."
           kubectl get pods -n ${{ env.VM_NAMESPACE }} -l app.kubernetes.io/name=victoria-metrics-single-server
-          
+
           echo ""
           echo "Checking Victoria Metrics service..."
           kubectl get svc -n ${{ env.VM_NAMESPACE }} -l app.kubernetes.io/name=victoria-metrics-single-server
-          
+
           echo ""
           echo "Checking Victoria Metrics StatefulSet..."
           kubectl get statefulset -n ${{ env.VM_NAMESPACE }} -l app.kubernetes.io/name=victoria-metrics-single-server
-          
+
           echo ""
           echo "Waiting for Victoria Metrics to be ready (30s)..."
           sleep 30
-          
+
           echo ""
           echo "Checking scrape targets..."
           kubectl exec -n ${{ env.VM_NAMESPACE }} victoria-metrics-victoria-metrics-single-server-0 -- wget -qO- http://localhost:8428/api/v1/targets | head -100
@@ -279,5 +279,3 @@ jobs:
             --notes-file "$BODY_FILE" \
             --target "$BRANCH_NAME" \
             --repo "$GITHUB_REPOSITORY"
-
-

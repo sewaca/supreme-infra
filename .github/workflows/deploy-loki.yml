@@ -59,13 +59,13 @@ jobs:
           CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
         run: |
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-          
+
           # Simple patch version increment for Loki
           NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
-          
+
           echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          
+
           echo "$NEW_VERSION" > "new_version.txt"
 
       - name: Upload version file
@@ -153,32 +153,32 @@ jobs:
       - name: Deploy Loki with Helm
         run: |
           CHART_PATH="./infra/helmcharts/loki"
-          
+
           echo "Deploying Loki..."
           echo "Chart: $CHART_PATH"
           echo "Namespace: ${{ env.LOKI_NAMESPACE }}"
-          
+
           helm upgrade ${{ env.LOKI_RELEASE_NAME }} $CHART_PATH \
             --namespace ${{ env.LOKI_NAMESPACE }} \
             --install \
             --wait \
             --timeout 5m
-          
+
           echo "Loki deployment completed"
 
       - name: Verify Loki deployment
         run: |
           echo "Checking Loki pods..."
           kubectl get pods -n ${{ env.LOKI_NAMESPACE }} -l app.kubernetes.io/name=loki
-          
+
           echo ""
           echo "Checking Loki services..."
           kubectl get svc -n ${{ env.LOKI_NAMESPACE }} -l app.kubernetes.io/name=loki
-          
+
           echo ""
           echo "Checking Loki gateway..."
           kubectl get svc -n ${{ env.LOKI_NAMESPACE }} ${{ env.LOKI_RELEASE_NAME }}-gateway
-          
+
           echo ""
           echo "Checking Loki StatefulSet..."
           kubectl get statefulset -n ${{ env.LOKI_NAMESPACE }} ${{ env.LOKI_RELEASE_NAME }}
@@ -260,5 +260,3 @@ jobs:
             --notes-file "$BODY_FILE" \
             --target "$BRANCH_NAME" \
             --repo "$GITHUB_REPOSITORY"
-
-

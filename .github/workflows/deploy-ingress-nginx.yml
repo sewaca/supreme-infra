@@ -59,13 +59,13 @@ jobs:
           CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
         run: |
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-          
+
           # Simple patch version increment for Ingress NGINX
           NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
-          
+
           echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          
+
           echo "$NEW_VERSION" > "new_version.txt"
 
       - name: Upload version file
@@ -153,28 +153,28 @@ jobs:
       - name: Deploy Ingress NGINX with Helm
         run: |
           CHART_PATH="./infra/helmcharts/ingress-nginx"
-          
+
           echo "Deploying Ingress NGINX..."
           echo "Chart: $CHART_PATH"
           echo "Namespace: ${{ env.INGRESS_NAMESPACE }}"
-          
+
           helm upgrade ${{ env.INGRESS_RELEASE_NAME }} $CHART_PATH \
             --namespace ${{ env.INGRESS_NAMESPACE }} \
             --install \
             --wait \
             --timeout 5m
-          
+
           echo "Ingress NGINX deployment completed"
 
       - name: Verify Ingress NGINX deployment
         run: |
           echo "Checking Ingress NGINX controller pods..."
           kubectl get pods -n ${{ env.INGRESS_NAMESPACE }} -l app.kubernetes.io/name=ingress-nginx
-          
+
           echo ""
           echo "Checking Ingress NGINX service..."
           kubectl get svc -n ${{ env.INGRESS_NAMESPACE }}
-          
+
           echo ""
           echo "Checking Ingress resources..."
           kubectl get ingress -n default
@@ -248,4 +248,3 @@ jobs:
             --notes-file "$BODY_FILE" \
             --target "$BRANCH_NAME" \
             --repo "$GITHUB_REPOSITORY"
-

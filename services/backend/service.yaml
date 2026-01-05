@@ -1,9 +1,8 @@
-
 image:
   repository: backend
 
-nameOverride: "backend"
-fullnameOverride: "backend"
+nameOverride: 'backend'
+fullnameOverride: 'backend'
 
 replicas: 1
 
@@ -17,8 +16,8 @@ metrics:
   port: 9464
 
 env:
-  PORT: "4000"
-  NODE_ENV: "production"
+  PORT: '4000'
+  NODE_ENV: 'production'
 
 livenessProbe:
   httpGet:
