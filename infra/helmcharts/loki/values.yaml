@@ -106,6 +106,32 @@ loki:
   test:
     enabled: false
   
+  # Disable caching (not needed for SingleBinary mode)
+  chunksCache:
+    enabled: false
+  
+  resultsCache:
+    enabled: false
+  
+  # Disable memcached
+  memcached:
+    enabled: false
+  
+  memcachedExporter:
+    enabled: false
+  
+  memcachedChunks:
+    enabled: false
+  
+  memcachedFrontend:
+    enabled: false
+  
+  memcachedIndexQueries:
+    enabled: false
+  
+  memcachedIndexWrites:
+    enabled: false
+  
   # Backend configuration (for read/write/backend modes, not used in SingleBinary)
   backend:
     replicas: 0
