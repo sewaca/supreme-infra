@@ -29,7 +29,10 @@ jobs:
 
       - name: Run infrastructure generator
         run: pnpm run generate
-
+      
+      - name: Run format
+        run: pnpm format
+      
       # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
       - id: check_changes
         run: |

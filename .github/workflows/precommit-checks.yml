@@ -16,10 +16,25 @@ jobs:
           token: ${{ secrets.PAT }}
           fetch-depth: 0
       - uses: actions/setup-python@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
       - run: pip install pre-commit
       - run: pre-commit --version
       - run: pre-commit install
       - run: pre-commit run --all-files || true
+      
+      - name: Run format
+        run: pnpm format
+      
       # Проверяем есть ли изменения. Если есть то совершаем коммит и пуш
       - id: check_changes
         run: |
