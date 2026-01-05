@@ -1,0 +1,283 @@
+name: Deploy Victoria Metrics
+
+on:
+  workflow_dispatch:
+
+env:
+  HELM_VERSION: 'v3.13.0'
+  VM_NAMESPACE: 'monitoring'
+  VM_RELEASE_NAME: 'victoria-metrics'
+  SERVICE_NAME: 'victoria-metrics'
+
+jobs:
+  get-latest-version:
+    name: Get latest Victoria Metrics release version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      release_tag: ${{ steps.get-version.outputs.release_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest release version
+        id: get-version
+        run: |
+          # Get all tags for victoria-metrics, sorted by version
+          ALL_TAGS=$(git tag -l "victoria-metrics-v*" 2>/dev/null | grep -E "^victoria-metrics-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
+
+          echo "All tags for victoria-metrics:"
+          echo "$ALL_TAGS"
+
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+
+          if [ -z "$LATEST_TAG" ]; then
+            VERSION="0.0.0"
+            RELEASE_TAG=""
+            echo "No previous release found for victoria-metrics, starting from version: $VERSION"
+          else
+            VERSION=$(echo "$LATEST_TAG" | sed "s/^victoria-metrics-v//")
+            RELEASE_TAG="$LATEST_TAG"
+            echo "Latest release for victoria-metrics: $LATEST_TAG, version: $VERSION"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+
+  calculate-new-version:
+    name: Calculate new Victoria Metrics version
+    needs: get-latest-version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calculate-version.outputs.version }}
+    steps:
+      - name: Calculate new version
+        id: calculate-version
+        env:
+          CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
+        run: |
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          
+          # Simple patch version increment for Victoria Metrics
+          NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          
+          echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "$NEW_VERSION" > "new_version.txt"
+
+      - name: Upload version file
+        uses: actions/upload-artifact@v4
+        with:
+          name: new-version
+          path: new_version.txt
+
+  create-release-branch:
+    name: Create release branch
+    needs: calculate-new-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download version file
+        uses: actions/download-artifact@v4
+        with:
+          name: new-version
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "246592117+madara-robot@users.noreply.github.com"
+          git config --global user.name "madara-robot"
+
+      - name: Create release branch
+        run: |
+          VERSION=$(cat "new_version.txt")
+          BRANCH_NAME="releases/production/victoria-metrics-${VERSION}"
+
+          # Fetch all branches
+          git fetch origin
+
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists, skipping creation"
+          else
+            echo "Creating new branch $BRANCH_NAME from main"
+            git checkout main
+            git pull origin main
+            git checkout -b "$BRANCH_NAME"
+            git push -u origin "$BRANCH_NAME"
+            echo "Created branch $BRANCH_NAME"
+          fi
+
+  deploy-victoria-metrics:
+    name: Deploy Victoria Metrics
+    needs: [calculate-new-version, create-release-branch]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Yandex Cloud
+        uses: ./.github/workflows/jobs/setup-yandex-cloud
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
+          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
+          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Add Victoria Metrics Helm repository
+        run: |
+          helm repo add vm https://victoriametrics.github.io/helm-charts/
+          helm repo update
+
+      - name: Update Helm dependencies
+        run: |
+          helm dependency update ./infra/helmcharts/victoria-metrics
+
+      - name: Create or update namespace
+        run: |
+          kubectl create namespace ${{ env.VM_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy Victoria Metrics with Helm
+        run: |
+          CHART_PATH="./infra/helmcharts/victoria-metrics"
+          
+          echo "Deploying Victoria Metrics..."
+          echo "Chart: $CHART_PATH"
+          echo "Namespace: ${{ env.VM_NAMESPACE }}"
+          
+          helm upgrade ${{ env.VM_RELEASE_NAME }} $CHART_PATH \
+            --namespace ${{ env.VM_NAMESPACE }} \
+            --install \
+            --wait \
+            --timeout 5m
+          
+          echo "Victoria Metrics deployment completed"
+
+      - name: Verify Victoria Metrics deployment
+        run: |
+          echo "Checking Victoria Metrics pods..."
+          kubectl get pods -n ${{ env.VM_NAMESPACE }} -l app.kubernetes.io/name=victoria-metrics-single-server
+          
+          echo ""
+          echo "Checking Victoria Metrics service..."
+          kubectl get svc -n ${{ env.VM_NAMESPACE }} -l app.kubernetes.io/name=victoria-metrics-single-server
+          
+          echo ""
+          echo "Checking Victoria Metrics StatefulSet..."
+          kubectl get statefulset -n ${{ env.VM_NAMESPACE }} -l app.kubernetes.io/name=victoria-metrics-single-server
+          
+          echo ""
+          echo "Waiting for Victoria Metrics to be ready (30s)..."
+          sleep 30
+          
+          echo ""
+          echo "Checking scrape targets..."
+          kubectl exec -n ${{ env.VM_NAMESPACE }} victoria-metrics-victoria-metrics-single-server-0 -- wget -qO- http://localhost:8428/api/v1/targets | head -100
+
+  create-github-release:
+    name: Create GitHub release
+    needs: [calculate-new-version, create-release-branch, deploy-victoria-metrics]
+    if: |
+      always() &&
+      needs.deploy-victoria-metrics.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download version file
+        uses: actions/download-artifact@v4
+        with:
+          name: new-version
+
+      - name: Install GitHub CLI
+        uses: ./.github/workflows/jobs/install-github-cli
+
+      - name: Prepare release info
+        id: get-release-info
+        run: |
+          VERSION=$(cat "new_version.txt")
+          TAG_NAME="victoria-metrics-v${VERSION}"
+          RELEASE_NAME="Release Victoria Metrics v${VERSION}"
+
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+
+          {
+            echo "# $RELEASE_NAME"
+            echo ""
+            echo "Victoria Metrics deployment completed successfully."
+            echo ""
+            echo "## Changes"
+            echo "Victoria Metrics has been deployed to the \`${{ env.VM_NAMESPACE }}\` namespace for metrics collection and storage."
+            echo ""
+            echo "## Deployment Details"
+            echo "- **Namespace**: \`${{ env.VM_NAMESPACE }}\`"
+            echo "- **Release Name**: \`${{ env.VM_RELEASE_NAME }}\`"
+            echo "- **Retention**: 30 days"
+            echo "- **Storage**: 30Gi persistent volume"
+            echo "- **Scrape Interval**: 15 seconds"
+            echo ""
+            echo "## Scrape Configuration"
+            echo "- **Job**: \`kubernetes-pods\`"
+            echo "- **Target**: All pods with \`prometheus.io/scrape=true\` annotation"
+            echo "- **Port Filter**: Only \`metrics\` port (9464)"
+            echo "- **Services**: backend, frontend, and any future services"
+            echo ""
+            echo "## Features"
+            echo "- ✅ Automatic service discovery"
+            echo "- ✅ No duplicate scrape targets"
+            echo "- ✅ Unified scrape configuration"
+            echo "- ✅ 30-day metrics retention"
+            echo ""
+            echo "## Accessing Victoria Metrics"
+            echo "\`\`\`bash"
+            echo "# Port-forward to Victoria Metrics"
+            echo "kubectl port-forward -n monitoring svc/victoria-metrics-victoria-metrics-single-server 8428:8428"
+            echo ""
+            echo "# Open in browser"
+            echo "http://localhost:8428/vmui"
+            echo "\`\`\`"
+          } > "release_body.txt"
+
+      - name: Create GitHub Release
+        env:
+          TAG_NAME: ${{ steps.get-release-info.outputs.tag_name }}
+          RELEASE_NAME: ${{ steps.get-release-info.outputs.release_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(cat "new_version.txt")
+          BRANCH_NAME="releases/production/victoria-metrics-${VERSION}"
+          BODY_FILE="release_body.txt"
+
+          if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists, skipping"
+            exit 0
+          fi
+
+          echo "Creating release $TAG_NAME from branch $BRANCH_NAME"
+          gh release create "$TAG_NAME" \
+            --title "$RELEASE_NAME" \
+            --notes-file "$BODY_FILE" \
+            --target "$BRANCH_NAME" \
+            --repo "$GITHUB_REPOSITORY"
+
+
