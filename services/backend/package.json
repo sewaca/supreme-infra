@@ -23,6 +23,7 @@
     "@nestjs/jwt": "catalog:",
     "@nestjs/passport": "catalog:",
     "@nestjs/platform-fastify": "catalog:",
+    "@nestjs/throttler": "catalog:",
     "@opentelemetry/api-logs": "catalog:",
     "@opentelemetry/api": "catalog:",
     "@opentelemetry/auto-instrumentations-node": "catalog:",

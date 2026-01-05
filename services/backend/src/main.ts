@@ -7,7 +7,10 @@ import { AppModule } from './app.module';
 const MAX_BODY_SIZE = 10 * 1024;
 
 async function bootstrap() {
-  const fastifyAdapter = new FastifyAdapter({ bodyLimit: MAX_BODY_SIZE });
+  const fastifyAdapter = new FastifyAdapter({
+    bodyLimit: MAX_BODY_SIZE,
+    trustProxy: true, // Trust X-Forwarded-For header for rate limiting
+  });
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter, { bufferLogs: true });
   app.enableShutdownHooks();
   app.setGlobalPrefix('main-api');

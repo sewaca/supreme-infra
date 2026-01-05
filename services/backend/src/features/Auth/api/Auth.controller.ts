@@ -13,6 +13,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { Roles } from '../../../shared/decorators/roles.decorator';
+import { ThrottleAuth } from '../../../shared/decorators/throttle.decorator';
 import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
@@ -28,12 +29,14 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @ThrottleAuth()
   @UsePipes(new ZodValidationPipe(registerSchema))
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto.email, dto.password, dto.name);
   }
 
   @Post('login')
+  @ThrottleAuth()
   @UsePipes(new ZodValidationPipe(loginSchema))
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password);
