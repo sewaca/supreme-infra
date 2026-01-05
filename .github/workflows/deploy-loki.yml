@@ -1,0 +1,259 @@
+name: Deploy Loki
+
+on:
+  workflow_dispatch:
+
+env:
+  HELM_VERSION: 'v3.13.0'
+  LOKI_NAMESPACE: 'monitoring'
+  LOKI_RELEASE_NAME: 'loki'
+  SERVICE_NAME: 'loki'
+
+jobs:
+  get-latest-version:
+    name: Get latest Loki release version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      release_tag: ${{ steps.get-version.outputs.release_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest release version
+        id: get-version
+        run: |
+          # Get all tags for loki, sorted by version
+          ALL_TAGS=$(git tag -l "loki-v*" 2>/dev/null | grep -E "^loki-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
+
+          echo "All tags for loki:"
+          echo "$ALL_TAGS"
+
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+
+          if [ -z "$LATEST_TAG" ]; then
+            VERSION="0.0.0"
+            RELEASE_TAG=""
+            echo "No previous release found for loki, starting from version: $VERSION"
+          else
+            VERSION=$(echo "$LATEST_TAG" | sed "s/^loki-v//")
+            RELEASE_TAG="$LATEST_TAG"
+            echo "Latest release for loki: $LATEST_TAG, version: $VERSION"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+
+  calculate-new-version:
+    name: Calculate new Loki version
+    needs: get-latest-version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calculate-version.outputs.version }}
+    steps:
+      - name: Calculate new version
+        id: calculate-version
+        env:
+          CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
+        run: |
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          
+          # Simple patch version increment for Loki
+          NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          
+          echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "$NEW_VERSION" > "new_version.txt"
+
+      - name: Upload version file
+        uses: actions/upload-artifact@v4
+        with:
+          name: new-version
+          path: new_version.txt
+
+  create-release-branch:
+    name: Create release branch
+    needs: calculate-new-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download version file
+        uses: actions/download-artifact@v4
+        with:
+          name: new-version
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "246592117+madara-robot@users.noreply.github.com"
+          git config --global user.name "madara-robot"
+
+      - name: Create release branch
+        run: |
+          VERSION=$(cat "new_version.txt")
+          BRANCH_NAME="releases/production/loki-${VERSION}"
+
+          # Fetch all branches
+          git fetch origin
+
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists, skipping creation"
+          else
+            echo "Creating new branch $BRANCH_NAME from main"
+            git checkout main
+            git pull origin main
+            git checkout -b "$BRANCH_NAME"
+            git push -u origin "$BRANCH_NAME"
+            echo "Created branch $BRANCH_NAME"
+          fi
+
+  deploy-loki:
+    name: Deploy Loki
+    needs: [calculate-new-version, create-release-branch]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Yandex Cloud
+        uses: ./.github/workflows/jobs/setup-yandex-cloud
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
+          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
+          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Add Grafana Helm repository
+        run: |
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update
+
+      - name: Update Helm dependencies
+        run: |
+          helm dependency update ./infra/helmcharts/loki
+
+      - name: Create or update namespace
+        run: |
+          kubectl create namespace ${{ env.LOKI_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy Loki with Helm
+        run: |
+          CHART_PATH="./infra/helmcharts/loki"
+          
+          echo "Deploying Loki..."
+          echo "Chart: $CHART_PATH"
+          echo "Namespace: ${{ env.LOKI_NAMESPACE }}"
+          
+          helm upgrade ${{ env.LOKI_RELEASE_NAME }} $CHART_PATH \
+            --namespace ${{ env.LOKI_NAMESPACE }} \
+            --install \
+            --wait \
+            --timeout 5m
+          
+          echo "Loki deployment completed"
+
+      - name: Verify Loki deployment
+        run: |
+          echo "Checking Loki pods..."
+          kubectl get pods -n ${{ env.LOKI_NAMESPACE }} -l app.kubernetes.io/name=loki
+          
+          echo ""
+          echo "Checking Loki service..."
+          kubectl get svc -n ${{ env.LOKI_NAMESPACE }} -l app.kubernetes.io/name=loki
+          
+          echo ""
+          echo "Checking Loki gateway..."
+          kubectl get svc -n ${{ env.LOKI_NAMESPACE }} ${{ env.LOKI_RELEASE_NAME }}-gateway
+
+  create-github-release:
+    name: Create GitHub release
+    needs: [calculate-new-version, create-release-branch, deploy-loki]
+    if: |
+      always() &&
+      needs.deploy-loki.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download version file
+        uses: actions/download-artifact@v4
+        with:
+          name: new-version
+
+      - name: Install GitHub CLI
+        uses: ./.github/workflows/jobs/install-github-cli
+
+      - name: Prepare release info
+        id: get-release-info
+        run: |
+          VERSION=$(cat "new_version.txt")
+          TAG_NAME="loki-v${VERSION}"
+          RELEASE_NAME="Release Loki v${VERSION}"
+
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+
+          {
+            echo "# $RELEASE_NAME"
+            echo ""
+            echo "Loki deployment completed successfully."
+            echo ""
+            echo "## Changes"
+            echo "Loki has been deployed to the \`${{ env.LOKI_NAMESPACE }}\` namespace for log aggregation."
+            echo ""
+            echo "## Deployment Details"
+            echo "- **Namespace**: \`${{ env.LOKI_NAMESPACE }}\`"
+            echo "- **Release Name**: \`${{ env.LOKI_RELEASE_NAME }}\`"
+            echo "- **Deployment Mode**: SingleBinary"
+            echo "- **Storage**: Filesystem with persistent volumes (10Gi)"
+            echo "- **Retention**: 31 days"
+            echo ""
+            echo "## Accessing Loki"
+            echo "- Gateway: \`http://loki-gateway.monitoring.svc.cluster.local\`"
+            echo "- Direct: \`http://loki.monitoring.svc.cluster.local:3100\`"
+            echo "- OTLP endpoint: \`http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs\`"
+          } > "release_body.txt"
+
+      - name: Create GitHub Release
+        env:
+          TAG_NAME: ${{ steps.get-release-info.outputs.tag_name }}
+          RELEASE_NAME: ${{ steps.get-release-info.outputs.release_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(cat "new_version.txt")
+          BRANCH_NAME="releases/production/loki-${VERSION}"
+          BODY_FILE="release_body.txt"
+
+          if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists, skipping"
+            exit 0
+          fi
+
+          echo "Creating release $TAG_NAME from branch $BRANCH_NAME"
+          gh release create "$TAG_NAME" \
+            --title "$RELEASE_NAME" \
+            --notes-file "$BODY_FILE" \
+            --target "$BRANCH_NAME" \
+            --repo "$GITHUB_REPOSITORY"
+
+

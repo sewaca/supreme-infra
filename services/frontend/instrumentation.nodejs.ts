@@ -4,13 +4,29 @@ import {
   getNodeAutoInstrumentations,
   type InstrumentationConfigMap,
 } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
+import { Resource } from '@opentelemetry/resources';
+import {
+  BatchLogRecordProcessor,
+  LoggerProvider,
+} from '@opentelemetry/sdk-logs';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+
+const resource = new Resource({ [ATTR_SERVICE_NAME]: 'frontend' });
+const lokiEndpoint =
+  process.env.LOKI_ENDPOINT ||
+  'http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs';
 
 const prometheusExporter = new PrometheusExporter({
   port: 9464,
   endpoint: '/metrics',
 });
+const logExporter = new OTLPLogExporter({ url: lokiEndpoint, headers: {} });
+
+const loggerProvider = new LoggerProvider({ resource });
+loggerProvider.addLogRecordProcessor(new BatchLogRecordProcessor(logExporter));
 
 const nextInstrumentationConfig: InstrumentationConfigMap = {
   '@opentelemetry/instrumentation-fs': {
@@ -21,7 +37,7 @@ const nextInstrumentationConfig: InstrumentationConfigMap = {
     requestHook: (span: Span, request: IncomingMessage | ClientRequest) => {
       console.log(
         '[debug] inside request hook. url = ',
-        // @ts-ignore debug reason
+        // @ts-expect-error debug reason
         request?.url ?? 'unknown',
       );
 
@@ -69,20 +85,27 @@ const nextInstrumentationConfig: InstrumentationConfigMap = {
 const sdk = new NodeSDK({
   serviceName: 'frontend',
   metricReader: prometheusExporter,
+  logRecordProcessor: new BatchLogRecordProcessor(logExporter),
   instrumentations: [getNodeAutoInstrumentations(nextInstrumentationConfig)],
 });
 
 sdk.start();
 
+process.on('SIGTERM', () => {
+  Promise.allSettled([
+    sdk
+      .shutdown()
+      .then(() => console.log('OpenTelemetry SDK shut down successfully'))
+      .catch((error) =>
+        console.log('Error shutting down OpenTelemetry SDK', error),
+      ),
+    loggerProvider
+      ?.shutdown()
+      .then(() => console.log('Logger provider shut down successfully'))
+      .catch((e) => console.log('Error shutting down logger provider', e)),
+  ]).then(() => process.exit(0));
+});
+
 console.log('OpenTelemetry SDK started for frontend service');
 console.log('Prometheus metrics endpoint: http://localhost:9464/metrics');
-
-process.on('SIGTERM', () => {
-  sdk
-    .shutdown()
-    .then(() => console.log('OpenTelemetry SDK shut down successfully'))
-    .catch((error) =>
-      console.log('Error shutting down OpenTelemetry SDK', error),
-    )
-    .finally(() => process.exit(0));
-});
+console.log(`Logs exporter endpoint: ${lokiEndpoint}`);
