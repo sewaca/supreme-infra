@@ -6,27 +6,31 @@ This Helm chart deploys Victoria Metrics for metrics collection and storage.
 
 The scrape configuration uses Kubernetes pod discovery with the following logic:
 
-1. **Discovers pods** with annotation `prometheus.io/scrape: "true"`
-2. **Filters by label** `app.kubernetes.io/name` matching the service name
-3. **Uses annotations** for configuration:
-   - `prometheus.io/port` - metrics port (e.g., "9464")
-   - `prometheus.io/path` - metrics path (e.g., "/metrics")
+1. **Discovers all pods** in the `default` namespace
+2. **Filters by annotation**: `prometheus.io/scrape: "true"`
+3. **Filters by port name**: Only scrapes ports named `metrics` (ignores `http` ports)
+4. **Uses annotations** for configuration:
+   - `prometheus.io/path` - metrics path (default: "/metrics")
 
 ## Configured Jobs
 
-### Backend Service
-- **Job name**: `backend`
+### kubernetes-pods
+- **Job name**: `kubernetes-pods`
 - **Namespace**: `default`
-- **Label filter**: `app.kubernetes.io/name=backend-service`
-- **Metrics port**: From `prometheus.io/port` annotation
-- **Metrics path**: From `prometheus.io/path` annotation
+- **Scrapes**: All pods with `prometheus.io/scrape=true` annotation
+- **Port filter**: Only ports named `metrics` (e.g., 9464)
+- **Services**: Automatically includes backend, frontend, and any future services
 
-### Frontend Service
-- **Job name**: `frontend`
-- **Namespace**: `default`
-- **Label filter**: `app.kubernetes.io/name=frontend-service`
-- **Metrics port**: From `prometheus.io/port` annotation
-- **Metrics path**: From `prometheus.io/path` annotation
+**Labels added**:
+- `pod` - Pod name
+- `namespace` - Namespace name
+- `service` - From `app.kubernetes.io/name` label
+
+**Why one job?**
+- ✅ Less configuration duplication
+- ✅ Automatically discovers new services
+- ✅ No duplicate scrape targets
+- ✅ Consistent labeling across all services
 
 ## Troubleshooting
 

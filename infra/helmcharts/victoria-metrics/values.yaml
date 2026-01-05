@@ -27,8 +27,8 @@ victoria-metrics-single:
           scrape_timeout: 10s
         
         scrape_configs:
-          # Backend service
-          - job_name: 'backend'
+          # Kubernetes pods (backend, frontend, and any other services)
+          - job_name: 'kubernetes-pods'
             kubernetes_sd_configs:
               - role: pod
                 namespaces:
@@ -39,54 +39,17 @@ victoria-metrics-single:
               - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
                 action: keep
                 regex: true
-              # Use the port from prometheus.io/port annotation
-              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
-                action: replace
-                target_label: __meta_kubernetes_pod_container_port_number
-              # Set address to pod IP and metrics port
-              - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_pod_annotation_prometheus_io_port]
-                action: replace
-                target_label: __address__
-                regex: ([^:]+)(?::\d+)?;(\d+)
-                replacement: $1:$2
-              # Use path from annotation
-              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-                action: replace
-                target_label: __metrics_path__
-                regex: (.+)
-              # Add pod name label
-              - source_labels: [__meta_kubernetes_pod_name]
-                target_label: pod
-              # Add namespace label
-              - source_labels: [__meta_kubernetes_namespace]
-                target_label: namespace
-              # Add service label
-              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-                target_label: service
-          
-          # Frontend service (если понадобится)
-          - job_name: 'frontend'
-            kubernetes_sd_configs:
-              - role: pod
-                namespaces:
-                  names:
-                    - default
-            relabel_configs:
-              # Keep only pods with prometheus.io/scrape=true annotation
-              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+              # Keep only the metrics port (not http port)
+              - source_labels: [__meta_kubernetes_pod_container_port_name]
                 action: keep
-                regex: true
-              # Use the port from prometheus.io/port annotation
-              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
-                action: replace
-                target_label: __meta_kubernetes_pod_container_port_number
-              # Set address to pod IP and metrics port
-              - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_pod_annotation_prometheus_io_port]
+                regex: metrics
+              # Set address to pod IP and port number
+              - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_pod_container_port_number]
                 action: replace
                 target_label: __address__
-                regex: ([^:]+)(?::\d+)?;(\d+)
+                regex: ([^:]+);(\d+)
                 replacement: $1:$2
-              # Use path from annotation
+              # Use path from annotation (default to /metrics)
               - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
                 action: replace
                 target_label: __metrics_path__
@@ -97,8 +60,9 @@ victoria-metrics-single:
               # Add namespace label
               - source_labels: [__meta_kubernetes_namespace]
                 target_label: namespace
-              # Add service label
+              # Add service label from app.kubernetes.io/name
               - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+                action: replace
                 target_label: service
     
     # Service configuration
