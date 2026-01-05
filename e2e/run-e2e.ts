@@ -1,4 +1,4 @@
-import { ChildProcess, execSync, spawn } from 'node:child_process';
+import { type ChildProcess, execSync, spawn } from 'node:child_process';
 import * as fs from 'node:fs/promises';
 import * as net from 'node:net';
 import * as path from 'node:path';
@@ -37,9 +37,7 @@ async function checkAndKillPort(port: number): Promise<void> {
     const pids = execSync(command, { encoding: 'utf-8' }).trim();
 
     if (pids) {
-      console.log(
-        `   ⚠️  Port ${port} is in use, killing process(es): ${pids.split('\n').join(', ')}`,
-      );
+      console.log(`   ⚠️  Port ${port} is in use, killing process(es): ${pids.split('\n').join(', ')}`);
       // Kill the processes
       execSync(`kill -9 ${pids.split('\n').join(' ')}`, { stdio: 'ignore' });
       // Wait a bit for port to be freed
@@ -72,9 +70,7 @@ async function verifyPortIsFree(port: number): Promise<boolean> {
   });
 }
 
-async function ensurePortsAvailable(
-  serviceConfigs: ServiceConfig[],
-): Promise<void> {
+async function ensurePortsAvailable(serviceConfigs: ServiceConfig[]): Promise<void> {
   console.log('🔍 Checking port availability...\n');
 
   for (const config of serviceConfigs) {
@@ -95,11 +91,7 @@ async function ensurePortsAvailable(
   }
 }
 
-async function waitForService(
-  url: string,
-  serviceName: string,
-  timeout: number = 120000,
-): Promise<boolean> {
+async function waitForService(url: string, serviceName: string, timeout: number = 120000): Promise<boolean> {
   const startTime = Date.now();
   let attemptCount = 0;
 
@@ -114,16 +106,12 @@ async function waitForService(
       }
       // Log non-ok responses occasionally
       if (attemptCount % 10 === 0) {
-        console.log(
-          `   ${serviceName}: Still waiting (status: ${response.status})...`,
-        );
+        console.log(`   ${serviceName}: Still waiting (status: ${response.status})...`);
       }
     } catch {
       // Service not ready yet - only log occasionally to reduce noise
       if (attemptCount % 10 === 0) {
-        console.log(
-          `   ${serviceName}: Still waiting (attempt ${attemptCount})...`,
-        );
+        console.log(`   ${serviceName}: Still waiting (attempt ${attemptCount})...`);
       }
     }
     await sleep(2000); // Check every 2 seconds
@@ -160,10 +148,7 @@ async function cleanupServices() {
   await Promise.all(killPromises);
 }
 
-async function startService(
-  config: ServiceConfig,
-  projectRoot: string,
-): Promise<void> {
+async function startService(config: ServiceConfig, projectRoot: string): Promise<void> {
   console.log(`📦 Starting ${config.name} service...`);
 
   // Special handling for mock-server - run directly without pnpm filter
@@ -179,19 +164,14 @@ async function startService(
       env: { ...process.env, ...config.env },
     });
   } else {
-    serviceProcess = spawn(
-      'pnpm',
-      ['--filter', config.filter, 'run', config.command],
-      {
-        cwd: projectRoot,
-        stdio: 'pipe',
-        env: { ...process.env, ...config.env },
-      },
-    );
+    serviceProcess = spawn('pnpm', ['--filter', config.filter, 'run', config.command], {
+      cwd: projectRoot,
+      stdio: 'pipe',
+      env: { ...process.env, ...config.env },
+    });
   }
 
-  const serviceName =
-    config.name.charAt(0).toUpperCase() + config.name.slice(1);
+  const serviceName = config.name.charAt(0).toUpperCase() + config.name.slice(1);
 
   // Flag to suppress output during cleanup
   let suppressOutput = false;
@@ -283,17 +263,13 @@ async function main() {
   // If no services specified, start all
   const serviceConfigs =
     requestedServices.length > 0
-      ? allServiceConfigs.filter((config) =>
-          requestedServices.includes(config.name),
-        )
+      ? allServiceConfigs.filter((config) => requestedServices.includes(config.name))
       : allServiceConfigs;
 
   // Validate requested services exist
   if (requestedServices.length > 0) {
     const availableServices = allServiceConfigs.map((c) => c.name);
-    const unknownServices = requestedServices.filter(
-      (s) => !availableServices.includes(s),
-    );
+    const unknownServices = requestedServices.filter((s) => !availableServices.includes(s));
 
     if (unknownServices.length > 0) {
       console.error(`❌ Unknown service(s): ${unknownServices.join(', ')}`);
@@ -307,9 +283,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(
-    `📋 Services to start: ${serviceConfigs.map((c) => c.name).join(', ')}\n`,
-  );
+  console.log(`📋 Services to start: ${serviceConfigs.map((c) => c.name).join(', ')}\n`);
 
   try {
     // 1. Ensure ports are available
@@ -325,14 +299,9 @@ async function main() {
     // 3. Wait for all services to be ready
     console.log('\n⏳ Waiting for services to be ready...');
     for (const serviceConfig of serviceConfigs) {
-      const ready = await waitForService(
-        serviceConfig.healthCheckUrl,
-        serviceConfig.name,
-      );
+      const ready = await waitForService(serviceConfig.healthCheckUrl, serviceConfig.name);
       if (!ready) {
-        throw new Error(
-          `${serviceConfig.name} service failed to start within timeout`,
-        );
+        throw new Error(`${serviceConfig.name} service failed to start within timeout`);
       }
       console.log(`   ✓ ${serviceConfig.name} is ready`);
     }
@@ -341,19 +310,15 @@ async function main() {
 
     // 4. Run Playwright tests
     console.log('🧪 Running Playwright tests...\n');
-    const playwrightProcess = spawn(
-      'pnpm',
-      ['--filter', 'e2e', 'run', 'test'],
-      {
-        cwd: projectRoot,
-        stdio: 'inherit',
-        env: {
-          ...process.env,
-          BACKEND_URL: `http://${backendHost}:${backendPort}`,
-          FRONTEND_URL: `http://${frontendHost}:${frontendPort}`,
-        },
+    const playwrightProcess = spawn('pnpm', ['--filter', 'e2e', 'run', 'test'], {
+      cwd: projectRoot,
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        BACKEND_URL: `http://${backendHost}:${backendPort}`,
+        FRONTEND_URL: `http://${frontendHost}:${frontendPort}`,
       },
-    );
+    });
 
     const playwrightExitCode = await new Promise<number>((resolve) => {
       playwrightProcess.on('close', (code) => {

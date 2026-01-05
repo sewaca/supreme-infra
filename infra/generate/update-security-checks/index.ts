@@ -12,12 +12,7 @@ export function updateSecurityChecks(): void {
   const nextServices = getServicesByType('next').map((s) => s.name);
 
   // Читаем security-checks.yml
-  const securityChecksPath = path.join(
-    projectRoot,
-    '.github',
-    'workflows',
-    'security-checks.yml',
-  );
+  const securityChecksPath = path.join(projectRoot, '.github', 'workflows', 'security-checks.yml');
   const securityChecksContent = fs.readFileSync(securityChecksPath, 'utf-8');
 
   // Парсим YAML

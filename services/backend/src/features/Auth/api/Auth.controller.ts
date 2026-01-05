@@ -10,23 +10,15 @@ import {
   Post,
   Request,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
-import { AuthService } from './Auth.service';
-import { Roles } from './decorators/roles.decorator';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RolesGuard } from './guards/roles.guard';
-import { UsersService } from './Users.service';
-
-interface RegisterDto {
-  email: string;
-  password: string;
-  name: string;
-}
-
-interface LoginDto {
-  email: string;
-  password: string;
-}
+import { Roles } from '../../../shared/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../shared/guards/roles.guard';
+import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
+import { AuthService } from '../model/Auth.service';
+import { type LoginDto, loginSchema, type RegisterDto, registerSchema } from '../model/auth.dto';
+import { UsersService } from '../model/Users.service';
 
 @Controller('auth')
 export class AuthController {
@@ -36,20 +28,20 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @UsePipes(new ZodValidationPipe(registerSchema))
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto.email, dto.password, dto.name);
   }
 
   @Post('login')
+  @UsePipes(new ZodValidationPipe(loginSchema))
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password);
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getProfile(
-    @Request() req: { user: { id: number; email: string; name: string } },
-  ) {
+  async getProfile(@Request() req: { user: { id: number; email: string; name: string } }) {
     return req.user;
   }
 

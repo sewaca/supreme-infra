@@ -40,10 +40,7 @@ interface IngressValues {
   };
 }
 
-function log(
-  message: string,
-  level: 'info' | 'success' | 'error' = 'info',
-): void {
+function log(message: string, level: 'info' | 'success' | 'error' = 'info'): void {
   const prefix = { info: '→', success: '✓', error: '✗' };
   console.log(`${prefix[level]} ${message}`);
 }
@@ -52,10 +49,7 @@ export function updateIngressValues(): void {
   log('Starting ingress values generation', 'info');
 
   const servicesDir = path.join(__dirname, '../../../services');
-  const ingressValuesPath = path.join(
-    __dirname,
-    '../../../infra/helmcharts/ingress-nginx/values.yaml',
-  );
+  const ingressValuesPath = path.join(__dirname, '../../../infra/helmcharts/ingress-nginx/values.yaml');
 
   const services = findServicesWithRouters(servicesDir);
 

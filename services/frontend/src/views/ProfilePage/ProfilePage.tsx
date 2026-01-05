@@ -12,10 +12,7 @@ interface ProfilePageProps {
   isViewingOtherUser?: boolean;
 }
 
-export function ProfilePage({
-  user,
-  isViewingOtherUser = false,
-}: ProfilePageProps) {
+export function ProfilePage({ user, isViewingOtherUser = false }: ProfilePageProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -52,20 +49,11 @@ export function ProfilePage({
         <div className={styles.header}>
           <h1 className={styles.title}>Личный кабинет</h1>
           {isViewingOtherUser ? (
-            <button
-              type="button"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className={styles.logoutButton}
-            >
+            <button type="button" onClick={handleDelete} disabled={isDeleting} className={styles.logoutButton}>
               {isDeleting ? 'Удаление...' : 'Удалить'}
             </button>
           ) : (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className={styles.logoutButton}
-            >
+            <button type="button" onClick={handleLogout} className={styles.logoutButton}>
               Выйти
             </button>
           )}

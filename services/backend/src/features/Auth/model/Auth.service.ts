@@ -27,11 +27,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(
-    email: string,
-    password: string,
-    name: string,
-  ): Promise<AuthResponse> {
+  async register(email: string, password: string, name: string): Promise<AuthResponse> {
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
       throw new UnauthorizedException('User with this email already exists');

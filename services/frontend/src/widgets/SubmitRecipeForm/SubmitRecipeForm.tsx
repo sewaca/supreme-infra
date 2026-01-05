@@ -3,11 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { backendApi } from '../../shared/api/backendApi';
-import type {
-  RecipeDetails,
-  RecipeIngredient,
-  RecipeStep,
-} from '../../shared/api/backendApi.types';
+import type { RecipeDetails, RecipeIngredient, RecipeStep } from '../../shared/api/backendApi.types';
 import { decodeToken, getAuthToken } from '../../shared/lib/auth.client';
 import styles from './SubmitRecipeForm.module.css';
 
@@ -25,24 +21,18 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   const [currentUserName, setCurrentUserName] = useState<string>('');
   const isEditMode = !!recipe;
   const [ingredientIds, setIngredientIds] = useState<string[]>([]);
-  const [detailedIngredientIds, setDetailedIngredientIds] = useState<string[]>(
-    [],
-  );
+  const [detailedIngredientIds, setDetailedIngredientIds] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: recipe?.title || '',
     description: recipe?.description || '',
-    ingredients:
-      recipe?.ingredients.length && recipe?.ingredients.length > 0
-        ? recipe.ingredients
-        : [''],
+    ingredients: recipe?.ingredients.length && recipe?.ingredients.length > 0 ? recipe.ingredients : [''],
     cookingTime: recipe?.cookingTime || 0,
     difficulty: (recipe?.difficulty || 'medium') as 'easy' | 'medium' | 'hard',
     imageUrl: recipe?.imageUrl || '',
     servings: recipe?.servings || 0,
     calories: recipe?.calories || 0,
     detailedIngredients:
-      recipe?.detailedIngredients.length &&
-      recipe?.detailedIngredients.length > 0
+      recipe?.detailedIngredients.length && recipe?.detailedIngredients.length > 0
         ? recipe.detailedIngredients
         : ([{ name: '', amount: '' }] as RecipeIngredient[]),
     steps:
@@ -54,12 +44,9 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
 
   useEffect(() => {
     if (recipe) {
-      const ingredients =
-        recipe.ingredients.length > 0 ? recipe.ingredients : [''];
+      const ingredients = recipe.ingredients.length > 0 ? recipe.ingredients : [''];
       const detailedIngredients =
-        recipe.detailedIngredients.length > 0
-          ? recipe.detailedIngredients
-          : [{ name: '', amount: '' }];
+        recipe.detailedIngredients.length > 0 ? recipe.detailedIngredients : [{ name: '', amount: '' }];
       setFormData({
         title: recipe.title,
         description: recipe.description,
@@ -70,21 +57,12 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
         servings: recipe.servings,
         calories: recipe.calories,
         detailedIngredients:
-          recipe.detailedIngredients.length > 0
-            ? recipe.detailedIngredients
-            : [{ name: '', amount: '' }],
-        steps:
-          recipe.steps.length > 0
-            ? recipe.steps
-            : [{ stepNumber: 1, instruction: '' }],
+          recipe.detailedIngredients.length > 0 ? recipe.detailedIngredients : [{ name: '', amount: '' }],
+        steps: recipe.steps.length > 0 ? recipe.steps : [{ stepNumber: 1, instruction: '' }],
         author: recipe.author,
       });
-      setIngredientIds(
-        ingredients.map((_, i) => `ingredient-${i}-${Date.now()}`),
-      );
-      setDetailedIngredientIds(
-        detailedIngredients.map((_, i) => `detailed-${i}-${Date.now()}`),
-      );
+      setIngredientIds(ingredients.map((_, i) => `ingredient-${i}-${Date.now()}`));
+      setDetailedIngredientIds(detailedIngredients.map((_, i) => `detailed-${i}-${Date.now()}`));
     } else {
       setIngredientIds(['ingredient-0']);
       setDetailedIngredientIds(['detailed-0']);
@@ -182,30 +160,19 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
     setDetailedIngredientIds([...detailedIngredientIds, newId]);
     setFormData({
       ...formData,
-      detailedIngredients: [
-        ...formData.detailedIngredients,
-        { name: '', amount: '' },
-      ],
+      detailedIngredients: [...formData.detailedIngredients, { name: '', amount: '' }],
     });
   };
 
   const removeDetailedIngredient = (index: number) => {
-    setDetailedIngredientIds(
-      detailedIngredientIds.filter((_, i) => i !== index),
-    );
+    setDetailedIngredientIds(detailedIngredientIds.filter((_, i) => i !== index));
     setFormData({
       ...formData,
-      detailedIngredients: formData.detailedIngredients.filter(
-        (_, i) => i !== index,
-      ),
+      detailedIngredients: formData.detailedIngredients.filter((_, i) => i !== index),
     });
   };
 
-  const updateDetailedIngredient = (
-    index: number,
-    field: 'name' | 'amount',
-    value: string,
-  ) => {
+  const updateDetailedIngredient = (index: number, field: 'name' | 'amount', value: string) => {
     const newIngredients = [...formData.detailedIngredients];
     newIngredients[index] = { ...newIngredients[index], [field]: value };
     setFormData({ ...formData, detailedIngredients: newIngredients });
@@ -214,10 +181,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   const addStep = () => {
     setFormData({
       ...formData,
-      steps: [
-        ...formData.steps,
-        { stepNumber: formData.steps.length + 1, instruction: '' },
-      ],
+      steps: [...formData.steps, { stepNumber: formData.steps.length + 1, instruction: '' }],
     });
   };
 
@@ -241,9 +205,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
     return (
       <div className={styles.statusContainer}>
         <div className={styles.successMessage}>
-          {isEditMode
-            ? 'Успешно сохранено'
-            : 'Приняли предложение. В ближайшее время всё проверим и опубликуем'}
+          {isEditMode ? 'Успешно сохранено' : 'Приняли предложение. В ближайшее время всё проверим и опубликуем'}
         </div>
       </div>
     );
@@ -252,18 +214,14 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
   if (status === 'error') {
     return (
       <div className={styles.statusContainer}>
-        <div className={styles.errorMessage}>
-          Что-то пошло не так. Попробуйте позже
-        </div>
+        <div className={styles.errorMessage}>Что-то пошло не так. Попробуйте позже</div>
       </div>
     );
   }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.title}>
-        {isEditMode ? 'Редактировать рецепт' : 'Предложить рецепт'}
-      </h2>
+      <h2 className={styles.title}>{isEditMode ? 'Редактировать рецепт' : 'Предложить рецепт'}</h2>
 
       <div className={styles.field}>
         <label htmlFor="title" className={styles.label}>
@@ -286,9 +244,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
         <textarea
           id="description"
           value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           className={styles.textarea}
           rows={5}
           required
@@ -297,9 +253,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
 
       <div className={styles.field}>
         <label className={styles.label}>Автор</label>
-        <div className={styles.authorDisplay}>
-          {isEditMode ? formData.author : currentUserName}
-        </div>
+        <div className={styles.authorDisplay}>{isEditMode ? formData.author : currentUserName}</div>
       </div>
 
       <div className={styles.field}>
@@ -310,9 +264,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
           id="imageUrl"
           type="url"
           value={formData.imageUrl}
-          onChange={(e) =>
-            setFormData({ ...formData, imageUrl: e.target.value })
-          }
+          onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
           className={styles.input}
           required
         />
@@ -415,21 +367,13 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
               required={index === 0}
             />
             {formData.ingredients.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeIngredient(index)}
-                className={styles.removeButton}
-              >
+              <button type="button" onClick={() => removeIngredient(index)} className={styles.removeButton}>
                 Удалить
               </button>
             )}
           </div>
         ))}
-        <button
-          type="button"
-          onClick={addIngredient}
-          className={styles.addButton}
-        >
+        <button type="button" onClick={addIngredient} className={styles.addButton}>
           + Добавить ингредиент
         </button>
       </div>
@@ -437,16 +381,11 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       <div className={styles.field}>
         <label className={styles.label}>Детальные ингредиенты *</label>
         {formData.detailedIngredients.map((ingredient, index) => (
-          <div
-            key={`${ingredient.name}-${index}`}
-            className={styles.detailedIngredientRow}
-          >
+          <div key={`${ingredient.name}-${index}`} className={styles.detailedIngredientRow}>
             <input
               type="text"
               value={ingredient.name}
-              onChange={(e) =>
-                updateDetailedIngredient(index, 'name', e.target.value)
-              }
+              onChange={(e) => updateDetailedIngredient(index, 'name', e.target.value)}
               className={styles.input}
               placeholder="Название"
               required={index === 0}
@@ -454,29 +393,19 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
             <input
               type="text"
               value={ingredient.amount}
-              onChange={(e) =>
-                updateDetailedIngredient(index, 'amount', e.target.value)
-              }
+              onChange={(e) => updateDetailedIngredient(index, 'amount', e.target.value)}
               className={styles.input}
               placeholder="Количество"
               required={index === 0}
             />
             {formData.detailedIngredients.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeDetailedIngredient(index)}
-                className={styles.removeButton}
-              >
+              <button type="button" onClick={() => removeDetailedIngredient(index)} className={styles.removeButton}>
                 Удалить
               </button>
             )}
           </div>
         ))}
-        <button
-          type="button"
-          onClick={addDetailedIngredient}
-          className={styles.addButton}
-        >
+        <button type="button" onClick={addDetailedIngredient} className={styles.addButton}>
           + Добавить детальный ингредиент
         </button>
       </div>
@@ -495,11 +424,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
               required={index === 0}
             />
             {formData.steps.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeStep(index)}
-                className={styles.removeButton}
-              >
+              <button type="button" onClick={() => removeStep(index)} className={styles.removeButton}>
                 Удалить
               </button>
             )}

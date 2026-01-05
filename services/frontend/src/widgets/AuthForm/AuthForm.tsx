@@ -26,10 +26,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     setIsLoading(true);
 
     try {
-      const response =
-        mode === 'login'
-          ? await backendApi.login(formData)
-          : await backendApi.register(formData);
+      const response = mode === 'login' ? await backendApi.login(formData) : await backendApi.register(formData);
 
       setAuthToken(response.accessToken);
       router.push('/profile');
@@ -42,9 +39,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.title}>
-        {mode === 'login' ? 'Вход' : 'Регистрация'}
-      </h2>
+      <h2 className={styles.title}>{mode === 'login' ? 'Вход' : 'Регистрация'}</h2>
 
       {error && <div className={styles.error}>{error}</div>}
 
@@ -86,9 +81,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           id="password"
           type="password"
           value={formData.password}
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           className={styles.input}
           required
           minLength={6}
@@ -96,11 +89,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       </div>
 
       <button type="submit" className={styles.submit} disabled={isLoading}>
-        {isLoading
-          ? 'Загрузка...'
-          : mode === 'login'
-            ? 'Войти'
-            : 'Зарегистрироваться'}
+        {isLoading ? 'Загрузка...' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
       </button>
 
       <div className={styles.footer}>

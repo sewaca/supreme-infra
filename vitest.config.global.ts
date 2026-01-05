@@ -48,12 +48,8 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov', 'html', 'json'],
       reportsDirectory: 'coverage',
-      include: collectCoverageFrom.filter(
-        (pattern) => !pattern.startsWith('!'),
-      ),
-      exclude: collectCoverageFrom
-        .filter((pattern) => pattern.startsWith('!'))
-        .map((pattern) => pattern.slice(1)),
+      include: collectCoverageFrom.filter((pattern) => !pattern.startsWith('!')),
+      exclude: collectCoverageFrom.filter((pattern) => pattern.startsWith('!')).map((pattern) => pattern.slice(1)),
     },
   },
 });

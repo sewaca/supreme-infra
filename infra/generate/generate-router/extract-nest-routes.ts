@@ -61,10 +61,7 @@ function runDevServerAndCaptureOutput(servicePath: string): Promise<string> {
         foundRoutes = true;
       }
 
-      if (
-        chunk.includes('Nest application successfully started') &&
-        foundRoutes
-      ) {
+      if (chunk.includes('Nest application successfully started') && foundRoutes) {
         clearTimeout(timeout);
         setTimeout(() => {
           child.kill('SIGTERM');
@@ -85,8 +82,7 @@ function runDevServerAndCaptureOutput(servicePath: string): Promise<string> {
 }
 
 function parseRouteFromLog(logLine: string): Route | null {
-  const routePattern =
-    /\[RouterExplorer\]\s+Mapped\s+\{([^,]+),\s+([^}]+)\}\s+route/;
+  const routePattern = /\[RouterExplorer\]\s+Mapped\s+\{([^,]+),\s+([^}]+)\}\s+route/;
   const match = logLine.match(routePattern);
 
   if (!match) {

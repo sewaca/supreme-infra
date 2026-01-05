@@ -1,18 +1,28 @@
 import './instrumentation';
+import helmet from '@fastify/helmet';
 import { NestFactory } from '@nestjs/core';
-import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 
 const MAX_BODY_SIZE = 10 * 1024;
 
 async function bootstrap() {
-  const app = await NestFactory.create(
-    AppModule,
-    new FastifyAdapter({ bodyLimit: MAX_BODY_SIZE }),
-    { bufferLogs: true },
-  );
+  const fastifyAdapter = new FastifyAdapter({ bodyLimit: MAX_BODY_SIZE });
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter, { bufferLogs: true });
   app.enableShutdownHooks();
   app.setGlobalPrefix('main-api');
+
+  // Enable Helmet for security headers
+  await app.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+      },
+    },
+  });
 
   // Enable CORS
   // TODO: сделать по человечески

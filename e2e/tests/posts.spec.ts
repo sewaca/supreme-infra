@@ -22,9 +22,7 @@ test.describe.skip('Posts List Page', () => {
     await expect(post1FullBody).not.toBeVisible();
 
     // Should show truncated version (first 20 chars + "...")
-    const truncatedText = page.locator(
-      `text="${mockPosts[0].body.substring(0, 20)}..."`,
-    );
+    const truncatedText = page.locator(`text="${mockPosts[0].body.substring(0, 20)}..."`);
     await expect(truncatedText).toBeVisible();
 
     // Verify comments count is displayed (post 1 has 2 comments, post 2 has 1)
@@ -47,14 +45,10 @@ test.describe.skip('Posts List Page', () => {
     await expect(page.locator(`text=${mockPosts[2].title}`)).not.toBeVisible();
 
     // Verify breadcrumbs show user filter
-    await expect(
-      page.locator(`text=user ${mockPosts[0].userId}`),
-    ).toBeVisible();
+    await expect(page.locator(`text=user ${mockPosts[0].userId}`)).toBeVisible();
   });
 
-  test('should navigate to post details when clicking a post', async ({
-    page,
-  }) => {
+  test('should navigate to post details when clicking a post', async ({ page }) => {
     await page.goto('/');
 
     // Wait for posts to load
@@ -75,9 +69,7 @@ test.describe.skip('Posts List Page', () => {
 });
 
 test.describe.skip('Post Details Page', () => {
-  test('should display post details with full body and comments', async ({
-    page,
-  }) => {
+  test('should display post details with full body and comments', async ({ page }) => {
     await page.goto(`/${mockPosts[0].id}`);
 
     // Verify post title
@@ -98,21 +90,15 @@ test.describe.skip('Post Details Page', () => {
 
     // Verify breadcrumbs navigation
     await expect(page.locator('nav').locator('text=all posts')).toBeVisible();
-    await expect(
-      page.locator('nav').locator(`text=user ${mockPosts[0].userId}`),
-    ).toBeVisible();
-    await expect(
-      page.locator('nav').locator(`text=${mockPosts[0].title}`),
-    ).toBeVisible();
+    await expect(page.locator('nav').locator(`text=user ${mockPosts[0].userId}`)).toBeVisible();
+    await expect(page.locator('nav').locator(`text=${mockPosts[0].title}`)).toBeVisible();
 
     // Click on "all posts" breadcrumb
     await page.locator('text=all posts').click();
     await expect(page).toHaveURL('/');
   });
 
-  test('should navigate back to user posts via breadcrumb', async ({
-    page,
-  }) => {
+  test('should navigate back to user posts via breadcrumb', async ({ page }) => {
     await page.goto(`/${mockPosts[0].id}`);
 
     // Click on user breadcrumb
@@ -131,9 +117,7 @@ test.describe.skip('Post Details Page', () => {
 
     // Verify no comments section or empty state
     // Post 3 has no comments in mock data
-    await expect(
-      page.locator(`text=${mockComments[0].name}`),
-    ).not.toBeVisible();
+    await expect(page.locator(`text=${mockComments[0].name}`)).not.toBeVisible();
   });
 });
 
@@ -156,9 +140,7 @@ test.describe.skip('Error Handling', () => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
     // Backend should return 400 for invalid userId
-    const backendResponse = await page.request.get(
-      `${backendUrl}/posts/get-summary?userId=invalid`,
-    );
+    const backendResponse = await page.request.get(`${backendUrl}/posts/get-summary?userId=invalid`);
 
     // Backend should return 400 Bad Request
     expect(backendResponse.status()).toBe(400);
@@ -171,9 +153,7 @@ test.describe.skip('Error Handling', () => {
 });
 
 test.describe.skip('Backend API Integration', () => {
-  test('should return posts summary with correct structure', async ({
-    page,
-  }) => {
+  test('should return posts summary with correct structure', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
     const response = await page.request.get(`${backendUrl}/posts/get-summary`);
@@ -203,9 +183,7 @@ test.describe.skip('Backend API Integration', () => {
   test('should return post details with comments', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
-    const response = await page.request.get(
-      `${backendUrl}/posts/${mockPosts[0].id}`,
-    );
+    const response = await page.request.get(`${backendUrl}/posts/${mockPosts[0].id}`);
 
     expect(response.status()).toBe(200);
     const data = await response.json();
@@ -240,9 +218,7 @@ test.describe.skip('Backend API Integration', () => {
   test('should filter posts by userId', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
-    const response = await page.request.get(
-      `${backendUrl}/posts/get-summary?userId=${mockPosts[0].userId}`,
-    );
+    const response = await page.request.get(`${backendUrl}/posts/get-summary?userId=${mockPosts[0].userId}`);
 
     expect(response.status()).toBe(200);
     const data = await response.json();
@@ -257,9 +233,7 @@ test.describe.skip('Backend API Integration', () => {
   test('should return 400 for invalid userId parameter', async ({ page }) => {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
-    const response = await page.request.get(
-      `${backendUrl}/posts/get-summary?userId=invalid`,
-    );
+    const response = await page.request.get(`${backendUrl}/posts/get-summary?userId=invalid`);
 
     expect(response.status()).toBe(400);
   });

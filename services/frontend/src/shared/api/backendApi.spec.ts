@@ -34,10 +34,7 @@ describe('BackendApi', () => {
 
       const result = await backendApi.getRecipes();
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:4000/main-api/recipes',
-        undefined,
-      );
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/main-api/recipes', undefined);
       expect(result).toEqual(mockRecipes);
     });
 
@@ -64,10 +61,7 @@ describe('BackendApi', () => {
 
       const result = await backendApi.getRecipes('test');
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:4000/main-api/recipes?search=test',
-        undefined,
-      );
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/main-api/recipes?search=test', undefined);
       expect(result).toEqual(mockRecipes);
     });
 
@@ -77,9 +71,7 @@ describe('BackendApi', () => {
         statusText: 'Not Found',
       });
 
-      await expect(backendApi.getRecipes()).rejects.toThrow(
-        'Failed to fetch recipes: Not Found',
-      );
+      await expect(backendApi.getRecipes()).rejects.toThrow('Failed to fetch recipes: Not Found');
     });
   });
 
@@ -110,10 +102,7 @@ describe('BackendApi', () => {
 
       const result = await backendApi.getRecipeById(1);
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:4000/main-api/recipes/1',
-        expect.any(Object),
-      );
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/main-api/recipes/1', expect.any(Object));
       expect(result).toEqual(mockRecipe);
     });
 
@@ -124,9 +113,7 @@ describe('BackendApi', () => {
         statusText: 'Not Found',
       });
 
-      await expect(backendApi.getRecipeById(999)).rejects.toThrow(
-        'Recipe not found',
-      );
+      await expect(backendApi.getRecipeById(999)).rejects.toThrow('Recipe not found');
     });
 
     it('should throw error when fetch fails', async () => {
@@ -136,9 +123,7 @@ describe('BackendApi', () => {
         statusText: 'Internal Server Error',
       });
 
-      await expect(backendApi.getRecipeById(1)).rejects.toThrow(
-        'Failed to fetch recipe: Internal Server Error',
-      );
+      await expect(backendApi.getRecipeById(1)).rejects.toThrow('Failed to fetch recipe: Internal Server Error');
     });
   });
 

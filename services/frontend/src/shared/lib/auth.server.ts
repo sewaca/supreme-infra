@@ -23,8 +23,7 @@ export async function getUser(): Promise<User | null> {
   }
 
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/main-api';
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/main-api';
     const response = await fetch(`${baseUrl}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',

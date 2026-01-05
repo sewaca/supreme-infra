@@ -11,10 +11,7 @@ const HELM_CHART_MAPPING: Record<string, string> = {
 
 const ENVIRONMENTS = ['development', 'production'];
 
-function log(
-  message: string,
-  level: 'info' | 'success' | 'error' | 'debug' = 'info',
-): void {
+function log(message: string, level: 'info' | 'success' | 'error' | 'debug' = 'info'): void {
   const prefix = {
     info: '→',
     success: '✓',
@@ -37,20 +34,11 @@ function deepMerge<T>(target: T, source: Partial<T>): T {
 
     if (sourceValue === undefined) continue;
 
-    const isSourceObject =
-      typeof sourceValue === 'object' &&
-      sourceValue !== null &&
-      !Array.isArray(sourceValue);
-    const isTargetObject =
-      typeof targetValue === 'object' &&
-      targetValue !== null &&
-      !Array.isArray(targetValue);
+    const isSourceObject = typeof sourceValue === 'object' && sourceValue !== null && !Array.isArray(sourceValue);
+    const isTargetObject = typeof targetValue === 'object' && targetValue !== null && !Array.isArray(targetValue);
 
     if (isSourceObject && isTargetObject) {
-      result[key] = deepMerge(targetValue, sourceValue) as T[Extract<
-        keyof T,
-        string
-      >];
+      result[key] = deepMerge(targetValue, sourceValue) as T[Extract<keyof T, string>];
     } else {
       result[key] = sourceValue as T[Extract<keyof T, string>];
     }
@@ -72,12 +60,7 @@ function loadHelmDefaults(serviceType: 'nest' | 'next'): ServiceConfig {
 }
 
 function loadServiceConfig(serviceName: string): ServiceConfig {
-  const serviceYamlPath = path.join(
-    __dirname,
-    '../../../services',
-    serviceName,
-    'service.yaml',
-  );
+  const serviceYamlPath = path.join(__dirname, '../../../services', serviceName, 'service.yaml');
 
   if (!fs.existsSync(serviceYamlPath)) {
     throw new Error(`Service config not found: ${serviceYamlPath}`);
@@ -95,10 +78,7 @@ function loadServiceConfig(serviceName: string): ServiceConfig {
  * 2. service.yaml (без overrides) — общий конфиг сервиса
  * 3. service.yaml.overrides[env] — специфичные переопределения для окружения
  */
-function generateValuesForService(
-  serviceName: string,
-  environment: string,
-): ServiceConfig {
+function generateValuesForService(serviceName: string, environment: string): ServiceConfig {
   const serviceInfo = getServiceByName(serviceName);
   if (!serviceInfo) {
     throw new Error(`Service ${serviceName} not found in services.yaml`);
@@ -143,11 +123,7 @@ function generateFileHeader(serviceName: string, environment: string): string {
   ].join('\n');
 }
 
-function writeValuesFile(
-  serviceName: string,
-  environment: string,
-  values: ServiceConfig,
-): void {
+function writeValuesFile(serviceName: string, environment: string, values: ServiceConfig): void {
   const overridesDir = path.join(__dirname, '../../overrides', environment);
   ensureDirectoryExists(overridesDir);
 
@@ -172,16 +148,10 @@ export function generateValuesForAllServices(): void {
 
   log(`Found ${allServices.length} service(s) to process:`, 'info');
   for (const service of nestServices) {
-    log(
-      `  • ${service.name} (nest)${service.description ? ` - ${service.description}` : ''}`,
-      'info',
-    );
+    log(`  • ${service.name} (nest)${service.description ? ` - ${service.description}` : ''}`, 'info');
   }
   for (const service of nextServices) {
-    log(
-      `  • ${service.name} (next)${service.description ? ` - ${service.description}` : ''}`,
-      'info',
-    );
+    log(`  • ${service.name} (next)${service.description ? ` - ${service.description}` : ''}`, 'info');
   }
 
   let successCount = 0;

@@ -13,11 +13,7 @@ interface RecipesListPageProps {
   selectedIngredients?: string[];
 }
 
-export function RecipesListPage({
-  recipes,
-  searchQuery,
-  selectedIngredients,
-}: RecipesListPageProps) {
+export function RecipesListPage({ recipes, searchQuery, selectedIngredients }: RecipesListPageProps) {
   const userRole = getUserRole();
   const isModeratorOrAdmin = userRole === 'moderator' || userRole === 'admin';
 
@@ -25,9 +21,7 @@ export function RecipesListPage({
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>Рецепты</h1>
-        <p className={styles.subtitle}>
-          Найдите идеальный рецепт для вашего стола
-        </p>
+        <p className={styles.subtitle}>Найдите идеальный рецепт для вашего стола</p>
       </header>
 
       <div className={styles.actions}>
@@ -41,10 +35,7 @@ export function RecipesListPage({
         )}
       </div>
 
-      <RecipeFilters
-        initialSearch={searchQuery}
-        initialIngredients={selectedIngredients}
-      />
+      <RecipeFilters initialSearch={searchQuery} initialIngredients={selectedIngredients} />
 
       <div className={styles.recipesGrid}>
         {recipes.length === 0 ? (
@@ -56,9 +47,7 @@ export function RecipesListPage({
             </p>
           </div>
         ) : (
-          recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))
+          recipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)
         )}
       </div>
     </div>

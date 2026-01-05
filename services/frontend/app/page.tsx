@@ -9,17 +9,9 @@ export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const searchQuery = params.search;
   const ingredientsString = params.ingredients;
-  const ingredientsArray = ingredientsString
-    ? ingredientsString.split(',').map((i) => i.trim())
-    : undefined;
+  const ingredientsArray = ingredientsString ? ingredientsString.split(',').map((i) => i.trim()) : undefined;
 
   const recipes = await serverApi.getRecipes(searchQuery, ingredientsArray);
 
-  return (
-    <RecipesListPage
-      recipes={recipes}
-      searchQuery={searchQuery}
-      selectedIngredients={ingredientsArray}
-    />
-  );
+  return <RecipesListPage recipes={recipes} searchQuery={searchQuery} selectedIngredients={ingredientsArray} />;
 }
