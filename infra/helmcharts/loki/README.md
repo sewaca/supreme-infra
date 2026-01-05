@@ -27,6 +27,8 @@ helm install loki . -n monitoring --create-namespace
 - **Filesystem storage**: Uses persistent volumes for log storage
 - **31-day retention**: Logs are kept for 31 days by default
 - **OTLP support**: Accepts logs via OpenTelemetry Protocol
+- **No caching**: Memcached and chunk caching disabled for simplicity
+- **No canary**: Loki canary monitoring disabled
 
 ### Storage
 
