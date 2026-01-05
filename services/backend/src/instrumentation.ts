@@ -1,3 +1,4 @@
+import { LogRecord, SeverityNumber } from '@opentelemetry/api-logs';
 import {
   getNodeAutoInstrumentations,
   type InstrumentationConfigMap,
@@ -26,6 +27,78 @@ const prometheusExporter = new PrometheusExporter({
 const logExporter = new OTLPLogExporter({ url: lokiEndpoint, headers: {} });
 export const loggerProvider = new LoggerProvider({ resource });
 loggerProvider.addLogRecordProcessor(new BatchLogRecordProcessor(logExporter));
+
+export enum SeverityText {
+  DEBUG = 'DEBUG',
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
+}
+
+export const patchConsle = (
+  customLoggerEmit: (logRecord: LogRecord) => void,
+) => {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+  const originalConsoleWarn = console.warn;
+  const originalConsoleInfo = console.info;
+  const originalConsoleDebug = console.debug;
+
+  const getBody = (...args: unknown[]) =>
+    args
+      .map((arg) =>
+        typeof arg === 'object' ? JSON.stringify(arg) : String(arg),
+      )
+      .join(' ');
+
+  console.log = (...args: unknown[]) => {
+    originalConsoleLog(...args);
+    customLoggerEmit({
+      severityNumber: SeverityNumber.INFO,
+      severityText: SeverityText.INFO,
+      body: getBody(args),
+    });
+  };
+
+  console.error = (...args: unknown[]) => {
+    originalConsoleError(...args);
+    customLoggerEmit({
+      severityNumber: SeverityNumber.ERROR,
+      severityText: SeverityText.ERROR,
+      body: getBody(args),
+    });
+  };
+
+  console.warn = (...args: unknown[]) => {
+    originalConsoleWarn(...args);
+    customLoggerEmit({
+      severityNumber: SeverityNumber.WARN,
+      severityText: SeverityText.WARN,
+      body: getBody(args),
+    });
+  };
+
+  console.info = (...args: unknown[]) => {
+    originalConsoleInfo(...args);
+    customLoggerEmit({
+      severityNumber: SeverityNumber.INFO,
+      severityText: SeverityText.INFO,
+      body: getBody(args),
+    });
+  };
+
+  console.debug = (...args: unknown[]) => {
+    originalConsoleDebug(...args);
+    customLoggerEmit({
+      severityNumber: SeverityNumber.DEBUG,
+      severityText: SeverityText.DEBUG,
+      body: getBody(args),
+    });
+  };
+};
+
+const logger = loggerProvider.getLogger('console-interceptor');
+patchConsle(logger.emit);
 
 type Request = { method?: string; routeOptions?: { url?: string } };
 
