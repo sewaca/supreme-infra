@@ -17,7 +17,12 @@
       }
     ],
     "baseUrl": ".",
-    "paths": { "@supreme-int/*": ["packages/*/src"] }
+    "paths": {
+      "@supreme-int/*": ["packages/*/src"],
+      "@supreme-int/api-client/client": ["packages/api-client/src/client.ts"],
+      "@supreme-int/api-client/server": ["packages/api-client/src/server.ts"],
+      "@supreme-int/api-client/types": ["packages/api-client/src/types.ts"]
+    }
   },
   "exclude": ["**/node_modules", "**/.next"]
 }
