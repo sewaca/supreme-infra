@@ -5,14 +5,15 @@
 ## Как это работает
 
 1. Читает `services.yaml` и находит все сервисы с `database.enabled: true`
-2. Для каждого сервиса генерирует два файла:
+2. Для каждого сервиса ищет конфигурацию в `infra/databases/{service}-db/service.yaml`
+3. Генерирует два файла для каждого сервиса:
    - `infra/overrides/development/postgresql-{service}.yaml`
    - `infra/overrides/production/postgresql-{service}.yaml`
-3. Использует разные ресурсы и размеры хранилища для разных окружений
+4. Использует ресурсы из `service.yaml` или дефолтные значения
 
 ## Конфигурация сервиса
 
-В `services.yaml` добавьте секцию `database` для сервиса:
+### 1. В `services.yaml` добавьте секцию `database`:
 
 ```yaml
 services:
@@ -25,15 +26,45 @@ services:
         user: backend_user # опционально, по умолчанию: {service}_user
 ```
 
+### 2. Создайте `infra/databases/{service}-db/service.yaml`:
+
+```yaml
+# Database configuration for backend service
+database:
+  name: backend_db
+  user: backend_user
+  passwordSecret: DB_PASSWORD
+
+resources:
+  production:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 150Mi
+  development:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+```
+
 ## Генерируемые значения
 
-### Development
+Генератор использует значения из `infra/databases/{service}-db/service.yaml`.
+
+### Дефолтные значения (если service.yaml не найден)
+
+**Development:**
 
 - Persistence: 5Gi
 - CPU: 50m-250m
 - Memory: 128Mi-256Mi
 
-### Production
+**Production:**
 
 - Persistence: 20Gi
 - CPU: 250m-1000m
@@ -111,15 +142,40 @@ helm install postgresql-backend ./infra/helmcharts/postgresql \
 
 ## Добавление новой БД для сервиса
 
-1. Создайте директорию для миграций:
+1. Создайте директорию для базы данных:
 
    ```bash
-   mkdir -p infra/databases/{service}-db/migrations
+   mkdir -p infra/databases/{service}-db
    ```
 
-2. Создайте `data-source.ts` в `infra/databases/{service}-db/`
+2. Создайте `infra/databases/{service}-db/service.yaml`:
 
-3. Обновите `services.yaml`:
+   ```yaml
+   database:
+     name: my_service_db
+     user: my_service_user
+     passwordSecret: DB_PASSWORD
+
+   resources:
+     production:
+       limits:
+         cpu: 500m
+         memory: 500Mi
+       requests:
+         cpu: 100m
+         memory: 150Mi
+     development:
+       limits:
+         cpu: 250m
+         memory: 256Mi
+       requests:
+         cpu: 50m
+         memory: 128Mi
+   ```
+
+3. (Опционально) Создайте `init.sql` для начальной схемы
+
+4. Обновите `services.yaml`:
 
    ```yaml
    - name: my-service
@@ -129,13 +185,13 @@ helm install postgresql-backend ./infra/helmcharts/postgresql \
        user: my_service_user
    ```
 
-4. Запустите генератор:
+5. Запустите генератор:
 
    ```bash
    pnpm run generate
    ```
 
-5. Добавьте `DB_PASSWORD` для нового сервиса в GitHub Secrets
+6. Добавьте `DB_PASSWORD` для нового сервиса в GitHub Secrets
 
 ## Переменные окружения для сервиса
 

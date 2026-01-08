@@ -30,7 +30,7 @@ resources:
     memory: 512Mi
   requests:
     cpu: 150m
-    memory: 300Mi
+    memory: 200Mi
 livenessProbe:
   httpGet:
     path: /core-auth-bff/api/status

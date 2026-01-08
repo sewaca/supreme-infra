@@ -47,13 +47,27 @@ function getDefaultDatabaseValues(serviceName: string, dbName: string, dbUser: s
   };
 }
 
-function getEnvironmentOverrides(): EnvironmentOverrides {
+function getEnvironmentOverrides(serviceName: string, projectRoot: string): EnvironmentOverrides {
+  // Try to read service.yaml from databases/{service}-db/ directory
+  const dbServiceYamlPath = path.join(projectRoot, 'infra/databases', `${serviceName}-db/service.yaml`);
+  let customResources: Record<string, unknown> | undefined;
+
+  if (fs.existsSync(dbServiceYamlPath)) {
+    const dbServiceContent = fs.readFileSync(dbServiceYamlPath, 'utf-8');
+    const dbServiceConfig = yaml.parse(dbServiceContent);
+    customResources = dbServiceConfig?.resources;
+    console.log(`  ✓ Found database service config: infra/databases/${serviceName}-db/service.yaml`);
+  }
+
   return {
     development: {
       persistence: {
         size: '5Gi',
       },
-      resources: {
+      resources: (customResources?.development as {
+        limits: { cpu: string; memory: string };
+        requests: { cpu: string; memory: string };
+      }) || {
         limits: {
           cpu: '250m',
           memory: '256Mi',
@@ -68,7 +82,10 @@ function getEnvironmentOverrides(): EnvironmentOverrides {
       persistence: {
         size: '20Gi',
       },
-      resources: {
+      resources: (customResources?.production as {
+        limits: { cpu: string; memory: string };
+        requests: { cpu: string; memory: string };
+      }) || {
         limits: {
           cpu: '1000m',
           memory: '1Gi',
@@ -104,7 +121,7 @@ function generateDatabaseValuesForService(service: ServiceWithDatabase): void {
 
   // Generate values for each environment
   const environments = ['development', 'production'];
-  const envOverrides = getEnvironmentOverrides();
+  const envOverrides = getEnvironmentOverrides(serviceName, projectRoot);
 
   for (const env of environments) {
     const baseValues = getDefaultDatabaseValues(serviceName, dbName, dbUser);
