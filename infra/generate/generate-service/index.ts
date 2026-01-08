@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import Handlebars from 'handlebars';
-import inquirer from 'inquirer';
+import { input, select, number } from '@inquirer/prompts';
 import * as yaml from 'yaml';
 
 interface ServiceConfig {
@@ -40,103 +40,104 @@ const SERVICES_DIR = path.join(__dirname, '../../../services');
 const SERVICES_YAML_PATH = path.join(__dirname, '../../../services.yaml');
 
 async function promptServiceConfig(): Promise<ServiceConfig> {
-  // biome-ignore lint/suspicious/noExplicitAny: inquirer типизация не поддерживает boolean в choices
-  const answers = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'serviceName',
-      message: 'Название сервиса (например: auth-bff, user-service):',
-      validate: (input: string) => {
-        if (!input) return 'Название сервиса обязательно';
-        if (!/^[a-z0-9-]+$/.test(input)) return 'Используйте только строчные буквы, цифры и дефисы';
-        const servicePath = path.join(SERVICES_DIR, input);
-        if (fs.existsSync(servicePath)) return `Сервис ${input} уже существует`;
-        return true;
-      },
+  const serviceName = await input({
+    message: 'Название сервиса (например: auth-bff, user-service):',
+    validate: (value: string) => {
+      if (!value) return 'Название сервиса обязательно';
+      if (!/^[a-z0-9-]+$/.test(value)) return 'Используйте только строчные буквы, цифры и дефисы';
+      const servicePath = path.join(SERVICES_DIR, value);
+      if (fs.existsSync(servicePath)) return `Сервис ${value} уже существует`;
+      return true;
     },
-    {
-      type: 'list',
-      name: 'serviceType',
-      message: 'Тип сервиса:',
-      choices: [
-        { name: 'NestJS (Backend)', value: 'nest' },
-        { name: 'Next.js (Frontend)', value: 'next' },
-      ],
+  });
+
+  const serviceType = await select({
+    message: 'Тип сервиса:',
+    choices: [
+      { name: 'NestJS (Backend)', value: 'nest' },
+      { name: 'Next.js (Frontend)', value: 'next' },
+    ],
+  });
+
+  const description = await input({
+    message: 'Описание сервиса:',
+    validate: (value: string) => (value ? true : 'Описание обязательно'),
+  });
+
+  const port = await number({
+    message: 'Порт для локальной разработки:',
+    default: serviceType === 'nest' ? 4000 : 3000,
+    validate: (value: number | undefined) => {
+      if (!value || value < 1024 || value > 65535) return 'Порт должен быть от 1024 до 65535';
+      return true;
     },
-    {
-      type: 'input',
-      name: 'description',
-      message: 'Описание сервиса:',
-      validate: (input: string) => (input ? true : 'Описание обязательно'),
-    },
-    {
-      type: 'number',
-      name: 'port',
-      message: 'Порт для локальной разработки:',
-      default: (answers: { serviceType: string }) => (answers.serviceType === 'nest' ? 4000 : 3000),
-      validate: (input: number) => {
-        if (!input || input < 1024 || input > 65535) return 'Порт должен быть от 1024 до 65535';
-        return true;
-      },
-    },
-    {
-      type: 'input',
-      name: 'apiPrefix',
+  });
+
+  let apiPrefix: string | undefined;
+  let hasDatabase = false;
+  let databaseName: string | undefined;
+  let databaseUser: string | undefined;
+  let databasePasswordSecret: string | undefined;
+
+  if (serviceType === 'nest') {
+    apiPrefix = await input({
       message: 'API префикс (для NestJS):',
-      default: (answers: { serviceName: string }) => answers.serviceName,
-      when: (answers: { serviceType: string }) => answers.serviceType === 'nest',
-    },
-    {
-      type: 'list',
-      name: 'hasDatabase',
+      default: serviceName,
+    });
+
+    hasDatabase = await select({
       message: 'Нужна ли сервису база данных PostgreSQL?',
       choices: [
         { name: 'Нет', value: false },
         { name: 'Да', value: true },
       ],
-      default: 0,
-      when: (answers: { serviceType: string }) => answers.serviceType === 'nest',
-    },
-    {
-      type: 'input',
-      name: 'databaseName',
-      message: 'Название базы данных:',
-      default: (answers: { serviceName: string }) => `${answers.serviceName.replace(/-/g, '_')}_db`,
-      when: (answers: { hasDatabase: boolean }) => answers.hasDatabase,
-      validate: (input: string) => {
-        if (!input) return 'Название базы данных обязательно';
-        if (!/^[a-z0-9_]+$/.test(input)) return 'Используйте только строчные буквы, цифры и подчеркивания';
-        return true;
-      },
-    },
-    {
-      type: 'input',
-      name: 'databaseUser',
-      message: 'Имя пользователя базы данных:',
-      default: (answers: { serviceName: string }) => `${answers.serviceName.replace(/-/g, '_')}_user`,
-      when: (answers: { hasDatabase: boolean }) => answers.hasDatabase,
-      validate: (input: string) => {
-        if (!input) return 'Имя пользователя обязательно';
-        if (!/^[a-z0-9_]+$/.test(input)) return 'Используйте только строчные буквы, цифры и подчеркивания';
-        return true;
-      },
-    },
-    {
-      type: 'input',
-      name: 'databasePasswordSecret',
-      message: 'Название GitHub Secret для пароля БД:',
-      default: (answers: { serviceName: string }) =>
-        `${answers.serviceName.replace(/-/g, '_').toUpperCase()}_DB_PASSWORD`,
-      when: (answers: { hasDatabase: boolean }) => answers.hasDatabase,
-      validate: (input: string) => {
-        if (!input) return 'Название секрета обязательно';
-        if (!/^[A-Z0-9_]+$/.test(input)) return 'Используйте только заглавные буквы, цифры и подчеркивания';
-        return true;
-      },
-    },
-  ]);
+      default: false,
+    });
 
-  return answers as ServiceConfig;
+    if (hasDatabase) {
+      databaseName = await input({
+        message: 'Название базы данных:',
+        default: `${serviceName.replace(/-/g, '_')}_db`,
+        validate: (value: string) => {
+          if (!value) return 'Название базы данных обязательно';
+          if (!/^[a-z0-9_]+$/.test(value)) return 'Используйте только строчные буквы, цифры и подчеркивания';
+          return true;
+        },
+      });
+
+      databaseUser = await input({
+        message: 'Имя пользователя базы данных:',
+        default: `${serviceName.replace(/-/g, '_')}_user`,
+        validate: (value: string) => {
+          if (!value) return 'Имя пользователя обязательно';
+          if (!/^[a-z0-9_]+$/.test(value)) return 'Используйте только строчные буквы, цифры и подчеркивания';
+          return true;
+        },
+      });
+
+      databasePasswordSecret = await input({
+        message: 'Название GitHub Secret для пароля БД:',
+        default: `${serviceName.replace(/-/g, '_').toUpperCase()}_DB_PASSWORD`,
+        validate: (value: string) => {
+          if (!value) return 'Название секрета обязательно';
+          if (!/^[A-Z0-9_]+$/.test(value)) return 'Используйте только заглавные буквы, цифры и подчеркивания';
+          return true;
+        },
+      });
+    }
+  }
+
+  return {
+    serviceName,
+    serviceType: serviceType as 'nest' | 'next',
+    description,
+    port: port as number,
+    apiPrefix,
+    hasDatabase,
+    databaseName,
+    databaseUser,
+    databasePasswordSecret,
+  };
 }
 
 function copyTemplateFile(templatePath: string, targetPath: string, config: ServiceConfig, isHandlebars = true): void {
@@ -238,20 +239,16 @@ async function generateService(): Promise<void> {
   }
   console.log('');
 
-  const { confirm } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'confirm',
-      message: 'Создать сервис с этими настройками?',
-      choices: [
-        { name: 'Да, создать сервис', value: true },
-        { name: 'Нет, отменить', value: false },
-      ],
-      default: 0,
-    },
-  ]);
+  const confirmCreate = await select({
+    message: 'Создать сервис с этими настройками?',
+    choices: [
+      { name: 'Да, создать сервис', value: true },
+      { name: 'Нет, отменить', value: false },
+    ],
+    default: true,
+  });
 
-  if (!confirm) {
+  if (!confirmCreate) {
     console.log('❌ Генерация отменена');
     return;
   }
