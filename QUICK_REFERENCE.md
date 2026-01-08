@@ -23,6 +23,7 @@ QueryFailedError: relation "users" does not exist
 **Решение**: См. [FIX_MISSING_TABLES.md](FIX_MISSING_TABLES.md) для детальной инструкции.
 
 **Быстрое решение**:
+
 1. Удалите PostgreSQL через workflow (action: uninstall)
 2. Удалите PVC: `kubectl delete pvc data-postgresql-backend-0 -n default`
 3. Закоммитьте изменения в `init.sql`

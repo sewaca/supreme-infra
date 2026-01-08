@@ -11,6 +11,14 @@ services:
         user: backend_user
         passwordSecret: DB_PASSWORD # GitHub Secret name for database password
 
+    # - name: auth-bff
+    #   description: Auth BFF service (NestJS)
+    #   database:
+    #     enabled: true
+    #     name: auth_bff_db
+    #     user: auth_bff_user
+    #     passwordSecret: AUTH_BFF_DB_PASSWORD # GitHub Secret name for database password
+
   next:
     - name: frontend
       description: Frontend service (Next.js)
