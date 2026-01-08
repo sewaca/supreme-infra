@@ -20,7 +20,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
-import { UsersService } from '../../Auth/model/Users.service';
+import { RecipeLikesService } from '../model/RecipeLikes.service';
 import { type RecipeDetails, RecipesService } from '../model/Recipes.service';
 import { type SubmitRecipeDto, submitRecipeSchema } from '../model/recipe.schemas';
 
@@ -28,7 +28,7 @@ import { type SubmitRecipeDto, submitRecipeSchema } from '../model/recipe.schema
 export class RecipesController {
   constructor(
     private readonly recipesService: RecipesService,
-    private readonly usersService: UsersService,
+    private readonly recipeLikesService: RecipeLikesService,
   ) {}
 
   @Get()
@@ -69,11 +69,11 @@ export class RecipesController {
 
     try {
       const recipe = this.recipesService.getRecipeById(recipeId, isProposed);
-      const totalLikes = await this.usersService.getRecipeLikesCount(recipeId);
+      const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
       const updatedRecipe = { ...recipe, likes: totalLikes };
 
       if (req.user?.id) {
-        const isLiked = await this.usersService.isRecipeLikedByUser(req.user.id, recipeId);
+        const isLiked = await this.recipeLikesService.isRecipeLikedByUser(req.user.id, recipeId);
         return { ...updatedRecipe, isLiked };
       }
       return updatedRecipe;
@@ -142,7 +142,7 @@ export class RecipesController {
       throw error;
     }
 
-    return this.usersService.toggleRecipeLike(req.user.id, recipeId);
+    return this.recipeLikesService.toggleRecipeLike(req.user.id, recipeId);
   }
 
   @Put(':id')
