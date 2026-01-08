@@ -117,7 +117,7 @@ async function promptServiceConfig(): Promise<ServiceConfig> {
 
       databasePasswordSecret = await input({
         message: 'Название GitHub Secret для пароля БД:',
-        default: `${serviceName.replace(/-/g, '_').toUpperCase()}_DB_PASSWORD`,
+        default: `DB_PASSWORD`,
         validate: (value: string) => {
           if (!value) return 'Название секрета обязательно';
           if (!/^[A-Z0-9_]+$/.test(value)) return 'Используйте только заглавные буквы, цифры и подчеркивания';
