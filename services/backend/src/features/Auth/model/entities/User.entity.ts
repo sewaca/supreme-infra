@@ -5,48 +5,48 @@ export type UserRole = 'user' | 'moderator' | 'admin';
 @Entity('users')
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ type: 'varchar', length: 20, default: 'user' })
-  role: UserRole;
+  role!: UserRole;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @OneToMany(
     () => RecipeLikeEntity,
     (recipeLike) => recipeLike.user,
   )
-  recipeLikes: RecipeLikeEntity[];
+  recipeLikes!: RecipeLikeEntity[];
 }
 
 @Entity('recipe_likes')
 export class RecipeLikeEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ name: 'user_id' })
-  userId: number;
+  userId!: number;
 
   @Column({ name: 'recipe_id' })
-  recipeId: number;
+  recipeId!: number;
 
   @CreateDateColumn({ name: 'liked_at' })
-  likedAt: Date;
+  likedAt!: Date;
 
   @ManyToOne(
     () => UserEntity,
     (user) => user.recipeLikes,
   )
   @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  user!: UserEntity;
 }
