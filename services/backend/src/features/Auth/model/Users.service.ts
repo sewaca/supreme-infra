@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RecipeLikeEntity, UserEntity } from './entities/User.entity';
+import { RecipeLikeEntity, UserEntity } from './User.entity';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
