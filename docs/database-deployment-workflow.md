@@ -9,7 +9,7 @@ Workflow `deploy-database.yml` позволяет:
 - ✅ Устанавливать PostgreSQL для любого сервиса с включенной БД
 - 🔄 Обновлять существующие базы данных
 - 🗑️ Удалять базы данных
-- 🎯 Деплой в production окружение
+- 🎯 Деплой в default namespace
 - ✅ Автоматически валидировать конфигурацию
 - 📊 Проверять подключение после деплоя
 
@@ -49,7 +49,7 @@ Workflow `deploy-database.yml` позволяет:
   - **УДАЛЯЕТ PVC и все данные**
   - Используется для полной очистки или пересоздания БД
 
-Все деплои выполняются в **production** namespace с требованием approval.
+Все деплои выполняются в **default** namespace.
 
 ## Примеры использования
 
@@ -62,7 +62,7 @@ action: install
 
 Результат:
 
-- Создается release `postgresql-backend` в namespace `production`
+- Создается release `postgresql-backend` в namespace `default`
 - Используются values из `infra/overrides/production/postgresql-backend.yaml`
 - Применяется `init.sql` скрипт для создания таблиц и начальных данных
 - Пароль берется из secret `DB_PASSWORD`
@@ -116,7 +116,7 @@ action: uninstall
 
 ```bash
 helm install postgresql-backend ./infra/helmcharts/postgresql \
-  --namespace production \
+  --namespace default \
   --set database.password="$DB_PASSWORD" \
   -f infra/overrides/production/postgresql-backend.yaml \
   --wait --timeout 5m
@@ -126,7 +126,7 @@ helm install postgresql-backend ./infra/helmcharts/postgresql \
 
 ```bash
 helm upgrade postgresql-backend ./infra/helmcharts/postgresql \
-  --namespace production \
+  --namespace default \
   --set database.password="$DB_PASSWORD" \
   -f infra/overrides/production/postgresql-backend.yaml \
   --wait --timeout 5m
@@ -137,7 +137,7 @@ helm upgrade postgresql-backend ./infra/helmcharts/postgresql \
 #### Uninstall
 
 ```bash
-helm uninstall postgresql-backend --namespace production --wait
+helm uninstall postgresql-backend --namespace default --wait
 ```
 
 ### 3. Verify Deployment
@@ -189,22 +189,14 @@ Workflow также использует:
 - `YC_FOLDER_ID` - Yandex Cloud folder ID
 - `YC_K8S_CLUSTER_ID` - Kubernetes cluster ID
 
-## Environment
+## Namespace
 
-Все базы данных деплоятся в **production** environment:
+Все базы данных деплоятся в **default** namespace:
 
-- Namespace: `production`
-- Approval: **требуется** (настраивается в GitHub)
+- Namespace: `default`
 - Resources: см. values в `infra/overrides/production/`
 
-### Настройка production environment
-
-1. Settings → Environments → New environment
-2. Name: `production`
-3. Protection rules → Required reviewers
-4. Добавьте reviewers
-
-Это обеспечивает дополнительный уровень защиты для production баз данных.
+Это позволяет backend сервисам легко подключаться к БД по простому DNS-имени `postgresql-{service}`.
 
 ## Автоматическое обновление
 
@@ -300,13 +292,13 @@ git push
 
 ```bash
 # Посмотреть статус
-kubectl get pods -l app.kubernetes.io/name=postgresql -n production
+kubectl get pods -l app.kubernetes.io/name=postgresql -n default
 
 # Посмотреть события
-kubectl describe pod postgresql-backend-0 -n production
+kubectl describe pod postgresql-backend-0 -n default
 
 # Посмотреть логи
-kubectl logs postgresql-backend-0 -n production
+kubectl logs postgresql-backend-0 -n default
 ```
 
 **Частые причины**:
@@ -322,7 +314,7 @@ kubectl logs postgresql-backend-0 -n production
 **Решение**:
 
 1. Проверьте ресурсы кластера
-2. Проверьте PVC: `kubectl get pvc -n production`
+2. Проверьте PVC: `kubectl get pvc -n default`
 3. Увеличьте timeout в workflow (если нужно)
 
 ## Мониторинг
@@ -331,31 +323,31 @@ kubectl logs postgresql-backend-0 -n production
 
 ```bash
 # Статус pod
-kubectl get pods -l app.kubernetes.io/name=postgresql -n production
+kubectl get pods -l app.kubernetes.io/name=postgresql -n default
 
 # Статус PVC
-kubectl get pvc -n production
+kubectl get pvc -n default
 
 # Логи
-kubectl logs -f postgresql-backend-0 -n production
+kubectl logs -f postgresql-backend-0 -n default
 ```
 
 ### Подключение к БД
 
 ```bash
 # Из кластера
-kubectl exec -it postgresql-backend-0 -n production -- \
+kubectl exec -it postgresql-backend-0 -n default -- \
   psql -U backend_user -d backend_db
 
 # Port-forward для локального доступа
-kubectl port-forward postgresql-backend-0 5432:5432 -n production
+kubectl port-forward postgresql-backend-0 5432:5432 -n default
 psql -h localhost -U backend_user -d backend_db
 ```
 
 ### Проверка размера БД
 
 ```bash
-kubectl exec postgresql-backend-0 -n production -- \
+kubectl exec postgresql-backend-0 -n default -- \
   psql -U backend_user -d backend_db \
   -c "SELECT pg_size_pretty(pg_database_size('backend_db'));"
 ```
@@ -367,14 +359,14 @@ kubectl exec postgresql-backend-0 -n production -- \
 После деплоя используйте команды из output:
 
 ```bash
-kubectl exec postgresql-backend-0 -n production -- \
+kubectl exec postgresql-backend-0 -n default -- \
   pg_dump -U backend_user backend_db > backup-$(date +%Y%m%d).sql
 ```
 
 ### Восстановление
 
 ```bash
-kubectl exec -i postgresql-backend-0 -n production -- \
+kubectl exec -i postgresql-backend-0 -n default -- \
   psql -U backend_user backend_db < backup.sql
 ```
 

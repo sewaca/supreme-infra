@@ -101,7 +101,6 @@ jobs:
     name: Deploy PostgreSQL for ${{ github.event.inputs.service }}
     needs: validate-service
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -123,7 +122,7 @@ jobs:
         id: check-release
         env:
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
-          NAMESPACE: production
+          NAMESPACE: default
         run: |
           if helm list -n "$NAMESPACE" | grep -q "^$RELEASE_NAME"; then
             echo "exists=true" >> $GITHUB_OUTPUT
@@ -138,10 +137,10 @@ jobs:
         env:
           SERVICE_NAME: ${{ github.event.inputs.service }}
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
-          NAMESPACE: production
+          NAMESPACE: default
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          echo "Installing PostgreSQL for $SERVICE_NAME in production environment"
+          echo "Installing PostgreSQL for $SERVICE_NAME in default namespace"
           
           VALUES_FILE="infra/overrides/production/postgresql-${SERVICE_NAME}.yaml"
           
@@ -166,7 +165,7 @@ jobs:
         env:
           SERVICE_NAME: ${{ github.event.inputs.service }}
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
-          NAMESPACE: production
+          NAMESPACE: default
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           EXISTS: ${{ steps.check-release.outputs.exists }}
         run: |
@@ -189,7 +188,7 @@ jobs:
               --timeout 5m
             echo "✅ PostgreSQL installed successfully"
           else
-            echo "Upgrading PostgreSQL for $SERVICE_NAME in production environment"
+            echo "Upgrading PostgreSQL for $SERVICE_NAME in default namespace"
             helm upgrade "$RELEASE_NAME" ./infra/helmcharts/postgresql \
               --namespace "$NAMESPACE" \
               --set database.password="$DB_PASSWORD" \
@@ -203,7 +202,7 @@ jobs:
         if: github.event.inputs.action == 'uninstall'
         env:
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
-          NAMESPACE: production
+          NAMESPACE: default
           EXISTS: ${{ steps.check-release.outputs.exists }}
         run: |
           if [ "$EXISTS" = "false" ]; then
@@ -225,7 +224,7 @@ jobs:
         if: github.event.inputs.action != 'uninstall'
         env:
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
-          NAMESPACE: production
+          NAMESPACE: default
           DB_NAME: ${{ needs.validate-service.outputs.db_name }}
           DB_USER: ${{ needs.validate-service.outputs.db_user }}
         run: |
@@ -274,7 +273,7 @@ jobs:
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
           DB_NAME: ${{ needs.validate-service.outputs.db_name }}
           DB_USER: ${{ needs.validate-service.outputs.db_user }}
-          NAMESPACE: production
+          NAMESPACE: default
         run: |
           echo "╔════════════════════════════════════════════════════════════╗"
           echo "║          PostgreSQL Deployment Successful                 ║"
@@ -282,7 +281,7 @@ jobs:
           echo ""
           echo "📊 Database Information:"
           echo "  Service: $SERVICE_NAME"
-          echo "  Environment: production"
+          echo "  Environment: default"
           echo "  Release: $RELEASE_NAME"
           echo "  Namespace: $NAMESPACE"
           echo ""
