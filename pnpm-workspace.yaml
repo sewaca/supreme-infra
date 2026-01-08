@@ -77,6 +77,9 @@ catalog:
   bcryptjs: ^3.0.3
   passport: ^0.7.0
   passport-jwt: ^4.0.1
+  "@nestjs/typeorm": ^11.0.0
+  typeorm: ^0.3.20
+  pg: ^8.13.1
 
   # Frontend specific
   classnames: ^2.5.1

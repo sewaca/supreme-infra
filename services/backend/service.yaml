@@ -19,6 +19,11 @@ env:
   PORT: "4000"
   NODE_ENV: "production"
   # JWT_SECRET is passed from GitHub Secrets during deployment
+  DB_HOST: "postgresql-backend"
+  DB_PORT: "5432"
+  DB_NAME: "backend_db"
+  DB_USER: "backend_user"
+  # DB_PASSWORD is passed from GitHub Secrets during deployment
 
 livenessProbe:
   httpGet:
