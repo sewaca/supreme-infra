@@ -4,12 +4,14 @@
 
 ### 1. Создан кастомный NestJS логгер с OpenTelemetry интеграцией
 
-**Файлы:**
+**Пакет:** `@supreme-int/nestjs-shared`
 
-- `src/shared/logger/otel-logger.service.ts` - основной логгер
-- `src/shared/logger/logger.module.ts` - модуль логгера
-- `src/shared/logger/index.ts` - barrel export
-- `src/shared/logger/README.md` - полная документация
+**Файлы в пакете:**
+
+- `packages/nestjs-shared/src/logger/otel-logger.service.ts` - основной логгер
+- `packages/nestjs-shared/src/logger/logger.module.ts` - модуль логгера
+- `packages/nestjs-shared/src/logger/index.ts` - barrel export
+- `packages/nestjs-shared/README.md` - документация пакета
 
 ### 2. Интеграция с приложением
 
@@ -98,7 +100,7 @@
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import { OtelLoggerService } from "@/shared/logger";
+import { OtelLoggerService } from "@supreme-int/nestjs-shared";
 
 @Injectable()
 export class UsersService {
@@ -123,7 +125,7 @@ export class UsersService {
 
 ```typescript
 import { Controller, Get } from "@nestjs/common";
-import { OtelLoggerService } from "@/shared/logger";
+import { OtelLoggerService } from "@supreme-int/nestjs-shared";
 
 @Controller("users")
 export class UsersController {

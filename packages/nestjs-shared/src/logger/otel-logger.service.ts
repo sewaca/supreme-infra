@@ -1,10 +1,14 @@
 import { ConsoleLogger, Injectable, LogLevel } from '@nestjs/common';
+import type { Logger } from '@opentelemetry/api-logs';
 import { type LogRecord, SeverityNumber } from '@opentelemetry/api-logs';
-import { loggerProvider } from '../../instrumentation';
 
 @Injectable()
 export class OtelLoggerService extends ConsoleLogger {
-  private otelLogger = loggerProvider.getLogger('nestjs-logger');
+  private otelLogger: Logger | null = null;
+
+  setOtelLogger(logger: Logger): void {
+    this.otelLogger = logger;
+  }
 
   private getSeverity(level: LogLevel): { number: SeverityNumber; text: string } {
     switch (level) {
@@ -30,6 +34,10 @@ export class OtelLoggerService extends ConsoleLogger {
   }
 
   private emitToOtel(level: LogLevel, message: unknown, context?: string, trace?: string): void {
+    if (!this.otelLogger) {
+      return;
+    }
+
     const severity = this.getSeverity(level);
     const body = this.formatLogMessage(message, context);
 

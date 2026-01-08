@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OtelLoggerService } from '@supreme-int/nestjs-shared';
 import { Repository } from 'typeorm';
-import { OtelLoggerService } from '../../../shared/logger';
 import { RecipeLikeEntity, UserEntity } from './User.entity';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
