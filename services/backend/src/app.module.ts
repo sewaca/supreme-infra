@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './features/Auth/api/Auth.module';
-import { RecipeLikeEntity, UserEntity } from './features/Auth/model/entities/User.entity';
+import { RecipeLikeEntity, UserEntity } from './features/Auth/model/User.entity';
 import { HealthController } from './features/HealthCheck/api/health.controller';
 import { RecipesModule } from './features/Recipes/api/Recipes.module';
 
