@@ -65,7 +65,7 @@
       "id": 1,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "{{`{{http_status_code}}`}}", "range": true, "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "{{http_status_code}}", "range": true, "refId": "A"}],
       "title": "OR RPS",
       "type": "timeseries"
     },
@@ -111,7 +111,7 @@
       "id": 14,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"editorMode": "code", "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m])))) by (pod) or on() vector(0)", "legendFormat": "P80 {{`{{pod}}`}}", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m])))) by (pod) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P95 {{`{{pod}}`}}", "range": true, "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m])))) by (pod) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P99 {{`{{pod}}`}}", "range": true, "refId": "C"}],
+      "targets": [{"editorMode": "code", "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m])))) by (pod) or on() vector(0)", "legendFormat": "P80 {{pod}}", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m])))) by (pod) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P95 {{pod}}", "range": true, "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m])))) by (pod) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P99 {{pod}}", "range": true, "refId": "C"}],
       "title": "Timings (ms) by pod",
       "type": "timeseries"
     },
@@ -130,7 +130,7 @@
       "id": 15,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{`{{http_status_code}}`}} from {{`{{pod}}`}}", "range": true, "refId": "A"}],
+      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{http_status_code}} from {{pod}}", "range": true, "refId": "A"}],
       "title": "OR PRS by pod",
       "type": "timeseries"
     },
@@ -149,7 +149,7 @@
       "id": 16,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{`{{http_status_code}}`}} by {{`{{pod}}`}}", "range": true, "refId": "A"}],
+      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{http_status_code}} by {{pod}}", "range": true, "refId": "A"}],
       "title": "Bad RPS by pod",
       "type": "timeseries"
     },
@@ -177,7 +177,7 @@
       "id": 8,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(nodejs_eventloop_utilization{service=\"{{serviceName}}\"}) by (pod) or on() vector(0)", "legendFormat": "Event Loop Utilization {{`{{pod}}`}}", "range": true, "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(nodejs_eventloop_utilization{service=\"{{serviceName}}\"}) by (pod) or on() vector(0)", "legendFormat": "Event Loop Utilization {{pod}}", "range": true, "refId": "A"}],
       "title": "Event Loop Utilization",
       "type": "timeseries"
     },
@@ -197,7 +197,7 @@
       "id": 7,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(v8js_memory_heap_used{service=\"{{serviceName}}\"}) by (pod) or on() vector(0)", "legendFormat": "Heap Used {{`{{pod}}`}}", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(v8js_memory_heap_limit{service=\"{{serviceName}}\"}) by (pod) or on() vector(0)", "legendFormat": "Heap Limit {{`{{pod}}`}}", "range": true, "refId": "B"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(v8js_memory_heap_used{service=\"{{serviceName}}\"}) by (pod) or on() vector(0)", "legendFormat": "Heap Used {{pod}}", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(v8js_memory_heap_limit{service=\"{{serviceName}}\"}) by (pod) or on() vector(0)", "legendFormat": "Heap Limit {{pod}}", "range": true, "refId": "B"}],
       "title": "Memory Usage",
       "type": "timeseries"
     },
@@ -241,7 +241,7 @@
           "id": 4,
           "options": {"legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value"]}, "pieType": "pie", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
           "pluginVersion": "11.4.0",
-          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "expr": "sum by (http_status_code) (rate(http_server_duration_count{service=\"{{serviceName}}\"}[5m]))", "legendFormat": "{{`{{http_status_code}}`}}", "refId": "A"}],
+          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "expr": "sum by (http_status_code) (rate(http_server_duration_count{service=\"{{serviceName}}\"}[5m]))", "legendFormat": "{{http_status_code}}", "refId": "A"}],
           "title": "Status Codes Distribution",
           "type": "piechart"
         },
@@ -261,7 +261,7 @@
           "id": 5,
           "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
           "pluginVersion": "11.4.0",
-          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "expr": "topk(10, sum by (http_target) (rate(http_server_duration_count{service=\"{{serviceName}}\"}[5m])))", "legendFormat": "{{`{{http_target}}`}}", "refId": "A"}],
+          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "expr": "topk(10, sum by (http_target) (rate(http_server_duration_count{service=\"{{serviceName}}\"}[5m])))", "legendFormat": "{{http_target}}", "refId": "A"}],
           "title": "Top 10 Endpoints by RPS",
           "type": "timeseries"
         },
@@ -281,7 +281,7 @@
           "id": 6,
           "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
           "pluginVersion": "11.4.0",
-          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "expr": "topk(10, histogram_quantile(0.95, sum by (http_target, le) (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m]))))", "legendFormat": "{{`{{http_target}}`}}", "refId": "A"}],
+          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "expr": "topk(10, histogram_quantile(0.95, sum by (http_target, le) (rate(http_server_duration_bucket{service=\"{{serviceName}}\"}[5m]))))", "legendFormat": "{{http_target}}", "refId": "A"}],
           "title": "Top 10 Slowest Endpoints (P95)",
           "type": "timeseries"
         }

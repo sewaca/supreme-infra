@@ -238,14 +238,37 @@ $ pnpm run generate:service
    pnpm run dev
    ```
 
+## Структура шаблонов
+
+```
+templates/
+├── common/              # Файлы, обрабатываемые отдельно
+│   ├── nest/
+│   │   ├── env.example.hbs           # → services/<name>/.env.example
+│   │   ├── grafana-dashboard.json.hbs # → infra/helmcharts/grafana/dashboards/<name>-metrics.json
+│   │   └── database-init.sql.hbs      # → infra/databases/<name>-db/init.sql
+│   └── next/
+│       ├── env.example.hbs           # → services/<name>/.env.example
+│       └── grafana-dashboard.json.hbs # → infra/helmcharts/grafana/dashboards/<name>-metrics.json
+├── nest/                # Файлы, копируемые в сервис
+│   ├── package.json.hbs
+│   ├── Dockerfile.hbs
+│   └── src/...
+└── next/                # Файлы, копируемые в сервис
+    ├── package.json.hbs
+    ├── Dockerfile.hbs
+    └── app/...
+```
+
 ## Добавление шаблонов
 
-Чтобы добавить новые файлы в шаблоны:
+### Файлы, копируемые в сервис
 
-1. Создайте файл в `templates/nest/` или `templates/next/`
-2. Используйте расширение `.hbs` для файлов с Handlebars переменными
-3. Структура папок должна соответствовать итоговой структуре сервиса
-4. Используйте переменные `{{variableName}}` для подстановки значений
+Создайте файл в `templates/nest/` или `templates/next/`:
+
+1. Используйте расширение `.hbs` для файлов с Handlebars переменными
+2. Структура папок должна соответствовать итоговой структуре сервиса
+3. Используйте переменные `{{variableName}}` для подстановки значений
 
 Пример:
 
@@ -258,6 +281,14 @@ templates/nest/src/features/MyFeature/my-file.ts.hbs
 ```
 services/<service-name>/src/features/MyFeature/my-file.ts
 ```
+
+### Файлы, обрабатываемые отдельно
+
+Для файлов, которые генерируются в другие места (не в папку сервиса):
+
+1. Добавьте шаблон в `templates/common/nest/` или `templates/common/next/`
+2. Обновите функцию генерации в `index.ts`
+3. Укажите целевой путь для файла
 
 ## Валидация
 
@@ -277,12 +308,14 @@ services/<service-name>/src/features/MyFeature/my-file.ts
 Генератор автоматически создает `.env.example` файл с необходимыми переменными окружения:
 
 **Для NestJS сервисов:**
+
 - `PORT` - порт сервера
 - `NODE_ENV` - окружение
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` - параметры БД (если есть)
 - `LOKI_ENDPOINT` - эндпоинт для логов
 
 **Для Next.js сервисов:**
+
 - `PORT` - порт сервера
 - `NODE_ENV` - окружение
 - `LOKI_ENDPOINT` - эндпоинт для логов
@@ -292,20 +325,24 @@ services/<service-name>/src/features/MyFeature/my-file.ts
 Автоматически создается дашборд в `infra/helmcharts/grafana/dashboards/<service-name>-metrics.json` с метриками:
 
 **Main панели:**
+
 - Timings (P80, P95, P99) - время ответа
 - OR RPS - успешные запросы (2xx, 3xx)
 - Bad RPS - ошибочные запросы (4xx, 5xx)
 
 **By POD панели:**
+
 - Timings by pod - время ответа по подам
 - OR RPS by pod - успешные запросы по подам
 - Bad RPS by pod - ошибочные запросы по подам
 
 **Node JS панели:**
+
 - Event Loop Utilization - загрузка event loop
 - Memory Usage - использование памяти (Heap Used/Limit)
 
 **Дополнительные панели (свернуты):**
+
 - Error Rate (5xx) - процент ошибок
 - Status Codes Distribution - распределение статус-кодов
 - Top 10 Endpoints by RPS - топ эндпоинтов по RPS
