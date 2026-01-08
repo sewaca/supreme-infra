@@ -2,7 +2,8 @@
   "name": "@supreme-int/nestjs-shared",
   "version": "1.0.0",
   "scripts": {
-    "unit": "vitest run"
+    "unit": "vitest run",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@fastify/helmet": "catalog:",
