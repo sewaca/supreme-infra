@@ -7,12 +7,6 @@ ingress:
   name: ingress-main
   namespace: default
   rules:
-    - service: auth-bff
-      port: 80
-      type: nest
-      paths:
-        - path: /auth-bff/api/status
-          method: GET
     - service: backend
       port: 80
       type: nest
@@ -45,22 +39,6 @@ ingress:
           method: GET
         - path: /main-api/recipes/submit
           method: POST
-    - service: core-auth
-      port: 80
-      type: nest
-      paths:
-        - path: /core-auth/api/status
-          method: GET
-        - path: /core-auth/auth/login
-          method: POST
-        - path: /core-auth/auth/me
-          method: GET
-        - path: /core-auth/auth/register
-          method: POST
-        - path: /core-auth/auth/users/[^/]+
-          method: GET
-        - path: /core-auth/auth/users/[^/]+
-          method: DELETE
     - service: core-auth-bff
       port: 80
       type: nest
