@@ -1,6 +1,6 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { HEALTH_MODULE_OPTIONS } from './health.constants';
-import type { HealthModuleOptions } from './health.types';
+import { HEALTH_MODULE_OPTIONS } from '../model/health.constants';
+import type { HealthModuleOptions } from '../model/health.types';
 
 @Controller('api')
 export class HealthController {

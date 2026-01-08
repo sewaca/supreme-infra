@@ -1,8 +1,8 @@
 import type { DynamicModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { createDatabaseConfig, type DatabaseConfigOptions } from './database-config.factory';
-import { createMockTypeOrmModule } from './mock-typeorm.module';
+import { createMockTypeOrmModule } from '../mocks/mock-typeorm.module';
+import { createDatabaseConfig, type DatabaseConfigOptions } from '../model/createDatabaseConfig.factory';
 
 /**
  * Создает массив импортов для TypeORM с поддержкой SKIP_DB_CONNECTION

@@ -1,6 +1,6 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { HEALTH_MODULE_OPTIONS } from './health.constants';
+import { HEALTH_MODULE_OPTIONS } from '../model/health.constants';
 import { HealthController } from './health.controller';
 
 describe('HealthController', () => {
