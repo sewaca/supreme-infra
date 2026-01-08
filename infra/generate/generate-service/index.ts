@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { input, number, select } from '@inquirer/prompts';
 import Handlebars from 'handlebars';
-import { input, select, number } from '@inquirer/prompts';
 import * as yaml from 'yaml';
 
 interface ServiceConfig {
@@ -36,6 +36,7 @@ interface ServicesYaml {
 }
 
 const TEMPLATES_DIR = path.join(__dirname, 'templates');
+const COMMON_TEMPLATES_DIR = path.join(__dirname, 'templates/common');
 const SERVICES_DIR = path.join(__dirname, '../../../services');
 const SERVICES_YAML_PATH = path.join(__dirname, '../../../services.yaml');
 
@@ -153,43 +154,74 @@ function copyTemplateFile(templatePath: string, targetPath: string, config: Serv
 }
 
 function generateEnvExample(serviceDir: string, config: ServiceConfig): void {
-  const templatePath = path.join(TEMPLATES_DIR, config.serviceType, 'env.example.hbs');
+  const templatePath = path.join(COMMON_TEMPLATES_DIR, config.serviceType, 'env.example.hbs');
   const targetPath = path.join(serviceDir, '.env.example');
   copyTemplateFile(templatePath, targetPath, config, true);
 }
 
 function generateGrafanaDashboard(config: ServiceConfig): void {
-  const templatePath = path.join(TEMPLATES_DIR, config.serviceType, 'grafana-dashboard.json.hbs');
+  const templatePath = path.join(COMMON_TEMPLATES_DIR, config.serviceType, 'grafana-dashboard.json.hbs');
   const dashboardsDir = path.join(__dirname, '../../helmcharts/grafana/dashboards');
-  
+
   if (!fs.existsSync(dashboardsDir)) {
     fs.mkdirSync(dashboardsDir, { recursive: true });
   }
-  
+
   const targetPath = path.join(dashboardsDir, `${config.serviceName}-metrics.json`);
-  copyTemplateFile(templatePath, targetPath, config, true);
+
+  // For Grafana dashboards, we use simple string replacement instead of Handlebars
+  // to avoid conflicts with Grafana's own {{ }} template syntax
+  const content = fs.readFileSync(templatePath, 'utf-8');
+  const rendered = content.replace(/\{\{serviceName\}\}/g, config.serviceName);
+  fs.writeFileSync(targetPath, rendered);
 }
 
 function generateDatabaseInitScript(config: ServiceConfig): void {
   if (!config.hasDatabase || config.serviceType !== 'nest') {
     return;
   }
-  
+
   const dbDir = path.join(__dirname, '../../databases', `${config.serviceName}-db`);
-  
+
   if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true });
   }
-  
+
   // Generate init.sql
-  const initSqlTemplatePath = path.join(TEMPLATES_DIR, 'nest', 'database-init.sql.hbs');
+  const initSqlTemplatePath = path.join(COMMON_TEMPLATES_DIR, 'nest', 'database-init.sql.hbs');
   const initSqlTargetPath = path.join(dbDir, 'init.sql');
   copyTemplateFile(initSqlTemplatePath, initSqlTargetPath, config, true);
-  
+
   // Generate README.md
-  const readmeTemplatePath = path.join(TEMPLATES_DIR, 'nest', 'database-README.md.hbs');
+  const readmeContent = `# ${config.serviceName} Database
+
+PostgreSQL database for ${config.serviceName} service.
+
+## Configuration
+
+- **Database Name**: \`${config.databaseName}\`
+- **Database User**: \`${config.databaseUser}\`
+- **Password Secret**: \`${config.databasePasswordSecret}\`
+
+## Init Script
+
+The \`init.sql\` file contains the initial database schema and seed data.
+Edit this file to add your database tables, indexes, and seed data.
+
+## Local Development
+
+\`\`\`bash
+docker run --name ${config.serviceName}-postgres \\
+  -e POSTGRES_USER=${config.databaseUser} \\
+  -e POSTGRES_PASSWORD=dev_password \\
+  -e POSTGRES_DB=${config.databaseName} \\
+  -p 5432:5432 \\
+  -d postgres:16-alpine
+\`\`\`
+`;
+
   const readmeTargetPath = path.join(dbDir, 'README.md');
-  copyTemplateFile(readmeTemplatePath, readmeTargetPath, config, true);
+  fs.writeFileSync(readmeTargetPath, readmeContent);
 }
 
 function copyTemplateDirectory(templateDir: string, targetDir: string, config: ServiceConfig): void {
