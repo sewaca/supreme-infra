@@ -17,8 +17,6 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
     '@opentelemetry/instrumentation-http': {
       enabled: true,
       requestHook: (span: Span, request: HttpRequest) => {
-        console.log('[debug] inside request hook. url = ', 'url' in request ? request.url : 'unknown');
-
         if ('url' in request && request.url) {
           // Это server request (IncomingMessage)
           const urlPath = request.url.split('?')[0];
