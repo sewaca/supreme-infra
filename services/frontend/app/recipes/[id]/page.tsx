@@ -1,7 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
-import { serverApi } from '../../../src/shared/api/backendApi';
 import type { RecipeDetails } from '../../../src/shared/api/backendApi.types';
-import { getAuthToken, getUser } from '../../../src/shared/lib/auth.server';
+import { getAuthToken, getUser, rscRecipesApi } from '../../../src/shared/lib/auth.server';
 import { RecipeDetailsPage } from '../../../src/views/RecipeDetailsPage/RecipeDetailsPage';
 
 interface RecipePageProps {
@@ -31,7 +30,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
 
   let recipe: RecipeDetails;
   try {
-    recipe = await serverApi.getRecipeById(recipeId, token);
+    recipe = await rscRecipesApi.getRecipeById(recipeId, token);
   } catch (error) {
     if (error instanceof Error && error.message === 'Recipe not found') {
       notFound();

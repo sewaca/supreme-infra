@@ -1,4 +1,4 @@
-import { serverApi } from '../src/shared/api/backendApi';
+import { rscRecipesApi } from '../src/shared/lib/auth.server';
 import { RecipesListPage } from '../src/views/RecipesListPage/RecipesListPage';
 
 interface HomeProps {
@@ -11,7 +11,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const ingredientsString = params.ingredients;
   const ingredientsArray = ingredientsString ? ingredientsString.split(',').map((i) => i.trim()) : undefined;
 
-  const recipes = await serverApi.getRecipes(searchQuery, ingredientsArray);
+  const recipes = await rscRecipesApi.getRecipes(searchQuery, ingredientsArray);
 
   return <RecipesListPage recipes={recipes} searchQuery={searchQuery} selectedIngredients={ingredientsArray} />;
 }
