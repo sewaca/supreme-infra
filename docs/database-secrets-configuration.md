@@ -180,16 +180,7 @@ pwgen -s 32 1
 
 ⚠️ **Пароли должны совпадать!**
 
-PostgreSQL и backend должны использовать **один и тот же** секрет:
-
-```yaml
-# services.yaml
-database:
-  passwordSecret: DB_PASSWORD # ← backend использует этот секрет
-
-
-# deploy-database.yml также использует DB_PASSWORD
-```
+PostgreSQL и backend должны использовать **один и тот же** секрет.
 
 Если вы измените пароль только в одном месте, подключение к БД сломается.
 
