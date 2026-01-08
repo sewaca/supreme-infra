@@ -3,6 +3,7 @@ import helmet from '@fastify/helmet';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 const MAX_BODY_SIZE = 10 * 1024;
 
@@ -13,16 +14,7 @@ async function bootstrap() {
   app.setGlobalPrefix('main-api');
 
   // Enable Helmet for security headers
-  await app.register(helmet, {
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', 'https:'],
-      },
-    },
-  });
+  await app.register(helmet, { contentSecurityPolicy: true });
 
   // Enable CORS
   // TODO: сделать по человечески
@@ -40,6 +32,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  await app.listen(process.env.PORT ?? 4000, '0.0.0.0');
+  const configService = app.get(ConfigService);
+  await app.listen(Number(configService.get('PORT', '4000')), '0.0.0.0');
 }
 bootstrap();
