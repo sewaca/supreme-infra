@@ -30,4 +30,3 @@ export async function getUser(): Promise<User | null> {
     return null;
   }
 }
-

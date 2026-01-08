@@ -1,0 +1,57 @@
+# Конфигурация для {{serviceName}} сервиса
+# Используется при деплое через: helm install {{serviceName}} ./infra/helmcharts/frontend-service -f services/{{serviceName}}/service.yaml
+
+image:
+  repository: {{serviceName}}
+
+nameOverride: "{{serviceName}}"
+fullnameOverride: "{{serviceName}}"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: {{port}}
+
+metrics:
+  enabled: true
+  port: 9464
+
+env:
+  PORT: "{{port}}"
+  NODE_ENV: "production"
+  BACKEND_SERVICE_NAMESPACE: "default"
+
+resources:
+  limits:
+    cpu: 600m
+    memory: 512Mi
+  requests:
+    cpu: 180m
+    memory: 300Mi
+
+# HPA настройки для frontend
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Переопределения для конкретных окружений
+overrides:
+  production:
+    canary:
+      enabled: true
+    # В production увеличиваем минимальное количество реплик
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 5
+    env:
+      NODE_ENV: "production"
+  staging:
+    # В staging можем использовать меньше ресурсов
+    resources:
+      limits:
+        cpu: 300m
+        memory: 384Mi
+

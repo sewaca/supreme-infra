@@ -1,6 +1,6 @@
-import { TOKEN_KEY, type DecodedToken, type UserRole } from './types';
+import { type DecodedToken, TOKEN_KEY, type UserRole } from './types';
 
-export type { UserRole, DecodedToken } from './types';
+export type { DecodedToken, UserRole } from './types';
 
 export function getAuthToken(): string | undefined {
   if (typeof document === 'undefined') {
@@ -64,4 +64,3 @@ export function removeAuthToken(): void {
 
   document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
 }
-

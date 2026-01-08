@@ -1,0 +1,54 @@
+image:
+  repository: {{serviceName}}
+
+nameOverride: "{{serviceName}}"
+fullnameOverride: "{{serviceName}}"
+
+replicas: 1
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: {{port}}
+
+metrics:
+  enabled: true
+  port: 9464
+
+env:
+  PORT: "{{port}}"
+  NODE_ENV: "production"{{#if hasDatabase}}
+  DB_HOST: "postgresql-{{databaseName}}"
+  DB_PORT: "5432"
+  DB_NAME: "{{databaseName}}"
+  DB_USER: "{{databaseUser}}"
+  # DB_PASSWORD is passed from GitHub Secrets during deployment{{/if}}
+
+livenessProbe:
+  httpGet:
+    path: /{{apiPrefix}}/api/status
+
+readinessProbe:
+  httpGet:
+    path: /{{apiPrefix}}/api/status
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 300Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+overrides:
+  production:
+    canary:
+      enabled: true
+

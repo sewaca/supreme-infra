@@ -13,15 +13,18 @@
     "format:prettier": "prettier --write \"**/*.{md,yaml,yml}\" --ignore-unknown",
     "generate:router": "tsx infra/generate/generate-router/index.ts",
     "generate:overrides": "tsx infra/generate-overrides/index.ts",
+    "generate:service": "tsx infra/generate/generate-service/index.ts",
     "generate": "tsx infra/generate/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@types/handlebars": "catalog:",
+    "@types/inquirer": "^9.0.9",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "handlebars": "catalog:",
+    "inquirer": "^13.1.0",
     "nestjs-security-scan": "catalog:",
     "prettier": "catalog:",
     "tsx": "catalog:",

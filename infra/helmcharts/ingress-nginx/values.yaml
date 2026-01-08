@@ -7,10 +7,44 @@ ingress:
   name: ingress-main
   namespace: default
   rules:
+    - service: auth-bff
+      port: 80
+      type: nest
+      paths:
+        - path: /auth-bff/api/status
+          method: GET
     - service: backend
       port: 80
       type: nest
-      paths: []
+      paths:
+        - path: /main-api/api/status
+          method: GET
+        - path: /main-api/auth/login
+          method: POST
+        - path: /main-api/auth/me
+          method: GET
+        - path: /main-api/auth/register
+          method: POST
+        - path: /main-api/auth/users/[^/]+
+          method: GET
+        - path: /main-api/auth/users/[^/]+
+          method: DELETE
+        - path: /main-api/recipes
+          method: GET
+        - path: /main-api/recipes/[^/]+
+          method: GET
+        - path: /main-api/recipes/[^/]+
+          method: PUT
+        - path: /main-api/recipes/[^/]+
+          method: DELETE
+        - path: /main-api/recipes/[^/]+/like
+          method: POST
+        - path: /main-api/recipes/proposed/[^/]+/publish
+          method: POST
+        - path: /main-api/recipes/proposed/all
+          method: GET
+        - path: /main-api/recipes/submit
+          method: POST
     - service: frontend
       port: 80
       type: next

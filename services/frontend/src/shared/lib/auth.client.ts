@@ -1,9 +1,9 @@
 export {
-  getAuthToken,
-  setAuthToken,
-  removeAuthToken,
-  decodeToken,
-  getUserRole,
-  type UserRole,
   type DecodedToken,
+  decodeToken,
+  getAuthToken,
+  getUserRole,
+  removeAuthToken,
+  setAuthToken,
+  type UserRole,
 } from '@supreme-int/api-client/client';

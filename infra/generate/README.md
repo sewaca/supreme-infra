@@ -10,7 +10,20 @@
 2. **Ingress Values** - генерация конфигурации ingress-nginx на основе роутов
 3. **Security Checks** - обновление GitHub Actions workflow для security проверок
 4. **CD Workflow** - обновление GitHub Actions workflow для continuous deployment
-5. **Values Files** - генерация Helm values файлов для всех окружений
+5. **Database Workflow** - обновление GitHub Actions workflow для database migrations
+6. **Database Values** - генерация Helm values для PostgreSQL баз данных
+7. **Values Files** - генерация Helm values файлов для всех окружений
+
+## Генератор сервисов
+
+Для создания нового микросервиса используйте:
+
+```bash
+pnpm run generate:service
+```
+
+Интерактивный генератор создаст полную структуру NestJS или Next.js сервиса.
+Подробнее: [generate-service/README.md](./generate-service/README.md)
 
 ## Использование
 
