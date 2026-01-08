@@ -1,13 +1,7 @@
 {
   "name": "@supreme-int/nestjs-shared",
   "version": "1.0.0",
-  "type": "commonjs",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
-  },
+  "scripts": {},
   "dependencies": {
     "@nestjs/common": "catalog:",
     "@opentelemetry/api-logs": "catalog:",
