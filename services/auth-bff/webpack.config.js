@@ -30,4 +30,3 @@ module.exports = (options) => {
     externals: [nodeExternals({ allowlist: [MONOREPO_PACKAGE] })],
   };
 };
-

@@ -44,10 +44,10 @@ import {
   setupErrorHandlers,
   createNestInstrumentationConfig,
   patchConsole,
-} from '@supreme-int/instrumentation';
+} from "@supreme-int/instrumentation";
 
 const config = {
-  serviceName: 'backend',
+  serviceName: "backend",
   lokiEndpoint: process.env.LOKI_ENDPOINT,
   prometheusPort: 9464,
 };
@@ -59,10 +59,10 @@ const otelSDK = createOpenTelemetrySDK({
 
 startOpenTelemetrySDK(otelSDK, config);
 
-const consoleLogger = otelSDK.loggerProvider.getLogger('console-interceptor');
+const consoleLogger = otelSDK.loggerProvider.getLogger("console-interceptor");
 patchConsole((logRecord) => consoleLogger.emit(logRecord));
 
-const errorLogger = otelSDK.loggerProvider.getLogger('error-handler');
+const errorLogger = otelSDK.loggerProvider.getLogger("error-handler");
 setupErrorHandlers(errorLogger);
 ```
 
@@ -75,10 +75,10 @@ import {
   setupErrorHandlers,
   createNextInstrumentationConfig,
   patchConsole,
-} from '@supreme-int/instrumentation';
+} from "@supreme-int/instrumentation";
 
 const config = {
-  serviceName: 'frontend',
+  serviceName: "frontend",
   lokiEndpoint: process.env.LOKI_ENDPOINT,
   prometheusPort: 9464,
 };
@@ -90,10 +90,10 @@ const otelSDK = createOpenTelemetrySDK({
 
 startOpenTelemetrySDK(otelSDK, config);
 
-const consoleLogger = otelSDK.loggerProvider.getLogger('console-interceptor');
+const consoleLogger = otelSDK.loggerProvider.getLogger("console-interceptor");
 patchConsole((logRecord) => consoleLogger.emit(logRecord));
 
-const errorLogger = otelSDK.loggerProvider.getLogger('error-handler');
+const errorLogger = otelSDK.loggerProvider.getLogger("error-handler");
 setupErrorHandlers(errorLogger);
 ```
 
@@ -104,7 +104,7 @@ setupErrorHandlers(errorLogger);
 Создаёт и настраивает OpenTelemetry SDK.
 
 ```typescript
-function createOpenTelemetrySDK(config: OpenTelemetryConfig): OpenTelemetrySDK
+function createOpenTelemetrySDK(config: OpenTelemetryConfig): OpenTelemetrySDK;
 ```
 
 ### startOpenTelemetrySDK
@@ -120,7 +120,7 @@ function startOpenTelemetrySDK(otelSDK: OpenTelemetrySDK, config: {...}): void
 Патчит глобальные методы console для перехвата логов.
 
 ```typescript
-function patchConsole(customLoggerEmit: (logRecord: LogRecord) => void): void
+function patchConsole(customLoggerEmit: (logRecord: LogRecord) => void): void;
 ```
 
 ### setupErrorHandlers
@@ -128,7 +128,7 @@ function patchConsole(customLoggerEmit: (logRecord: LogRecord) => void): void
 Настраивает обработчики для необработанных исключений и отклонений промисов.
 
 ```typescript
-function setupErrorHandlers(logger: Logger): void
+function setupErrorHandlers(logger: Logger): void;
 ```
 
 ### createNestInstrumentationConfig
@@ -136,7 +136,7 @@ function setupErrorHandlers(logger: Logger): void
 Создаёт конфигурацию инструментации для NestJS приложений.
 
 ```typescript
-function createNestInstrumentationConfig(): InstrumentationConfigMap
+function createNestInstrumentationConfig(): InstrumentationConfigMap;
 ```
 
 ### createNextInstrumentationConfig
@@ -144,7 +144,7 @@ function createNestInstrumentationConfig(): InstrumentationConfigMap
 Создаёт конфигурацию инструментации для Next.js приложений.
 
 ```typescript
-function createNextInstrumentationConfig(): InstrumentationConfigMap
+function createNextInstrumentationConfig(): InstrumentationConfigMap;
 ```
 
 ## Архитектура

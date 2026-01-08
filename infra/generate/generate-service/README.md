@@ -34,6 +34,7 @@ pnpm run generate:service
 ### NestJS (Backend)
 
 Создает полноценный NestJS сервис с:
+
 - Fastify адаптером
 - OpenTelemetry инструментацией
 - Prometheus метриками
@@ -43,6 +44,7 @@ pnpm run generate:service
 - Vitest для тестов
 
 Структура:
+
 ```
 services/<service-name>/
 ├── src/
@@ -74,6 +76,7 @@ services/<service-name>/
 ### Next.js (Frontend)
 
 Создает Next.js 15 приложение с:
+
 - App Router
 - OpenTelemetry инструментацией
 - Prometheus метриками
@@ -81,6 +84,7 @@ services/<service-name>/
 - Vitest + Testing Library для тестов
 
 Структура:
+
 ```
 services/<service-name>/
 ├── app/
@@ -189,15 +193,18 @@ $ pnpm run generate:service
 После создания сервиса необходимо:
 
 1. **Установить зависимости**:
+
    ```bash
    cd services/<service-name>
    pnpm install
    ```
 
 2. **Запустить генераторы инфраструктуры**:
+
    ```bash
    pnpm run generate
    ```
+
    Это обновит:
    - Ingress конфигурацию
    - CI/CD workflows
@@ -224,11 +231,13 @@ $ pnpm run generate:service
 4. Используйте переменные `{{variableName}}` для подстановки значений
 
 Пример:
+
 ```
 templates/nest/src/features/MyFeature/my-file.ts.hbs
 ```
 
 Создаст:
+
 ```
 services/<service-name>/src/features/MyFeature/my-file.ts
 ```
@@ -236,6 +245,7 @@ services/<service-name>/src/features/MyFeature/my-file.ts
 ## Валидация
 
 Генератор проверяет:
+
 - ✅ Название сервиса (только строчные буквы, цифры, дефисы)
 - ✅ Уникальность названия (сервис не должен существовать)
 - ✅ Порт (от 1024 до 65535)
@@ -256,4 +266,3 @@ services/<service-name>/src/features/MyFeature/my-file.ts
 ### Шаблоны не найдены
 
 Убедитесь, что папка `infra/generate/generate-service/templates/` существует и содержит шаблоны.
-

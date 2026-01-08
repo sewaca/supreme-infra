@@ -14,7 +14,7 @@ Shared API client library for authentication and other API calls.
 ### Server-side (Next.js Server Components)
 
 ```typescript
-import { getAuthToken, getUser } from '@supreme-int/api-client/server';
+import { getAuthToken, getUser } from "@supreme-int/api-client/server";
 
 export default async function Page() {
   const user = await getUser();
@@ -25,9 +25,8 @@ export default async function Page() {
 ### Client-side
 
 ```typescript
-import { getAuthToken, setAuthToken, getUserRole } from '@supreme-int/api-client/client';
+import { getAuthToken, setAuthToken, getUserRole } from "@supreme-int/api-client/client";
 
 const token = getAuthToken();
 const role = getUserRole();
 ```
-

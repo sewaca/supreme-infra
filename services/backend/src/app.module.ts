@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { createDatabaseImports, LoggerModule, HealthModule } from '@supreme-int/nestjs-shared';
+import { createDatabaseImports, HealthModule, LoggerModule } from '@supreme-int/nestjs-shared';
 import { AuthModule } from './features/Auth/api/Auth.module';
 import { RecipeLikeEntity, UserEntity } from './features/Auth/model/User.entity';
 import { RecipesModule } from './features/Recipes/api/Recipes.module';

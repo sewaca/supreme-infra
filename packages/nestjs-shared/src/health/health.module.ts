@@ -1,10 +1,12 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { HealthController } from './health.controller';
 import { HEALTH_MODULE_OPTIONS } from './health.constants';
+import { HealthController } from './health.controller';
 import type { HealthModuleOptions } from './health.types';
 
 @Module({})
 export class HealthModule {
+  public readonly moduleName: string = 'health core module';
+
   static forRoot(options: HealthModuleOptions): DynamicModule {
     return {
       module: HealthModule,
@@ -18,4 +20,3 @@ export class HealthModule {
     };
   }
 }
-
