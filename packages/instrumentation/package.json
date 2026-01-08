@@ -1,7 +1,9 @@
 {
   "name": "@supreme-int/instrumentation",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "tsc": "tsc"
+  },
   "dependencies": {
     "@opentelemetry/api": "catalog:",
     "@opentelemetry/api-logs": "catalog:",
