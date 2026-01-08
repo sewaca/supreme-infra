@@ -21,6 +21,8 @@
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
+    "@nestjs/jwt": "catalog:",
+    "@nestjs/passport": "catalog:",
     "@nestjs/platform-fastify": "catalog:",
     "@nestjs/typeorm": "catalog:",
     "@opentelemetry/api": "catalog:",
@@ -36,6 +38,10 @@
     "@supreme-int/instrumentation": "workspace:*",
     "@supreme-int/nestjs-shared": "workspace:*",
     "@types/node": "catalog:",
+    "@types/passport-jwt": "catalog:",
+    "bcryptjs": "catalog:",
+    "passport": "catalog:",
+    "passport-jwt": "catalog:",
     "pg": "catalog:",
     "reflect-metadata": "catalog:",
     "rxjs": "catalog:",
@@ -47,6 +53,7 @@
   "devDependencies": {
     "@nestjs/schematics": "catalog:",
     "@nestjs/testing": "catalog:",
+    "@types/bcryptjs": "catalog:",
     "@types/express": "catalog:",
     "@types/supertest": "catalog:",
     "@vitest/coverage-v8": "catalog:",
@@ -61,4 +68,3 @@
     "webpack-node-externals": "^3.0.0"
   }
 }
-

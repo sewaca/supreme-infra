@@ -35,4 +35,3 @@ const errorLogger = loggerProvider.getLogger('error-handler');
 setupErrorHandlers(errorLogger);
 
 export default sdk;
-

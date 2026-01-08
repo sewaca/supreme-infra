@@ -692,6 +692,12 @@ importers:
       '@nestjs/core':
         specifier: 'catalog:'
         version: 11.1.6(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/jwt':
+        specifier: 'catalog:'
+        version: 11.0.1(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))
+      '@nestjs/passport':
+        specifier: 'catalog:'
+        version: 11.0.5(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
       '@nestjs/platform-fastify':
         specifier: 'catalog:'
         version: 11.1.8(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)
@@ -737,6 +743,18 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.18.11
+      '@types/passport-jwt':
+        specifier: 'catalog:'
+        version: 4.0.1
+      bcryptjs:
+        specifier: 'catalog:'
+        version: 3.0.3
+      passport:
+        specifier: 'catalog:'
+        version: 0.7.0
+      passport-jwt:
+        specifier: 'catalog:'
+        version: 4.0.1
       pg:
         specifier: 'catalog:'
         version: 8.16.3
@@ -765,6 +783,9 @@ importers:
       '@nestjs/testing':
         specifier: 'catalog:'
         version: 11.1.6(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@nestjs/platform-express@11.1.6)
+      '@types/bcryptjs':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/express':
         specifier: 'catalog:'
         version: 5.0.3
