@@ -1,7 +1,7 @@
 name: security checks for project
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
 jobs:
   # run security scan for all nest js services
@@ -12,8 +12,6 @@ jobs:
       matrix:
         service-name:
           - backend
-          - auth-bff
-          - core-auth
           - core-auth-bff
     steps:
       - name: Checkout code
@@ -43,7 +41,7 @@ jobs:
   security-checks-summary:
     name: Security checks summary
     runs-on: ubuntu-latest
-    needs: [ security-scan-nest, security-scan-next ]
+    needs: [security-scan-nest, security-scan-next]
     if: always()
     steps:
       - name: Check all security scans status

@@ -8,8 +8,6 @@ on:
         type: choice
         options:
           - backend
-          - auth-bff
-          - core-auth
           - core-auth-bff
         default: backend
       action:
