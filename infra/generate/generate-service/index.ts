@@ -23,9 +23,6 @@ interface ServicesYaml {
       description: string;
       database?: {
         enabled: boolean;
-        name: string;
-        user: string;
-        passwordSecret: string;
       };
     }>;
     next: Array<{
@@ -193,6 +190,59 @@ function generateDatabaseInitScript(config: ServiceConfig): void {
   copyTemplateFile(initSqlTemplatePath, initSqlTargetPath, config, true);
 }
 
+function generateDatabaseServiceYaml(config: ServiceConfig): void {
+  if (!config.hasDatabase || config.serviceType !== 'nest') {
+    return;
+  }
+
+  const dbDir = path.join(__dirname, '../../databases', `${config.serviceName}-db`);
+
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
+
+  // Generate service.yaml for database
+  const dbServiceConfig = {
+    database: {
+      name: config.databaseName,
+      user: config.databaseUser,
+      passwordSecret: config.databasePasswordSecret,
+    },
+    resources: {
+      production: {
+        limits: {
+          cpu: '500m',
+          memory: '500Mi',
+        },
+        requests: {
+          cpu: '100m',
+          memory: '150Mi',
+        },
+      },
+      development: {
+        limits: {
+          cpu: '250m',
+          memory: '256Mi',
+        },
+        requests: {
+          cpu: '50m',
+          memory: '128Mi',
+        },
+      },
+    },
+  };
+
+  const header = [
+    `# Database configuration for ${config.serviceName} service`,
+    '# This file defines database-specific settings including resources',
+    '',
+  ].join('\n');
+
+  const yamlContent = header + yaml.stringify(dbServiceConfig);
+  const serviceYamlPath = path.join(dbDir, 'service.yaml');
+  fs.writeFileSync(serviceYamlPath, yamlContent);
+}
+
 function copyTemplateDirectory(templateDir: string, targetDir: string, config: ServiceConfig): void {
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
@@ -233,12 +283,11 @@ function updateServicesYaml(config: ServiceConfig): void {
       description: config.description,
     };
 
-    if (config.hasDatabase && config.databaseName && config.databaseUser && config.databasePasswordSecret) {
+    // If database is enabled, only add minimal config
+    // Full database config is now in infra/databases/{service}-db/service.yaml
+    if (config.hasDatabase) {
       serviceEntry.database = {
         enabled: true,
-        name: config.databaseName,
-        user: config.databaseUser,
-        passwordSecret: config.databasePasswordSecret,
       };
     }
 
@@ -317,11 +366,13 @@ async function generateService(): Promise<void> {
     generateGrafanaDashboard(config);
     console.log(`✓ Grafana дашборд создан: infra/helmcharts/grafana/dashboards/${config.serviceName}-metrics.json`);
 
-    // Generate database init script if needed
+    // Generate database files if needed
     if (config.hasDatabase && config.serviceType === 'nest') {
-      console.log('→ Генерация init.sql для базы данных...');
+      console.log('→ Генерация конфигурации базы данных...');
       generateDatabaseInitScript(config);
-      console.log(`✓ init.sql создан: infra/databases/${config.serviceName}-db/init.sql`);
+      console.log(`  ✓ init.sql создан: infra/databases/${config.serviceName}-db/init.sql`);
+      generateDatabaseServiceYaml(config);
+      console.log(`  ✓ service.yaml создан: infra/databases/${config.serviceName}-db/service.yaml`);
     }
 
     // Update services.yaml
@@ -349,6 +400,7 @@ async function generateService(): Promise<void> {
     if (config.hasDatabase) {
       console.log(`  4. Настройте базу данных:`);
       console.log(`     - Отредактируйте init.sql в infra/databases/${config.serviceName}-db/`);
+      console.log(`     - Настройте ресурсы в service.yaml в infra/databases/${config.serviceName}-db/`);
       console.log(`     - Добавьте GitHub Secret: ${config.databasePasswordSecret}`);
       console.log('');
     }
