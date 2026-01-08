@@ -14,4 +14,3 @@ export class HealthController {
     return { status: 'ok', service: this.options.serviceName };
   }
 }
-

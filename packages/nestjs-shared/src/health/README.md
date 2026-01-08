@@ -7,13 +7,11 @@
 Импортируйте `HealthModule` в ваш корневой модуль и настройте его с помощью метода `forRoot`:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { HealthModule } from '@supreme-int/nestjs-shared';
+import { Module } from "@nestjs/common";
+import { HealthModule } from "@supreme-int/nestjs-shared";
 
 @Module({
-  imports: [
-    HealthModule.forRoot({ serviceName: 'my-service' }),
-  ],
+  imports: [HealthModule.forRoot({ serviceName: "my-service" })],
 })
 export class AppModule {}
 ```
@@ -25,6 +23,7 @@ export class AppModule {}
 **GET** `/api/status`
 
 Возвращает:
+
 ```json
 {
   "status": "ok",
@@ -43,11 +42,11 @@ export class AppModule {}
 Пример теста контроллера:
 
 ```typescript
-import { Test, type TestingModule } from '@nestjs/testing';
-import { HealthController } from '@supreme-int/nestjs-shared';
-import { HEALTH_MODULE_OPTIONS } from '@supreme-int/nestjs-shared';
+import { Test, type TestingModule } from "@nestjs/testing";
+import { HealthController } from "@supreme-int/nestjs-shared";
+import { HEALTH_MODULE_OPTIONS } from "@supreme-int/nestjs-shared";
 
-describe('HealthController', () => {
+describe("HealthController", () => {
   let controller: HealthController;
 
   beforeEach(async () => {
@@ -56,7 +55,7 @@ describe('HealthController', () => {
       providers: [
         {
           provide: HEALTH_MODULE_OPTIONS,
-          useValue: { serviceName: 'test-service' },
+          useValue: { serviceName: "test-service" },
         },
       ],
     }).compile();
@@ -64,10 +63,9 @@ describe('HealthController', () => {
     controller = module.get<HealthController>(HealthController);
   });
 
-  it('should return status ok with service name', () => {
+  it("should return status ok with service name", () => {
     const result = controller.getStatus();
-    expect(result).toEqual({ status: 'ok', service: 'test-service' });
+    expect(result).toEqual({ status: "ok", service: "test-service" });
   });
 });
 ```
-

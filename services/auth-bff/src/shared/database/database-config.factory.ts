@@ -7,4 +7,3 @@ export function createDatabaseConfig(configService: ConfigService): TypeOrmModul
     entities: [],
   });
 }
-

@@ -1,6 +1,6 @@
 # auth-bff
 
-authorization backend 
+authorization backend
 
 ## Features
 
@@ -79,19 +79,18 @@ pnpm run prod
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port | 4001 |
-| NODE_ENV | Environment | development |
-| DB_HOST | PostgreSQL host | localhost |
-| DB_PORT | PostgreSQL port | 5432 |
-| DB_NAME | Database name | auth_bff_db |
-| DB_USER | Database user | auth_bff_user |
-| DB_PASSWORD | Database password | - |
-| SKIP_DB_CONNECTION | Skip database connection (for route generation) | false |
-| LOKI_ENDPOINT | Loki logs endpoint | - |
+| Variable           | Description                                     | Default       |
+| ------------------ | ----------------------------------------------- | ------------- |
+| PORT               | Server port                                     | 4001          |
+| NODE_ENV           | Environment                                     | development   |
+| DB_HOST            | PostgreSQL host                                 | localhost     |
+| DB_PORT            | PostgreSQL port                                 | 5432          |
+| DB_NAME            | Database name                                   | auth_bff_db   |
+| DB_USER            | Database user                                   | auth_bff_user |
+| DB_PASSWORD        | Database password                               | -             |
+| SKIP_DB_CONNECTION | Skip database connection (for route generation) | false         |
+| LOKI_ENDPOINT      | Loki logs endpoint                              | -             |
 
 ## License
 
 ISC
-

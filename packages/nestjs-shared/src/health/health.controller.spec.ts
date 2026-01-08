@@ -1,7 +1,7 @@
 import { Test, type TestingModule } from '@nestjs/testing';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { HealthController } from './health.controller';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { HEALTH_MODULE_OPTIONS } from './health.constants';
+import { HealthController } from './health.controller';
 
 describe('HealthController', () => {
   let controller: HealthController;
@@ -24,4 +24,3 @@ describe('HealthController', () => {
     expect(result).toEqual({ status: 'ok', service: 'test-service' });
   });
 });
-

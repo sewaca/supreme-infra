@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { createDatabaseImports, LoggerModule, HealthModule } from '@supreme-int/nestjs-shared';
+import { createDatabaseImports, HealthModule, LoggerModule } from '@supreme-int/nestjs-shared';
 
 @Module({
   imports: [
@@ -13,4 +13,3 @@ import { createDatabaseImports, LoggerModule, HealthModule } from '@supreme-int/
   providers: [],
 })
 export class AppModule {}
-

@@ -15,16 +15,12 @@
 ### Простой вариант (без entities)
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { createDatabaseImports, LoggerModule } from '@supreme-int/nestjs-shared';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { createDatabaseImports, LoggerModule } from "@supreme-int/nestjs-shared";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    LoggerModule,
-    ...createDatabaseImports(),
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), LoggerModule, ...createDatabaseImports()],
 })
 export class AppModule {}
 ```
@@ -32,11 +28,11 @@ export class AppModule {}
 ### С указанием entities
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { createDatabaseImports, LoggerModule } from '@supreme-int/nestjs-shared';
-import { UserEntity } from './entities/user.entity';
-import { PostEntity } from './entities/post.entity';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { createDatabaseImports, LoggerModule } from "@supreme-int/nestjs-shared";
+import { UserEntity } from "./entities/user.entity";
+import { PostEntity } from "./entities/post.entity";
 
 @Module({
   imports: [
@@ -53,13 +49,13 @@ export class AppModule {}
 ### С условным отключением модулей, зависящих от БД
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { createDatabaseImports, LoggerModule } from '@supreme-int/nestjs-shared';
-import { UserEntity } from './entities/user.entity';
-import { UsersModule } from './features/users/users.module';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { createDatabaseImports, LoggerModule } from "@supreme-int/nestjs-shared";
+import { UserEntity } from "./entities/user.entity";
+import { UsersModule } from "./features/users/users.module";
 
-const skipDbConnection = process.env.SKIP_DB_CONNECTION === 'true';
+const skipDbConnection = process.env.SKIP_DB_CONNECTION === "true";
 const dbDependentModules = skipDbConnection ? [] : [UsersModule];
 
 @Module({
@@ -75,15 +71,15 @@ export class AppModule {}
 
 ## Переменные окружения
 
-| Переменная | Описание | Обязательная | По умолчанию |
-|-----------|----------|--------------|--------------|
-| `DB_HOST` | Хост PostgreSQL | Нет | `localhost` |
-| `DB_PORT` | Порт PostgreSQL | Нет | `5432` |
-| `DB_NAME` | Имя базы данных | Да | - |
-| `DB_USER` | Пользователь БД | Да | - |
-| `DB_PASSWORD` | Пароль БД | Да | - |
-| `NODE_ENV` | Окружение | Да | - |
-| `SKIP_DB_CONNECTION` | Пропустить подключение к БД | Нет | `false` |
+| Переменная           | Описание                    | Обязательная | По умолчанию |
+| -------------------- | --------------------------- | ------------ | ------------ |
+| `DB_HOST`            | Хост PostgreSQL             | Нет          | `localhost`  |
+| `DB_PORT`            | Порт PostgreSQL             | Нет          | `5432`       |
+| `DB_NAME`            | Имя базы данных             | Да           | -            |
+| `DB_USER`            | Пользователь БД             | Да           | -            |
+| `DB_PASSWORD`        | Пароль БД                   | Да           | -            |
+| `NODE_ENV`           | Окружение                   | Да           | -            |
+| `SKIP_DB_CONNECTION` | Пропустить подключение к БД | Нет          | `false`      |
 
 ## SKIP_DB_CONNECTION
 
@@ -98,6 +94,7 @@ export class AppModule {}
 ### Как работает
 
 Когда `SKIP_DB_CONNECTION=true`:
+
 1. TypeORM модуль возвращает минимальную конфигурацию
 2. Не выполняется реальное подключение к БД
 3. Установлено `retryAttempts: 0` для быстрого фейла
@@ -121,6 +118,7 @@ pnpm run dev
 Создает массив модулей TypeORM для импорта в `@Module`.
 
 **Параметры:**
+
 - `options.entities?: TypeOrmModuleOptions['entities']` - Массив entity классов
 
 **Возвращает:** `DynamicModule[]`
@@ -130,6 +128,7 @@ pnpm run dev
 Создает конфигурацию TypeORM на основе переменных окружения.
 
 **Параметры:**
+
 - `configService: ConfigService` - Сервис конфигурации NestJS
 - `options.entities?: TypeOrmModuleOptions['entities']` - Массив entity классов
 
@@ -140,6 +139,7 @@ pnpm run dev
 Кастомный логгер TypeORM с красивым форматированием и эмодзи.
 
 **Возможности:**
+
 - 📊 Логирование выполненных запросов
 - ❌ Логирование ошибок запросов
 - 🐌 Предупреждения о медленных запросах (>1s)
@@ -179,7 +179,7 @@ export function createDatabaseConfig(configService: ConfigService) {
 }
 
 // src/app.module.ts
-import { createDatabaseConfig } from './shared/database/database-config.factory';
+import { createDatabaseConfig } from "./shared/database/database-config.factory";
 
 @Module({
   imports: [
@@ -197,12 +197,10 @@ export class AppModule {}
 
 ```typescript
 // src/app.module.ts
-import { createDatabaseImports } from '@supreme-int/nestjs-shared';
+import { createDatabaseImports } from "@supreme-int/nestjs-shared";
 
 @Module({
-  imports: [
-    ...createDatabaseImports({ entities: [UserEntity] }),
-  ],
+  imports: [...createDatabaseImports({ entities: [UserEntity] })],
 })
 export class AppModule {}
 ```
@@ -210,4 +208,3 @@ export class AppModule {}
 ## Лицензия
 
 ISC
-

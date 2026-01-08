@@ -21,8 +21,8 @@ supreme-infra/
 Все пакеты импортируются через алиас `@supreme-int/*`:
 
 ```typescript
-import { createOpenTelemetrySDK } from '@supreme-int/instrumentation';
-import { LoggerModule } from '@supreme-int/nestjs-shared';
+import { createOpenTelemetrySDK } from "@supreme-int/instrumentation";
+import { LoggerModule } from "@supreme-int/nestjs-shared";
 ```
 
 ## Backend (NestJS + Webpack)
@@ -58,6 +58,7 @@ resolve: {
 ```
 
 **Преимущества:**
+
 - ✅ Автоматически подхватывает новые пакеты
 - ✅ Не требует обновления конфига при добавлении пакетов
 - ✅ Работает с `webpack-node-externals` для правильного бандлинга
@@ -85,14 +86,14 @@ Frontend использует **wildcard паттерн** для Turbopack:
 const nextConfig: NextConfig = {
   turbopack: {
     resolveAlias: {
-      '@supreme-int/*': '../../packages/*/src',
+      "@supreme-int/*": "../../packages/*/src",
     },
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
-        '@supreme-int': path.resolve(__dirname, '../../packages'),
+        "@supreme-int": path.resolve(__dirname, "../../packages"),
       };
     }
     return config;
@@ -101,6 +102,7 @@ const nextConfig: NextConfig = {
 ```
 
 **Особенности:**
+
 - Turbopack поддерживает wildcard паттерны (`*`)
 - Для Webpack (fallback) используется базовый алиас на папку `packages/`
 - Относительные пути для Turbopack (не абсолютные!)
@@ -121,11 +123,13 @@ const nextConfig: NextConfig = {
 ## Добавление нового пакета
 
 1. Создайте папку в `packages/`:
+
    ```bash
    mkdir -p packages/my-new-package/src
    ```
 
 2. Создайте `package.json`:
+
    ```json
    {
      "name": "@supreme-int/my-new-package",
@@ -154,7 +158,7 @@ const nextConfig: NextConfig = {
 
 ```typescript
 // В любом сервисе
-import { something } from '@supreme-int/my-new-package';
+import { something } from "@supreme-int/my-new-package";
 ```
 
 Если TypeScript ругается, перезапустите TypeScript сервер в IDE.
@@ -178,4 +182,3 @@ import { something } from '@supreme-int/my-new-package';
 1. Проверьте `paths` в `tsconfig.json`
 2. Перезапустите TypeScript сервер: `Cmd+Shift+P` → "TypeScript: Restart TS Server"
 3. Убедитесь, что `baseUrl` настроен правильно
-
