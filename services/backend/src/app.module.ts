@@ -5,10 +5,12 @@ import { AuthModule } from './features/Auth/api/Auth.module';
 import { HealthController } from './features/HealthCheck/api/health.controller';
 import { RecipesModule } from './features/Recipes/api/Recipes.module';
 import { createDatabaseConfig } from './shared/database/database-config.factory';
+import { LoggerModule } from './shared/logger';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    LoggerModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

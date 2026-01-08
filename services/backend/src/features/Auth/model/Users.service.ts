@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OtelLoggerService } from '../../../shared/logger';
 import { RecipeLikeEntity, UserEntity } from './User.entity';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
@@ -27,26 +28,37 @@ export class UsersService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(RecipeLikeEntity)
     private readonly recipeLikeRepository: Repository<RecipeLikeEntity>,
+    private readonly logger: OtelLoggerService,
   ) {}
 
   async findByEmail(email: string): Promise<User | undefined> {
+    this.logger.debug(`Finding user by email: ${email}`, 'UsersService');
     const user = await this.userRepository.findOne({ where: { email } });
+    if (user) {
+      this.logger.debug(`User found: ${user.id}`, 'UsersService');
+    } else {
+      this.logger.debug(`User not found for email: ${email}`, 'UsersService');
+    }
     return user ?? undefined;
   }
 
   async findById(id: number): Promise<User | undefined> {
+    this.logger.debug(`Finding user by id: ${id}`, 'UsersService');
     const user = await this.userRepository.findOne({ where: { id } });
     return user ?? undefined;
   }
 
   async create(email: string, hashedPassword: string, name: string, role: UserRole = 'user'): Promise<User> {
+    this.logger.log(`Creating new user: ${email} with role: ${role}`, 'UsersService');
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
       name,
       role,
     });
-    return await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    this.logger.log(`User created successfully: ${savedUser.id}`, 'UsersService');
+    return savedUser;
   }
 
   async update(id: number, updates: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User | undefined> {
