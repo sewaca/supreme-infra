@@ -584,6 +584,32 @@ jobs:
           [ "$CANARY_REPLICAS" -lt 1 ] && CANARY_REPLICAS=1
           echo "canary_replicas=$CANARY_REPLICAS" >> $GITHUB_OUTPUT
 
+      - name: Get database password secret name
+        id: get-db-secret
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          if ! command -v yq &> /dev/null; then
+            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            sudo chmod +x /usr/local/bin/yq
+          fi
+
+          # Check in nest services
+          DB_SECRET=$(yq eval ".services.nest[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+
+          # If not found in nest, check next services
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
+          # Default to DB_PASSWORD if not specified
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET="DB_PASSWORD"
+          fi
+
+          echo "secret_name=$DB_SECRET" >> $GITHUB_OUTPUT
+          echo "Using database password secret: $DB_SECRET"
+
       - name: Deploy canary with Helm
         uses: ./.github/workflows/jobs/deploy-helm
         with:
@@ -594,6 +620,7 @@ jobs:
           canary-enabled: "true"
           canary-replicas: ${{ steps.get-replicas.outputs.canary_replicas }}
           jwt-secret: ${{ secrets.JWT_SECRET }}
+          db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}
 
   approve-canary:
     name: Approve canary promotion to production
@@ -694,6 +721,32 @@ jobs:
         with:
           version: ${{ env.HELM_VERSION }}
 
+      - name: Get database password secret name
+        id: get-db-secret
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          if ! command -v yq &> /dev/null; then
+            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            sudo chmod +x /usr/local/bin/yq
+          fi
+
+          # Check in nest services
+          DB_SECRET=$(yq eval ".services.nest[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+
+          # If not found in nest, check next services
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
+          # Default to DB_PASSWORD if not specified
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET="DB_PASSWORD"
+          fi
+
+          echo "secret_name=$DB_SECRET" >> $GITHUB_OUTPUT
+          echo "Using database password secret: $DB_SECRET"
+
       - name: Promote to production
         uses: ./.github/workflows/jobs/deploy-helm
         with:
@@ -704,3 +757,4 @@ jobs:
           canary-enabled: "false"
           atomic: "true"
           jwt-secret: ${{ secrets.JWT_SECRET }}
+          db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}

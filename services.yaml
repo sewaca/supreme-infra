@@ -9,6 +9,7 @@ services:
         enabled: true
         name: backend_db
         user: backend_user
+        passwordSecret: DB_PASSWORD # GitHub Secret name for database password
 
   next:
     - name: frontend

@@ -35,7 +35,8 @@ All secrets you need are:
   Format of secret is: `JWT_SECRET=your-secure-random-string`
 - DB_PASSWORD – PostgreSQL database password <br />
   Used by backend service to connect to PostgreSQL database <br />
-  Format of secret is: `DB_PASSWORD=your-secure-db-password`
+  Format of secret is: `DB_PASSWORD=your-secure-db-password` <br />
+  See [Database Password Setup](DATABASE_PASSWORD_SETUP.md) for configuration
 
 For detailed information about secrets management, see **[Secrets Management](docs/secrets-management.md)**.
 
@@ -45,6 +46,46 @@ You need to create two environments in GitHub repository settings:
 
 - **canary** – Environment for canary deployments (can be auto-approved or with reviewers)
 - **production** – Environment with required reviewers for production promotion
+
+## Database Setup
+
+This project uses PostgreSQL for persistent data storage. Each microservice can have its own database.
+
+### Quick Start
+
+1. **Configure database in `services.yaml`**:
+
+```yaml
+services:
+  nest:
+    - name: backend
+      database:
+        enabled: true
+        name: backend_db
+        user: backend_user
+        passwordSecret: DB_PASSWORD # GitHub Secret name
+```
+
+2. **Set up GitHub Secret**:
+   - Go to Settings → Secrets → Actions
+   - Add secret `DB_PASSWORD` with your database password
+
+3. **Deploy PostgreSQL**:
+   - Run workflow: [Deploy Database](https://github.com/sewaca/supreme-infra/actions/workflows/deploy-database.yml)
+   - Select service: `backend`
+   - Action: `install`
+
+4. **Deploy your service**:
+   - Run workflow: [Create Release Pipeline](https://github.com/sewaca/supreme-infra/actions/workflows/cd.yml)
+   - Your service will automatically connect to the database
+
+### Documentation
+
+- 📖 [Database Configuration Summary](DATABASE_CONFIGURATION_SUMMARY.md) - Complete overview
+- 🔑 [Database Password Setup](DATABASE_PASSWORD_SETUP.md) - Quick password configuration
+- 🚀 [Deploy Database Guide](DEPLOY_DATABASE_GUIDE.md) - Deployment instructions
+- 📚 [Database Deployment Workflow](docs/database-deployment-workflow.md) - Detailed workflow guide
+- 🔐 [Database Secrets Configuration](docs/database-secrets-configuration.md) - Secrets management
 
 ## Infra:
 

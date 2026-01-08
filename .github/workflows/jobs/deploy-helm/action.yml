@@ -30,6 +30,10 @@ inputs:
     description: "JWT secret for authentication"
     required: false
     default: ""
+  db-password:
+    description: "Database password"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -45,6 +49,7 @@ runs:
         CANARY_REPLICAS="${{ inputs.canary-replicas }}"
         USE_ATOMIC="${{ inputs.atomic }}"
         JWT_SECRET="${{ inputs.jwt-secret }}"
+        DB_PASSWORD="${{ inputs.db-password }}"
 
         # Determine Helm chart path
         if [ "$SERVICE_TYPE" = "nest" ]; then
@@ -80,6 +85,7 @@ runs:
               --set canary.image.tag="production-${SERVICE_NAME}-v${VERSION}" \
               --set canary.image.repository="$DOCKER_HUB_USERNAME/supreme" \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --wait --timeout 5m
           else
             # First deploy: need full values
@@ -91,6 +97,7 @@ runs:
               --set canary.image.tag="production-${SERVICE_NAME}-v${VERSION}" \
               --set canary.image.repository="$DOCKER_HUB_USERNAME/supreme" \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --install \
               --wait --timeout 5m
           fi
@@ -105,6 +112,7 @@ runs:
               --set image.repository="$DOCKER_HUB_USERNAME/supreme" \
               --set canary.enabled=false \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --install \
               --wait --timeout 5m \
               --atomic
@@ -115,6 +123,7 @@ runs:
               --set image.repository="$DOCKER_HUB_USERNAME/supreme" \
               --set canary.enabled=false \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
+              --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --install \
               --wait --timeout 5m
           fi
