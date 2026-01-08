@@ -60,7 +60,6 @@
     "globals": "catalog:",
     "source-map-support": "catalog:",
     "supertest": "catalog:",
-    "swc-loader": "^0.2.6",
     "ts-node": "catalog:",
     "tsconfig-paths": "catalog:",
     "unplugin-swc": "catalog:",

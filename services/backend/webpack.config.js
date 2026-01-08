@@ -1,7 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const nodeExternals = require('webpack-node-externals');
-const swcDefaultConfig = require('@nestjs/cli/lib/compiler/defaults/swc-defaults').swcDefaultsFactory().swcOptions;
 
 const MONOREPO_PACKAGE = /^@supreme-int\/([a-z]|-)+/;
 
@@ -23,24 +22,9 @@ module.exports = (options) => {
 
   return {
     ...options,
-    module: {
-      rules: [
-        {
-          test: /\.ts$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'swc-loader',
-            options: swcDefaultConfig,
-          },
-        },
-      ],
-    },
     resolve: {
       ...options.resolve,
-      alias: {
-        ...options.resolve?.alias,
-        ...packageAliases,
-      },
+      alias: { ...options.resolve?.alias, ...packageAliases },
       extensions: ['.ts', '.js', '.json', ...(options.resolve?.extensions || [])],
     },
     externals: [nodeExternals({ allowlist: [MONOREPO_PACKAGE] })],

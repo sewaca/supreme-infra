@@ -477,9 +477,6 @@ importers:
       supertest:
         specifier: 'catalog:'
         version: 7.1.4
-      swc-loader:
-        specifier: ^0.2.6
-        version: 0.2.6(@swc/core@1.15.3)(webpack@5.100.2(@swc/core@1.15.3))
       ts-node:
         specifier: 'catalog:'
         version: 10.9.2(@swc/core@1.15.3)(@types/node@22.18.11)(typescript@5.9.3)
@@ -5365,12 +5362,6 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
-
-  swc-loader@0.2.6:
-    resolution: {integrity: sha512-9Zi9UP2YmDpgmQVbyOPJClY0dwf58JDyDMQ7uRc4krmc72twNI2fvlBWHLqVekBpPc7h5NJkGVT1zNDxFrqhvg==}
-    peerDependencies:
-      '@swc/core': ^1.2.147
-      webpack: '>=2'
 
   symbol-observable@4.0.0:
     resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}
@@ -11339,12 +11330,6 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
-
-  swc-loader@0.2.6(@swc/core@1.15.3)(webpack@5.100.2(@swc/core@1.15.3)):
-    dependencies:
-      '@swc/core': 1.15.3
-      '@swc/counter': 0.1.3
-      webpack: 5.100.2(@swc/core@1.15.3)
 
   symbol-observable@4.0.0: {}
 
