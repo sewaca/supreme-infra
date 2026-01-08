@@ -2,6 +2,10 @@
   "extends": "../../tsconfig.bff.json",
   "compilerOptions": {
     "experimentalDecorators": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "baseUrl": "../..",
+    "paths": {
+      "@supreme-int/*": ["packages/*/src"]
+    }
   }
 }

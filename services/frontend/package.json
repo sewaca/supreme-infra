@@ -25,6 +25,7 @@
     "@opentelemetry/sdk-metrics": "catalog:",
     "@opentelemetry/sdk-node": "catalog:",
     "@opentelemetry/semantic-conventions": "catalog:",
+    "@supreme-int/instrumentation": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "classnames": "catalog:",
