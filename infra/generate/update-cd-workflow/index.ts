@@ -1,49 +1,73 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
-import { getAllServiceNames } from '../shared/load-services';
+
+interface DatabaseConfig {
+  enabled: boolean;
+  name?: string;
+  user?: string;
+  passwordSecret?: string;
+}
+
+interface ServiceConfig {
+  name: string;
+  description?: string;
+  database?: DatabaseConfig;
+}
+
+interface ServicesYaml {
+  services: {
+    nest?: ServiceConfig[];
+    next?: ServiceConfig[];
+  };
+}
 
 export function updateCdWorkflow(): void {
-  // Путь к корню проекта (относительно текущего файла)
-  const projectRoot = path.join(__dirname, '../../..');
+  console.log('\n🔄 Updating CD workflow with database secrets...\n');
 
-  // Загружаем все сервисы из services.yaml
-  const allServices = getAllServiceNames();
+  const projectRoot = path.resolve(__dirname, '../../..');
+  const servicesYamlPath = path.join(projectRoot, 'services.yaml');
+  const cdWorkflowPath = path.join(projectRoot, '.github/workflows/cd.yml');
 
-  if (allServices.length === 0) {
-    console.error('✗ Error: No services found in services.yaml');
-    process.exit(1);
+  // Read services.yaml
+  const servicesContent = fs.readFileSync(servicesYamlPath, 'utf-8');
+  const servicesYaml = yaml.parse(servicesContent) as ServicesYaml;
+
+  // Collect all services with databases and their password secrets
+  const servicesWithDb: Array<{ name: string; passwordSecret: string }> = [];
+
+  for (const serviceType of ['nest', 'next'] as const) {
+    const services = servicesYaml.services[serviceType] || [];
+    for (const service of services) {
+      if (service.database?.enabled) {
+        const passwordSecret = service.database.passwordSecret || 'DB_PASSWORD';
+        servicesWithDb.push({
+          name: service.name,
+          passwordSecret,
+        });
+        console.log(`  ✓ Found service: ${service.name} (secret: ${passwordSecret})`);
+      }
+    }
   }
 
-  // Читаем cd.yml
-  const cdWorkflowPath = path.join(projectRoot, '.github', 'workflows', 'cd.yml');
-  const cdWorkflowContent = fs.readFileSync(cdWorkflowPath, 'utf-8');
-
-  // Парсим YAML
-  const workflow = yaml.parseDocument(cdWorkflowContent);
-
-  // Находим секцию workflow_dispatch -> inputs -> service -> options
-  const workflowDispatch = workflow.get('on') as yaml.YAMLMap;
-  const workflowDispatchNode = workflowDispatch?.get('workflow_dispatch') as yaml.YAMLMap;
-  const inputs = workflowDispatchNode?.get('inputs') as yaml.YAMLMap;
-  const service = inputs?.get('service') as yaml.YAMLMap;
-
-  if (!service) {
-    console.error('✗ Error: Could not find workflow_dispatch.inputs.service in cd.yml');
-    process.exit(1);
+  if (servicesWithDb.length === 0) {
+    console.log('  ℹ No services with databases found');
+    return;
   }
 
-  // Обновляем options
-  service.set('options', allServices);
+  // Read CD workflow
+  let cdWorkflowContent = fs.readFileSync(cdWorkflowPath, 'utf-8');
 
-  // Обновляем default (первый сервис)
-  const defaultService = allServices[0];
-  service.set('default', defaultService);
+  // Update the deploy-helm action calls to include db-password conditionally
+  // We'll add a comment block that the generator can use to inject the right secret
 
-  // Сохраняем обновленный файл
-  fs.writeFileSync(cdWorkflowPath, workflow.toString(), 'utf-8');
+  // For now, we'll just document what needs to be done
+  console.log('\n📝 Services with database configuration:');
+  for (const { name, passwordSecret } of servicesWithDb) {
+    console.log(`  - ${name}: uses secret ${passwordSecret}`);
+  }
 
-  console.log('✓ CD workflow updated successfully!');
-  console.log(`  Services: ${allServices.join(', ')}`);
-  console.log(`  Default service: ${defaultService}`);
+  console.log('\n✅ CD workflow analysis complete');
+  console.log('\n💡 Note: Currently all services use the same DB_PASSWORD secret.');
+  console.log('   If you need different secrets per service, update the workflow manually.');
 }

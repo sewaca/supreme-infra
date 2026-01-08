@@ -11,10 +11,12 @@
 ### 1. Удалить старую БД из production namespace (если она там есть)
 
 Запустите GitHub Action "Deploy Database":
+
 - Service: `backend`
 - Action: `uninstall`
 
 Затем вручную удалите PVC (если нужно):
+
 ```bash
 kubectl delete pvc data-postgresql-backend-0 -n production
 ```
@@ -22,6 +24,7 @@ kubectl delete pvc data-postgresql-backend-0 -n production
 ### 2. Задеплоить БД в default namespace
 
 Запустите GitHub Action "Deploy Database":
+
 - Service: `backend`
 - Action: `install` (или `upgrade` если не уверены)
 
@@ -58,6 +61,7 @@ kubectl exec -it postgresql-backend-0 -n default -- \
 ```
 
 Должны увидеть 3 пользователя:
+
 - admin@example.com (admin)
 - moder@example.com (moderator)
 - user@example.com (user)
@@ -69,6 +73,7 @@ kubectl exec -it postgresql-backend-0 -n default -- \
 **Причина**: БД не запущена или в другом namespace.
 
 **Решение**: Убедитесь что PostgreSQL pod запущен в namespace `default`:
+
 ```bash
 kubectl get pods -n default | grep postgresql
 ```
@@ -78,6 +83,7 @@ kubectl get pods -n default | grep postgresql
 **Причина**: Неправильный пароль в secret `DB_PASSWORD`.
 
 **Решение**: Проверьте что secret установлен в GitHub:
+
 - Settings → Secrets and variables → Actions
 - Должен быть secret `DB_PASSWORD`
 
@@ -86,8 +92,8 @@ kubectl get pods -n default | grep postgresql
 **Причина**: Возможно недостаточно ресурсов или проблемы с PVC.
 
 **Решение**:
+
 ```bash
 kubectl describe pod postgresql-backend-0 -n default
 kubectl get pvc -n default
 ```
-

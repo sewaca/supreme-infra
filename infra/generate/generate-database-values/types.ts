@@ -2,6 +2,7 @@ export interface DatabaseConfig {
   enabled: boolean;
   name?: string;
   user?: string;
+  passwordSecret?: string;
 }
 
 export interface ServiceWithDatabase {
