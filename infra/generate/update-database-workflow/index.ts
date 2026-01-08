@@ -39,17 +39,19 @@ export function updateDatabaseWorkflow(): void {
   const workflowPath = path.join(__dirname, '../../../.github/workflows/deploy-database.yml');
   const workflowContent = fs.readFileSync(workflowPath, 'utf-8');
 
-  // Parse YAML
-  const workflow = yaml.parse(workflowContent);
+  // Parse YAML (preserving comments and formatting)
+  const workflow = yaml.parseDocument(workflowContent);
 
   // Update service options
-  if (workflow.on?.workflow_dispatch?.inputs?.service?.options) {
-    workflow.on.workflow_dispatch.inputs.service.options = servicesWithDb;
-    workflow.on.workflow_dispatch.inputs.service.default = servicesWithDb[0];
+  const serviceInput = workflow.getIn(['on', 'workflow_dispatch', 'inputs', 'service']) as yaml.YAMLMap | undefined;
+
+  if (serviceInput && yaml.isMap(serviceInput)) {
+    serviceInput.set('options', servicesWithDb);
+    serviceInput.set('default', servicesWithDb[0]);
   }
 
-  // Write back
-  const updatedContent = yaml.stringify(workflow, { lineWidth: 0, defaultStringType: 'QUOTE_DOUBLE' });
+  // Write back (preserving comments and formatting)
+  const updatedContent = workflow.toString();
 
   fs.writeFileSync(workflowPath, updatedContent, 'utf-8');
 

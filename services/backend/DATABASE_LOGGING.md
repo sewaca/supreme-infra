@@ -48,6 +48,7 @@ SELECT * FROM users WHERE ...
 **Файл**: `src/shared/database/typeorm-logger.ts`
 
 Кастомный logger для TypeORM, который:
+
 - Логирует все SQL запросы с параметрами
 - Показывает информацию о БД (host, port, database, user)
 - Выделяет ошибки и медленные запросы
@@ -58,6 +59,7 @@ SELECT * FROM users WHERE ...
 **Файл**: `src/shared/database/database-config.factory.ts`
 
 Фабрика для создания конфигурации TypeORM:
+
 - Валидирует обязательные переменные окружения
 - Логирует параметры подключения при старте
 - Настраивает logger и другие опции TypeORM
@@ -68,13 +70,13 @@ SELECT * FROM users WHERE ...
 В `app.module.ts`:
 
 ```typescript
-import { createDatabaseConfig } from './shared/database/database-config.factory';
+import { createDatabaseConfig } from "./shared/database/database-config.factory";
 
 TypeOrmModule.forRootAsync({
   imports: [ConfigModule],
   inject: [ConfigService],
   useFactory: createDatabaseConfig,
-})
+});
 ```
 
 В `database-config.factory.ts`:
@@ -82,9 +84,9 @@ TypeOrmModule.forRootAsync({
 ```typescript
 return {
   // ... connection options
-  logging: true,                          // Включить логирование
-  logger: new CustomTypeOrmLogger(),      // Кастомный logger
-  maxQueryExecutionTime: 1000,            // Порог для медленных запросов (мс)
+  logging: true, // Включить логирование
+  logger: new CustomTypeOrmLogger(), // Кастомный logger
+  maxQueryExecutionTime: 1000, // Порог для медленных запросов (мс)
 };
 ```
 
@@ -97,6 +99,7 @@ logging: true,  // Всегда логируем для отладки
 ```
 
 Логируются:
+
 - ✅ Подключение к БД
 - ✅ Все SQL запросы
 - ✅ Ошибки
@@ -105,6 +108,7 @@ logging: true,  // Всегда логируем для отладки
 ### В development
 
 То же самое + дополнительно:
+
 - Schema build
 - Migrations
 
@@ -148,14 +152,14 @@ pnpm run start:dev
 
 ```
 [TypeORM] 📊 Query executed [DB: backend_db@postgresql-backend:5432 as backend_user]
-SELECT "UserEntity"."id" AS "UserEntity_id", 
-       "UserEntity"."email" AS "UserEntity_email", 
-       "UserEntity"."password" AS "UserEntity_password", 
-       "UserEntity"."name" AS "UserEntity_name", 
-       "UserEntity"."role" AS "UserEntity_role", 
-       "UserEntity"."created_at" AS "UserEntity_created_at" 
-FROM "users" "UserEntity" 
-WHERE "UserEntity"."email" = $1 
+SELECT "UserEntity"."id" AS "UserEntity_id",
+       "UserEntity"."email" AS "UserEntity_email",
+       "UserEntity"."password" AS "UserEntity_password",
+       "UserEntity"."name" AS "UserEntity_name",
+       "UserEntity"."role" AS "UserEntity_role",
+       "UserEntity"."created_at" AS "UserEntity_created_at"
+FROM "users" "UserEntity"
+WHERE "UserEntity"."email" = $1
 LIMIT 1
 Parameters: ["admin@example.com"]
 ```
@@ -177,18 +181,19 @@ Error: relation "users" does not exist
 TypeOrmModule.forRootAsync({
   useFactory: (configService: ConfigService) => ({
     // ...
-    logging: false,  // Отключить все логи
+    logging: false, // Отключить все логи
     // или
-    logging: ['error'],  // Только ошибки
+    logging: ["error"], // Только ошибки
     // или
-    logging: ['query', 'error'],  // Запросы и ошибки
+    logging: ["query", "error"], // Запросы и ошибки
   }),
-})
+});
 ```
 
 ## Performance Impact
 
 Логирование имеет минимальное влияние на производительность:
+
 - Запросы логируются асинхронно
 - Не блокируют выполнение запросов
 - Overhead: ~1-2ms на запрос
@@ -228,9 +233,9 @@ kubectl logs deployment/backend -n default | grep -v "Query executed"
 ## Интеграция с мониторингом
 
 В будущем можно интегрировать с:
+
 - **Grafana Loki** - для агрегации логов
 - **Prometheus** - для метрик (количество запросов, время выполнения)
 - **Sentry** - для отслеживания ошибок
 
 Логи уже структурированы и готовы к парсингу.
-

@@ -54,11 +54,8 @@ export class CustomTypeOrmLogger implements TypeOrmLogger {
     return `[DB: ${database}@${host}:${port} as ${username}]`;
   }
 
-  private formatQuery(query: string, parameters?: unknown[]): string {
-    if (!parameters || parameters.length === 0) {
-      return query;
-    }
-
-    return `${query}\nParameters: ${JSON.stringify(parameters)}`;
+  // TODO:
+  private formatQuery(query: string, _parameters?: unknown[]): string {
+    return query;
   }
 }

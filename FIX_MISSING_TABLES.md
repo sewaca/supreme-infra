@@ -27,6 +27,7 @@ Backend подключается к PostgreSQL, но таблицы не сущ�
 ```
 
 Или через kubectl (если настроен):
+
 ```bash
 kubectl delete statefulset postgresql-backend -n default
 kubectl delete service postgresql-backend -n default
@@ -41,6 +42,7 @@ kubectl delete pvc data-postgresql-backend-0 -n default
 ```
 
 Это необходимо, потому что:
+
 - PVC содержит старые данные PostgreSQL
 - При новом запуске PostgreSQL увидит существующие данные и НЕ запустит init.sql
 - Нужно удалить PVC чтобы PostgreSQL начал с чистого листа
@@ -63,6 +65,7 @@ git push
 ```
 
 Теперь PostgreSQL:
+
 1. Запустится с пустым volume
 2. Увидит что данных нет
 3. Выполнит `init.sql` скрипт
@@ -87,6 +90,7 @@ kubectl exec postgresql-backend-0 -n default -- \
 ```
 
 Должно показать:
+
 ```
               List of relations
  Schema |     Name      | Type  |    Owner
@@ -104,6 +108,7 @@ kubectl exec postgresql-backend-0 -n default -- \
 ```
 
 Должно показать 3 пользователя:
+
 ```
        email        |      name       |    role
 --------------------+-----------------+------------
@@ -123,6 +128,7 @@ kubectl logs deployment/backend -n default --tail=20
 ## Что было исправлено в init.sql
 
 ### Было (только INSERT):
+
 ```sql
 INSERT INTO users (email, password, name, role, created_at) VALUES
   ('admin@example.com', '...', 'Admin User', 'admin', NOW())
@@ -130,6 +136,7 @@ ON CONFLICT (email) DO NOTHING;
 ```
 
 ### Стало (CREATE TABLE + INSERT):
+
 ```sql
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
@@ -203,4 +210,3 @@ ON CONFLICT (email) DO NOTHING;
 3. ✅ Чтобы применить новый `init.sql` - нужно удалить PVC
 4. ✅ После обновления `init.sql` - запустите `pnpm run generate`
 5. ✅ Закоммитьте изменения перед деплоем
-
