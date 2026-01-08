@@ -11,7 +11,7 @@ services:
       description: "authorization backend "
       database:
         enabled: true
-        name: auth_database
+        name: auth_bff_db
         user: auth_bff_user
         passwordSecret: DB_PASSWORD
   next:

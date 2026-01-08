@@ -1,0 +1,5 @@
+service: auth-bff
+type: nest
+routes:
+  - path: /auth-bff/api/status
+    method: GET
