@@ -86,36 +86,10 @@ export const patchConsle = (customLoggerEmit: (logRecord: LogRecord) => void) =>
 const logger = loggerProvider.getLogger('console-interceptor');
 patchConsle((logRecord: LogRecord) => logger.emit(logRecord));
 
-// Перехватываем необработанные исключения
-process.on('uncaughtException', (error: Error) => {
-  console.error('Uncaught Exception:', error);
-  logger.emit({
-    severityNumber: SeverityNumber.ERROR,
-    severityText: SeverityText.ERROR,
-    body: `Uncaught Exception: ${error.message}\nStack: ${error.stack}`,
-  });
-});
-
-// Перехватываем необработанные отклонения промисов
-process.on('unhandledRejection', (reason: unknown) => {
-  console.error('Unhandled Rejection:', reason);
-  const errorMessage =
-    reason instanceof Error
-      ? `Unhandled Rejection: ${reason.message}\nStack: ${reason.stack}`
-      : `Unhandled Rejection: ${String(reason)}`;
-  logger.emit({
-    severityNumber: SeverityNumber.ERROR,
-    severityText: SeverityText.ERROR,
-    body: errorMessage,
-  });
-});
-
 type Request = { method?: string; routeOptions?: { url?: string } };
 
 const nestInstrumentationConfig: InstrumentationConfigMap = {
-  '@opentelemetry/instrumentation-fs': {
-    enabled: false,
-  },
+  '@opentelemetry/instrumentation-fs': { enabled: false },
   '@opentelemetry/instrumentation-http': {
     enabled: true,
     requestHook: (span, request) => {

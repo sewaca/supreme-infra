@@ -11,8 +11,6 @@ export class OtelLoggerService extends ConsoleLogger {
       case 'debug':
       case 'verbose':
         return { number: SeverityNumber.DEBUG, text: 'DEBUG' };
-      case 'log':
-        return { number: SeverityNumber.INFO, text: 'INFO' };
       case 'warn':
         return { number: SeverityNumber.WARN, text: 'WARN' };
       case 'error':
@@ -39,13 +37,11 @@ export class OtelLoggerService extends ConsoleLogger {
       severityNumber: severity.number,
       severityText: severity.text,
       body,
-      attributes: {
-        context: context || 'Application',
-        ...(trace && { trace }),
-      },
+      attributes: { context: context || 'Application', ...(trace && { trace }) },
     };
 
     this.otelLogger.emit(logRecord);
+    console.log('[debug] logRecord', logRecord);
   }
 
   override log(message: unknown, context?: string): void {
