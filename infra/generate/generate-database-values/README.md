@@ -151,6 +151,7 @@ pnpm run generate:service
 ```
 
 Генератор автоматически создаст:
+
 - `infra/databases/{service}-db/service.yaml` с конфигурацией ресурсов
 - `infra/databases/{service}-db/init.sql` с шаблоном схемы
 - Запись в `services.yaml` с `database.enabled: true`
@@ -170,7 +171,7 @@ pnpm run generate:service
      name: my_service_db
      user: my_service_user
      passwordSecret: DB_PASSWORD
-   
+
    resources:
      production:
        limits:
