@@ -1,6 +1,5 @@
-// Re-export API instances from @supreme-int/api-client
-import { authApi as clientAuthApi, recipesApi as clientRecipesApi } from '@supreme-int/api-client/client';
-import { authApi as srvAuthApi, recipesApi as srvRecipesApi } from '@supreme-int/api-client/server';
+import { clientAuthApi, clientRecipesApi } from '../lib/auth.client';
+import { rscAuthApi, rscRecipesApi } from '../lib/auth.server';
 
 // Combined API for backward compatibility
 export const backendApi = {
@@ -23,25 +22,25 @@ export const backendApi = {
 
 export const serverApi = {
   // Recipes methods
-  getRecipes: srvRecipesApi.getRecipes.bind(srvRecipesApi),
-  getRecipeById: srvRecipesApi.getRecipeById.bind(srvRecipesApi),
-  toggleRecipeLike: srvRecipesApi.toggleRecipeLike.bind(srvRecipesApi),
-  submitRecipe: srvRecipesApi.submitRecipe.bind(srvRecipesApi),
-  getProposedRecipes: srvRecipesApi.getProposedRecipes.bind(srvRecipesApi),
-  publishRecipe: srvRecipesApi.publishRecipe.bind(srvRecipesApi),
-  updateRecipe: srvRecipesApi.updateRecipe.bind(srvRecipesApi),
-  deleteRecipe: srvRecipesApi.deleteRecipe.bind(srvRecipesApi),
+  getRecipes: rscRecipesApi.getRecipes.bind(rscRecipesApi),
+  getRecipeById: rscRecipesApi.getRecipeById.bind(rscRecipesApi),
+  toggleRecipeLike: rscRecipesApi.toggleRecipeLike.bind(rscRecipesApi),
+  submitRecipe: rscRecipesApi.submitRecipe.bind(rscRecipesApi),
+  getProposedRecipes: rscRecipesApi.getProposedRecipes.bind(rscRecipesApi),
+  publishRecipe: rscRecipesApi.publishRecipe.bind(rscRecipesApi),
+  updateRecipe: rscRecipesApi.updateRecipe.bind(rscRecipesApi),
+  deleteRecipe: rscRecipesApi.deleteRecipe.bind(rscRecipesApi),
   // Auth methods
-  register: srvAuthApi.register.bind(srvAuthApi),
-  login: srvAuthApi.login.bind(srvAuthApi),
-  getCurrentUser: srvAuthApi.getCurrentUser.bind(srvAuthApi),
-  getUserById: srvAuthApi.getUserById.bind(srvAuthApi),
-  deleteUser: srvAuthApi.deleteUser.bind(srvAuthApi),
+  register: rscAuthApi.register.bind(rscAuthApi),
+  login: rscAuthApi.login.bind(rscAuthApi),
+  getCurrentUser: rscAuthApi.getCurrentUser.bind(rscAuthApi),
+  getUserById: rscAuthApi.getUserById.bind(rscAuthApi),
+  deleteUser: rscAuthApi.deleteUser.bind(rscAuthApi),
 };
 
 // Re-export individual API instances
 export { clientAuthApi as authApi, clientRecipesApi as recipesApi };
-export { srvAuthApi as serverAuthApi, srvRecipesApi as serverRecipesApi };
+export { rscAuthApi as serverAuthApi, rscRecipesApi as serverRecipesApi };
 
 // Re-export types for backward compatibility
 export type {

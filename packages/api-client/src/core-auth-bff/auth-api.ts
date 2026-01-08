@@ -1,5 +1,5 @@
 import { BaseApi } from '../base-api';
-import type { AuthResponse, LoginData, RegisterData, User } from '../types';
+import type { AuthResponse, LoginData, RegisterData, User } from './auth-api.types';
 
 export class AuthApi extends BaseApi {
   public async register(data: RegisterData): Promise<AuthResponse> {
