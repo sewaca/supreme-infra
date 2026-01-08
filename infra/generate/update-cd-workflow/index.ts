@@ -56,7 +56,7 @@ export function updateCdWorkflow(): void {
   }
 
   // Read CD workflow
-  let cdWorkflowContent = fs.readFileSync(cdWorkflowPath, 'utf-8');
+  const cdWorkflowContent = fs.readFileSync(cdWorkflowPath, 'utf-8');
 
   // Update the deploy-helm action calls to include db-password conditionally
   // We'll add a comment block that the generator can use to inject the right secret
