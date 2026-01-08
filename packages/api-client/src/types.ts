@@ -17,4 +17,3 @@ export interface DecodedToken {
 }
 
 export const TOKEN_KEY = 'auth_token';
-

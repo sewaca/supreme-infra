@@ -8,6 +8,7 @@ on:
         type: choice
         options:
           - backend
+          - auth-bff
         default: backend
       action:
         description: Deployment action

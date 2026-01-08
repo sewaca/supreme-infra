@@ -103,3 +103,11 @@ export async function generateRouterConfigs(): Promise<void> {
     log(`  Errors encountered: ${errorCount}`, 'error');
   }
 }
+
+// Запускаем генерацию, если файл запущен напрямую
+if (require.main === module) {
+  generateRouterConfigs().catch((error) => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+  });
+}

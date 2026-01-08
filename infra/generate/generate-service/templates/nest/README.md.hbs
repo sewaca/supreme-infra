@@ -1,0 +1,113 @@
+# {{serviceName}}
+
+{{description}}
+
+## Features
+
+- NestJS backend service{{#if hasDatabase}}
+- PostgreSQL database with TypeORM{{/if}}
+- OpenTelemetry instrumentation
+- Prometheus metrics
+- Health check endpoint
+
+## Prerequisites
+
+- Node.js 22+
+- pnpm 9+{{#if hasDatabase}}
+- PostgreSQL 16+ (or Docker){{/if}}
+
+## Local Development
+
+{{#if hasDatabase}}
+### 1. Start PostgreSQL
+
+Using Docker:
+
+```bash
+docker run --name {{serviceName}}-postgres \
+  -e POSTGRES_USER={{databaseUser}} \
+  -e POSTGRES_PASSWORD=dev_password \
+  -e POSTGRES_DB={{databaseName}} \
+  -p 5432:5432 \
+  -d postgres:16-alpine
+```
+
+### 2. Setup Environment Variables
+{{else}}
+### 1. Setup Environment Variables
+{{/if}}
+
+```bash
+cp .env.example .env
+# Edit .env with your values
+```
+
+{{#if hasDatabase}}
+### 3. Install Dependencies
+{{else}}
+### 2. Install Dependencies
+{{/if}}
+
+```bash
+pnpm install
+```
+
+{{#if hasDatabase}}
+### 4. Run Development Server
+{{else}}
+### 3. Run Development Server
+{{/if}}
+
+```bash
+pnpm run dev
+```
+
+The server will start on http://localhost:{{port}}
+
+{{#if hasDatabase}}
+### 5. Access API
+{{else}}
+### 4. Access API
+{{/if}}
+
+- Health check: http://localhost:{{port}}/{{apiPrefix}}/api/status
+- Metrics: http://localhost:9464/metrics
+
+## Testing
+
+```bash
+# Run unit tests
+pnpm run unit --verbose
+
+# Run tests with coverage
+pnpm run unit:coverage
+```
+
+## Building
+
+```bash
+# Build for production
+pnpm run build
+
+# Run production build
+pnpm run prod
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| PORT | Server port | {{port}} |
+| NODE_ENV | Environment | development |{{#if hasDatabase}}
+| DB_HOST | PostgreSQL host | localhost |
+| DB_PORT | PostgreSQL port | 5432 |
+| DB_NAME | Database name | {{databaseName}} |
+| DB_USER | Database user | {{databaseUser}} |
+| DB_PASSWORD | Database password | - |
+| SKIP_DB_CONNECTION | Skip database connection (for route generation) | false |{{/if}}
+| LOKI_ENDPOINT | Loki logs endpoint | - |
+
+## License
+
+ISC
+

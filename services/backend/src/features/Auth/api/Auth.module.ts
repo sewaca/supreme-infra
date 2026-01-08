@@ -9,9 +9,15 @@ import { RecipeLikeEntity, UserEntity } from '../model/User.entity';
 import { UsersService } from '../model/Users.service';
 import { AuthController } from './Auth.controller';
 
+const skipDb = process.env.SKIP_DB_CONNECTION === 'true';
+
+// TypeOrmModule.forFeature нужен только когда БД не пропущена
+// Когда SKIP_DB_CONNECTION=true, репозитории уже замоканы глобально
+const dbFeatureImports = skipDb ? [] : [TypeOrmModule.forFeature([UserEntity, RecipeLikeEntity])];
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, RecipeLikeEntity]),
+    ...dbFeatureImports,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

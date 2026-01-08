@@ -54,7 +54,6 @@ export class CustomTypeOrmLogger implements TypeOrmLogger {
     return `[DB: ${database}@${host}:${port} as ${username}]`;
   }
 
-  // TODO:
   private formatQuery(query: string, _parameters?: unknown[]): string {
     return query;
   }
