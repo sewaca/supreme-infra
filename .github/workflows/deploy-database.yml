@@ -9,6 +9,7 @@ on:
         options:
           - backend
           - auth-bff
+          - core-auth
         default: backend
       action:
         description: Deployment action

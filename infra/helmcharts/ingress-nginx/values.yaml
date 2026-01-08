@@ -45,6 +45,12 @@ ingress:
           method: GET
         - path: /main-api/recipes/submit
           method: POST
+    - service: core-auth
+      port: 80
+      type: nest
+      paths:
+        - path: /core-auth/api/status
+          method: GET
     - service: frontend
       port: 80
       type: next
