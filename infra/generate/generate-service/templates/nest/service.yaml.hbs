@@ -18,7 +18,7 @@ metrics:
 env:
   PORT: "{{port}}"
   NODE_ENV: "production"{{#if hasDatabase}}
-  DB_HOST: "postgresql-{{databaseName}}"
+  DB_HOST: "postgresql-{{serviceName}}"
   DB_PORT: "5432"
   DB_NAME: "{{databaseName}}"
   DB_USER: "{{databaseUser}}"

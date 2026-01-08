@@ -8,7 +8,7 @@ services:
         user: backend_user
         passwordSecret: DB_PASSWORD
     - name: auth-bff
-      description: "authorization backend "
+      description: Authorization backend service (NestJS)
       database:
         enabled: true
         name: auth_bff_db
