@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { {{#if hasDatabase}}createDatabaseImports, {{/if}}LoggerModule } from '@supreme-int/nestjs-shared';
-import { HealthController } from './features/HealthCheck/api/health.controller';
+import { {{#if hasDatabase}}createDatabaseImports, {{/if}}HealthModule, LoggerModule } from '@supreme-int/nestjs-shared';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    LoggerModule,{{#if hasDatabase}}
+    LoggerModule,
+    HealthModule.forRoot({ serviceName: '{{serviceName}}' }),{{#if hasDatabase}}
     ...createDatabaseImports(),{{/if}}
   ],
-  controllers: [HealthController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}

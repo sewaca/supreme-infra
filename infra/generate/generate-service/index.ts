@@ -40,6 +40,7 @@ const SERVICES_DIR = path.join(__dirname, '../../../services');
 const SERVICES_YAML_PATH = path.join(__dirname, '../../../services.yaml');
 
 async function promptServiceConfig(): Promise<ServiceConfig> {
+  // biome-ignore lint/suspicious/noExplicitAny: inquirer типизация не поддерживает boolean в choices
   const answers = await inquirer.prompt([
     {
       type: 'input',
@@ -86,10 +87,14 @@ async function promptServiceConfig(): Promise<ServiceConfig> {
       when: (answers: { serviceType: string }) => answers.serviceType === 'nest',
     },
     {
-      type: 'confirm',
+      type: 'list',
       name: 'hasDatabase',
       message: 'Нужна ли сервису база данных PostgreSQL?',
-      default: false,
+      choices: [
+        { name: 'Нет', value: false },
+        { name: 'Да', value: true },
+      ],
+      default: 0,
       when: (answers: { serviceType: string }) => answers.serviceType === 'nest',
     },
     {
@@ -235,10 +240,14 @@ async function generateService(): Promise<void> {
 
   const { confirm } = await inquirer.prompt([
     {
-      type: 'confirm',
+      type: 'list',
       name: 'confirm',
       message: 'Создать сервис с этими настройками?',
-      default: true,
+      choices: [
+        { name: 'Да, создать сервис', value: true },
+        { name: 'Нет, отменить', value: false },
+      ],
+      default: 0,
     },
   ]);
 
