@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
-import { serverApi } from '../../src/shared/api/backendApi';
 import type { Recipe } from '../../src/shared/api/backendApi.types';
-import { getAuthToken, getUser } from '../../src/shared/lib/auth.server';
+import { getAuthToken, getUser, rscRecipesApi } from '../../src/shared/lib/auth.server';
 import { ProposedRecipesPage } from '../../src/views/ProposedRecipesPage/ProposedRecipesPage';
 
 export default async function ProposedRecipesPageRoute() {
@@ -22,7 +21,7 @@ export default async function ProposedRecipesPageRoute() {
 
   let recipes: Recipe[];
   try {
-    recipes = await serverApi.getProposedRecipes(token);
+    recipes = await rscRecipesApi.getProposedRecipes(token);
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
       redirect('/login');

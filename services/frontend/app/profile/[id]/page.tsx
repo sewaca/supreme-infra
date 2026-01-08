@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
-import { serverApi } from '../../../src/shared/api/backendApi';
 import type { User } from '../../../src/shared/api/backendApi.types';
-import { getAuthToken, getUser } from '../../../src/shared/lib/auth.server';
+import { getAuthToken, getUser, rscAuthApi } from '../../../src/shared/lib/auth.server';
 import { ProfilePage } from '../../../src/views/ProfilePage/ProfilePage';
 
 interface ProfileByIdPageProps {
@@ -29,7 +28,7 @@ export default async function ProfileByIdPage({ params }: ProfileByIdPageProps) 
 
   let user: User;
   try {
-    user = await serverApi.getUserById(userId, token);
+    user = await rscAuthApi.getUserById(userId, token);
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
       redirect('/login');
