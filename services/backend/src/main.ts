@@ -3,8 +3,9 @@ import helmet from '@fastify/helmet';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
+import { OtelLoggerService } from '@supreme-int/nestjs-shared';
 import { AppModule } from './app.module';
-import { OtelLoggerService } from './shared/logger';
+import { loggerProvider } from './instrumentation';
 
 const MAX_BODY_SIZE = 10 * 1024;
 
@@ -13,8 +14,11 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter, { bufferLogs: true });
 
   // Set custom logger globally
+  const logger = app.get(OtelLoggerService);
+  const otelLogger = loggerProvider.getLogger('nestjs-logger');
+  logger.setOtelLogger(otelLogger);
   // biome-ignore lint/correctness/useHookAtTopLevel: TODO: fix this
-  app.useLogger(app.get(OtelLoggerService));
+  app.useLogger(logger);
 
   app.enableShutdownHooks();
   app.setGlobalPrefix('main-api');

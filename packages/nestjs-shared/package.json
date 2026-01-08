@@ -1,0 +1,23 @@
+{
+  "name": "@supreme-int/nestjs-shared",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@nestjs/common": "catalog:",
+    "@opentelemetry/api-logs": "catalog:",
+    "@opentelemetry/sdk-logs": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0"
+  }
+}
