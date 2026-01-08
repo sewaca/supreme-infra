@@ -19,7 +19,7 @@ env:
   PORT: "4001"
   NODE_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
-  DB_HOST: postgresql-auth_bff_db
+  DB_HOST: postgresql-auth_bff
   DB_PORT: "5432"
   DB_NAME: auth_bff_db
   DB_USER: auth_bff_user

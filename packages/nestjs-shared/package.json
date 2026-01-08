@@ -1,7 +1,9 @@
 {
   "name": "@supreme-int/nestjs-shared",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "unit": "vitest run"
+  },
   "dependencies": {
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
@@ -11,8 +13,12 @@
     "typeorm": "catalog:"
   },
   "devDependencies": {
+    "@nestjs/testing": "catalog:",
     "@types/node": "catalog:",
-    "typescript": "catalog:"
+    "reflect-metadata": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-swc": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0",
