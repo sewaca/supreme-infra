@@ -1,6 +1,23 @@
+import { RecipesApi } from './backend';
+import { AuthApi } from './core-auth-bff';
 import { type DecodedToken, TOKEN_KEY, type UserRole } from './types';
 
 export type { DecodedToken, UserRole } from './types';
+
+const isProd = process.env.NODE_ENV === 'production';
+
+function getBackendUrl(): string {
+  const host = isProd ? '84.252.134.216' : 'localhost:4000';
+  return `http://${host}/main-api`;
+}
+
+function getAuthBffUrl(): string {
+  const host = isProd ? '84.252.134.216' : 'localhost:4000';
+  return `http://${host}/core-auth-bff`;
+}
+
+export const recipesApi = new RecipesApi(getBackendUrl());
+export const authApi = new AuthApi(getAuthBffUrl());
 
 export function getAuthToken(): string | undefined {
   if (typeof document === 'undefined') {

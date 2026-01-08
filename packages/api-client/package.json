@@ -1,7 +1,9 @@
 {
   "name": "@supreme-int/api-client",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "tsc": "tsc"
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "catalog:",

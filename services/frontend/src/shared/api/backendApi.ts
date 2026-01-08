@@ -1,323 +1,54 @@
-import { isProd } from '../lib/environment';
-import type { AuthResponse, LoginData, Recipe, RecipeDetails, RegisterData, User } from './backendApi.types';
+// Re-export API instances from @supreme-int/api-client
+import { authApi as clientAuthApi, recipesApi as clientRecipesApi } from '@supreme-int/api-client/client';
+import { authApi as srvAuthApi, recipesApi as srvRecipesApi } from '@supreme-int/api-client/server';
 
-class BackendApi {
-  private readonly baseUrl: string;
-
-  constructor(shiturl: string) {
-    this.baseUrl = shiturl;
-  }
-
-  private async fetch(url: string, options?: RequestInit): Promise<Response> {
-    console.log('outgoing request started', url);
-    return fetch(url, options)
-      .then((response) => {
-        console.log('outgoing request finished with status', response.status, response.statusText);
-        return response;
-      })
-      .catch((error) => {
-        console.error('outgoing request failed with ', error);
-        throw error;
-      });
-  }
-
-  public async getRecipes(searchQuery?: string, ingredients?: string[]): Promise<Recipe[]> {
-    const params = new URLSearchParams();
-    if (searchQuery) {
-      params.append('search', searchQuery);
-    }
-    if (ingredients && ingredients.length > 0) {
-      params.append('ingredients', ingredients.join(','));
-    }
-
-    const url = `${this.baseUrl}/recipes${params.toString() ? `?${params.toString()}` : ''}`;
-
-    const response = await this.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch recipes: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<Recipe[]>;
-  }
-
-  public async getRecipeById(id: number, token?: string): Promise<RecipeDetails> {
-    const url = `${this.baseUrl}/recipes/${id}`;
-
-    const headers: HeadersInit = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
-    const response = await this.fetch(url, { headers });
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error('Recipe not found');
-      }
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      throw new Error(`Failed to fetch recipe: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<RecipeDetails>;
-  }
-
-  public async toggleRecipeLike(id: number, token: string): Promise<{ liked: boolean; totalLikes: number }> {
-    const url = `${this.baseUrl}/recipes/${id}/like`;
-
-    const response = await this.fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: '{}',
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => response.statusText);
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      if (response.status === 404) {
-        throw new Error('Recipe not found');
-      }
-      throw new Error(`Failed to toggle like: ${errorText || response.statusText}`);
-    }
-
-    return response.json() as Promise<{ liked: boolean; totalLikes: number }>;
-  }
-
-  public async submitRecipe(
-    recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
-  ): Promise<{ success: boolean }> {
-    const url = `${this.baseUrl}/recipes/submit`;
-
-    const response = await this.fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(recipe),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to submit recipe: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<{ success: boolean }>;
-  }
-
-  public async getProposedRecipes(token: string): Promise<Recipe[]> {
-    const url = `${this.baseUrl}/recipes/proposed/all`;
-
-    const response = await this.fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      throw new Error(`Failed to fetch proposed recipes: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<Recipe[]>;
-  }
-
-  public async publishRecipe(id: number, token: string): Promise<RecipeDetails> {
-    const url = `${this.baseUrl}/recipes/proposed/${id}/publish`;
-
-    const response = await this.fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        // TODO: fixme – need to fix method to update or etc
-      },
-      body: '{}',
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      if (response.status === 404) {
-        throw new Error('Proposed recipe not found');
-      }
-      throw new Error(`Failed to publish recipe: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<RecipeDetails>;
-  }
-
-  public async updateRecipe(
-    id: number,
-    recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
-    token: string,
-  ): Promise<RecipeDetails> {
-    const url = `${this.baseUrl}/recipes/${id}`;
-
-    const response = await this.fetch(url, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(recipe),
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      if (response.status === 404) {
-        throw new Error('Recipe not found');
-      }
-      throw new Error(`Failed to update recipe: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<RecipeDetails>;
-  }
-
-  public async deleteRecipe(id: number, token: string): Promise<{ success: boolean }> {
-    const url = `${this.baseUrl}/recipes/${id}`;
-
-    const response = await this.fetch(url, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      if (response.status === 404) {
-        throw new Error('Recipe not found');
-      }
-      throw new Error(`Failed to delete recipe: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<{ success: boolean }>;
-  }
-
-  public async getUserById(id: number, token: string): Promise<User> {
-    const url = `${this.baseUrl}/auth/users/${id}`;
-
-    const response = await this.fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      if (response.status === 404) {
-        throw new Error('User not found');
-      }
-      throw new Error(`Failed to fetch user: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<User>;
-  }
-
-  public async deleteUser(id: number, token: string): Promise<{ success: boolean }> {
-    const url = `${this.baseUrl}/auth/users/${id}`;
-
-    const response = await this.fetch(url, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      if (response.status === 404) {
-        throw new Error('User not found');
-      }
-      throw new Error(`Failed to delete user: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<{ success: boolean }>;
-  }
-
-  public async register(data: RegisterData): Promise<AuthResponse> {
-    const url = `${this.baseUrl}/auth/register`;
-
-    const response = await this.fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Registration failed' }));
-      throw new Error(error.message || 'Registration failed');
-    }
-
-    return response.json() as Promise<AuthResponse>;
-  }
-
-  public async login(data: LoginData): Promise<AuthResponse> {
-    const url = `${this.baseUrl}/auth/login`;
-
-    const response = await this.fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Login failed' }));
-      throw new Error(error.message || 'Login failed');
-    }
-
-    return response.json() as Promise<AuthResponse>;
-  }
-
-  public async getCurrentUser(token: string): Promise<User> {
-    const url = `${this.baseUrl}/auth/me`;
-
-    const response = await this.fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      throw new Error(`Failed to fetch current user: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<User>;
-  }
-}
-
-/** Общий преффикс для всех ручек бекенда */
-const commonBackendPostfix = '/main-api';
-
-const createServerApi = () => {
-  if (!isProd) {
-    return new BackendApi(`http://localhost:4000${commonBackendPostfix}`);
-  }
-
-  /** namespace в котором находятся поды бекенда */
-  const backendNamespace = process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
-
-  const backendUrl = `http://backend.${backendNamespace}.svc.cluster.local${commonBackendPostfix}`;
-  return new BackendApi(backendUrl);
+// Combined API for backward compatibility
+export const backendApi = {
+  // Recipes methods
+  getRecipes: clientRecipesApi.getRecipes.bind(clientRecipesApi),
+  getRecipeById: clientRecipesApi.getRecipeById.bind(clientRecipesApi),
+  toggleRecipeLike: clientRecipesApi.toggleRecipeLike.bind(clientRecipesApi),
+  submitRecipe: clientRecipesApi.submitRecipe.bind(clientRecipesApi),
+  getProposedRecipes: clientRecipesApi.getProposedRecipes.bind(clientRecipesApi),
+  publishRecipe: clientRecipesApi.publishRecipe.bind(clientRecipesApi),
+  updateRecipe: clientRecipesApi.updateRecipe.bind(clientRecipesApi),
+  deleteRecipe: clientRecipesApi.deleteRecipe.bind(clientRecipesApi),
+  // Auth methods
+  register: clientAuthApi.register.bind(clientAuthApi),
+  login: clientAuthApi.login.bind(clientAuthApi),
+  getCurrentUser: clientAuthApi.getCurrentUser.bind(clientAuthApi),
+  getUserById: clientAuthApi.getUserById.bind(clientAuthApi),
+  deleteUser: clientAuthApi.deleteUser.bind(clientAuthApi),
 };
 
-const createClientApi = () =>
-  new BackendApi(`http://${isProd ? '84.252.134.216' : 'localhost:4000'}${commonBackendPostfix}`);
+export const serverApi = {
+  // Recipes methods
+  getRecipes: srvRecipesApi.getRecipes.bind(srvRecipesApi),
+  getRecipeById: srvRecipesApi.getRecipeById.bind(srvRecipesApi),
+  toggleRecipeLike: srvRecipesApi.toggleRecipeLike.bind(srvRecipesApi),
+  submitRecipe: srvRecipesApi.submitRecipe.bind(srvRecipesApi),
+  getProposedRecipes: srvRecipesApi.getProposedRecipes.bind(srvRecipesApi),
+  publishRecipe: srvRecipesApi.publishRecipe.bind(srvRecipesApi),
+  updateRecipe: srvRecipesApi.updateRecipe.bind(srvRecipesApi),
+  deleteRecipe: srvRecipesApi.deleteRecipe.bind(srvRecipesApi),
+  // Auth methods
+  register: srvAuthApi.register.bind(srvAuthApi),
+  login: srvAuthApi.login.bind(srvAuthApi),
+  getCurrentUser: srvAuthApi.getCurrentUser.bind(srvAuthApi),
+  getUserById: srvAuthApi.getUserById.bind(srvAuthApi),
+  deleteUser: srvAuthApi.deleteUser.bind(srvAuthApi),
+};
 
-export const serverApi = createServerApi();
-export const backendApi = createClientApi();
+// Re-export individual API instances
+export { clientAuthApi as authApi, clientRecipesApi as recipesApi };
+export { srvAuthApi as serverAuthApi, srvRecipesApi as serverRecipesApi };
 
-// export const api =
-//   typeof window === 'undefined' ? createServerApi() : createClientApi();
+// Re-export types for backward compatibility
+export type {
+  AuthResponse,
+  LoginData,
+  Recipe,
+  RecipeDetails,
+  RegisterData,
+  User,
+} from '@supreme-int/api-client';
