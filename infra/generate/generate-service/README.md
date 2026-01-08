@@ -82,7 +82,7 @@ infra/helmcharts/grafana/dashboards/
 
 infra/databases/<service-name>-db/ # ✨ Только если hasDatabase = true
 ├── init.sql                       # ✨ Скрипт инициализации БД
-└── README.md                      # ✨ Документация БД
+└── service.yaml                   # ✨ Конфигурация ресурсов БД
 ```
 
 ### Next.js (Frontend)
@@ -180,6 +180,13 @@ $ pnpm run generate:service
 ───────────────────────────────────────────────────────────
 → Копирование шаблонов nest...
 ✓ Файлы сервиса созданы в: services/auth-bff
+→ Генерация .env.example...
+✓ .env.example создан
+→ Генерация Grafana дашборда...
+✓ Grafana дашборд создан: infra/helmcharts/grafana/dashboards/auth-bff-metrics.json
+→ Генерация конфигурации базы данных...
+  ✓ init.sql создан: infra/databases/auth-bff-db/init.sql
+  ✓ service.yaml создан: infra/databases/auth-bff-db/service.yaml
 → Обновление services.yaml...
 ✓ services.yaml обновлен
 
@@ -199,7 +206,8 @@ $ pnpm run generate:service
      cd services/auth-bff && pnpm run dev
 
   4. Настройте базу данных:
-     - Создайте init.sql в infra/databases/auth_bff_db/
+     - Отредактируйте init.sql в infra/databases/auth-bff-db/
+     - Настройте ресурсы в service.yaml в infra/databases/auth-bff-db/
      - Добавьте GitHub Secret: AUTH_BFF_DB_PASSWORD
 
 ═══════════════════════════════════════════════════════════
@@ -228,7 +236,8 @@ $ pnpm run generate:service
    - Helm values файлы
 
 3. **Настроить базу данных** (если нужна):
-   - Создать `infra/databases/<db-name>/init.sql`
+   - Отредактировать `infra/databases/<service-name>-db/init.sql` (уже создан)
+   - Настроить ресурсы в `infra/databases/<service-name>-db/service.yaml` (уже создан)
    - Добавить GitHub Secret для пароля БД
    - Запустить `pnpm run generate` еще раз
 
@@ -348,14 +357,42 @@ services/<service-name>/src/features/MyFeature/my-file.ts
 - Top 10 Endpoints by RPS - топ эндпоинтов по RPS
 - Top 10 Slowest Endpoints (P95) - самые медленные эндпоинты
 
-### Database Init Script
+### Database Configuration
 
 Для NestJS сервисов с базой данных создается:
 
 1. **init.sql** - скрипт инициализации БД с примерами
-2. **README.md** - документация по настройке БД
+2. **service.yaml** - конфигурация ресурсов БД для разных окружений
 
-Скрипт создается в `infra/databases/<service-name>-db/` и автоматически используется генератором `generate-database-values`.
+Файлы создаются в `infra/databases/<service-name>-db/` и автоматически используются генератором `generate-database-values`.
+
+**Пример service.yaml:**
+
+```yaml
+# Database configuration for auth-bff service
+# This file defines database-specific settings including resources
+
+database:
+  name: auth_bff_db
+  user: auth_bff_user
+  passwordSecret: AUTH_BFF_DB_PASSWORD
+
+resources:
+  production:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 150Mi
+  development:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+```
 
 ## Troubleshooting
 

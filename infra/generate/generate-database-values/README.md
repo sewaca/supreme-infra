@@ -142,6 +142,21 @@ helm install postgresql-backend ./infra/helmcharts/postgresql \
 
 ## Добавление новой БД для сервиса
 
+### Автоматически (рекомендуется)
+
+Используйте генератор сервисов:
+
+```bash
+pnpm run generate:service
+```
+
+Генератор автоматически создаст:
+- `infra/databases/{service}-db/service.yaml` с конфигурацией ресурсов
+- `infra/databases/{service}-db/init.sql` с шаблоном схемы
+- Запись в `services.yaml` с `database.enabled: true`
+
+### Вручную
+
 1. Создайте директорию для базы данных:
 
    ```bash
@@ -155,7 +170,7 @@ helm install postgresql-backend ./infra/helmcharts/postgresql \
      name: my_service_db
      user: my_service_user
      passwordSecret: DB_PASSWORD
-
+   
    resources:
      production:
        limits:
@@ -181,8 +196,6 @@ helm install postgresql-backend ./infra/helmcharts/postgresql \
    - name: my-service
      database:
        enabled: true
-       name: my_service_db
-       user: my_service_user
    ```
 
 5. Запустите генератор:
