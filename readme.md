@@ -86,6 +86,7 @@ services:
 - 🚀 [Deploy Database Guide](DEPLOY_DATABASE_GUIDE.md) - Deployment instructions
 - 📚 [Database Deployment Workflow](docs/database-deployment-workflow.md) - Detailed workflow guide
 - 🔐 [Database Secrets Configuration](docs/database-secrets-configuration.md) - Secrets management
+- 🔧 [Fix Missing Tables](FIX_MISSING_TABLES.md) - Fix "relation does not exist" errors
 
 ## Infra:
 
