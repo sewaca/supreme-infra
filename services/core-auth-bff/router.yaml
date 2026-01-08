@@ -1,0 +1,15 @@
+service: core-auth-bff
+type: nest
+routes:
+  - path: /core-auth-bff/api/status
+    method: GET
+  - path: /core-auth-bff/auth/login
+    method: POST
+  - path: /core-auth-bff/auth/me
+    method: GET
+  - path: /core-auth-bff/auth/register
+    method: POST
+  - path: /core-auth-bff/auth/users/[^/]+
+    method: GET
+  - path: /core-auth-bff/auth/users/[^/]+
+    method: DELETE

@@ -21,6 +21,13 @@ services:
         name: core_auth_db
         user: core_auth_user
         passwordSecret: DB_PASSWORD
+    - name: core-auth-bff
+      description: "core-auth-bff "
+      database:
+        enabled: true
+        name: core_auth_bff_db
+        user: core_auth_bff_user
+        passwordSecret: DB_PASSWORD
   next:
     - name: frontend
       description: Frontend service (Next.js)

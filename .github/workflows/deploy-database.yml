@@ -10,6 +10,7 @@ on:
           - backend
           - auth-bff
           - core-auth
+          - core-auth-bff
         default: backend
       action:
         description: Deployment action

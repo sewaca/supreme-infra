@@ -191,37 +191,6 @@ function generateDatabaseInitScript(config: ServiceConfig): void {
   const initSqlTemplatePath = path.join(COMMON_TEMPLATES_DIR, 'nest', 'database-init.sql.hbs');
   const initSqlTargetPath = path.join(dbDir, 'init.sql');
   copyTemplateFile(initSqlTemplatePath, initSqlTargetPath, config, true);
-
-  // Generate README.md
-  const readmeContent = `# ${config.serviceName} Database
-
-PostgreSQL database for ${config.serviceName} service.
-
-## Configuration
-
-- **Database Name**: \`${config.databaseName}\`
-- **Database User**: \`${config.databaseUser}\`
-- **Password Secret**: \`${config.databasePasswordSecret}\`
-
-## Init Script
-
-The \`init.sql\` file contains the initial database schema and seed data.
-Edit this file to add your database tables, indexes, and seed data.
-
-## Local Development
-
-\`\`\`bash
-docker run --name ${config.serviceName}-postgres \\
-  -e POSTGRES_USER=${config.databaseUser} \\
-  -e POSTGRES_PASSWORD=dev_password \\
-  -e POSTGRES_DB=${config.databaseName} \\
-  -p 5432:5432 \\
-  -d postgres:16-alpine
-\`\`\`
-`;
-
-  const readmeTargetPath = path.join(dbDir, 'README.md');
-  fs.writeFileSync(readmeTargetPath, readmeContent);
 }
 
 function copyTemplateDirectory(templateDir: string, targetDir: string, config: ServiceConfig): void {
