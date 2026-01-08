@@ -9,6 +9,7 @@ NestJS backend service with PostgreSQL database for authentication.
 - Recipe management
 - OpenTelemetry instrumentation
 - Prometheus metrics
+- Comprehensive database logging
 
 ## Prerequisites
 
@@ -205,6 +206,29 @@ src/
    ```
 
 2. Restart the application (tables will be auto-created in development)
+
+## Database Logging
+
+Backend logs all database operations for debugging and monitoring.
+
+See [DATABASE_LOGGING.md](DATABASE_LOGGING.md) for details.
+
+### Quick view logs
+
+```bash
+# In Kubernetes
+kubectl logs deployment/backend -n default --tail=100 -f | grep TypeORM
+
+# Locally
+pnpm run start:dev
+```
+
+### What's logged
+
+- 🔌 Database connection details on startup
+- 📊 Every SQL query with parameters
+- ❌ Query errors
+- 🐌 Slow queries (>1s)
 
 ## Deployment
 
