@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS recipe_likes (
   user_id INTEGER NOT NULL,
   recipe_id INTEGER NOT NULL,
   liked_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  -- CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   CONSTRAINT unique_user_recipe UNIQUE (user_id, recipe_id)
 );
 
