@@ -51,6 +51,16 @@ ingress:
       paths:
         - path: /core-auth/api/status
           method: GET
+        - path: /core-auth/auth/login
+          method: POST
+        - path: /core-auth/auth/me
+          method: GET
+        - path: /core-auth/auth/register
+          method: POST
+        - path: /core-auth/auth/users/[^/]+
+          method: GET
+        - path: /core-auth/auth/users/[^/]+
+          method: DELETE
     - service: frontend
       port: 80
       type: next
