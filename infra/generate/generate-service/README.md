@@ -26,6 +26,9 @@ pnpm run generate:service
    - README с инструкциями
    - Конфигурацию для тестов
    - Health check endpoint
+   - **.env.example** с переменными окружения
+   - **Grafana дашборд** с метриками (Timings, RPS, Memory, Event Loop)
+   - **init.sql** для базы данных (если нужна БД)
 
 3. **Обновление services.yaml** - автоматически добавляет новый сервис в общий конфиг
 
@@ -67,10 +70,19 @@ services/<service-name>/
 ├── webpack.config.js
 ├── vitest.config.ts
 ├── Dockerfile
+├── .env.example                   # ✨ Новое
 ├── .gitignore
 ├── router.yaml
 ├── service.yaml
 └── README.md
+
+# Дополнительно создаются:
+infra/helmcharts/grafana/dashboards/
+└── <service-name>-metrics.json    # ✨ Grafana дашборд
+
+infra/databases/<service-name>-db/ # ✨ Только если hasDatabase = true
+├── init.sql                       # ✨ Скрипт инициализации БД
+└── README.md                      # ✨ Документация БД
 ```
 
 ### Next.js (Frontend)
@@ -107,10 +119,15 @@ services/<service-name>/
 ├── instrumentation.nodejs.ts
 ├── middleware.ts
 ├── Dockerfile
+├── .env.example                   # ✨ Новое
 ├── .gitignore
 ├── router.yaml
 ├── service.yaml
 └── README.md
+
+# Дополнительно создаются:
+infra/helmcharts/grafana/dashboards/
+└── <service-name>-metrics.json    # ✨ Grafana дашборд
 ```
 
 ## Переменные шаблонов
@@ -252,6 +269,56 @@ services/<service-name>/src/features/MyFeature/my-file.ts
 - ✅ Название БД (только строчные буквы, цифры, подчеркивания)
 - ✅ Имя пользователя БД (только строчные буквы, цифры, подчеркивания)
 - ✅ Название секрета (только заглавные буквы, цифры, подчеркивания)
+
+## Новые возможности
+
+### .env.example
+
+Генератор автоматически создает `.env.example` файл с необходимыми переменными окружения:
+
+**Для NestJS сервисов:**
+- `PORT` - порт сервера
+- `NODE_ENV` - окружение
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` - параметры БД (если есть)
+- `LOKI_ENDPOINT` - эндпоинт для логов
+
+**Для Next.js сервисов:**
+- `PORT` - порт сервера
+- `NODE_ENV` - окружение
+- `LOKI_ENDPOINT` - эндпоинт для логов
+
+### Grafana Dashboard
+
+Автоматически создается дашборд в `infra/helmcharts/grafana/dashboards/<service-name>-metrics.json` с метриками:
+
+**Main панели:**
+- Timings (P80, P95, P99) - время ответа
+- OR RPS - успешные запросы (2xx, 3xx)
+- Bad RPS - ошибочные запросы (4xx, 5xx)
+
+**By POD панели:**
+- Timings by pod - время ответа по подам
+- OR RPS by pod - успешные запросы по подам
+- Bad RPS by pod - ошибочные запросы по подам
+
+**Node JS панели:**
+- Event Loop Utilization - загрузка event loop
+- Memory Usage - использование памяти (Heap Used/Limit)
+
+**Дополнительные панели (свернуты):**
+- Error Rate (5xx) - процент ошибок
+- Status Codes Distribution - распределение статус-кодов
+- Top 10 Endpoints by RPS - топ эндпоинтов по RPS
+- Top 10 Slowest Endpoints (P95) - самые медленные эндпоинты
+
+### Database Init Script
+
+Для NestJS сервисов с базой данных создается:
+
+1. **init.sql** - скрипт инициализации БД с примерами
+2. **README.md** - документация по настройке БД
+
+Скрипт создается в `infra/databases/<service-name>-db/` и автоматически используется генератором `generate-database-values`.
 
 ## Troubleshooting
 

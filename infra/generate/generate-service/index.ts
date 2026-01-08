@@ -152,6 +152,46 @@ function copyTemplateFile(templatePath: string, targetPath: string, config: Serv
   }
 }
 
+function generateEnvExample(serviceDir: string, config: ServiceConfig): void {
+  const templatePath = path.join(TEMPLATES_DIR, config.serviceType, 'env.example.hbs');
+  const targetPath = path.join(serviceDir, '.env.example');
+  copyTemplateFile(templatePath, targetPath, config, true);
+}
+
+function generateGrafanaDashboard(config: ServiceConfig): void {
+  const templatePath = path.join(TEMPLATES_DIR, config.serviceType, 'grafana-dashboard.json.hbs');
+  const dashboardsDir = path.join(__dirname, '../../helmcharts/grafana/dashboards');
+  
+  if (!fs.existsSync(dashboardsDir)) {
+    fs.mkdirSync(dashboardsDir, { recursive: true });
+  }
+  
+  const targetPath = path.join(dashboardsDir, `${config.serviceName}-metrics.json`);
+  copyTemplateFile(templatePath, targetPath, config, true);
+}
+
+function generateDatabaseInitScript(config: ServiceConfig): void {
+  if (!config.hasDatabase || config.serviceType !== 'nest') {
+    return;
+  }
+  
+  const dbDir = path.join(__dirname, '../../databases', `${config.serviceName}-db`);
+  
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
+  
+  // Generate init.sql
+  const initSqlTemplatePath = path.join(TEMPLATES_DIR, 'nest', 'database-init.sql.hbs');
+  const initSqlTargetPath = path.join(dbDir, 'init.sql');
+  copyTemplateFile(initSqlTemplatePath, initSqlTargetPath, config, true);
+  
+  // Generate README.md
+  const readmeTemplatePath = path.join(TEMPLATES_DIR, 'nest', 'database-README.md.hbs');
+  const readmeTargetPath = path.join(dbDir, 'README.md');
+  copyTemplateFile(readmeTemplatePath, readmeTargetPath, config, true);
+}
+
 function copyTemplateDirectory(templateDir: string, targetDir: string, config: ServiceConfig): void {
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
@@ -266,6 +306,23 @@ async function generateService(): Promise<void> {
     copyTemplateDirectory(templateDir, serviceDir, config);
     console.log(`✓ Файлы сервиса созданы в: services/${config.serviceName}`);
 
+    // Generate .env.example
+    console.log('→ Генерация .env.example...');
+    generateEnvExample(serviceDir, config);
+    console.log(`✓ .env.example создан`);
+
+    // Generate Grafana dashboard
+    console.log('→ Генерация Grafana дашборда...');
+    generateGrafanaDashboard(config);
+    console.log(`✓ Grafana дашборд создан: infra/helmcharts/grafana/dashboards/${config.serviceName}-metrics.json`);
+
+    // Generate database init script if needed
+    if (config.hasDatabase && config.serviceType === 'nest') {
+      console.log('→ Генерация init.sql для базы данных...');
+      generateDatabaseInitScript(config);
+      console.log(`✓ init.sql создан: infra/databases/${config.serviceName}-db/init.sql`);
+    }
+
     // Update services.yaml
     console.log('→ Обновление services.yaml...');
     updateServicesYaml(config);
@@ -290,7 +347,7 @@ async function generateService(): Promise<void> {
 
     if (config.hasDatabase) {
       console.log(`  4. Настройте базу данных:`);
-      console.log(`     - Создайте init.sql в infra/databases/${config.databaseName}/`);
+      console.log(`     - Отредактируйте init.sql в infra/databases/${config.serviceName}-db/`);
       console.log(`     - Добавьте GitHub Secret: ${config.databasePasswordSecret}`);
       console.log('');
     }
