@@ -33,7 +33,7 @@ resources:
 autoscaling:
   enabled: true
   minReplicas: 2
-  maxReplicas: 10
+  maxReplicas: 6
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
@@ -44,7 +44,6 @@ overrides:
       enabled: true
     # В production увеличиваем минимальное количество реплик
     autoscaling:
-      minReplicas: 1
       maxReplicas: 5
     env:
       NODE_ENV: "production"
