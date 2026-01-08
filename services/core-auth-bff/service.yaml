@@ -1,0 +1,54 @@
+image:
+  repository: core-auth-bff
+
+nameOverride: "core-auth-bff"
+fullnameOverride: "core-auth-bff"
+
+replicas: 1
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4001
+
+metrics:
+  enabled: true
+  port: 9464
+
+env:
+  PORT: "4001"
+  NODE_ENV: "production"
+  DB_HOST: "postgresql-core-auth-bff"
+  DB_PORT: "5432"
+  DB_NAME: "core_auth_bff_db"
+  DB_USER: "core_auth_bff_user"
+  # DB_PASSWORD is passed from GitHub Secrets during deployment
+
+livenessProbe:
+  httpGet:
+    path: /core-auth-bff/api/status
+
+readinessProbe:
+  httpGet:
+    path: /core-auth-bff/api/status
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 300Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+overrides:
+  production:
+    canary:
+      enabled: true
+

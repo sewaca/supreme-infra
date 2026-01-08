@@ -61,6 +61,22 @@ ingress:
           method: GET
         - path: /core-auth/auth/users/[^/]+
           method: DELETE
+    - service: core-auth-bff
+      port: 80
+      type: nest
+      paths:
+        - path: /core-auth-bff/api/status
+          method: GET
+        - path: /core-auth-bff/auth/login
+          method: POST
+        - path: /core-auth-bff/auth/me
+          method: GET
+        - path: /core-auth-bff/auth/register
+          method: POST
+        - path: /core-auth-bff/auth/users/[^/]+
+          method: GET
+        - path: /core-auth-bff/auth/users/[^/]+
+          method: DELETE
     - service: frontend
       port: 80
       type: next
