@@ -1,5 +1,5 @@
 import { BaseApi } from '../base-api';
-import type { Recipe, RecipeDetails } from '../types';
+import type { Recipe, RecipeDetails } from './recipes-api.types';
 
 export class RecipesApi extends BaseApi {
   public async getRecipes(searchQuery?: string, ingredients?: string[]): Promise<Recipe[]> {
