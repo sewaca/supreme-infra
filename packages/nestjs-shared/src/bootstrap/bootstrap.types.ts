@@ -1,7 +1,7 @@
 import type { Type } from '@nestjs/common';
 import type { LoggerProvider } from '@opentelemetry/api-logs';
 
-export interface BootstrapOptions {
+export type BootstrapOptions = {
   AppModule: Type;
   serviceName: string;
   apiPrefix: string;
@@ -9,11 +9,11 @@ export interface BootstrapOptions {
   loggerProvider: LoggerProvider;
   maxBodySize?: number;
   corsOrigins?: string[];
-}
+};
 
-export interface CorsConfig {
+export type CorsConfig = {
   origin: string[];
   credentials: boolean;
   methods: string[];
   allowedHeaders: string[];
-}
+};
