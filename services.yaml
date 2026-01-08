@@ -7,20 +7,6 @@ services:
         name: backend_db
         user: backend_user
         passwordSecret: DB_PASSWORD
-    - name: auth-bff
-      description: Authorization backend service (NestJS)
-      database:
-        enabled: true
-        name: auth_bff_db
-        user: auth_bff_user
-        passwordSecret: DB_PASSWORD
-    - name: core-auth
-      description: core authorization backend (Nest JS)
-      database:
-        enabled: true
-        name: core_auth_db
-        user: core_auth_user
-        passwordSecret: DB_PASSWORD
     - name: core-auth-bff
       description: "core-auth-bff "
       database:
