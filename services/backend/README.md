@@ -1,135 +1,215 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS backend service with PostgreSQL database for authentication.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- User authentication with JWT
+- PostgreSQL database with TypeORM
+- Recipe management
+- OpenTelemetry instrumentation
+- Prometheus metrics
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Prerequisites
 
-## Test Users
+- Node.js 22+
+- pnpm 9+
+- PostgreSQL 16+ (or Docker)
 
-Для тестирования приложения доступны следующие предсозданные пользователи:
+## Local Development
 
-### 1. Администратор
+### 1. Start PostgreSQL
 
-- **Email:** `admin@example.com`
-- **Password:** `admin@example.com`
-- **Role:** `admin`
-
-### 2. Модератор
-
-- **Email:** `moder@example.com`
-- **Password:** `moder@example.com`
-- **Role:** `moderator`
-
-### 3. Обычный пользователь
-
-- **Email:** `user@example.com`
-- **Password:** `user@example.com`
-- **Role:** `user`
-
-## Project setup
+Using Docker Compose:
 
 ```bash
-$ pnpm install
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
-## Environment Configuration
-
-Before running the application, you need to set up environment variables:
-
-1. Copy the example environment file:
+Or using Docker directly:
 
 ```bash
-$ cp .env.example .env.local
+docker run --name postgres-dev \
+  -e POSTGRES_USER=auth_user \
+  -e POSTGRES_PASSWORD=dev_password \
+  -e POSTGRES_DB=auth_db \
+  -p 5432:5432 \
+  -d postgres:16-alpine
 ```
 
-2. Edit `.env.local` and set your values:
+### 2. Setup Environment Variables
 
 ```bash
-JWT_SECRET="your-secret-key-here"
+cp .env.example .env
+# Edit .env with your values
 ```
 
-**Important:** `.env.local` is ignored by git and should never be committed to the repository.
-
-## Compile and run the project
+### 3. Install Dependencies
 
 ```bash
-# development with watch mode
-$ pnpm dev
-
-# build
-$ pnpm build
-
-# production mode
-$ pnpm prod
+pnpm install
 ```
 
-## Run tests
+### 4. Run Development Server
 
 ```bash
-# unit tests
-$ pnpm unit
-
-# unit tests with coverage
-$ pnpm unit:coverage
+pnpm run dev
 ```
+
+The server will start on http://localhost:4000
+
+### 5. Access API
+
+- Health check: http://localhost:4000/api/status
+- Metrics: http://localhost:9464/metrics
+- API endpoints: http://localhost:4000/api/\*
+
+## Database
+
+### Migrations
+
+```bash
+# Generate migration from entities
+pnpm run migration:generate -- src/database/migrations/MigrationName
+
+# Run migrations
+pnpm run migration:run
+
+# Revert last migration
+pnpm run migration:revert
+```
+
+### Default Users
+
+Three users are created automatically on first run:
+
+1. **Admin**
+   - Email: admin@example.com
+   - Password: admin123
+   - Role: admin
+
+2. **Moderator**
+   - Email: moder@example.com
+   - Password: moder123
+   - Role: moderator
+
+3. **User**
+   - Email: user@example.com
+   - Password: user123
+   - Role: user
+
+## Testing
+
+```bash
+# Run unit tests
+pnpm run unit --verbose
+
+# Run tests with coverage
+pnpm run unit:coverage
+```
+
+## Building
+
+```bash
+# Build for production
+pnpm run build
+
+# Run production build
+pnpm run prod
+```
+
+## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/profile` - Get user profile (requires JWT)
+
+### Recipes
+
+- `GET /api/recipes` - Get all recipes
+- `GET /api/recipes/:id` - Get recipe by ID
+- `POST /api/recipes` - Create recipe (requires JWT, moderator+)
+- `PUT /api/recipes/:id` - Update recipe (requires JWT, moderator+)
+- `DELETE /api/recipes/:id` - Delete recipe (requires JWT, admin)
+- `POST /api/recipes/:id/like` - Toggle recipe like (requires JWT)
+
+### Health
+
+- `GET /api/status` - Health check endpoint
+
+## Environment Variables
+
+| Variable      | Description        | Default     |
+| ------------- | ------------------ | ----------- |
+| PORT          | Server port        | 4000        |
+| NODE_ENV      | Environment        | development |
+| DB_HOST       | PostgreSQL host    | localhost   |
+| DB_PORT       | PostgreSQL port    | 5432        |
+| DB_NAME       | Database name      | auth_db     |
+| DB_USER       | Database user      | auth_user   |
+| DB_PASSWORD   | Database password  | -           |
+| JWT_SECRET    | JWT signing secret | -           |
+| LOKI_ENDPOINT | Loki logs endpoint | -           |
+
+## Project Structure
+
+```
+src/
+├── app.module.ts           # Main application module
+├── main.ts                 # Application entry point
+├── instrumentation.ts      # OpenTelemetry setup
+├── database/               # Database configuration
+│   ├── data-source.ts      # TypeORM data source
+│   └── migrations/         # Database migrations
+├── features/               # Feature modules
+│   ├── Auth/               # Authentication feature
+│   │   ├── api/            # Controllers and modules
+│   │   └── model/          # Services and entities
+│   ├── Recipes/            # Recipes feature
+│   └── HealthCheck/        # Health check feature
+└── shared/                 # Shared utilities
+    ├── guards/             # Auth guards
+    └── api/                # External API clients
+```
+
+## Troubleshooting
+
+### Cannot connect to PostgreSQL
+
+1. Check if PostgreSQL is running:
+
+   ```bash
+   docker ps | grep postgres
+   ```
+
+2. Check connection:
+
+   ```bash
+   psql -h localhost -U auth_user -d auth_db
+   ```
+
+3. Verify environment variables:
+   ```bash
+   cat .env | grep DB_
+   ```
+
+### TypeORM errors
+
+1. Drop and recreate database:
+
+   ```bash
+   docker exec -it supreme-postgres-dev psql -U auth_user -d postgres -c "DROP DATABASE auth_db;"
+   docker exec -it supreme-postgres-dev psql -U auth_user -d postgres -c "CREATE DATABASE auth_db;"
+   ```
+
+2. Restart the application (tables will be auto-created in development)
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+See [database-setup.md](../../docs/database-setup.md) for production deployment instructions.
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+ISC

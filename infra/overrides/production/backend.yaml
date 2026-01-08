@@ -19,6 +19,10 @@ env:
   PORT: "4000"
   NODE_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
+  DB_HOST: postgresql-backend
+  DB_PORT: "5432"
+  DB_NAME: backend_db
+  DB_USER: backend_user
 secrets: {}
 resources:
   limits:

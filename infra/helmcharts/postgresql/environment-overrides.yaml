@@ -1,0 +1,23 @@
+# Development environment overrides
+development:
+  persistence:
+    size: 5Gi
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+# Production environment overrides
+production:
+  persistence:
+    size: 20Gi
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi

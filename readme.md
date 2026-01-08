@@ -33,6 +33,9 @@ All secrets you need are:
 - JWT_SECRET – Secret key for JWT token signing and verification <br />
   Used by backend service for authentication. Generate with: `openssl rand -base64 32` <br />
   Format of secret is: `JWT_SECRET=your-secure-random-string`
+- DB_PASSWORD – PostgreSQL database password <br />
+  Used by backend service to connect to PostgreSQL database <br />
+  Format of secret is: `DB_PASSWORD=your-secure-db-password`
 
 For detailed information about secrets management, see **[Secrets Management](docs/secrets-management.md)**.
 
@@ -141,6 +144,7 @@ We use Helm for Kubernetes deployments. Charts are located in `infra/helmcharts/
 
 - `backend-service/` – Chart for NestJS services
 - `frontend-service/` – Chart for Next.js services
+- `postgresql/` – Chart for PostgreSQL database
 
 Each service has its overrides in `infra/overrides/{environment}/{service}.yaml`
 
@@ -415,6 +419,11 @@ Madara-robot will take care about everything another
 - **[CI/CD Pipeline](docs/ci.md)** - Настройка непрерывной интеграции и развертывания
 - **[Процесс релиза](docs/release-process.md)** - Полная документация по pipeline релиза
 - **[Управление секретами](docs/secrets-management.md)** - Как работать с секретами и переменными окружения
+- **[Настройка базы данных](docs/database-setup.md)** - Полная документация по PostgreSQL
+- **[Быстрый старт: База данных](docs/quick-start-database.md)** - Быстрая инструкция по деплою PostgreSQL
+- **[Добавление новой БД](docs/adding-new-database.md)** - Руководство по добавлению БД для нового сервиса
+- **[Database Deployment Workflow](docs/database-deployment-workflow.md)** - GitHub Actions workflow для деплоя БД
+- **[Database Init Scripts](docs/database-init-scripts.md)** - Автоматическая инициализация БД через SQL скрипты
 
 ## Version Naming
 

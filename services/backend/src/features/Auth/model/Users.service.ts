@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RecipeLikeEntity, UserEntity } from './entities/User.entity';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
@@ -19,98 +22,85 @@ export interface UserRecipeLike {
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [
-    {
-      id: 1,
-      email: 'admin@example.com',
-      password: '$2b$10$Nkntdhghajml3edGWucny.xSRRLId2nv70E7hKzvjEQsythcN.ZpC',
-      name: 'Admin User',
-      role: 'admin',
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      email: 'moder@example.com',
-      password: '$2b$10$RnWxr3HzK4KVuAv854g/k.AiwlFKaT/NDQQuulMkF1EzxvqNsmxn6',
-      name: 'Moderator User',
-      role: 'moderator',
-      createdAt: new Date(),
-    },
-    {
-      id: 3,
-      email: 'user@example.com',
-      password: '$2b$10$4INUj5alxEjHmoM/szXUBeIMDLowl42WnqOxJoULh.3qDFmnj/e9.',
-      name: 'Regular User',
-      role: 'user',
-      createdAt: new Date(),
-    },
-  ];
-  private currentId = 4;
-  private recipeLikes: UserRecipeLike[] = [];
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(RecipeLikeEntity)
+    private readonly recipeLikeRepository: Repository<RecipeLikeEntity>,
+  ) {}
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find((user) => user.email === email);
+    const user = await this.userRepository.findOne({ where: { email } });
+    return user ?? undefined;
   }
 
   async findById(id: number): Promise<User | undefined> {
-    return this.users.find((user) => user.id === id);
+    const user = await this.userRepository.findOne({ where: { id } });
+    return user ?? undefined;
   }
 
   async create(email: string, hashedPassword: string, name: string, role: UserRole = 'user'): Promise<User> {
-    const user: User = {
-      id: this.currentId++,
+    const user = this.userRepository.create({
       email,
       password: hashedPassword,
       name,
       role,
-      createdAt: new Date(),
-    };
-    this.users.push(user);
-    return user;
+    });
+    return await this.userRepository.save(user);
   }
 
   async update(id: number, updates: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User | undefined> {
-    const userIndex = this.users.findIndex((u) => u.id === id);
-    if (userIndex === -1) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
       return undefined;
     }
-    this.users[userIndex] = { ...this.users[userIndex], ...updates };
-    return this.users[userIndex];
+    Object.assign(user, updates);
+    return await this.userRepository.save(user);
   }
 
   async toggleRecipeLike(userId: number, recipeId: number): Promise<{ liked: boolean; totalLikes: number }> {
-    const existingLike = this.recipeLikes.find((like) => like.userId === userId && like.recipeId === recipeId);
+    const existingLike = await this.recipeLikeRepository.findOne({
+      where: { userId, recipeId },
+    });
 
     if (existingLike) {
-      this.recipeLikes = this.recipeLikes.filter((like) => !(like.userId === userId && like.recipeId === recipeId));
-      const totalLikes = this.recipeLikes.filter((like) => like.recipeId === recipeId).length;
+      await this.recipeLikeRepository.remove(existingLike);
+      const totalLikes = await this.recipeLikeRepository.count({ where: { recipeId } });
       return { liked: false, totalLikes };
     }
 
-    this.recipeLikes.push({ userId, recipeId, likedAt: new Date() });
-    const totalLikes = this.recipeLikes.filter((like) => like.recipeId === recipeId).length;
+    const like = this.recipeLikeRepository.create({ userId, recipeId });
+    await this.recipeLikeRepository.save(like);
+    const totalLikes = await this.recipeLikeRepository.count({ where: { recipeId } });
     return { liked: true, totalLikes };
   }
 
   async getRecipeLikesCount(recipeId: number): Promise<number> {
-    return this.recipeLikes.filter((like) => like.recipeId === recipeId).length;
+    return await this.recipeLikeRepository.count({ where: { recipeId } });
   }
 
   async isRecipeLikedByUser(userId: number, recipeId: number): Promise<boolean> {
-    return this.recipeLikes.some((like) => like.userId === userId && like.recipeId === recipeId);
+    const like = await this.recipeLikeRepository.findOne({
+      where: { userId, recipeId },
+    });
+    return !!like;
   }
 
   async getUserLikedRecipes(userId: number): Promise<number[]> {
-    return this.recipeLikes.filter((like) => like.userId === userId).map((like) => like.recipeId);
+    const likes = await this.recipeLikeRepository.find({
+      where: { userId },
+      select: ['recipeId'],
+    });
+    return likes.map((like) => like.recipeId);
   }
 
   async delete(id: number): Promise<boolean> {
-    const userIndex = this.users.findIndex((u) => u.id === id);
-    if (userIndex === -1) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
       return false;
     }
-    this.users.splice(userIndex, 1);
-    this.recipeLikes = this.recipeLikes.filter((like) => like.userId !== id);
+    await this.recipeLikeRepository.delete({ userId: id });
+    await this.userRepository.remove(user);
     return true;
   }
 }

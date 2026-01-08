@@ -1,9 +1,9 @@
 import './instrumentation';
 import helmet from '@fastify/helmet';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
 
 const MAX_BODY_SIZE = 10 * 1024;
 

@@ -1,0 +1,477 @@
+"name": "Deploy Database"
+"on":
+  "workflow_dispatch":
+    "inputs":
+      "service":
+        "description": "Select service to deploy database for"
+        "required": true
+        "type": "choice"
+        "options":
+          - "backend"
+        "default": "backend"
+      "environment":
+        "description": "Target environment"
+        "required": true
+        "type": "choice"
+        "options":
+          - "development"
+          - "production"
+        "default": "development"
+      "action":
+        "description": "Deployment action"
+        "required": true
+        "type": "choice"
+        "options":
+          - "install"
+          - "upgrade"
+          - "uninstall"
+        "default": "upgrade"
+"env":
+  "HELM_VERSION": "v3.16.3"
+"jobs":
+  "validate-service":
+    "name": "Validate service configuration"
+    "runs-on": "ubuntu-latest"
+    "outputs":
+      "has_database": "${{ steps.check.outputs.has_database }}"
+      "db_name": "${{ steps.check.outputs.db_name }}"
+      "db_user": "${{ steps.check.outputs.db_user }}"
+      "release_name": "${{ steps.check.outputs.release_name }}"
+    "steps":
+      - "name": "Checkout code"
+        "uses": "actions/checkout@v4"
+      - "name": "Install yq"
+        "run": "sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+
+          sudo chmod +x /usr/local/bin/yq\n"
+      - "name": "Check if service has database enabled"
+        "id": "check"
+        "env":
+          "SERVICE_NAME": "${{ github.event.inputs.service }}"
+        "run": "echo \"Checking database configuration for service: $SERVICE_NAME\"
+
+
+          # Check in nest services
+
+          DB_ENABLED=$(yq eval \".services.nest[] | select(.name == \\\"$SERVICE_NAME\\\") | .database.enabled\" services.yaml)
+
+
+          # If not found in nest, check next services
+
+          if [ -z \"$DB_ENABLED\" ] || [ \"$DB_ENABLED\" = \"null\" ]; then
+
+          \  DB_ENABLED=$(yq eval \".services.next[] | select(.name == \\\"$SERVICE_NAME\\\") | .database.enabled\" services.yaml)
+
+          fi
+
+
+          if [ \"$DB_ENABLED\" != \"true\" ]; then
+
+          \  echo \"Error: Service $SERVICE_NAME does not have database enabled\"
+
+          \  echo \"Please enable database in services.yaml:\"
+
+          \  echo \"\"
+
+          \  echo \"services:\"
+
+          \  echo \"  nest:\"
+
+          \  echo \"    - name: $SERVICE_NAME\"
+
+          \  echo \"      database:\"
+
+          \  echo \"        enabled: true\"
+
+          \  exit 1
+
+          fi
+
+
+          # Get database name and user
+
+          DB_NAME=$(yq eval \".services.nest[] | select(.name == \\\"$SERVICE_NAME\\\") | .database.name\" services.yaml)
+
+          if [ -z \"$DB_NAME\" ] || [ \"$DB_NAME\" = \"null\" ]; then
+
+          \  DB_NAME=$(yq eval \".services.next[] | select(.name == \\\"$SERVICE_NAME\\\") | .database.name\" services.yaml)
+
+          fi
+
+          if [ -z \"$DB_NAME\" ] || [ \"$DB_NAME\" = \"null\" ]; then
+
+          \  DB_NAME=\"${SERVICE_NAME}_db\"
+
+          fi
+
+
+          DB_USER=$(yq eval \".services.nest[] | select(.name == \\\"$SERVICE_NAME\\\") | .database.user\" services.yaml)
+
+          if [ -z \"$DB_USER\" ] || [ \"$DB_USER\" = \"null\" ]; then
+
+          \  DB_USER=$(yq eval \".services.next[] | select(.name == \\\"$SERVICE_NAME\\\") | .database.user\" services.yaml)
+
+          fi
+
+          if [ -z \"$DB_USER\" ] || [ \"$DB_USER\" = \"null\" ]; then
+
+          \  DB_USER=\"${SERVICE_NAME}_user\"
+
+          fi
+
+
+          RELEASE_NAME=\"postgresql-${SERVICE_NAME}\"
+
+
+          echo \"Database configuration:\"
+
+          echo \"  Database name: $DB_NAME\"
+
+          echo \"  Database user: $DB_USER\"
+
+          echo \"  Release name: $RELEASE_NAME\"
+
+
+          echo \"has_database=true\" >> $GITHUB_OUTPUT
+
+          echo \"db_name=$DB_NAME\" >> $GITHUB_OUTPUT
+
+          echo \"db_user=$DB_USER\" >> $GITHUB_OUTPUT
+
+          echo \"release_name=$RELEASE_NAME\" >> $GITHUB_OUTPUT\n"
+  "deploy-database":
+    "name": "Deploy PostgreSQL for ${{ github.event.inputs.service }}"
+    "needs": "validate-service"
+    "runs-on": "ubuntu-latest"
+    "environment": "${{ github.event.inputs.environment }}"
+    "steps":
+      - "name": "Checkout code"
+        "uses": "actions/checkout@v4"
+      - "name": "Setup Yandex Cloud"
+        "uses": "./.github/workflows/jobs/setup-yandex-cloud"
+        "with":
+          "yc-sa-json-credentials": "${{ secrets.YC_SA_JSON_CREDENTIALS }}"
+          "yc-cloud-id": "${{ secrets.YC_CLOUD_ID }}"
+          "yc-folder-id": "${{ secrets.YC_FOLDER_ID }}"
+          "yc-k8s-cluster-id": "${{ secrets.YC_K8S_CLUSTER_ID }}"
+      - "name": "Install Helm"
+        "uses": "azure/setup-helm@v3"
+        "with":
+          "version": "${{ env.HELM_VERSION }}"
+      - "name": "Check if release exists"
+        "id": "check-release"
+        "env":
+          "RELEASE_NAME": "${{ needs.validate-service.outputs.release_name }}"
+          "NAMESPACE": "${{ github.event.inputs.environment == 'production' && 'production' || 'default' }}"
+        "run": "if helm list -n \"$NAMESPACE\" | grep -q \"^$RELEASE_NAME\"; then
+
+          \  echo \"exists=true\" >> $GITHUB_OUTPUT
+
+          \  echo \"Release $RELEASE_NAME exists in namespace $NAMESPACE\"
+
+          else
+
+          \  echo \"exists=false\" >> $GITHUB_OUTPUT
+
+          \  echo \"Release $RELEASE_NAME does not exist in namespace $NAMESPACE\"
+
+          fi\n"
+      - "name": "Install PostgreSQL"
+        "if": "github.event.inputs.action == 'install' && steps.check-release.outputs.exists == 'false'"
+        "env":
+          "SERVICE_NAME": "${{ github.event.inputs.service }}"
+          "RELEASE_NAME": "${{ needs.validate-service.outputs.release_name }}"
+          "ENVIRONMENT": "${{ github.event.inputs.environment }}"
+          "NAMESPACE": "${{ github.event.inputs.environment == 'production' && 'production' || 'default' }}"
+          "DB_PASSWORD": "${{ secrets.DB_PASSWORD }}"
+        "run": "echo \"Installing PostgreSQL for $SERVICE_NAME in $ENVIRONMENT environment\"
+
+
+          VALUES_FILE=\"infra/overrides/${ENVIRONMENT}/postgresql-${SERVICE_NAME}.yaml\"
+
+
+          if [ ! -f \"$VALUES_FILE\" ]; then
+
+          \  echo \"Error: Values file not found: $VALUES_FILE\"
+
+          \  echo \"Please run 'pnpm run generate' to create it\"
+
+          \  exit 1
+
+          fi
+
+
+          helm install \"$RELEASE_NAME\" ./infra/helmcharts/postgresql \\
+
+          \  --namespace \"$NAMESPACE\" \\
+
+          \  --create-namespace \\
+
+          \  --set database.password=\"$DB_PASSWORD\" \\
+
+          \  -f \"$VALUES_FILE\" \\
+
+          \  --wait \\
+
+          \  --timeout 5m
+
+
+          echo \"✅ PostgreSQL installed successfully\"\n"
+      - "name": "Upgrade PostgreSQL"
+        "if": "github.event.inputs.action == 'upgrade'"
+        "env":
+          "SERVICE_NAME": "${{ github.event.inputs.service }}"
+          "RELEASE_NAME": "${{ needs.validate-service.outputs.release_name }}"
+          "ENVIRONMENT": "${{ github.event.inputs.environment }}"
+          "NAMESPACE": "${{ github.event.inputs.environment == 'production' && 'production' || 'default' }}"
+          "DB_PASSWORD": "${{ secrets.DB_PASSWORD }}"
+          "EXISTS": "${{ steps.check-release.outputs.exists }}"
+        "run": "VALUES_FILE=\"infra/overrides/${ENVIRONMENT}/postgresql-${SERVICE_NAME}.yaml\"
+
+
+          if [ ! -f \"$VALUES_FILE\" ]; then
+
+          \  echo \"Error: Values file not found: $VALUES_FILE\"
+
+          \  echo \"Please run 'pnpm run generate' to create it\"
+
+          \  exit 1
+
+          fi
+
+
+          if [ \"$EXISTS\" = \"false\" ]; then
+
+          \  echo \"Release does not exist, installing instead of upgrading...\"
+
+          \  helm install \"$RELEASE_NAME\" ./infra/helmcharts/postgresql \\
+
+          \    --namespace \"$NAMESPACE\" \\
+
+          \    --create-namespace \\
+
+          \    --set database.password=\"$DB_PASSWORD\" \\
+
+          \    -f \"$VALUES_FILE\" \\
+
+          \    --wait \\
+
+          \    --timeout 5m
+
+          \  echo \"✅ PostgreSQL installed successfully\"
+
+          else
+
+          \  echo \"Upgrading PostgreSQL for $SERVICE_NAME in $ENVIRONMENT environment\"
+
+          \  helm upgrade \"$RELEASE_NAME\" ./infra/helmcharts/postgresql \\
+
+          \    --namespace \"$NAMESPACE\" \\
+
+          \    --set database.password=\"$DB_PASSWORD\" \\
+
+          \    -f \"$VALUES_FILE\" \\
+
+          \    --wait \\
+
+          \    --timeout 5m
+
+          \  echo \"✅ PostgreSQL upgraded successfully\"
+
+          fi\n"
+      - "name": "Uninstall PostgreSQL"
+        "if": "github.event.inputs.action == 'uninstall'"
+        "env":
+          "RELEASE_NAME": "${{ needs.validate-service.outputs.release_name }}"
+          "NAMESPACE": "${{ github.event.inputs.environment == 'production' && 'production' || 'default' }}"
+          "EXISTS": "${{ steps.check-release.outputs.exists }}"
+        "run": "if [ \"$EXISTS\" = \"false\" ]; then
+
+          \  echo \"Release $RELEASE_NAME does not exist, nothing to uninstall\"
+
+          \  exit 0
+
+          fi
+
+
+          echo \"⚠️ Uninstalling PostgreSQL: $RELEASE_NAME from namespace $NAMESPACE\"
+
+          echo \"This will delete the database and all its data!\"
+
+
+          helm uninstall \"$RELEASE_NAME\" --namespace \"$NAMESPACE\" --wait
+
+
+          echo \"✅ PostgreSQL uninstalled successfully\"
+
+          echo \"\"
+
+          echo \"⚠️ Note: PersistentVolumeClaim may still exist. To delete it:\"
+
+          echo \"kubectl delete pvc data-${RELEASE_NAME}-0 -n $NAMESPACE\"\n"
+      - "name": "Verify deployment"
+        "if": "github.event.inputs.action != 'uninstall'"
+        "env":
+          "RELEASE_NAME": "${{ needs.validate-service.outputs.release_name }}"
+          "NAMESPACE": "${{ github.event.inputs.environment == 'production' && 'production' || 'default' }}"
+          "DB_NAME": "${{ needs.validate-service.outputs.db_name }}"
+          "DB_USER": "${{ needs.validate-service.outputs.db_user }}"
+        "run": "echo \"Verifying PostgreSQL deployment...\"
+
+
+          # Wait for pod to be ready
+
+          kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=postgresql \\
+
+          \  -l app.kubernetes.io/instance=\"$RELEASE_NAME\" \\
+
+          \  -n \"$NAMESPACE\" \\
+
+          \  --timeout=120s
+
+
+          # Get pod name
+
+          POD_NAME=$(kubectl get pods -l app.kubernetes.io/name=postgresql \\
+
+          \  -l app.kubernetes.io/instance=\"$RELEASE_NAME\" \\
+
+          \  -n \"$NAMESPACE\" \\
+
+          \  -o jsonpath='{.items[0].metadata.name}')
+
+
+          echo \"Pod name: $POD_NAME\"
+
+
+          # Test database connection
+
+          echo \"Testing database connection...\"
+
+          kubectl exec -n \"$NAMESPACE\" \"$POD_NAME\" -- psql -U \"$DB_USER\" -d \"$DB_NAME\" -c \"SELECT version();\"
+
+
+          echo \"\"
+
+          echo \"✅ Verification completed successfully\"
+
+          echo \"\"
+
+          echo \"📊 Database Information:\"
+
+          echo \"  Release: $RELEASE_NAME\"
+
+          echo \"  Namespace: $NAMESPACE\"
+
+          echo \"  Database: $DB_NAME\"
+
+          echo \"  User: $DB_USER\"
+
+          echo \"  Host: ${RELEASE_NAME}.${NAMESPACE}.svc.cluster.local\"
+
+          echo \"  Port: 5432\"\n"
+  "post-deployment-info":
+    "name": "Post-deployment information"
+    "needs":
+      - "validate-service"
+      - "deploy-database"
+    "if": "always() && needs.deploy-database.result == 'success' && github.event.inputs.action != 'uninstall'"
+    "runs-on": "ubuntu-latest"
+    "steps":
+      - "name": "Display connection information"
+        "env":
+          "SERVICE_NAME": "${{ github.event.inputs.service }}"
+          "ENVIRONMENT": "${{ github.event.inputs.environment }}"
+          "RELEASE_NAME": "${{ needs.validate-service.outputs.release_name }}"
+          "DB_NAME": "${{ needs.validate-service.outputs.db_name }}"
+          "DB_USER": "${{ needs.validate-service.outputs.db_user }}"
+          "NAMESPACE": "${{ github.event.inputs.environment == 'production' && 'production' || 'default' }}"
+        "run": "echo \"╔════════════════════════════════════════════════════════════╗\"
+
+          echo \"║          PostgreSQL Deployment Successful                 ║\"
+
+          echo \"╚════════════════════════════════════════════════════════════╝\"
+
+          echo \"\"
+
+          echo \"📊 Database Information:\"
+
+          echo \"  Service: $SERVICE_NAME\"
+
+          echo \"  Environment: $ENVIRONMENT\"
+
+          echo \"  Release: $RELEASE_NAME\"
+
+          echo \"  Namespace: $NAMESPACE\"
+
+          echo \"\"
+
+          echo \"🔌 Connection Details:\"
+
+          echo \"  Host: ${RELEASE_NAME}.${NAMESPACE}.svc.cluster.local\"
+
+          echo \"  Port: 5432\"
+
+          echo \"  Database: $DB_NAME\"
+
+          echo \"  User: $DB_USER\"
+
+          echo \"  Password: <from secret DB_PASSWORD>\"
+
+          echo \"\"
+
+          echo \"📝 Next Steps:\"
+
+          echo \"\"
+
+          echo \"1. Update your service environment variables:\"
+
+          echo \"   DB_HOST: ${RELEASE_NAME}\"
+
+          echo \"   DB_PORT: 5432\"
+
+          echo \"   DB_NAME: $DB_NAME\"
+
+          echo \"   DB_USER: $DB_USER\"
+
+          echo \"\"
+
+          echo \"2. Run migrations (if needed):\"
+
+          echo \"   cd services/$SERVICE_NAME\"
+
+          echo \"   pnpm run migration:run\"
+
+          echo \"\"
+
+          echo \"3. Verify connection from your service:\"
+
+          echo \"   kubectl logs -l app.kubernetes.io/name=$SERVICE_NAME -n $NAMESPACE\"
+
+          echo \"\"
+
+          echo \"🔍 Useful Commands:\"
+
+          echo \"\"
+
+          echo \"# Connect to database:\"
+
+          echo \"kubectl exec -it ${RELEASE_NAME}-0 -n $NAMESPACE -- psql -U $DB_USER -d $DB_NAME\"
+
+          echo \"\"
+
+          echo \"# View logs:\"
+
+          echo \"kubectl logs ${RELEASE_NAME}-0 -n $NAMESPACE\"
+
+          echo \"\"
+
+          echo \"# Check status:\"
+
+          echo \"kubectl get pods -l app.kubernetes.io/instance=$RELEASE_NAME -n $NAMESPACE\"
+
+          echo \"\"
+
+          echo \"# Create backup:\"
+
+          echo \"kubectl exec ${RELEASE_NAME}-0 -n $NAMESPACE -- pg_dump -U $DB_USER $DB_NAME > backup.sql\"\n"
