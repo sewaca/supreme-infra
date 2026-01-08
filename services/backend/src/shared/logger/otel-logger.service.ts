@@ -41,7 +41,6 @@ export class OtelLoggerService extends ConsoleLogger {
     };
 
     this.otelLogger.emit(logRecord);
-    console.log('[debug] logRecord', logRecord);
   }
 
   override log(message: unknown, context?: string): void {
