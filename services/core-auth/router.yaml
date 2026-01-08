@@ -1,0 +1,5 @@
+service: core-auth
+type: nest
+routes:
+  - path: /core-auth/api/status
+    method: GET
