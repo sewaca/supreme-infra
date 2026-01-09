@@ -3,3 +3,5 @@
 // import '@supreme-int/design-system/font.css';
 // import '@supreme-int/design-system/theme.css';
 
+// Export components
+export { Header } from './components/Header/Header';

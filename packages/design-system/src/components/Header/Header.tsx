@@ -1,15 +1,28 @@
+import { getTokenFromCookies, getUserFromToken } from '@supreme-int/nextjs-shared/src/shared/jwt/decode-jwt';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { getUser } from '../../shared/lib/auth.server';
 import styles from './Header.module.css';
 
-export async function Header() {
-  const user = await getUser();
+interface HeaderProps {
+  logoText?: string;
+  logoHref?: string;
+}
+
+export async function Header({ logoText = '🍳 Рецепты', logoHref = '/' }: HeaderProps) {
+  const cookieStore = await cookies();
+  const cookieString = cookieStore
+    .getAll()
+    .map((cookie) => `${cookie.name}=${cookie.value}`)
+    .join('; ');
+
+  const token = getTokenFromCookies(cookieString);
+  const user = getUserFromToken(token);
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
-          🍳 Рецепты
+        <Link href={logoHref} className={styles.logo}>
+          {logoText}
         </Link>
 
         <nav className={styles.nav}>
@@ -35,3 +48,4 @@ export async function Header() {
     </header>
   );
 }
+
