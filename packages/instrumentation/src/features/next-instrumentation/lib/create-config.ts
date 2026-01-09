@@ -1,5 +1,5 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
-import type { Span } from '@opentelemetry/api';
+import type { Attributes, Span } from '@opentelemetry/api';
 import type { InstrumentationConfigMap } from '@opentelemetry/auto-instrumentations-node';
 
 type HttpRequest = IncomingMessage | ClientRequest;
@@ -16,19 +16,22 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
     },
     '@opentelemetry/instrumentation-http': {
       enabled: true,
-      // applyCustomAttributesOnSpan вызывается ПОСЛЕ обработки запроса
-      // и может добавить атрибуты, которые попадут в метрики
-      applyCustomAttributesOnSpan: (span: Span, request: HttpRequest, _response: HttpResponse) => {
-        if ('url' in request && request.url) {
+      // Добавляем атрибуты ДО создания span - они попадут и в метрики
+      startIncomingSpanHook: (request: IncomingMessage): Attributes => {
+        const attributes: Attributes = {};
+        if (request.url) {
           const urlPath = request.url.split('?')[0];
-          // Устанавливаем http.route для группировки метрик
-          span.setAttribute('http.route', urlPath);
-          span.setAttribute('url.path', urlPath);
-          span.updateName(`${request.method} ${urlPath}`);
+          // http.route используется для группировки метрик по маршрутам
+          attributes['http.route'] = urlPath;
+          attributes['url.path'] = urlPath;
         }
+        return attributes;
       },
       requestHook: (span: Span, request: HttpRequest) => {
         if ('url' in request && request.url) {
+          const urlPath = request.url.split('?')[0];
+          // Обновляем имя span для лучшей читаемости в трейсах
+          span.updateName(`${request.method} ${urlPath}`);
           span.setAttribute('http.target', request.url);
         } else {
           // Это client request (ClientRequest)
