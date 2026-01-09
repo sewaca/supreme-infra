@@ -10,6 +10,7 @@
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
+    "@types/passport-jwt": "catalog:",
     "@nestjs/passport": "catalog:",
     "@nestjs/platform-fastify": "catalog:",
     "@nestjs/typeorm": "catalog:",
@@ -22,7 +23,6 @@
   "devDependencies": {
     "@nestjs/testing": "catalog:",
     "@types/node": "catalog:",
-    "@types/passport-jwt": "catalog:",
     "reflect-metadata": "catalog:",
     "typescript": "catalog:",
     "unplugin-swc": "catalog:",
