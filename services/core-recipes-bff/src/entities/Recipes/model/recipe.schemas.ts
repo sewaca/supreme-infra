@@ -6,7 +6,7 @@ export const submitRecipeSchema = z.object({
   ingredients: z.array(z.string().min(1, 'Ingredient cannot be empty')).min(1, 'At least one ingredient is required'),
   cookingTime: z.number().int('Cooking time must be an integer').positive('Cooking time must be positive'),
   difficulty: z.enum(['easy', 'medium', 'hard'], {
-    message: 'Difficulty must be easy, medium, or hard',
+    message: 'Difficulty must be "easy", "medium", or "hard"',
   }),
   imageUrl: z.string().url('Image URL must be a valid URL'),
   servings: z.number().int('Servings must be an integer').positive('Servings must be positive'),
