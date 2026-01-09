@@ -7,10 +7,9 @@ on:
         required: true
         type: choice
         options:
-          - backend
           - core-auth-bff
           - core-recipes-bff
-        default: backend
+        default: core-auth-bff
       action:
         description: Deployment action
         required: true
