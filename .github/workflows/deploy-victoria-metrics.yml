@@ -232,7 +232,7 @@ jobs:
             echo "- **Namespace**: \`${{ env.VM_NAMESPACE }}\`"
             echo "- **Release Name**: \`${{ env.VM_RELEASE_NAME }}\`"
             echo "- **Retention**: 30 days"
-            echo "- **Storage**: 30Gi persistent volume"
+            echo "- **Storage**: 10Gi persistent volume"
             echo "- **Scrape Interval**: 15 seconds"
             echo ""
             echo "## Scrape Configuration"
