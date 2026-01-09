@@ -16,13 +16,20 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
     },
     '@opentelemetry/instrumentation-http': {
       enabled: true,
-      requestHook: (span: Span, request: HttpRequest) => {
+      // applyCustomAttributesOnSpan вызывается ПОСЛЕ обработки запроса
+      // и может добавить атрибуты, которые попадут в метрики
+      applyCustomAttributesOnSpan: (span: Span, request: HttpRequest, _response: HttpResponse) => {
         if ('url' in request && request.url) {
-          // Это server request (IncomingMessage)
           const urlPath = request.url.split('?')[0];
+          // Устанавливаем http.route для группировки метрик
           span.setAttribute('http.route', urlPath);
           span.setAttribute('url.path', urlPath);
           span.updateName(`${request.method} ${urlPath}`);
+        }
+      },
+      requestHook: (span: Span, request: HttpRequest) => {
+        if ('url' in request && request.url) {
+          span.setAttribute('http.target', request.url);
         } else {
           // Это client request (ClientRequest)
           const clientReq = request as ClientRequest & {
@@ -33,6 +40,7 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
           if (clientReq.path) {
             const urlPath = clientReq.path.split('?')[0];
             span.setAttribute('url.path', urlPath);
+            span.setAttribute('http.target', clientReq.path);
           }
 
           // Также пробуем извлечь из заголовка host
@@ -53,6 +61,18 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
       responseHook: (span: Span, response: HttpResponse) => {
         if ('statusCode' in response && response.statusCode) {
           span.setAttribute('http.status_code', response.statusCode);
+          span.setAttribute('http.response.status_code', response.statusCode);
+        }
+      },
+    },
+    '@opentelemetry/instrumentation-undici': {
+      enabled: true,
+      requestHook: (span: Span, request: { origin?: string; path?: string; method?: string }) => {
+        if (request.path) {
+          const urlPath = request.path.split('?')[0];
+          span.setAttribute('http.route', urlPath);
+          span.setAttribute('url.path', urlPath);
+          span.updateName(`${request.method} ${urlPath}`);
         }
       },
     },
