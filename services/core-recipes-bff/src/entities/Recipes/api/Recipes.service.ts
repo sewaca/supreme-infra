@@ -5,8 +5,6 @@ import { ProposedRecipeEntity } from '../model/ProposedRecipe.entity';
 import { PublishedRecipeEntity } from '../model/PublishedRecipe.entity';
 import type { RecipeDetailsDto, RecipeDto } from '../model/recipe.types';
 
-const PROPOSED_ID_OFFSET = 100_000_000;
-
 @Injectable()
 export class RecipesService {
   constructor(
