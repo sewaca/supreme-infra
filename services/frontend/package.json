@@ -27,6 +27,7 @@
     "@opentelemetry/semantic-conventions": "catalog:",
     "@supreme-int/api-client": "workspace:*",
     "@supreme-int/instrumentation": "workspace:*",
+    "@supreme-int/nextjs-shared": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "classnames": "catalog:",
