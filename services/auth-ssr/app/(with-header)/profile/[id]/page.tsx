@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import type { User } from '../../../src/shared/api/backendApi.types';
-import { getAuthToken, getUser, rscAuthApi } from '../../../src/shared/lib/auth.server';
-import { ProfilePage } from '../../../src/views/ProfilePage/ProfilePage';
+import type { User } from '../../../../src/shared/api/backendApi.types';
+import { getAuthToken, getUser, rscAuthApi } from '../../../../src/shared/lib/auth.server';
+import { ProfilePage } from '../../../../src/views/ProfilePage/ProfilePage';
 
 interface ProfileByIdPageProps {
   params: Promise<{ id: string }>;
