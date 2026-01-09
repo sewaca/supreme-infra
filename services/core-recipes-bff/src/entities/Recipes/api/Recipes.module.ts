@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecipeLikesModule } from '../../../features/RecipeLikes/api/RecipeLikes.module';
-import { JwtStrategy } from '../../../shared/guards/jwt.strategy';
+import { JwtStrategy } from '@supreme-int/nestjs-shared';
 import { CommentsModule } from '../../Comments/api/Comments.module';
 import { ProposedRecipeEntity } from '../model/ProposedRecipe.entity';
 import { PublishedRecipeEntity } from '../model/PublishedRecipe.entity';
