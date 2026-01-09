@@ -74,7 +74,7 @@ export async function generateRouterConfigs(): Promise<void> {
       log(`Processing Next.js service: ${service.name}`, 'info');
 
       const servicePath = path.join(__dirname, '../../../services', service.name);
-      const routes = extractNextRoutes(servicePath);
+      const routes = extractNextRoutes(servicePath, service.name);
 
       log(`  Found ${routes.length} route(s)`, 'info');
 

@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
     '@opentelemetry/exporter-trace-otlp-grpc',
     '@opentelemetry/exporter-prometheus',
   ],
+  assetPrefix: '/{{ serviceName }}',
 };
 
 export default nextConfig;

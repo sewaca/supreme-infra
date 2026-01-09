@@ -6,7 +6,7 @@ interface Route {
   method: string;
 }
 
-export function extractNextRoutes(servicePath: string): Route[] {
+export function extractNextRoutes(servicePath: string, serviceName: string): Route[] {
   const routes: Route[] = [];
   const appPath = path.join(servicePath, 'app');
 
@@ -32,10 +32,7 @@ export function extractNextRoutes(servicePath: string): Route[] {
         // Обрабатываем page.tsx и route.ts
         if (entry.name === 'page.tsx' || entry.name === 'page.ts') {
           // Next.js pages поддерживают GET по умолчанию
-          routes.push({
-            path: basePath || '/',
-            method: 'GET',
-          });
+          routes.push({ path: basePath || '/', method: 'GET' });
         } else if (entry.name === 'route.ts' || entry.name === 'route.tsx') {
           // API routes - проверяем экспортируемые функции
           const content = fs.readFileSync(fullPath, 'utf-8');
@@ -46,10 +43,7 @@ export function extractNextRoutes(servicePath: string): Route[] {
             // Простая проверка на наличие экспорта функции
             const exportRegex = new RegExp(`export\\s+(async\\s+)?function\\s+${method}\\s*\\(`, 'g');
             if (exportRegex.test(content)) {
-              routes.push({
-                path: basePath || '/',
-                method,
-              });
+              routes.push({ path: basePath || '/', method });
             }
           }
         }
@@ -58,6 +52,9 @@ export function extractNextRoutes(servicePath: string): Route[] {
   };
 
   scanDirectory(appPath);
+
+  // Добавляем роут для статических файлов
+  routes.push({ path: `/${serviceName}/.*`, method: 'GET' });
 
   return routes;
 }
