@@ -26,6 +26,15 @@ export function extractNextRoutes(servicePath: string, serviceName: string): Rou
       }
 
       if (entry.isDirectory()) {
+        // Игнорируем route groups - папки в круглых скобках (groupName)
+        const isRouteGroup = entry.name.startsWith('(') && entry.name.endsWith(')');
+
+        if (isRouteGroup) {
+          // Route groups не влияют на URL, просто сканируем содержимое
+          scanDirectory(fullPath, basePath);
+          continue;
+        }
+
         // Обрабатываем динамические роуты [param]
         const isDynamic = entry.name.startsWith('[') && entry.name.endsWith(']');
         // Для ingress-nginx используем regex вместо :param
