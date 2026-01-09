@@ -23,6 +23,8 @@ import { CommentsService } from '../../Comments/api/Comments.service';
 import { type SubmitRecipeDto, submitRecipeSchema } from '../model/recipe.schemas';
 import type { RecipeDetailsDto, RecipeDto } from '../model/recipe.types';
 import { RecipesService } from './Recipes.service';
+import { ProposedRecipeEntity } from '../model/ProposedRecipe.entity';
+import { PublishedRecipeEntity } from '../model/PublishedRecipe.entity';
 
 @Controller('recipes')
 export class RecipesController {
@@ -47,13 +49,20 @@ export class RecipesController {
     @Param('id') id: string,
     @Request() req: { user?: { id: number; role: string } },
   ): Promise<RecipeDetailsDto & { isLiked?: boolean }> {
-    const recipeId = Number.parseInt(id, 10);
+    // Check if id is in format "proposed:123"
+    const isProposed = id.startsWith('proposed:');
+    const numericId = isProposed ? id.replace('proposed:', '') : id;
+    const recipeId = Number.parseInt(numericId, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
-    const recipe = await this.recipesService.getRecipeById(recipeId);
+    // Fetch from proposed or published based on prefix
+    const recipe = isProposed
+      ? await this.recipesService.getProposedRecipeById(recipeId)
+      : await this.recipesService.getRecipeById(recipeId);
+
     const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
     const comments = await this.commentsService.getRecipeComments(recipeId);
 
@@ -65,7 +74,10 @@ export class RecipesController {
       rating: comment.rating,
     }));
 
-    const recipeDetails = this.recipesService.mapToRecipeDetailsDto(recipe, totalLikes, mappedComments);
+    // Map proposed recipe to details DTO if needed
+    const recipeDetails = isProposed
+      ? this.mapProposedToDetailsDto(recipe as ProposedRecipeEntity, totalLikes, mappedComments)
+      : this.recipesService.mapToRecipeDetailsDto(recipe as PublishedRecipeEntity, totalLikes, mappedComments);
 
     if (req.user?.id) {
       const isLiked = await this.recipeLikesService.isRecipeLikedByUser(req.user.id, recipeId);
@@ -73,6 +85,30 @@ export class RecipesController {
     }
 
     return recipeDetails;
+  }
+
+  private mapProposedToDetailsDto(
+    recipe: ProposedRecipeEntity,
+    likes: number,
+    comments: RecipeDetailsDto['comments'],
+  ): RecipeDetailsDto {
+    return {
+      id: recipe.id,
+      title: recipe.title,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      cookingTime: recipe.cookingTime,
+      difficulty: recipe.difficulty,
+      imageUrl: recipe.imageUrl,
+      servings: recipe.servings,
+      calories: recipe.calories,
+      detailedIngredients: recipe.detailedIngredients,
+      steps: recipe.steps,
+      author: recipe.author,
+      likes,
+      comments,
+    };
   }
 
   @Put(':id')
@@ -84,29 +120,17 @@ export class RecipesController {
     @Param('id') id: string,
     @Body() dto: SubmitRecipeDto,
   ): Promise<RecipeDetailsDto | RecipeDto> {
-    const recipeId = Number.parseInt(id, 10);
+    // Check if id is in format "proposed:123"
+    const isProposed = id.startsWith('proposed:');
+    const numericId = isProposed ? id.replace('proposed:', '') : id;
+    const recipeId = Number.parseInt(numericId, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
-    // Try to update published recipe first
-    try {
-      const updated = await this.recipesService.updateRecipe(recipeId, dto);
-      const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
-      const comments = await this.commentsService.getRecipeComments(recipeId);
-
-      const mappedComments = comments.map((comment) => ({
-        id: comment.id,
-        author: comment.author,
-        content: comment.content,
-        createdAt: comment.createdAt.toISOString(),
-        rating: comment.rating,
-      }));
-
-      return this.recipesService.mapToRecipeDetailsDto(updated, totalLikes, mappedComments);
-    } catch {
-      // If not found in published, try proposed
+    if (isProposed) {
+      // Update proposed recipe
       const updated = await this.recipesService.updateProposedRecipe(recipeId, dto);
       return {
         id: updated.id,
@@ -120,6 +144,21 @@ export class RecipesController {
         servings: updated.servings,
         calories: updated.calories,
       };
+    } else {
+      // Update published recipe
+      const updated = await this.recipesService.updateRecipe(recipeId, dto);
+      const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
+      const comments = await this.commentsService.getRecipeComments(recipeId);
+
+      const mappedComments = comments.map((comment) => ({
+        id: comment.id,
+        author: comment.author,
+        content: comment.content,
+        createdAt: comment.createdAt.toISOString(),
+        rating: comment.rating,
+      }));
+
+      return this.recipesService.mapToRecipeDetailsDto(updated, totalLikes, mappedComments);
     }
   }
 
@@ -128,17 +167,19 @@ export class RecipesController {
   @Roles('moderator', 'admin')
   @HttpCode(HttpStatus.OK)
   public async deleteRecipe(@Param('id') id: string): Promise<{ success: boolean }> {
-    const recipeId = Number.parseInt(id, 10);
+    // Check if id is in format "proposed:123"
+    const isProposed = id.startsWith('proposed:');
+    const numericId = isProposed ? id.replace('proposed:', '') : id;
+    const recipeId = Number.parseInt(numericId, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
-    // Try to delete from published first, then from proposed
-    try {
-      await this.recipesService.deleteRecipe(recipeId);
-    } catch {
+    if (isProposed) {
       await this.recipesService.deleteProposedRecipe(recipeId);
+    } else {
+      await this.recipesService.deleteRecipe(recipeId);
     }
 
     return { success: true };
@@ -152,12 +193,12 @@ export class RecipesController {
     return this.recipesService.getProposedRecipes();
   }
 
-  @Post('submit')
+  @Post('proposed/submit')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(submitRecipeSchema))
-  public async submitRecipe(@Body() dto: SubmitRecipeDto): Promise<{ success: boolean; id: number }> {
+  public async submitRecipe(@Body() dto: SubmitRecipeDto): Promise<{ success: boolean; id: string }> {
     const id = await this.recipesService.submitRecipe(dto);
-    return { success: true, id };
+    return { success: true, id: `proposed:${id}` };
   }
 
   @Post('proposed/:id/publish')
@@ -165,7 +206,9 @@ export class RecipesController {
   @Roles('moderator', 'admin')
   @HttpCode(HttpStatus.OK)
   public async publishRecipe(@Param('id') id: string): Promise<{ id: number }> {
-    const recipeId = Number.parseInt(id, 10);
+    // Remove "proposed:" prefix if present
+    const numericId = id.startsWith('proposed:') ? id.replace('proposed:', '') : id;
+    const recipeId = Number.parseInt(numericId, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');

@@ -21,7 +21,7 @@ export class RecipesApi extends BaseApi {
     return response.json() as Promise<Recipe[]>;
   }
 
-  public async getRecipeById(id: number, token?: string): Promise<RecipeDetails> {
+  public async getRecipeById(id: number | string, token?: string): Promise<RecipeDetails> {
     const url = `${this.baseUrl}/recipes/${id}`;
 
     const headers: HeadersInit = {};
@@ -71,8 +71,8 @@ export class RecipesApi extends BaseApi {
 
   public async submitRecipe(
     recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
-  ): Promise<{ success: boolean; id: number }> {
-    const url = `${this.baseUrl}/recipes/submit`;
+  ): Promise<{ success: boolean; id: string }> {
+    const url = `${this.baseUrl}/recipes/proposed/submit`;
 
     const response = await this.fetch(url, {
       method: 'POST',
@@ -84,7 +84,7 @@ export class RecipesApi extends BaseApi {
       throw new Error(`Failed to submit recipe: ${response.statusText}`);
     }
 
-    return response.json() as Promise<{ success: boolean; id: number }>;
+    return response.json() as Promise<{ success: boolean; id: string }>;
   }
 
   public async getProposedRecipes(token: string): Promise<Recipe[]> {
@@ -104,7 +104,7 @@ export class RecipesApi extends BaseApi {
     return response.json() as Promise<Recipe[]>;
   }
 
-  public async publishRecipe(id: number, token: string): Promise<{ id: number }> {
+  public async publishRecipe(id: number | string, token: string): Promise<{ id: number }> {
     const url = `${this.baseUrl}/recipes/proposed/${id}/publish`;
 
     const response = await this.fetch(url, {
@@ -130,7 +130,7 @@ export class RecipesApi extends BaseApi {
   }
 
   public async updateRecipe(
-    id: number,
+    id: number | string,
     recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
     token: string,
   ): Promise<RecipeDetails> {
@@ -158,7 +158,7 @@ export class RecipesApi extends BaseApi {
     return response.json() as Promise<RecipeDetails>;
   }
 
-  public async deleteRecipe(id: number, token: string): Promise<{ success: boolean }> {
+  public async deleteRecipe(id: number | string, token: string): Promise<{ success: boolean }> {
     const url = `${this.baseUrl}/recipes/${id}`;
 
     const response = await this.fetch(url, {

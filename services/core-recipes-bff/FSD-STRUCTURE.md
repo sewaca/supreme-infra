@@ -72,18 +72,28 @@ src/
 
 - `GET /recipes` - список опубликованных рецептов
 - `GET /recipes/:id` - полная информация о рецепте (с лайками и комментариями)
+  - `:id` может быть числом (published) или строкой `proposed:{id}` (proposed)
 - `PUT /recipes/:id` - обновить рецепт (published или proposed, модераторы)
+  - `:id` может быть числом (published) или строкой `proposed:{id}` (proposed)
 - `DELETE /recipes/:id` - удалить рецепт (published или proposed, модераторы)
+  - `:id` может быть числом (published) или строкой `proposed:{id}` (proposed)
 
 **Предложенные рецепты:**
 
-- `POST /recipes/submit` - предложить рецепт
+- `POST /recipes/proposed/submit` - предложить рецепт (возвращает `id: "proposed:{id}"`)
 - `GET /recipes/proposed/all` - список предложенных рецептов (только модераторы)
 - `POST /recipes/proposed/:id/publish` - опубликовать предложенный рецепт (модераторы)
+  - `:id` может быть числом или строкой `proposed:{id}`
 
 ### RecipeLikes (features/RecipeLikes)
 
 - `POST /recipes/:id/like` - поставить/убрать лайк
+
+### Формат ID
+
+- **Published рецепты**: числовой ID (например, `1`, `2`, `3`)
+- **Proposed рецепты**: строка с префиксом `proposed:` (например, `proposed:1`, `proposed:2`)
+- Это позволяет избежать конфликтов ID между двумя таблицами
 
 ## Принципы
 
