@@ -252,7 +252,6 @@ async function main() {
       env: {
         PORT: frontendPort,
         HOST: frontendHost,
-        NEXT_PUBLIC_BACKEND_URL: `http://${backendHost}:${backendPort}`,
       },
     },
   ];
