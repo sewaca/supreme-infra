@@ -5,6 +5,8 @@ import { ProposedRecipeEntity } from '../model/ProposedRecipe.entity';
 import { PublishedRecipeEntity } from '../model/PublishedRecipe.entity';
 import type { RecipeDetailsDto, RecipeDto } from '../model/recipe.types';
 
+const PROPOSED_ID_OFFSET = 100_000_000;
+
 @Injectable()
 export class RecipesService {
   constructor(
@@ -194,7 +196,16 @@ export class RecipesService {
   ): Promise<number> {
     const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
 
+    // Get the next ID with offset
+    const maxIdResult = await this.proposedRecipeRepository
+      .createQueryBuilder('recipe')
+      .select('MAX(recipe.id)', 'maxId')
+      .getRawOne();
+    
+    const nextId = maxIdResult?.maxId ? maxIdResult.maxId + 1 : PROPOSED_ID_OFFSET+1;
+
     const recipe = this.proposedRecipeRepository.create({
+      id: nextId,
       title: recipeData.title,
       description: recipeData.description,
       ingredients: recipeData.ingredients,

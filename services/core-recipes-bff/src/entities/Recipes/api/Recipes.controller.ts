@@ -59,15 +59,14 @@ export class RecipesController {
 
     // Check if ID is proposed (>= 100_000_000)
     const isProposed = recipeId >= PROPOSED_ID_OFFSET;
-    const actualId = isProposed ? recipeId - PROPOSED_ID_OFFSET : recipeId;
 
     // Fetch from proposed or published based on ID
     const recipe = isProposed
-      ? await this.recipesService.getProposedRecipeById(actualId)
-      : await this.recipesService.getRecipeById(actualId);
+      ? await this.recipesService.getProposedRecipeById(recipeId)
+      : await this.recipesService.getRecipeById(recipeId);
 
-    const totalLikes = await this.recipeLikesService.getRecipeLikesCount(actualId);
-    const comments = await this.commentsService.getRecipeComments(actualId);
+    const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
+    const comments = await this.commentsService.getRecipeComments(recipeId);
 
     const mappedComments = comments.map((comment) => ({
       id: comment.id,
@@ -77,13 +76,13 @@ export class RecipesController {
       rating: comment.rating,
     }));
 
-    // Map proposed recipe to details DTO if needed
+    // Map recipe to details DTO
     const recipeDetails = isProposed
-      ? this.mapProposedToDetailsDto(recipe as ProposedRecipeEntity, recipeId, totalLikes, mappedComments)
+      ? this.mapProposedToDetailsDto(recipe as ProposedRecipeEntity, totalLikes, mappedComments)
       : this.recipesService.mapToRecipeDetailsDto(recipe as PublishedRecipeEntity, totalLikes, mappedComments);
 
     if (req.user?.id) {
-      const isLiked = await this.recipeLikesService.isRecipeLikedByUser(req.user.id, actualId);
+      const isLiked = await this.recipeLikesService.isRecipeLikedByUser(req.user.id, recipeId);
       return { ...recipeDetails, isLiked };
     }
 
@@ -92,12 +91,11 @@ export class RecipesController {
 
   private mapProposedToDetailsDto(
     recipe: ProposedRecipeEntity,
-    displayId: number,
     likes: number,
     comments: RecipeDetailsDto['comments'],
   ): RecipeDetailsDto {
     return {
-      id: displayId, // Use the offset ID for display
+      id: recipe.id,
       title: recipe.title,
       description: recipe.description,
       ingredients: recipe.ingredients,
@@ -131,13 +129,12 @@ export class RecipesController {
 
     // Check if ID is proposed (>= 100_000_000)
     const isProposed = recipeId >= PROPOSED_ID_OFFSET;
-    const actualId = isProposed ? recipeId - PROPOSED_ID_OFFSET : recipeId;
 
     if (isProposed) {
       // Update proposed recipe
-      const updated = await this.recipesService.updateProposedRecipe(actualId, dto);
+      const updated = await this.recipesService.updateProposedRecipe(recipeId, dto);
       return {
-        id: updated.id + PROPOSED_ID_OFFSET, // Return with offset
+        id: updated.id,
         title: updated.title,
         description: updated.description,
         ingredients: updated.ingredients,
@@ -150,9 +147,9 @@ export class RecipesController {
       };
     } else {
       // Update published recipe
-      const updated = await this.recipesService.updateRecipe(actualId, dto);
-      const totalLikes = await this.recipeLikesService.getRecipeLikesCount(actualId);
-      const comments = await this.commentsService.getRecipeComments(actualId);
+      const updated = await this.recipesService.updateRecipe(recipeId, dto);
+      const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
+      const comments = await this.commentsService.getRecipeComments(recipeId);
 
       const mappedComments = comments.map((comment) => ({
         id: comment.id,
@@ -179,12 +176,11 @@ export class RecipesController {
 
     // Check if ID is proposed (>= 100_000_000)
     const isProposed = recipeId >= PROPOSED_ID_OFFSET;
-    const actualId = isProposed ? recipeId - PROPOSED_ID_OFFSET : recipeId;
 
     if (isProposed) {
-      await this.recipesService.deleteProposedRecipe(actualId);
+      await this.recipesService.deleteProposedRecipe(recipeId);
     } else {
-      await this.recipesService.deleteRecipe(actualId);
+      await this.recipesService.deleteRecipe(recipeId);
     }
 
     return { success: true };
@@ -195,12 +191,7 @@ export class RecipesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('moderator', 'admin')
   public async getProposedRecipes(): Promise<RecipeDto[]> {
-    const recipes = await this.recipesService.getProposedRecipes();
-    // Add offset to all IDs
-    return recipes.map((recipe) => ({
-      ...recipe,
-      id: recipe.id + PROPOSED_ID_OFFSET,
-    }));
+    return this.recipesService.getProposedRecipes();
   }
 
   @Post('proposed/submit')
@@ -208,7 +199,7 @@ export class RecipesController {
   @UsePipes(new ZodValidationPipe(submitRecipeSchema))
   public async submitRecipe(@Body() dto: SubmitRecipeDto): Promise<{ success: boolean; id: number }> {
     const id = await this.recipesService.submitRecipe(dto);
-    return { success: true, id: id + PROPOSED_ID_OFFSET };
+    return { success: true, id };
   }
 
   @Post('proposed/:id/publish')
@@ -222,10 +213,7 @@ export class RecipesController {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
-    // Check if ID has offset, remove it
-    const actualId = recipeId >= PROPOSED_ID_OFFSET ? recipeId - PROPOSED_ID_OFFSET : recipeId;
-
-    const publishedId = await this.recipesService.publishRecipe(actualId);
+    const publishedId = await this.recipesService.publishRecipe(recipeId);
     return { id: publishedId };
   }
 }
