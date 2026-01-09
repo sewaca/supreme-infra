@@ -1,9 +1,6 @@
 # Database configuration for core-recipes-bff service
 # This file defines database-specific settings including resources
-database:
-  name: core_recipes_bff_db
-  user: core_recipes_bff_user
-  passwordSecret: DB_PASSWORD
+
 resources:
   production:
     limits:

@@ -107,19 +107,9 @@ function generateDatabaseValuesForService(service: ServiceWithDatabase): void {
   const serviceName = service.name;
   const projectRoot = path.join(__dirname, '../../..');
 
-  // Read database config from infra/databases/{service}-db/service.yaml
-  const dbServiceYamlPath = path.join(projectRoot, 'infra/databases', `${serviceName}-db/service.yaml`);
-  let dbName = `${serviceName.replace(/-/g, '_')}_db`;
-  let dbUser = `${serviceName.replace(/-/g, '_')}_user`;
-
-  if (fs.existsSync(dbServiceYamlPath)) {
-    const dbServiceContent = fs.readFileSync(dbServiceYamlPath, 'utf-8');
-    const dbServiceConfig = yaml.parse(dbServiceContent);
-    if (dbServiceConfig?.database) {
-      dbName = dbServiceConfig.database.name || dbName;
-      dbUser = dbServiceConfig.database.user || dbUser;
-    }
-  }
+  // Get database name and user from services.yaml
+  const dbName = service.database.name || `${serviceName.replace(/-/g, '_')}_db`;
+  const dbUser = service.database.user || `${serviceName.replace(/-/g, '_')}_user`;
 
   console.log(`→ Generating database values for service: ${serviceName}`);
 

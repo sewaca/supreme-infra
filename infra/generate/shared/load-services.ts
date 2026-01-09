@@ -2,9 +2,17 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
 
+export interface DatabaseConfig {
+  enabled: boolean;
+  name?: string;
+  user?: string;
+  passwordSecret?: string;
+}
+
 export interface Service {
   name: string;
   description?: string;
+  database?: DatabaseConfig;
 }
 
 export interface ServicesConfig {
