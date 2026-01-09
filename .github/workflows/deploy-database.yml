@@ -72,7 +72,7 @@ jobs:
           fi
 
 
-          # Get database name and user
+          # Get database name and user from services.yaml
 
           DB_NAME=$(yq eval ".services.nest[] | select(.name ==
           \"$SERVICE_NAME\") | .database.name" services.yaml)

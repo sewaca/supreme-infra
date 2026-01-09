@@ -1,11 +1,6 @@
 # Database configuration for backend service
 # This file defines database-specific settings including resources
 
-database:
-  name: backend_db
-  user: backend_user
-  passwordSecret: DB_PASSWORD
-
 resources:
   production:
     limits:

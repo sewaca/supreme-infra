@@ -1,11 +1,6 @@
 # Database configuration for core-auth-bff service
 # This file defines database-specific settings including resources
 
-database:
-  name: core_auth_bff_db
-  user: core_auth_bff_user
-  passwordSecret: DB_PASSWORD
-
 resources:
   production:
     limits:
