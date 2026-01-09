@@ -21,6 +21,10 @@ export function extractNextRoutes(servicePath: string, serviceName: string): Rou
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
 
+      if (entry.parentPath.endsWith('api/status')) {
+        continue;
+      }
+
       if (entry.isDirectory()) {
         // Обрабатываем динамические роуты [param]
         const isDynamic = entry.name.startsWith('[') && entry.name.endsWith(']');

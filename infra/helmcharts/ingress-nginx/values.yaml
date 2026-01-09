@@ -11,8 +11,6 @@ ingress:
       port: 80
       type: next
       paths:
-        - path: /api/status
-          method: GET
         - path: /auth-ssr/.*
           method: GET
         - path: /login
@@ -66,8 +64,6 @@ ingress:
       type: next
       paths:
         - path: /
-          method: GET
-        - path: /api/status
           method: GET
         - path: /frontend/.*
           method: GET
