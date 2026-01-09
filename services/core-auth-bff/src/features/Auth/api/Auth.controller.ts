@@ -12,10 +12,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { Roles } from '../../../shared/decorators/roles.decorator';
-import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
-import { RolesGuard } from '../../../shared/guards/roles.guard';
-import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
+import { JwtAuthGuard, Roles, RolesGuard, ZodValidationPipe } from '@supreme-int/nestjs-shared';
 import { AuthService } from '../model/Auth.service';
 import { type LoginDto, loginSchema, type RegisterDto, registerSchema } from '../model/auth.dto';
 import { UsersService } from '../model/Users.service';

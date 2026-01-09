@@ -368,6 +368,9 @@ importers:
       '@nestjs/core':
         specifier: 'catalog:'
         version: 11.1.6(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/passport':
+        specifier: 'catalog:'
+        version: 11.0.5(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
       '@nestjs/platform-fastify':
         specifier: 'catalog:'
         version: 11.1.8(@nestjs/common@11.1.6(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)
@@ -380,9 +383,15 @@ importers:
       '@opentelemetry/sdk-logs':
         specifier: 'catalog:'
         version: 0.56.0(@opentelemetry/api@1.9.0)
+      passport-jwt:
+        specifier: 'catalog:'
+        version: 4.0.1
       typeorm:
         specifier: 'catalog:'
         version: 0.3.28(pg@8.16.3)(ts-node@10.9.2(@swc/core@1.15.3)(@types/node@22.18.11)(typescript@5.9.3))
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.13
     devDependencies:
       '@nestjs/testing':
         specifier: 'catalog:'
@@ -390,6 +399,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.18.11
+      '@types/passport-jwt':
+        specifier: 'catalog:'
+        version: 4.0.1
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2

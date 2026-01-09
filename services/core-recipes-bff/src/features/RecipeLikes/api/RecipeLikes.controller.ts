@@ -9,7 +9,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@supreme-int/nestjs-shared';
 import { RecipeLikesService } from './RecipeLikes.service';
 
 @Controller('recipes')
