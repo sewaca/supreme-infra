@@ -33,7 +33,7 @@ resources:
 autoscaling:
   enabled: true
   minReplicas: 2
-  maxReplicas: 6
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
@@ -42,15 +42,3 @@ overrides:
   production:
     canary:
       enabled: true
-    # В production увеличиваем минимальное количество реплик
-    autoscaling:
-      maxReplicas: 5
-    env:
-      NODE_ENV: "production"
-      NEXT_PUBLIC_BACKEND_URL: http://84.252.134.216/main-api
-  staging:
-    # В staging можем использовать меньше ресурсов
-    resources:
-      limits:
-        cpu: 300m
-        memory: 384Mi
