@@ -1,3 +1,7 @@
+# Base PostgreSQL Helm Chart Values
+# These values are used by the database values generator as defaults
+# They can be overridden in infra/databases/{service}-db/service.yaml
+
 nameOverride: "postgresql"
 fullnameOverride: "postgresql"
 
@@ -13,7 +17,7 @@ service:
 persistence:
   enabled: true
   storageClass: ""
-  size: 10Gi
+  size: 3Gi
   accessMode: ReadWriteOnce
 
 resources:
@@ -40,25 +44,27 @@ securityContext:
 # This will be mounted to /docker-entrypoint-initdb.d/
 initScript: ""
 
-# Environment overrides
+# Environment overrides (default values for each environment)
+# These are applied if service.yaml doesn't specify environment-specific values
+# Priority: base values < environment overrides < service.yaml base < service.yaml overrides
 overrides:
   development:
     persistence:
-      size: 5Gi
+      size: 512Mi
     resources:
       limits:
-        cpu: 250m
-        memory: 256Mi
+        cpu: 200m
+        memory: 200Mi
       requests:
         cpu: 50m
-        memory: 128Mi
+        memory: 100Mi
   production:
     persistence:
-      size: 20Gi
+      size: 10Gi
     resources:
       limits:
-        cpu: 1000m
-        memory: 1Gi
+        cpu: 500m
+        memory: 512Gi
       requests:
         cpu: 250m
-        memory: 512Mi
+        memory: 256Mi

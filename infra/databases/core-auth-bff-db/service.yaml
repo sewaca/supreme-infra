@@ -1,18 +1,17 @@
 # Database configuration for core-auth-bff service
 # This file defines database-specific settings including resources
 
-resources:
+# Base configuration (applied to all environments)
+persistence:
+  size: 2Gi
+
+# Environment-specific overrides
+overrides:
   production:
-    limits:
-      cpu: 500m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 150Mi
-  development:
-    limits:
-      cpu: 250m
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 150Mi
