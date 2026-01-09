@@ -201,8 +201,8 @@ export class RecipesService {
       .createQueryBuilder('recipe')
       .select('MAX(recipe.id)', 'maxId')
       .getRawOne();
-    
-    const nextId = maxIdResult?.maxId ? maxIdResult.maxId + 1 : PROPOSED_ID_OFFSET+1;
+
+    const nextId = maxIdResult?.maxId ? maxIdResult.maxId + 1 : PROPOSED_ID_OFFSET + 1;
 
     const recipe = this.proposedRecipeRepository.create({
       id: nextId,
