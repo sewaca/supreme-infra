@@ -1,0 +1,121 @@
+# Kubernetes Job to setup FDW credentials after database deployment
+# This job runs once after both databases are deployed
+#
+# Usage:
+#   kubectl apply -f k8s-fdw-setup-job.yaml
+#
+# To re-run:
+#   kubectl delete job setup-fdw-credentials
+#   kubectl apply -f k8s-fdw-setup-job.yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-fdw-credentials
+  namespace: default
+  labels:
+    app: core-recipes-bff-db
+    component: fdw-setup
+spec:
+  # Keep completed job for 24 hours for debugging
+  ttlSecondsAfterFinished: 86400
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: core-recipes-bff-db
+        component: fdw-setup
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: fdw-setup
+          image: postgres:16-alpine
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Waiting for core-recipes-bff database to be ready..."
+              until pg_isready -h postgresql-core-recipes-bff -U core_recipes_bff_user -d core_recipes_bff_db; do
+                echo "Database not ready, waiting..."
+                sleep 5
+              done
+              
+              echo "Waiting for core-auth-bff database to be ready..."
+              until pg_isready -h postgresql-core-auth-bff -U core_auth_bff_user -d core_auth_bff_db; do
+                echo "Auth database not ready, waiting..."
+                sleep 5
+              done
+              
+              echo "Both databases are ready. Setting up FDW credentials..."
+              
+              # Create the SQL script
+              cat > /tmp/setup-fdw.sql << 'EOF'
+              -- Drop existing user mapping if it exists
+              DO $$
+              BEGIN
+                IF EXISTS (
+                  SELECT 1 FROM pg_user_mappings 
+                  WHERE srvname = 'auth_server' 
+                  AND usename = current_user
+                ) THEN
+                  EXECUTE 'DROP USER MAPPING FOR CURRENT_USER SERVER auth_server';
+                  RAISE NOTICE 'Dropped existing user mapping';
+                END IF;
+              END $$;
+              
+              -- Create new user mapping with credentials from environment
+              DO $$
+              BEGIN
+                EXECUTE format(
+                  'CREATE USER MAPPING FOR CURRENT_USER SERVER auth_server OPTIONS (user %L, password %L)',
+                  current_setting('fdw.auth_user'),
+                  current_setting('fdw.auth_password')
+                );
+                RAISE NOTICE 'Created user mapping for FDW';
+              END $$;
+              
+              -- Test the connection
+              DO $$
+              DECLARE
+                user_count INTEGER;
+              BEGIN
+                SELECT COUNT(*) INTO user_count FROM users;
+                RAISE NOTICE 'Successfully connected! Found % users in foreign table.', user_count;
+              EXCEPTION
+                WHEN OTHERS THEN
+                  RAISE WARNING 'Failed to connect: %', SQLERRM;
+              END $$;
+              EOF
+              
+              # Execute the script with credentials from secrets
+              PGPASSWORD="$DB_PASSWORD" psql \
+                -h postgresql-core-recipes-bff \
+                -U core_recipes_bff_user \
+                -d core_recipes_bff_db \
+                -c "SET fdw.auth_user = 'core_auth_bff_user';" \
+                -c "SET fdw.auth_password = '$AUTH_DB_PASSWORD';" \
+                -f /tmp/setup-fdw.sql
+              
+              echo "FDW setup completed successfully!"
+          env:
+            # Password for core-recipes-bff database
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-core-recipes-bff-secret
+                  key: password
+            # Password for core-auth-bff database (for FDW connection)
+            - name: AUTH_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-core-auth-bff-secret
+                  key: password
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+

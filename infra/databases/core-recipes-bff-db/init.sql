@@ -1,9 +1,59 @@
 -- Initial schema and data for core-recipes-bff database
 -- This script is executed automatically when PostgreSQL starts for the first time
 
+-- Enable postgres_fdw extension for cross-database queries
+CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+
+-- Create foreign server connection to core-auth-bff database
+-- Note: This assumes both databases are on the same PostgreSQL instance
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_foreign_server WHERE srvname = 'auth_server') THEN
+    CREATE SERVER auth_server
+      FOREIGN DATA WRAPPER postgres_fdw
+      OPTIONS (host 'postgres-core-auth-bff', port '5432', dbname 'core_auth_bff');
+  END IF;
+END $$;
+
+-- Create user mapping for accessing the foreign database
+-- Note: Password will be set via environment-specific configuration
+-- This is a placeholder that should be updated after deployment
+DO $$
+DECLARE
+  fdw_user TEXT := COALESCE(current_setting('fdw.auth_user', true), 'core_auth_bff_user');
+  fdw_pass TEXT := COALESCE(current_setting('fdw.auth_password', true), 'changeme');
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_user_mappings 
+    WHERE srvname = 'auth_server' 
+    AND usename = current_user
+  ) THEN
+    EXECUTE format(
+      'CREATE USER MAPPING FOR CURRENT_USER SERVER auth_server OPTIONS (user %L, password %L)',
+      fdw_user,
+      fdw_pass
+    );
+    
+    RAISE NOTICE 'Created user mapping for FDW with user: %', fdw_user;
+    RAISE WARNING 'FDW password should be updated after deployment for security!';
+  END IF;
+END $$;
+
+-- Import foreign table 'users' from core-auth-bff database
+-- Only import if the foreign table doesn't already exist
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.foreign_tables 
+    WHERE foreign_table_name = 'users' 
+    AND foreign_table_schema = 'public'
+  ) THEN
+    EXECUTE 'IMPORT FOREIGN SCHEMA public LIMIT TO (users) FROM SERVER auth_server INTO public';
+  END IF;
+END $$;
+
 -- Create published_recipes table
--- Note: author_user_id references users table in core-auth-bff database
--- No foreign key constraint as users are in a separate database
+-- Note: author_user_id references users table in core-auth-bff database via FDW
 CREATE TABLE IF NOT EXISTS published_recipes (
   id SERIAL PRIMARY KEY,
   title VARCHAR(500) NOT NULL,
@@ -61,8 +111,7 @@ CREATE TABLE IF NOT EXISTS recipe_comments (
 );
 
 -- Create recipe_likes table
--- Note: user_id references users table in core-auth-bff database
--- No foreign key constraint as users are in a separate database
+-- Note: user_id references users table in core-auth-bff database via FDW
 CREATE TABLE IF NOT EXISTS recipe_likes (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL,
@@ -105,6 +154,93 @@ CREATE TRIGGER update_proposed_recipes_updated_at BEFORE UPDATE ON proposed_reci
 
 CREATE TRIGGER update_recipe_comments_updated_at BEFORE UPDATE ON recipe_comments
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Create function to validate user_id exists in foreign users table
+CREATE OR REPLACE FUNCTION validate_user_id()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Only validate if user_id is not NULL
+  IF NEW.user_id IS NOT NULL OR NEW.author_user_id IS NOT NULL THEN
+    DECLARE
+      user_exists BOOLEAN;
+      check_id INTEGER;
+    BEGIN
+      -- Determine which field to check
+      check_id := COALESCE(NEW.user_id, NEW.author_user_id);
+      
+      -- Check if user exists in foreign users table
+      SELECT EXISTS(SELECT 1 FROM users WHERE id = check_id) INTO user_exists;
+      
+      IF NOT user_exists THEN
+        RAISE EXCEPTION 'User with id % does not exist in core-auth-bff database', check_id;
+      END IF;
+    END;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create triggers to validate user_id on INSERT and UPDATE
+CREATE TRIGGER validate_published_recipes_author_user_id
+  BEFORE INSERT OR UPDATE ON published_recipes
+  FOR EACH ROW
+  WHEN (NEW.author_user_id IS NOT NULL)
+  EXECUTE FUNCTION validate_user_id();
+
+CREATE TRIGGER validate_proposed_recipes_author_user_id
+  BEFORE INSERT OR UPDATE ON proposed_recipes
+  FOR EACH ROW
+  WHEN (NEW.author_user_id IS NOT NULL)
+  EXECUTE FUNCTION validate_user_id();
+
+CREATE TRIGGER validate_recipe_comments_author_user_id
+  BEFORE INSERT OR UPDATE ON recipe_comments
+  FOR EACH ROW
+  WHEN (NEW.author_user_id IS NOT NULL)
+  EXECUTE FUNCTION validate_user_id();
+
+CREATE TRIGGER validate_recipe_likes_user_id
+  BEFORE INSERT OR UPDATE ON recipe_likes
+  FOR EACH ROW
+  EXECUTE FUNCTION validate_user_id();
+
+-- Create views for convenient access to user data with recipes
+CREATE OR REPLACE VIEW published_recipes_with_users AS
+SELECT 
+  r.*,
+  u.email as author_email,
+  u.name as author_name,
+  u.role as author_role
+FROM published_recipes r
+LEFT JOIN users u ON r.author_user_id = u.id;
+
+CREATE OR REPLACE VIEW proposed_recipes_with_users AS
+SELECT 
+  r.*,
+  u.email as author_email,
+  u.name as author_name,
+  u.role as author_role
+FROM proposed_recipes r
+LEFT JOIN users u ON r.author_user_id = u.id;
+
+CREATE OR REPLACE VIEW recipe_comments_with_users AS
+SELECT 
+  c.*,
+  u.email as author_email,
+  u.name as author_name,
+  u.role as author_role
+FROM recipe_comments c
+LEFT JOIN users u ON c.author_user_id = u.id;
+
+CREATE OR REPLACE VIEW recipe_likes_with_users AS
+SELECT 
+  l.*,
+  u.email as user_email,
+  u.name as user_name,
+  u.role as user_role
+FROM recipe_likes l
+LEFT JOIN users u ON l.user_id = u.id;
 
 -- Import initial recipe data
 -- Migration data for recipes
