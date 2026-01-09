@@ -7,7 +7,7 @@ ingress:
   name: ingress-main
   namespace: default
   rules:
-    - service: core-auth-bff
+    - service: core-auth-bff.default.svc.cluster.local
       port: 80
       type: nest
       paths:
@@ -23,7 +23,7 @@ ingress:
           method: GET
         - path: /core-auth-bff/auth/users/[^/]+
           method: DELETE
-    - service: core-recipes-bff
+    - service: core-recipes-bff.default.svc.cluster.local
       port: 80
       type: nest
       paths:
@@ -45,7 +45,7 @@ ingress:
           method: POST
         - path: /core-recipes-bff/recipes/proposed/all
           method: GET
-    - service: frontend
+    - service: frontend.default.svc.cluster.local
       port: 80
       type: next
       paths:
