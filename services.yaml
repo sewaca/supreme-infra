@@ -17,3 +17,5 @@ services:
   next:
     - name: frontend
       description: Frontend service (Next.js)
+    - name: auth-ssr
+      description: authorization-ssr-sservice

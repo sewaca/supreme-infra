@@ -29,6 +29,7 @@ jobs:
       matrix:
         service-name:
           - frontend
+          - auth-ssr
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

@@ -7,6 +7,16 @@ ingress:
   name: ingress-main
   namespace: default
   rules:
+    - service: auth-ssr
+      port: 80
+      type: next
+      paths:
+        - path: /
+          method: GET
+        - path: /api/status
+          method: GET
+        - path: /auth-ssr/.*
+          method: GET
     - service: core-auth-bff
       port: 80
       type: nest
