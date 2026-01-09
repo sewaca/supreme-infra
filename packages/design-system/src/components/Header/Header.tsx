@@ -48,4 +48,3 @@ export async function Header({ logoText = '🍳 Рецепты', logoHref = '/' 
     </header>
   );
 }
-
