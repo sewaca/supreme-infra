@@ -15,11 +15,11 @@ export default async function RecipePage({ params }: RecipePageProps) {
   }
 
   const { id } = await params;
-  const recipeId = id;
+  const recipeId = Number.parseInt(id, 10);
 
-  // if (Number.isNaN(recipeId)) {
-  //   notFound();
-  // }
+  if (Number.isNaN(recipeId)) {
+    notFound();
+  }
 
   const token = await getAuthToken();
   if (!token) {
@@ -41,7 +41,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
     throw error;
   }
 
-  const isProposed = recipeId.includes('proposed');
+  const isProposed = recipeId > 100_000_000;
 
   return (
     <RecipeDetailsPage

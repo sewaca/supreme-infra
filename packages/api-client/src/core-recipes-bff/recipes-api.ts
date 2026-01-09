@@ -71,7 +71,7 @@ export class RecipesApi extends BaseApi {
 
   public async submitRecipe(
     recipe: Omit<RecipeDetails, 'id' | 'likes' | 'comments' | 'instructions'>,
-  ): Promise<{ success: boolean; id: string }> {
+  ): Promise<{ success: boolean; id: number }> {
     const url = `${this.baseUrl}/recipes/proposed/submit`;
 
     const response = await this.fetch(url, {
@@ -84,7 +84,7 @@ export class RecipesApi extends BaseApi {
       throw new Error(`Failed to submit recipe: ${response.statusText}`);
     }
 
-    return response.json() as Promise<{ success: boolean; id: string }>;
+    return response.json() as Promise<{ success: boolean; id: number }>;
   }
 
   public async getProposedRecipes(token: string): Promise<Recipe[]> {

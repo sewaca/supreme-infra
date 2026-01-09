@@ -20,11 +20,13 @@ import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
 import { CommentsService } from '../../Comments/api/Comments.service';
+import { ProposedRecipeEntity } from '../model/ProposedRecipe.entity';
+import { PublishedRecipeEntity } from '../model/PublishedRecipe.entity';
 import { type SubmitRecipeDto, submitRecipeSchema } from '../model/recipe.schemas';
 import type { RecipeDetailsDto, RecipeDto } from '../model/recipe.types';
 import { RecipesService } from './Recipes.service';
-import { ProposedRecipeEntity } from '../model/ProposedRecipe.entity';
-import { PublishedRecipeEntity } from '../model/PublishedRecipe.entity';
+
+const PROPOSED_ID_OFFSET = 100_000_000;
 
 @Controller('recipes')
 export class RecipesController {
@@ -49,22 +51,23 @@ export class RecipesController {
     @Param('id') id: string,
     @Request() req: { user?: { id: number; role: string } },
   ): Promise<RecipeDetailsDto & { isLiked?: boolean }> {
-    // Check if id is in format "proposed:123"
-    const isProposed = id.startsWith('proposed:');
-    const numericId = isProposed ? id.replace('proposed:', '') : id;
-    const recipeId = Number.parseInt(numericId, 10);
+    const recipeId = Number.parseInt(id, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
-    // Fetch from proposed or published based on prefix
-    const recipe = isProposed
-      ? await this.recipesService.getProposedRecipeById(recipeId)
-      : await this.recipesService.getRecipeById(recipeId);
+    // Check if ID is proposed (>= 100_000_000)
+    const isProposed = recipeId >= PROPOSED_ID_OFFSET;
+    const actualId = isProposed ? recipeId - PROPOSED_ID_OFFSET : recipeId;
 
-    const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
-    const comments = await this.commentsService.getRecipeComments(recipeId);
+    // Fetch from proposed or published based on ID
+    const recipe = isProposed
+      ? await this.recipesService.getProposedRecipeById(actualId)
+      : await this.recipesService.getRecipeById(actualId);
+
+    const totalLikes = await this.recipeLikesService.getRecipeLikesCount(actualId);
+    const comments = await this.commentsService.getRecipeComments(actualId);
 
     const mappedComments = comments.map((comment) => ({
       id: comment.id,
@@ -76,11 +79,11 @@ export class RecipesController {
 
     // Map proposed recipe to details DTO if needed
     const recipeDetails = isProposed
-      ? this.mapProposedToDetailsDto(recipe as ProposedRecipeEntity, totalLikes, mappedComments)
+      ? this.mapProposedToDetailsDto(recipe as ProposedRecipeEntity, recipeId, totalLikes, mappedComments)
       : this.recipesService.mapToRecipeDetailsDto(recipe as PublishedRecipeEntity, totalLikes, mappedComments);
 
     if (req.user?.id) {
-      const isLiked = await this.recipeLikesService.isRecipeLikedByUser(req.user.id, recipeId);
+      const isLiked = await this.recipeLikesService.isRecipeLikedByUser(req.user.id, actualId);
       return { ...recipeDetails, isLiked };
     }
 
@@ -89,11 +92,12 @@ export class RecipesController {
 
   private mapProposedToDetailsDto(
     recipe: ProposedRecipeEntity,
+    displayId: number,
     likes: number,
     comments: RecipeDetailsDto['comments'],
   ): RecipeDetailsDto {
     return {
-      id: recipe.id,
+      id: displayId, // Use the offset ID for display
       title: recipe.title,
       description: recipe.description,
       ingredients: recipe.ingredients,
@@ -120,20 +124,21 @@ export class RecipesController {
     @Param('id') id: string,
     @Body() dto: SubmitRecipeDto,
   ): Promise<RecipeDetailsDto | RecipeDto> {
-    // Check if id is in format "proposed:123"
-    const isProposed = id.startsWith('proposed:');
-    const numericId = isProposed ? id.replace('proposed:', '') : id;
-    const recipeId = Number.parseInt(numericId, 10);
+    const recipeId = Number.parseInt(id, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
+    // Check if ID is proposed (>= 100_000_000)
+    const isProposed = recipeId >= PROPOSED_ID_OFFSET;
+    const actualId = isProposed ? recipeId - PROPOSED_ID_OFFSET : recipeId;
+
     if (isProposed) {
       // Update proposed recipe
-      const updated = await this.recipesService.updateProposedRecipe(recipeId, dto);
+      const updated = await this.recipesService.updateProposedRecipe(actualId, dto);
       return {
-        id: updated.id,
+        id: updated.id + PROPOSED_ID_OFFSET, // Return with offset
         title: updated.title,
         description: updated.description,
         ingredients: updated.ingredients,
@@ -146,9 +151,9 @@ export class RecipesController {
       };
     } else {
       // Update published recipe
-      const updated = await this.recipesService.updateRecipe(recipeId, dto);
-      const totalLikes = await this.recipeLikesService.getRecipeLikesCount(recipeId);
-      const comments = await this.commentsService.getRecipeComments(recipeId);
+      const updated = await this.recipesService.updateRecipe(actualId, dto);
+      const totalLikes = await this.recipeLikesService.getRecipeLikesCount(actualId);
+      const comments = await this.commentsService.getRecipeComments(actualId);
 
       const mappedComments = comments.map((comment) => ({
         id: comment.id,
@@ -167,19 +172,20 @@ export class RecipesController {
   @Roles('moderator', 'admin')
   @HttpCode(HttpStatus.OK)
   public async deleteRecipe(@Param('id') id: string): Promise<{ success: boolean }> {
-    // Check if id is in format "proposed:123"
-    const isProposed = id.startsWith('proposed:');
-    const numericId = isProposed ? id.replace('proposed:', '') : id;
-    const recipeId = Number.parseInt(numericId, 10);
+    const recipeId = Number.parseInt(id, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
+    // Check if ID is proposed (>= 100_000_000)
+    const isProposed = recipeId >= PROPOSED_ID_OFFSET;
+    const actualId = isProposed ? recipeId - PROPOSED_ID_OFFSET : recipeId;
+
     if (isProposed) {
-      await this.recipesService.deleteProposedRecipe(recipeId);
+      await this.recipesService.deleteProposedRecipe(actualId);
     } else {
-      await this.recipesService.deleteRecipe(recipeId);
+      await this.recipesService.deleteRecipe(actualId);
     }
 
     return { success: true };
@@ -190,15 +196,20 @@ export class RecipesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('moderator', 'admin')
   public async getProposedRecipes(): Promise<RecipeDto[]> {
-    return this.recipesService.getProposedRecipes();
+    const recipes = await this.recipesService.getProposedRecipes();
+    // Add offset to all IDs
+    return recipes.map((recipe) => ({
+      ...recipe,
+      id: recipe.id + PROPOSED_ID_OFFSET,
+    }));
   }
 
   @Post('proposed/submit')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(submitRecipeSchema))
-  public async submitRecipe(@Body() dto: SubmitRecipeDto): Promise<{ success: boolean; id: string }> {
+  public async submitRecipe(@Body() dto: SubmitRecipeDto): Promise<{ success: boolean; id: number }> {
     const id = await this.recipesService.submitRecipe(dto);
-    return { success: true, id: `proposed:${id}` };
+    return { success: true, id: id + PROPOSED_ID_OFFSET };
   }
 
   @Post('proposed/:id/publish')
@@ -206,15 +217,16 @@ export class RecipesController {
   @Roles('moderator', 'admin')
   @HttpCode(HttpStatus.OK)
   public async publishRecipe(@Param('id') id: string): Promise<{ id: number }> {
-    // Remove "proposed:" prefix if present
-    const numericId = id.startsWith('proposed:') ? id.replace('proposed:', '') : id;
-    const recipeId = Number.parseInt(numericId, 10);
+    const recipeId = Number.parseInt(id, 10);
 
     if (Number.isNaN(recipeId)) {
       throw new BadRequestException('Invalid recipe id parameter');
     }
 
-    const publishedId = await this.recipesService.publishRecipe(recipeId);
+    // Check if ID has offset, remove it
+    const actualId = recipeId >= PROPOSED_ID_OFFSET ? recipeId - PROPOSED_ID_OFFSET : recipeId;
+
+    const publishedId = await this.recipesService.publishRecipe(actualId);
     return { id: publishedId };
   }
 }
