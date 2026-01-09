@@ -232,14 +232,13 @@ catalogs:
 importers:
 
   .:
-    dependencies:
-      '@inquirer/prompts':
-        specifier: ^8.1.0
-        version: 8.1.0(@types/node@22.18.11)
     devDependencies:
       '@biomejs/biome':
         specifier: 'catalog:'
         version: 2.2.6
+      '@inquirer/prompts':
+        specifier: ^8.1.0
+        version: 8.1.0(@types/node@22.18.11)
       '@types/handlebars':
         specifier: 'catalog:'
         version: 4.1.0

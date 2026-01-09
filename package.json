@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "biome check",
     "format": "pnpm run format:biome && pnpm run format:prettier",
-    "format:biome": "biome format --fix",
+    "format:biome": "biome check --fix",
     "format:prettier": "prettier --write \"**/*.{md,yaml,yml}\" --ignore-unknown",
     "generate:router": "tsx infra/generate/generate-router/index.ts",
     "generate:overrides": "tsx infra/generate-overrides/index.ts",
@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
+    "@inquirer/prompts": "^8.1.0",
     "@types/handlebars": "catalog:",
     "@types/inquirer": "^9.0.9",
     "@types/node": "catalog:",
@@ -35,7 +36,5 @@
   },
   "author": "sewaca",
   "license": "ISC",
-  "dependencies": {
-    "@inquirer/prompts": "^8.1.0"
-  }
+  "dependencies": {}
 }
