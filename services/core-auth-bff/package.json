@@ -65,6 +65,6 @@
     "unplugin-swc": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-node-externals": "catalog:"
   }
 }
