@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RecipeLikeEntity } from './RecipeLike.entity';
+import { RecipeLikeEntity } from '../model/RecipeLike.entity';
 
 @Injectable()
 export class RecipeLikesService {

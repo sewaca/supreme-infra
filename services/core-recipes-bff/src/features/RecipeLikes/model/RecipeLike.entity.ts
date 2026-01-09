@@ -5,10 +5,10 @@ export class RecipeLikeEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'user_id' })
+  @Column({ name: 'user_id', type: 'integer' })
   userId!: number;
 
-  @Column({ name: 'recipe_id' })
+  @Column({ name: 'recipe_id', type: 'integer' })
   recipeId!: number;
 
   @CreateDateColumn({ name: 'liked_at' })

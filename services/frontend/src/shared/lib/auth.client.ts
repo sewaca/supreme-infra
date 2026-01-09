@@ -2,9 +2,10 @@ import { AuthApi, DecodedToken, RecipesApi, TOKEN_KEY, UserRole } from '@supreme
 
 const isProd = process.env.NODE_ENV === 'production';
 
+// TODO: rename me
 function getBackendUrl(): string {
   const host = isProd ? '84.252.134.216' : 'localhost:4000';
-  return `http://${host}/main-api`;
+  return `http://${host}/core-recipes-bff`;
 }
 
 function getAuthBffUrl(): string {
