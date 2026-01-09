@@ -1,105 +1,138 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
-import type { DatabaseValues, EnvironmentOverrides, ServiceWithDatabase } from './types';
+import type { BaseChartValues, DatabaseServiceConfig, ServiceWithDatabase } from './types';
 
 const INFRA_DIR = path.join(__dirname, '../../');
 const OVERRIDES_DIR = path.join(INFRA_DIR, 'overrides');
 
-function getDefaultDatabaseValues(serviceName: string, dbName: string, dbUser: string): DatabaseValues {
+function loadBaseChartValues(projectRoot: string): BaseChartValues {
+  const baseValuesPath = path.join(projectRoot, 'infra/helmcharts/postgresql/values.yaml');
+
+  if (!fs.existsSync(baseValuesPath)) {
+    throw new Error(`Base chart values not found at: ${baseValuesPath}`);
+  }
+
+  const baseValuesContent = fs.readFileSync(baseValuesPath, 'utf-8');
+  return yaml.parse(baseValuesContent) as BaseChartValues;
+}
+
+function getDefaultDatabaseValues(
+  serviceName: string,
+  dbName: string,
+  dbUser: string,
+  baseChartValues: BaseChartValues,
+): Record<string, unknown> {
+  // Clone base values and set service-specific fields
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { overrides: _overrides, ...baseValues } = baseChartValues;
+
   return {
+    ...baseValues,
     nameOverride: `postgresql-${serviceName}`,
     fullnameOverride: `postgresql-${serviceName}`,
-    image: {
-      repository: 'postgres',
-      tag: '16-alpine',
-      pullPolicy: 'IfNotPresent',
-    },
-    service: {
-      type: 'ClusterIP',
-      port: 5432,
-    },
-    persistence: {
-      enabled: true,
-      storageClass: '',
-      size: '10Gi',
-      accessMode: 'ReadWriteOnce',
-    },
-    resources: {
-      limits: {
-        cpu: '500m',
-        memory: '512Mi',
-      },
-      requests: {
-        cpu: '100m',
-        memory: '256Mi',
-      },
-    },
     database: {
       name: dbName,
       user: dbUser,
     },
-    securityContext: {
-      runAsUser: 999,
-      runAsGroup: 999,
-      fsGroup: 999,
-    },
   };
 }
 
-function getEnvironmentOverrides(serviceName: string, projectRoot: string): EnvironmentOverrides {
-  // Try to read service.yaml from databases/{service}-db/ directory
+// Helper to deep merge objects
+function deepMerge(
+  target: Record<string, unknown>,
+  source: Record<string, unknown> | undefined,
+): Record<string, unknown> {
+  if (!source) return target;
+  const result = { ...target };
+  for (const key in source) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      result[key] = deepMerge((target[key] as Record<string, unknown>) || {}, source[key] as Record<string, unknown>);
+    } else if (source[key] !== undefined) {
+      result[key] = source[key];
+    }
+  }
+  return result;
+}
+
+function getServiceConfig(serviceName: string, projectRoot: string): DatabaseServiceConfig | null {
   const dbServiceYamlPath = path.join(projectRoot, 'infra/databases', `${serviceName}-db/service.yaml`);
-  let customResources: Record<string, unknown> | undefined;
 
   if (fs.existsSync(dbServiceYamlPath)) {
     const dbServiceContent = fs.readFileSync(dbServiceYamlPath, 'utf-8');
-    const dbServiceConfig = yaml.parse(dbServiceContent);
-    customResources = dbServiceConfig?.resources;
+    const serviceConfig = yaml.parse(dbServiceContent) as DatabaseServiceConfig;
     console.log(`  ✓ Found database service config: infra/databases/${serviceName}-db/service.yaml`);
+    return serviceConfig;
   }
 
-  return {
-    development: {
-      persistence: {
-        size: '5Gi',
-      },
-      resources: (customResources?.development as {
-        limits: { cpu: string; memory: string };
-        requests: { cpu: string; memory: string };
-      }) || {
-        limits: {
-          cpu: '250m',
-          memory: '256Mi',
-        },
-        requests: {
-          cpu: '50m',
-          memory: '128Mi',
-        },
-      },
-    },
-    production: {
-      persistence: {
-        size: '20Gi',
-      },
-      resources: (customResources?.production as {
-        limits: { cpu: string; memory: string };
-        requests: { cpu: string; memory: string };
-      }) || {
-        limits: {
-          cpu: '1000m',
-          memory: '1Gi',
-        },
-        requests: {
-          cpu: '250m',
-          memory: '512Mi',
-        },
-      },
-    },
-  };
+  return null;
 }
 
-function generateDatabaseValuesForService(service: ServiceWithDatabase): void {
+function buildFinalValues(
+  baseValues: Record<string, unknown>,
+  baseChartOverrides: Record<string, unknown> | undefined,
+  serviceConfig: DatabaseServiceConfig | null,
+  environment: 'development' | 'production',
+  initScript: string,
+): Record<string, unknown> {
+  // Start with base values
+  let result: Record<string, unknown> = { ...baseValues };
+
+  // Apply base chart environment overrides (priority 2)
+  if (baseChartOverrides) {
+    result = deepMerge(result, baseChartOverrides);
+  }
+
+  if (!serviceConfig) {
+    // No service config, return base values + chart overrides + init script
+    if (initScript) {
+      result.initScript = initScript;
+    }
+    return result;
+  }
+
+  // Extract known fields and environment overrides from service.yaml
+  const { persistence, resources, image, service, overrides, ...unknownProps } = serviceConfig;
+
+  // Apply base-level overrides from service.yaml (priority 3)
+  if (persistence) {
+    result.persistence = deepMerge(
+      result.persistence as Record<string, unknown>,
+      persistence as Record<string, unknown>,
+    );
+  }
+  if (resources) {
+    result.resources = resources;
+  }
+  if (image) {
+    result.image = deepMerge(result.image as Record<string, unknown>, image as Record<string, unknown>);
+  }
+  if (service) {
+    result.service = deepMerge(result.service as Record<string, unknown>, service as Record<string, unknown>);
+  }
+
+  // Apply environment-specific overrides from service.yaml (priority 4 - highest)
+  const envOverride = overrides?.[environment];
+  if (envOverride) {
+    result = deepMerge(result, envOverride);
+  }
+
+  // Add unknown properties as-is
+  for (const key in unknownProps) {
+    if (unknownProps[key] !== undefined) {
+      result[key] = unknownProps[key];
+    }
+  }
+
+  // Add init script if exists
+  if (initScript) {
+    result.initScript = initScript;
+  }
+
+  return result;
+}
+
+function generateDatabaseValuesForService(service: ServiceWithDatabase, baseChartValues: BaseChartValues): void {
   if (!service.database?.enabled) {
     return;
   }
@@ -121,24 +154,16 @@ function generateDatabaseValuesForService(service: ServiceWithDatabase): void {
     console.log(`  ✓ Found init script: infra/databases/${serviceName}-db/init.sql`);
   }
 
+  // Get service configuration
+  const serviceConfig = getServiceConfig(serviceName, projectRoot);
+
   // Generate values for each environment
-  const environments = ['development', 'production'];
-  const envOverrides = getEnvironmentOverrides(serviceName, projectRoot);
+  const environments: Array<'development' | 'production'> = ['development', 'production'];
 
   for (const env of environments) {
-    const baseValues = getDefaultDatabaseValues(serviceName, dbName, dbUser);
-    const override = envOverrides[env as keyof EnvironmentOverrides];
-
-    // Merge with environment-specific overrides
-    const finalValues = {
-      ...baseValues,
-      persistence: {
-        ...baseValues.persistence,
-        ...override.persistence,
-      },
-      resources: override.resources,
-      ...(initScript && { initScript }),
-    };
+    const baseValues = getDefaultDatabaseValues(serviceName, dbName, dbUser, baseChartValues);
+    const baseChartEnvOverrides = baseChartValues.overrides?.[env] as Record<string, unknown> | undefined;
+    const finalValues = buildFinalValues(baseValues, baseChartEnvOverrides, serviceConfig, env, initScript);
 
     // Add header comment
     const header = [
@@ -166,6 +191,11 @@ function generateDatabaseValuesForService(service: ServiceWithDatabase): void {
 export function generateDatabaseValues(): void {
   console.log('→ Starting database values generation process');
 
+  const projectRoot = path.join(__dirname, '../../..');
+
+  // Load base chart values
+  const baseChartValues = loadBaseChartValues(projectRoot);
+
   // Load services configuration
   const servicesPath = path.join(__dirname, '../../../services.yaml');
   const servicesContent = fs.readFileSync(servicesPath, 'utf-8');
@@ -185,7 +215,7 @@ export function generateDatabaseValues(): void {
 
   let generatedCount = 0;
   for (const service of servicesWithDb) {
-    generateDatabaseValuesForService(service);
+    generateDatabaseValuesForService(service, baseChartValues);
     generatedCount += 2; // development + production
   }
 

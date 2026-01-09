@@ -14,15 +14,15 @@ service:
 persistence:
   enabled: true
   storageClass: ""
-  size: 5Gi
+  size: 2Gi
   accessMode: ReadWriteOnce
 resources:
   limits:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 200m
+    memory: 200Mi
   requests:
     cpu: 50m
-    memory: 128Mi
+    memory: 100Mi
 database:
   name: core_auth_bff_db
   user: core_auth_bff_user
