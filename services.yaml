@@ -1,12 +1,5 @@
 services:
   nest:
-    - name: backend
-      description: Backend service (NestJS)
-      database:
-        enabled: true
-        name: backend_db
-        user: backend_user
-        passwordSecret: DB_PASSWORD
     - name: core-auth-bff
       description: "core-auth-bff "
       database:
