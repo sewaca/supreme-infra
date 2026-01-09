@@ -63,10 +63,10 @@ loki:
 
     resources:
       limits:
-        cpu: 1000m
-        memory: 1Gi
+        cpu: 512m
+        memory: 512Mi
       requests:
-        cpu: 250m
+        cpu: 256m
         memory: 256Mi
 
     # Extra environment variables

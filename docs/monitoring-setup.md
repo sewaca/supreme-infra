@@ -331,7 +331,7 @@ kubectl delete namespace monitoring
 ## Retention и Storage
 
 - **Retention период**: 30 дней
-- **Storage size**: 30Gi для Victoria Metrics, 10Gi для Grafana
+- **Storage size**: 15Gi для Victoria Metrics, 10Gi для Grafana
 - **Backup**: рекомендуется настроить backup PersistentVolumes
 
 ## Безопасность
