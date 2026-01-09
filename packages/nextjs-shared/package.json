@@ -1,0 +1,21 @@
+{
+  "name": "@supreme-int/nextjs-shared",
+  "version": "1.0.0",
+  "scripts": {
+    "unit": "vitest run",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "jose": "catalog:",
+    "zod": "catalog:",
+    "next": "catalog:",
+    "typescript": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0"
+  }
+}

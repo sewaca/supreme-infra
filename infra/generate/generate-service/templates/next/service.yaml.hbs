@@ -32,8 +32,8 @@ resources:
 # HPA настройки для frontend
 autoscaling:
   enabled: true
-  minReplicas: 2
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 5
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
@@ -42,16 +42,4 @@ overrides:
   production:
     canary:
       enabled: true
-    # В production увеличиваем минимальное количество реплик
-    autoscaling:
-      minReplicas: 1
-      maxReplicas: 5
-    env:
-      NODE_ENV: "production"
-  staging:
-    # В staging можем использовать меньше ресурсов
-    resources:
-      limits:
-        cpu: 300m
-        memory: 384Mi
 

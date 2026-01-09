@@ -24,6 +24,10 @@ env:
   LOKI_ENDPOINT: "http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs"
   # BACKEND_SERVICE_NAMESPACE: ""  # Опционально: namespace для backend сервиса. Если не указан, используется тот же namespace, что и у frontend
 
+# Secrets that should be passed from external sources (e.g., GitHub Secrets)
+# These will be stored in Kubernetes Secrets and mounted as environment variables
+secrets: {}
+
 resources:
   limits:
     cpu: 1000m

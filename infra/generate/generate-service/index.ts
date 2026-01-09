@@ -151,9 +151,9 @@ function copyTemplateFile(templatePath: string, targetPath: string, config: Serv
 }
 
 function generateEnvExample(serviceDir: string, config: ServiceConfig): void {
-  const templatePath = path.join(COMMON_TEMPLATES_DIR, config.serviceType, 'env.example.hbs');
-  const targetPath = path.join(serviceDir, '.env.example');
-  copyTemplateFile(templatePath, targetPath, config, true);
+  // const templatePath = path.join(COMMON_TEMPLATES_DIR, config.serviceType, 'env.example.hbs');
+  // const targetPath = path.join(serviceDir, '.env.example');
+  // copyTemplateFile(templatePath, targetPath, config, true);
 }
 
 function generateGrafanaDashboard(config: ServiceConfig): void {
