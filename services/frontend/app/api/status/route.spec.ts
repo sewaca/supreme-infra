@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { GET } from './route';
 
-describe('Status API Route', () => {
-  it('should return ok status', async () => {
+describe('GET /web-recipes/api/status', () => {
+  it('should return status ok', async () => {
     const response = await GET();
     const data = await response.json();
-    expect(data).toEqual({ status: 'ok' });
+    expect(data).toEqual({ status: 'ok', service: 'frontend' });
     expect(response.status).toBe(200);
   });
 });

@@ -7,8 +7,6 @@ type: next
 routes:
   - path: /
     method: GET
-  - path: /api/status
-    method: GET
   - path: /frontend/.*
     method: GET
   - path: /proposed-recipes

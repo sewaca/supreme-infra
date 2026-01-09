@@ -5,8 +5,6 @@
 service: auth-ssr
 type: next
 routes:
-  - path: /api/status
-    method: GET
   - path: /auth-ssr/.*
     method: GET
   - path: /login
