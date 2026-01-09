@@ -96,3 +96,4 @@ catalog:
   prettier: ^3.4.2
   yaml: ^2.6.1
   zod: ^4.1.13
+  webpack-node-externals: ^3.0.0
