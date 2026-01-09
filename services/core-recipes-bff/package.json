@@ -20,6 +20,7 @@
     "@nestjs/cli": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
+    "@types/passport-jwt": "catalog:",
     "@nestjs/core": "catalog:",
     "@nestjs/jwt": "catalog:",
     "@nestjs/passport": "catalog:",
@@ -51,8 +52,8 @@
   "devDependencies": {
     "@nestjs/schematics": "catalog:",
     "@nestjs/testing": "catalog:",
+    "@types/bcryptjs": "catalog:",
     "@types/express": "catalog:",
-    "@types/passport-jwt": "catalog:",
     "@types/supertest": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "globals": "catalog:",
@@ -63,6 +64,6 @@
     "unplugin-swc": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-node-externals": "catalog:"
   }
 }
