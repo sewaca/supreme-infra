@@ -53,6 +53,8 @@ ingress:
           method: GET
         - path: /api/status
           method: GET
+        - path: /frontend/.*
+          method: GET
         - path: /login
           method: GET
         - path: /profile
