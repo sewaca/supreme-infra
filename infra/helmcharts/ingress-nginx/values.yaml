@@ -11,11 +11,17 @@ ingress:
       port: 80
       type: next
       paths:
-        - path: /
-          method: GET
         - path: /api/status
           method: GET
         - path: /auth-ssr/.*
+          method: GET
+        - path: /login
+          method: GET
+        - path: /profile
+          method: GET
+        - path: /profile/[^/]+
+          method: GET
+        - path: /register
           method: GET
     - service: core-auth-bff
       port: 80
@@ -65,17 +71,9 @@ ingress:
           method: GET
         - path: /frontend/.*
           method: GET
-        - path: /login
-          method: GET
-        - path: /profile
-          method: GET
-        - path: /profile/[^/]+
-          method: GET
         - path: /proposed-recipes
           method: GET
         - path: /recipes/[^/]+
-          method: GET
-        - path: /register
           method: GET
         - path: /submit-recipe
           method: GET

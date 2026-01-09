@@ -1,7 +1,7 @@
+import '@supreme-int/design-system/font.css';
+import '@supreme-int/design-system/theme.css';
 import type { Metadata } from 'next';
 import { Header } from '../src/widgets/Header/Header';
-import './font.css';
-import './theme.css';
 
 export const metadata: Metadata = { title: 'Рецепты - Supreme-Infra' };
 

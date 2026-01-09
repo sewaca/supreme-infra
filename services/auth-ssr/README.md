@@ -1,11 +1,13 @@
 # auth-ssr
 
-authorization-ssr-sservice
+Сервис авторизации и управления пользователями на базе Next.js 15 с SSR.
 
 ## Features
 
 - Next.js 15 with App Router
 - Server-side rendering (SSR)
+- Авторизация и регистрация пользователей
+- Управление профилями пользователей
 - OpenTelemetry instrumentation
 - Prometheus metrics
 - TypeScript
@@ -72,17 +74,34 @@ pnpm run start
 
 ```
 app/
-├── layout.tsx          # Root layout
+├── layout.tsx          # Root layout with theme
 ├── page.tsx            # Homepage
+├── login/              # Страница входа
+├── register/           # Страница регистрации
+├── profile/            # Профиль пользователя
+│   └── [id]/          # Просмотр профиля по ID
+├── theme.css          # CSS переменные и стили
+├── font.css           # Шрифты
 └── api/
     └── status/
         └── route.ts    # Health check endpoint
 
 src/
-├── components/         # Reusable components
-├── shared/            # Shared utilities
-└── views/             # Page views
+├── widgets/           # Виджеты (AuthForm)
+├── views/             # Страницы (ProfilePage)
+└── shared/
+    ├── api/           # API клиенты
+    └── lib/           # Утилиты (auth.client, auth.server)
 ```
+
+## Routes
+
+- `/` - Главная страница сервиса
+- `/login` - Вход в систему
+- `/register` - Регистрация нового пользователя
+- `/profile` - Профиль текущего пользователя
+- `/profile/[id]` - Просмотр профиля пользователя по ID
+- `/api/status` - Health check endpoint
 
 ## License
 

@@ -1,0 +1,23 @@
+{
+  "name": "@supreme-int/design-system",
+  "version": "1.0.0",
+  "description": "Shared design system with CSS variables and global styles for Supreme-Infra",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./font.css": "./src/font.css",
+    "./theme.css": "./src/theme.css"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {},
+  "keywords": [
+    "design-system",
+    "css",
+    "theme",
+    "styles"
+  ],
+  "author": "sewaca",
+  "license": "ISC"
+}

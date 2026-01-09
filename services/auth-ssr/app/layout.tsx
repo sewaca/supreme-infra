@@ -1,6 +1,8 @@
+import '@supreme-int/design-system/font.css';
+import '@supreme-int/design-system/theme.css';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = { title: 'auth-ssr' };
+export const metadata: Metadata = { title: 'Авторизация - Supreme-Infra' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
