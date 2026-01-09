@@ -57,7 +57,7 @@ function runDevServerAndCaptureOutput(servicePath: string): Promise<string> {
         DB_USER: 'dummy_user',
         DB_PASSWORD: 'dummy_password',
         // JWT секрет для auth модулей
-        JWT_SECRET: 'dummy_secret_for_route_extraction',
+        JWT_SECRET: 'local-development-secret',
         // Отключаем автоматическое подключение к БД
         SKIP_DB_CONNECTION: 'true',
       },

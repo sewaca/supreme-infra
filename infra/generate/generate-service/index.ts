@@ -150,12 +150,6 @@ function copyTemplateFile(templatePath: string, targetPath: string, config: Serv
   }
 }
 
-function generateEnvExample(serviceDir: string, config: ServiceConfig): void {
-  // const templatePath = path.join(COMMON_TEMPLATES_DIR, config.serviceType, 'env.example.hbs');
-  // const targetPath = path.join(serviceDir, '.env.example');
-  // copyTemplateFile(templatePath, targetPath, config, true);
-}
-
 function generateGrafanaDashboard(config: ServiceConfig): void {
   const templatePath = path.join(COMMON_TEMPLATES_DIR, config.serviceType, 'grafana-dashboard.json.hbs');
   const dashboardsDir = path.join(__dirname, '../../helmcharts/grafana/dashboards');
@@ -355,11 +349,6 @@ async function generateService(): Promise<void> {
     console.log(`→ Копирование шаблонов ${config.serviceType}...`);
     copyTemplateDirectory(templateDir, serviceDir, config);
     console.log(`✓ Файлы сервиса созданы в: services/${config.serviceName}`);
-
-    // Generate .env.example
-    console.log('→ Генерация .env.example...');
-    generateEnvExample(serviceDir, config);
-    console.log(`✓ .env.example создан`);
 
     // Generate Grafana dashboard
     console.log('→ Генерация Grafana дашборда...');
