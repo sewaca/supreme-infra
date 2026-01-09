@@ -17,5 +17,5 @@ routes:
     method: POST
   - path: /core-recipes-bff/recipes/proposed/all
     method: GET
-  - path: /core-recipes-bff/recipes/submit
+  - path: /core-recipes-bff/recipes/proposed/submit
     method: POST

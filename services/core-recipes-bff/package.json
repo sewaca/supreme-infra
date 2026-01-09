@@ -52,7 +52,6 @@
   "devDependencies": {
     "@nestjs/schematics": "catalog:",
     "@nestjs/testing": "catalog:",
-    "@types/bcryptjs": "catalog:",
     "@types/express": "catalog:",
     "@types/supertest": "catalog:",
     "@vitest/coverage-v8": "catalog:",
