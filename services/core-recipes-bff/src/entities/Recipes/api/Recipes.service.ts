@@ -196,22 +196,8 @@ export class RecipesService {
   ): Promise<number> {
     const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
 
-    // TODO: по хорошему эту логику нужно возложить на postgress, чтобы оно само установило минималку
-    // Get the next ID with offset
-    const maxIdResult = await this.proposedRecipeRepository
-      .createQueryBuilder('recipe')
-      .select('MAX(recipe.id)', 'maxId')
-      .getRawOne();
-
-    console.log('[test] maxIdResult', maxIdResult);
-
-    const nextId =
-      maxIdResult?.maxId && maxIdResult.maxId > PROPOSED_ID_OFFSET ? maxIdResult.maxId + 1 : PROPOSED_ID_OFFSET + 1;
-
-    console.log('[test] nextId', nextId);
-
+    // PostgreSQL sequence automatically generates ID >= 100_000_001
     const recipe = this.proposedRecipeRepository.create({
-      id: nextId,
       title: recipeData.title,
       description: recipeData.description,
       ingredients: recipeData.ingredients,
@@ -227,10 +213,7 @@ export class RecipesService {
       authorUserId: authorUserId || null,
     });
 
-    console.log('[test] recipe', recipe);
-
     const savedRecipe = await this.proposedRecipeRepository.save(recipe);
-    console.log('[test] savedRecipe', savedRecipe);
     return savedRecipe.id;
   }
 

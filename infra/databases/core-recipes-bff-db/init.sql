@@ -25,8 +25,10 @@ CREATE TABLE IF NOT EXISTS published_recipes (
 
 -- Create proposed_recipes table
 -- These are recipes submitted by users awaiting moderation
+CREATE SEQUENCE IF NOT EXISTS proposed_recipes_id_seq START WITH 100000001;
+
 CREATE TABLE IF NOT EXISTS proposed_recipes (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY DEFAULT nextval('proposed_recipes_id_seq'),
   title VARCHAR(500) NOT NULL,
   description TEXT NOT NULL,
   ingredients TEXT[] NOT NULL,
@@ -43,6 +45,8 @@ CREATE TABLE IF NOT EXISTS proposed_recipes (
   submitted_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+ALTER SEQUENCE proposed_recipes_id_seq OWNED BY proposed_recipes.id;
 
 -- Create recipe_comments table
 CREATE TABLE IF NOT EXISTS recipe_comments (
