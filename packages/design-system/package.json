@@ -4,7 +4,6 @@
   "description": "Shared design system with CSS variables and global styles for Supreme-Infra",
   "main": "src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
     "./font.css": "./src/font.css",
     "./theme.css": "./src/theme.css"
   },
@@ -12,6 +11,19 @@
     "src"
   ],
   "scripts": {},
+  "dependencies": {
+    "@supreme-int/nextjs-shared": "workspace:*",
+    "next": "catalog:",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0"
+  },
   "keywords": [
     "design-system",
     "css",

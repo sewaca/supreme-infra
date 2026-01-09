@@ -1,7 +1,7 @@
 import '@supreme-int/design-system/font.css';
 import '@supreme-int/design-system/theme.css';
+import { Header } from '@supreme-int/design-system/src/components/Header/Header';
 import type { Metadata } from 'next';
-import { Header } from '../src/widgets/Header/Header';
 
 export const metadata: Metadata = { title: 'Рецепты - Supreme-Infra' };
 
@@ -9,7 +9,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ru">
       <body>
-        <Header />
+        <Header logoText="🍳 Taste.IT" logoHref="/" />
         {children}
       </body>
     </html>
