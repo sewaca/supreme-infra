@@ -6,7 +6,7 @@ export const backendApi = {
   getRecipes: clientRecipesApi.getRecipes.bind(clientRecipesApi),
   getRecipeById: clientRecipesApi.getRecipeById.bind(clientRecipesApi),
   toggleRecipeLike: clientRecipesApi.toggleRecipeLike.bind(clientRecipesApi),
-  submitRecipe: clientRecipesApi.submitRecipe.bind(clientRecipesApi),
+  proposeRecipe: clientRecipesApi.proposeRecipe.bind(clientRecipesApi),
   getProposedRecipes: clientRecipesApi.getProposedRecipes.bind(clientRecipesApi),
   publishRecipe: clientRecipesApi.publishRecipe.bind(clientRecipesApi),
   updateRecipe: clientRecipesApi.updateRecipe.bind(clientRecipesApi),

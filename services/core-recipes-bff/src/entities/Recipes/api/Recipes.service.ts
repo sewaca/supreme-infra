@@ -178,7 +178,7 @@ export class RecipesService {
     return recipe;
   }
 
-  async submitRecipe(
+  async proposeRecipe(
     recipeData: {
       title: string;
       description: string;
