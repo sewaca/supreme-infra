@@ -122,7 +122,7 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
           setTimeout(onSuccess, 1000);
         }
       } else {
-        await backendApi.submitRecipe(recipeData);
+        await backendApi.proposeRecipe(recipeData);
         setStatus('success');
       }
     } catch (_err) {

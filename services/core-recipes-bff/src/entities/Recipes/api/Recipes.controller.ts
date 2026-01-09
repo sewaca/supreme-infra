@@ -194,11 +194,11 @@ export class RecipesController {
     return this.recipesService.getProposedRecipes();
   }
 
-  @Post('proposed/submit')
+  @Post('propose')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(submitRecipeSchema))
-  public async submitRecipe(@Body() dto: SubmitRecipeDto): Promise<{ success: boolean; id: number }> {
-    const id = await this.recipesService.submitRecipe(dto);
+  public async proposeRecipe(@Body() dto: SubmitRecipeDto): Promise<{ success: boolean; id: number }> {
+    const id = await this.recipesService.proposeRecipe(dto);
     return { success: true, id };
   }
 
