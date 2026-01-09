@@ -17,4 +17,4 @@ export const chain = (middlewares: NextProxy[]): NextProxy => {
 
     return NextResponse.next();
   };
-}
+};
