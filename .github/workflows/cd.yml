@@ -12,6 +12,7 @@ on:
           - core-auth-bff
           - core-recipes-bff
           - frontend
+          - auth-ssr
         default: "core-auth-bff"
       # TODO: remove after development (or comment me)
       skip-canary:
