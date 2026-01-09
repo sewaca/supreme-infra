@@ -1,4 +1,4 @@
-import { clientAuthApi, clientRecipesApi } from '../lib/auth.client';
+import { clientRecipesApi } from '../lib/auth.client';
 
 // Combined API for client-side usage
 export const backendApi = {
@@ -11,16 +11,10 @@ export const backendApi = {
   publishRecipe: clientRecipesApi.publishRecipe.bind(clientRecipesApi),
   updateRecipe: clientRecipesApi.updateRecipe.bind(clientRecipesApi),
   deleteRecipe: clientRecipesApi.deleteRecipe.bind(clientRecipesApi),
-  // Auth methods
-  register: clientAuthApi.register.bind(clientAuthApi),
-  login: clientAuthApi.login.bind(clientAuthApi),
-  getCurrentUser: clientAuthApi.getCurrentUser.bind(clientAuthApi),
-  getUserById: clientAuthApi.getUserById.bind(clientAuthApi),
-  deleteUser: clientAuthApi.deleteUser.bind(clientAuthApi),
 };
 
 // Re-export individual API instances
-export { clientAuthApi as authApi, clientRecipesApi as recipesApi };
+export { clientRecipesApi as recipesApi };
 
 // Re-export types for backward compatibility
 export type {

@@ -1,13 +1,13 @@
-import { DecodedToken, RecipesApi, TOKEN_KEY, UserRole } from '@supreme-int/api-client';
+import { AuthApi, DecodedToken, TOKEN_KEY, UserRole } from '@supreme-int/api-client';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-function getBackendUrl(): string {
+function getAuthBffUrl(): string {
   const host = isProd ? '84.252.134.216' : 'localhost:4000';
-  return `http://${host}/core-recipes-bff`;
+  return `http://${host}/core-auth-bff`;
 }
 
-export const clientRecipesApi = new RecipesApi(getBackendUrl());
+export const clientAuthApi = new AuthApi(getAuthBffUrl());
 
 export function getAuthToken(): string | undefined {
   if (typeof document === 'undefined') {
@@ -54,4 +54,22 @@ export function getUserRole(): UserRole | null {
 
   const decoded = decodeToken(token);
   return decoded?.role ?? null;
+}
+
+export function setAuthToken(token: string): void {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks universal browser support
+  document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+}
+
+export function removeAuthToken(): void {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks universal browser support
+  document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
 }
