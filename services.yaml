@@ -8,6 +8,10 @@ services:
       description: "core-auth-bff "
       database:
         enabled: true
+    - name: core-recipes-bff
+      description: "recipes backend "
+      database:
+        enabled: true
   next:
     - name: frontend
       description: Frontend service (Next.js)

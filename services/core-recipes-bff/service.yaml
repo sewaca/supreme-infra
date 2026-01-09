@@ -1,0 +1,53 @@
+image:
+  repository: core-recipes-bff
+
+nameOverride: "core-recipes-bff"
+fullnameOverride: "core-recipes-bff"
+
+replicas: 1
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4002
+
+metrics:
+  enabled: true
+  port: 9464
+
+env:
+  PORT: "4002"
+  NODE_ENV: "production"
+  DB_HOST: "postgresql-core-recipes-bff"
+  DB_PORT: "5432"
+  DB_NAME: "core_recipes_bff_db"
+  DB_USER: "core_recipes_bff_user"
+  # DB_PASSWORD is passed from GitHub Secrets during deployment
+
+livenessProbe:
+  httpGet:
+    path: /core-recipes-bff/api/status
+
+readinessProbe:
+  httpGet:
+    path: /core-recipes-bff/api/status
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 300Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+overrides:
+  production:
+    canary:
+      enabled: true

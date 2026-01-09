@@ -1,0 +1,21 @@
+service: core-recipes-bff
+type: nest
+routes:
+  - path: /core-recipes-bff/api/status
+    method: GET
+  - path: /core-recipes-bff/recipes
+    method: GET
+  - path: /core-recipes-bff/recipes/[^/]+
+    method: GET
+  - path: /core-recipes-bff/recipes/[^/]+
+    method: PUT
+  - path: /core-recipes-bff/recipes/[^/]+
+    method: DELETE
+  - path: /core-recipes-bff/recipes/[^/]+/like
+    method: POST
+  - path: /core-recipes-bff/recipes/proposed/[^/]+/publish
+    method: POST
+  - path: /core-recipes-bff/recipes/proposed/all
+    method: GET
+  - path: /core-recipes-bff/recipes/submit
+    method: POST

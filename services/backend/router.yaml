@@ -3,19 +3,3 @@ type: nest
 routes:
   - path: /main-api/api/status
     method: GET
-  - path: /main-api/recipes
-    method: GET
-  - path: /main-api/recipes/[^/]+
-    method: GET
-  - path: /main-api/recipes/[^/]+
-    method: PUT
-  - path: /main-api/recipes/[^/]+
-    method: DELETE
-  - path: /main-api/recipes/[^/]+/like
-    method: POST
-  - path: /main-api/recipes/proposed/[^/]+/publish
-    method: POST
-  - path: /main-api/recipes/proposed/all
-    method: GET
-  - path: /main-api/recipes/submit
-    method: POST

@@ -1,17 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { createDatabaseImports, HealthModule, LoggerModule } from '@supreme-int/nestjs-shared';
-import { RecipesModule } from './features/Recipes/api/Recipes.module';
-import { RecipeLikeEntity } from './features/Recipes/model/RecipeLike.entity';
+import { HealthModule, LoggerModule } from '@supreme-int/nestjs-shared';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    LoggerModule,
-    HealthModule.forRoot({ serviceName: 'backend' }),
-    ...createDatabaseImports({ entities: [RecipeLikeEntity] }),
-    RecipesModule,
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), LoggerModule, HealthModule.forRoot({ serviceName: 'backend' })],
   controllers: [],
   providers: [],
 })

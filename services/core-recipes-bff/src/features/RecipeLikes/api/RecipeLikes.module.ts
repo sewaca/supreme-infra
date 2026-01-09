@@ -5,9 +5,8 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from '../../../shared/guards/jwt.strategy';
 import { RecipeLikeEntity } from '../model/RecipeLike.entity';
-import { RecipeLikesService } from '../model/RecipeLikes.service';
-import { RecipesService } from '../model/Recipes.service';
-import { RecipesController } from './Recipes.controller';
+import { RecipeLikesController } from './RecipeLikes.controller';
+import { RecipeLikesService } from './RecipeLikes.service';
 
 const skipDb = process.env.SKIP_DB_CONNECTION === 'true';
 const dbFeatureImports = skipDb ? [] : [TypeOrmModule.forFeature([RecipeLikeEntity])];
@@ -25,8 +24,8 @@ const dbFeatureImports = skipDb ? [] : [TypeOrmModule.forFeature([RecipeLikeEnti
       }),
     }),
   ],
-  controllers: [RecipesController],
-  providers: [RecipesService, RecipeLikesService, JwtStrategy],
-  exports: [RecipesService, RecipeLikesService, JwtStrategy, PassportModule],
+  controllers: [RecipeLikesController],
+  providers: [RecipeLikesService, JwtStrategy],
+  exports: [RecipeLikesService],
 })
-export class RecipesModule {}
+export class RecipeLikesModule {}
