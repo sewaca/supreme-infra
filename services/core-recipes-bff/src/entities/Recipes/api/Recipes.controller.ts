@@ -119,10 +119,9 @@ export class RecipesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('moderator', 'admin')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new ZodValidationPipe(submitRecipeSchema))
   public async updateRecipe(
     @Param('id') id: string,
-    @Body() dto: SubmitRecipeDto,
+    @Body(new ZodValidationPipe(submitRecipeSchema)) dto: SubmitRecipeDto,
   ): Promise<RecipeDetailsDto | RecipeDto> {
     const recipeId = Number.parseInt(id, 10);
 
