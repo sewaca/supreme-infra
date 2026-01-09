@@ -8,7 +8,7 @@ function getBackendUrl(): string {
     return 'http://localhost:4000/core-recipes-bff';
   }
   const backendNamespace = process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
-  return `http://backend.${backendNamespace}.svc.cluster.local/core-recipes-bff`;
+  return `http://core-recipes-bff.${backendNamespace}.svc.cluster.local/core-recipes-bff`;
 }
 
 function getAuthBffUrl(): string {
