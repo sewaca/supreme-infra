@@ -68,6 +68,7 @@ export function setAuthToken(token: string): void {
     return;
   }
 
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks universal browser support
   document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
 }
 
@@ -76,5 +77,6 @@ export function removeAuthToken(): void {
     return;
   }
 
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks universal browser support
   document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
 }
