@@ -56,4 +56,3 @@ export function getUserFromToken(token: string | null): { name: string } | null 
     name: decoded.name,
   };
 }
-
