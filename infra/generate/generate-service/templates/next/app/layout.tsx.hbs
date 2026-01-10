@@ -1,6 +1,6 @@
 import '@supreme-int/design-system/font.css';
-import '@supreme-int/design-system/theme.css';
-
+import '@supreme-int/design-system/variables.css';
+import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import type { Metadata } from 'next';
@@ -21,7 +21,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ru" className={roboto.variable}>
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>{children} </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
