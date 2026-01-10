@@ -5,7 +5,8 @@
   "exports": {
     "./font.css": "./src/font.css",
     "./theme.css": "./src/theme.css",
-    "./typography": "./src/typography.ts"
+    "./typography": "./src/typography.ts",
+    "./palette": "./src/palette.ts"
   },
   "files": [
     "src"
