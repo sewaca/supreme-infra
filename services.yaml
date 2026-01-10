@@ -21,3 +21,5 @@ services:
       description: authorization-ssr-sservice
     - name: web-documents-ssr
       description: "documents presentation "
+    - name: web-profile-ssr
+      description: "profile "

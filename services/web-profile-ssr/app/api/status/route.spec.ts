@@ -1,0 +1,11 @@
+import { describe, it, expect } from 'vitest';
+import { GET } from './route';
+
+describe('GET /api/status', () => {
+  it('should return status ok', async () => {
+    const response = await GET();
+    const data = await response.json();
+    expect(data).toEqual({ status: 'ok', service: 'web-profile-ssr' });
+  });
+});
+
