@@ -9,6 +9,7 @@
 - OpenTelemetry instrumentation
 - Prometheus metrics
 - TypeScript
+- SVG imports as React components
 
 ## Prerequisites
 
@@ -83,6 +84,20 @@ src/
 ├── shared/            # Shared utilities
 └── views/             # Page views
 ```
+
+## SVG Icons
+
+You can import SVG files as React components:
+
+```tsx
+import MyIcon from './path/to/icon.svg';
+
+function MyComponent() {
+  return <MyIcon width={24} height={24} className="icon" />;
+}
+```
+
+SVG components accept all standard SVG props (width, height, className, fill, stroke, etc.).
 
 ## License
 

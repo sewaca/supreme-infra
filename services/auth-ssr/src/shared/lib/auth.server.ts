@@ -1,4 +1,4 @@
-import { AuthApi, TOKEN_KEY, User } from '@supreme-int/api-client';
+import { AuthApi, TOKEN_KEY, User } from '@supreme-int/api-client/src/index';
 import { cookies } from 'next/headers';
 
 const isProd = process.env.NODE_ENV === 'production';

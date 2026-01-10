@@ -5,7 +5,7 @@ import {
   patchConsole,
   setupErrorHandlers,
   startOpenTelemetrySDK,
-} from '@supreme-int/instrumentation';
+} from '@supreme-int/instrumentation/src/index';
 
 // Конфигурация OpenTelemetry
 const config = {

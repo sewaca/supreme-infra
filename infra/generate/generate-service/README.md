@@ -94,6 +94,7 @@ infra/databases/<service-name>-db/ # ✨ Только если hasDatabase = tru
 - Prometheus метриками
 - Health check API route
 - Vitest + Testing Library для тестов
+- SVG импорт как React компонентов (@svgr/webpack)
 
 Структура:
 
@@ -118,6 +119,7 @@ services/<service-name>/
 ├── instrumentation.ts
 ├── instrumentation.nodejs.ts
 ├── middleware.ts
+├── svg.d.ts                       # ✨ TypeScript декларации для SVG
 ├── Dockerfile
 ├── .env.example                   # ✨ Новое
 ├── .gitignore
