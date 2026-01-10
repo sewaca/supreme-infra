@@ -42,4 +42,3 @@ overrides:
   production:
     canary:
       enabled: true
-

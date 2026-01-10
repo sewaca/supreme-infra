@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { GET } from './route';
 
 describe('GET /api/status', () => {
@@ -8,4 +8,3 @@ describe('GET /api/status', () => {
     expect(data).toEqual({ status: 'ok', service: 'web-documents-ssr' });
   });
 });
-
