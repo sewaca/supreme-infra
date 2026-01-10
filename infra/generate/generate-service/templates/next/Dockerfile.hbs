@@ -19,4 +19,3 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 RUN pnpm run build
 
 CMD ["pnpm", "start"]
-

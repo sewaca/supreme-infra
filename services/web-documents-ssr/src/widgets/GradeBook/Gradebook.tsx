@@ -68,11 +68,24 @@ export default function Gradebook() {
         <table ref={tableRef} className={styles.table}>
           <thead>
             <tr>
-              <th className={styles.colNum}>№<br/>п/п</th>
+              <th className={styles.colNum}>
+                №<br />
+                п/п
+              </th>
               <th className={styles.colName}>Наименование дисциплины</th>
-              <th className={styles.colHours}>Общее<br/>кол-во<br/>час./з. ед.</th>
+              <th className={styles.colHours}>
+                Общее
+                <br />
+                кол-во
+                <br />
+                час./з. ед.
+              </th>
               <th className={styles.colGrade}>Оценка</th>
-              <th className={styles.colDate}>Дата<br/>сдачи</th>
+              <th className={styles.colDate}>
+                Дата
+                <br />
+                сдачи
+              </th>
               <th className={styles.colSign}>Подпись</th>
               <th className={styles.colTeacher}>Преподаватель</th>
             </tr>

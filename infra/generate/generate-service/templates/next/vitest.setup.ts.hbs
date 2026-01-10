@@ -11,4 +11,3 @@ afterEach(() => {
 vi.mock('*.svg', () => ({
   default: (props: Record<string, unknown>) => <svg {...props} />,
 }));
-
