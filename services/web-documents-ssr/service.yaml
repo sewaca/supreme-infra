@@ -1,0 +1,45 @@
+# Конфигурация для web-documents-ssr сервиса
+# Используется при деплое через: helm install web-documents-ssr ./infra/helmcharts/frontend-service -f services/web-documents-ssr/service.yaml
+
+image:
+  repository: web-documents-ssr
+
+nameOverride: "web-documents-ssr"
+fullnameOverride: "web-documents-ssr"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3005
+
+metrics:
+  enabled: true
+  port: 9464
+
+env:
+  PORT: "3005"
+  NODE_ENV: "production"
+  BACKEND_SERVICE_NAMESPACE: "default"
+
+resources:
+  limits:
+    cpu: 600m
+    memory: 512Mi
+  requests:
+    cpu: 180m
+    memory: 300Mi
+
+# HPA настройки для frontend
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Переопределения для конкретных окружений
+overrides:
+  production:
+    canary:
+      enabled: true
+

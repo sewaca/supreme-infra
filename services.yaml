@@ -19,3 +19,5 @@ services:
       description: Frontend service (Next.js)
     - name: auth-ssr
       description: authorization-ssr-sservice
+    - name: web-documents-ssr
+      description: "documents presentation "

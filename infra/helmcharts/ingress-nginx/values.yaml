@@ -73,3 +73,11 @@ ingress:
           method: GET
         - path: /submit-recipe
           method: GET
+    - service: web-documents-ssr
+      port: 80
+      type: next
+      paths:
+        - path: /
+          method: GET
+        - path: /web-documents-ssr/.*
+          method: GET
