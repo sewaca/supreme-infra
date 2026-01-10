@@ -5,4 +5,4 @@
 
 // Export components
 // export { Header } from './components/Header/Header';
-export { NavBar } from './components/NavBar/NavBar';
+// export { NavBar } from './components/NavBar/NavBar';

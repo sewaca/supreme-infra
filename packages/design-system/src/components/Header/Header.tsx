@@ -8,6 +8,9 @@ interface HeaderProps {
   logoHref?: string;
 }
 
+/**
+ * @deprecated Use NavBar
+ */
 export async function Header({ logoText = '🍳 Рецепты', logoHref = '/' }: HeaderProps) {
   const cookieStore = await cookies();
   const cookieString = cookieStore
