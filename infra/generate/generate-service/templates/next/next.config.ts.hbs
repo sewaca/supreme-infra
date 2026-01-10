@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   typescript: { ignoreBuildErrors: true },
   typedRoutes: true,
+  transpilePackages: ['@supreme-int/design-system'],
   serverExternalPackages: [
     '@opentelemetry/api',
     '@opentelemetry/core',
@@ -26,6 +27,9 @@ const nextConfig: NextConfig = {
     '@opentelemetry/exporter-prometheus',
   ],
   assetPrefix: '/{{ serviceName }}',
+  turbopack: {
+    rules: { '*.svg': { loaders: ['@svgr/webpack'], as: '*.js' } },
+  },
 };
 
 export default nextConfig;

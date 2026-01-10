@@ -35,6 +35,7 @@
       "@supreme-int/*": ["packages/*/src"]
     }
   },
+  "include": ["global.d.ts"],
   "exclude": ["**/node_modules"],
   "ts-node": {
     "experimentalResolver": true

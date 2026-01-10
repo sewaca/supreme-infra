@@ -4,4 +4,5 @@
 // import '@supreme-int/design-system/theme.css';
 
 // Export components
-export { Header } from './components/Header/Header';
+// export { Header } from './components/Header/Header';
+export { NavBar } from './components/NavBar/NavBar';

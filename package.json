@@ -19,6 +19,7 @@
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@inquirer/prompts": "catalog:",
+    "@svgr/webpack": "^8.1.0",
     "@types/handlebars": "catalog:",
     "@types/inquirer": "catalog:",
     "@types/node": "catalog:",
@@ -35,6 +36,5 @@
     "yaml": "catalog:"
   },
   "author": "sewaca",
-  "license": "ISC",
-  "dependencies": {}
+  "license": "ISC"
 }
