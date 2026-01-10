@@ -1,4 +1,4 @@
-const RangingPage = () => {
+const RankingPage = async () => {
   return (
     <div>
       <h1>Ranging</h1>
@@ -6,4 +6,4 @@ const RangingPage = () => {
   );
 };
 
-export default RangingPage;
+export default RankingPage;
