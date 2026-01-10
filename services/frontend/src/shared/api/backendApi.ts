@@ -24,4 +24,4 @@ export type {
   RecipeDetails,
   RegisterData,
   User,
-} from '@supreme-int/api-client';
+} from '@supreme-int/api-client/src/index';

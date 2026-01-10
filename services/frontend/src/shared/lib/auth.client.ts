@@ -1,4 +1,4 @@
-import { DecodedToken, RecipesApi, TOKEN_KEY, UserRole } from '@supreme-int/api-client';
+import { DecodedToken, RecipesApi, TOKEN_KEY, UserRole } from '@supreme-int/api-client/src/index';
 
 const isProd = process.env.NODE_ENV === 'production';
 
