@@ -12,6 +12,7 @@ catalog:
   "@inquirer/prompts": 8.1.0
   "@mui/material": 7.3.7
   "@mui/material-nextjs": 7.3.7
+  "@mui/icons-material": 7.3.7
   "@nestjs/cli": 11.0.10
   "@nestjs/common": 11.1.6
   "@nestjs/config": 4.0.2
