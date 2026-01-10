@@ -4,7 +4,8 @@
   "description": "Shared design system with CSS variables and global styles for Supreme-Infra",
   "exports": {
     "./font.css": "./src/font.css",
-    "./theme.css": "./src/theme.css"
+    "./theme.css": "./src/theme.css",
+    "./typography": "./src/typography.ts"
   },
   "files": [
     "src"
@@ -14,7 +15,8 @@
     "@supreme-int/nextjs-shared": "workspace:*",
     "next": "catalog:",
     "react": "catalog:",
-    "classnames": "catalog:"
+    "classnames": "catalog:",
+    "@mui/material": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

@@ -7,7 +7,7 @@ This repository is configured to import SVG files as React components across all
 You can import SVG files directly and use them as React components:
 
 ```tsx
-import MyIcon from './path/to/icon.svg';
+import MyIcon from "./path/to/icon.svg";
 
 function MyComponent() {
   return (
@@ -51,7 +51,7 @@ SVG imports are automatically mocked in Vitest tests:
 See `packages/design-system/src/components/NavBar/NavBar.tsx` for a working example:
 
 ```tsx
-import BackShortArrow from '../../icons/BackShortArrow.svg';
+import BackShortArrow from "../../icons/BackShortArrow.svg";
 
 export const NavBar = ({ onBack }: Props) => {
   return (
@@ -77,4 +77,3 @@ SVG components accept all standard SVG props:
 2. Set default viewBox in SVG files for proper scaling
 3. Remove unnecessary attributes from SVG files (width, height, etc.)
 4. Use semantic names for icon files
-

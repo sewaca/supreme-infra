@@ -682,3 +682,78 @@ The project uses pre-commit hooks to ensure code quality:
 - TypeScript compilation checks
 
 All checks must pass before commits are allowed. The "Madara-robot" handles automated code quality enforcement.
+
+## MUI Typography Setup
+
+The project uses Material-UI (MUI) with custom typography variants defined in `@supreme-int/design-system`.
+
+### Structure
+
+**Typography definition** (`packages/design-system/src/typography.ts`):
+
+- Contains only the typography object export (no type declarations)
+- All font sizes are in `rem` units (base browser size 16px)
+- Uses `as const` for type safety
+
+**Type declarations** (`packages/design-system/src/typography.d.ts`):
+
+- Contains all `declare module` statements for MUI type augmentation
+- Extends `@mui/material/styles` and `@mui/material/Typography`
+- Must be in a separate `.d.ts` file
+
+### Typography Variants
+
+Available variants:
+
+- `title1`: 18px (1.125rem), line-height 1.112, weight 500
+- `title2`: 16px (1rem), line-height 1.25, weight 500
+- `title3`: 14px (0.875rem), line-height 1.29, weight 500
+- `body1`: 18px (1.125rem), line-height 1.11, weight 400
+- `body2`: 16px (1rem), line-height 1.25, weight 400
+- `body3`: 14px (0.875rem), line-height 1.29, weight 400
+
+### Usage in Services
+
+**Theme setup** (`services/*/src/shared/next/theme.ts`):
+
+```tsx
+"use client";
+import { createTheme } from "@mui/material/styles";
+import { typography } from "@supreme-int/design-system/src/typography";
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "var(--font-roboto)",
+    ...typography,
+  },
+});
+
+export default theme;
+```
+
+**Important**: Always use the full path `@supreme-int/design-system/src/typography` for imports, not the package export path.
+
+**Using typography in components**:
+
+```tsx
+import { Typography } from '@mui/material';
+
+<Typography variant="title1">Heading</Typography>
+<Typography variant="body1">Body text</Typography>
+```
+
+### Package Configuration
+
+**`packages/design-system/package.json`**:
+
+- `@mui/material` must be in `dependencies` (not devDependencies)
+- Export path: `"./typography": "./src/typography.ts"` (optional, direct import preferred)
+
+## Imports types
+
+Barrel imports from @supreme-int/\* packages are disabled! Dont use it
+use direct imports like
+
+```tsx
+import { typography } from "@supreme-int/design-system/src/typography";
+```

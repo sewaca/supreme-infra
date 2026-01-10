@@ -1,6 +1,6 @@
 # web-profile-ssr
 
-profile 
+profile
 
 ## Features
 
@@ -63,11 +63,11 @@ pnpm run start
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port | 3005 |
-| NODE_ENV | Environment | development |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default |
+| Variable                  | Description                      | Default     |
+| ------------------------- | -------------------------------- | ----------- |
+| PORT                      | Server port                      | 3005        |
+| NODE_ENV                  | Environment                      | development |
+| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default     |
 
 ## Project Structure
 
@@ -90,7 +90,7 @@ src/
 You can import SVG files as React components:
 
 ```tsx
-import MyIcon from './path/to/icon.svg';
+import MyIcon from "./path/to/icon.svg";
 
 function MyComponent() {
   return <MyIcon width={24} height={24} className="icon" />;
@@ -102,4 +102,3 @@ SVG components accept all standard SVG props (width, height, className, fill, st
 ## License
 
 ISC
-

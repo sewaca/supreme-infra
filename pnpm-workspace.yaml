@@ -5,8 +5,13 @@ packages:
 lockfileIncludeTarballUrl: false
 catalog:
   "@biomejs/biome": 2.2.6
+  "@emotion/cache": 11.14.0
+  "@emotion/react": 11.14.0
+  "@emotion/styled": 11.14.1
   "@fastify/helmet": 12.0.1
   "@inquirer/prompts": 8.1.0
+  "@mui/material": 7.3.7
+  "@mui/material-nextjs": 7.3.7
   "@nestjs/cli": 11.0.10
   "@nestjs/common": 11.1.6
   "@nestjs/config": 4.0.2

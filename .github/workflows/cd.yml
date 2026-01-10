@@ -115,7 +115,7 @@ jobs:
 
   get-latest-release-version:
     name: Get latest release version for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services ]
+    needs: [detect-release-mode, prepare-services]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.save-output.outputs.version }}
@@ -183,7 +183,7 @@ jobs:
 
   calculate-new-version:
     name: Calculate new version for ${{ matrix.service-name }}
-    needs: [ detect-release-mode, prepare-services, get-latest-release-version ]
+    needs: [detect-release-mode, prepare-services, get-latest-release-version]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.save-output.outputs.version }}
@@ -318,12 +318,11 @@ jobs:
 
   build-image-to-docker-hub:
     name: Build and push image for ${{ matrix.service-name }}
-    needs:
-      [
+    needs: [
         detect-release-mode,
         prepare-services,
         # security-checks,
-        calculate-new-version
+        calculate-new-version,
       ]
     if: needs.detect-release-mode.outputs.is_rollback == 'false'
     runs-on: ubuntu-latest
@@ -379,13 +378,7 @@ jobs:
 
   create-release-branch:
     name: Create release branch for ${{ matrix.service-name }}
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        calculate-new-version,
-        build-image-to-docker-hub
-      ]
+    needs: [detect-release-mode, prepare-services, calculate-new-version, build-image-to-docker-hub]
     if: |
       always() &&
       needs.calculate-new-version.result == 'success' &&
@@ -445,13 +438,7 @@ jobs:
 
   create-github-release:
     name: Create GitHub release for ${{ matrix.service-name }}
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        calculate-new-version,
-        create-release-branch
-      ]
+    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch]
     if: |
       always() &&
       needs.create-release-branch.result == 'success'
@@ -551,14 +538,7 @@ jobs:
 
   deploy-canary:
     name: Deploy canary for ${{ matrix.service-name }}
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        calculate-new-version,
-        create-release-branch,
-        create-github-release
-      ]
+    needs: [detect-release-mode, prepare-services, calculate-new-version, create-release-branch, create-github-release]
     if: |
       always() &&
       needs.create-release-branch.result == 'success' &&
@@ -649,13 +629,7 @@ jobs:
 
   approve-canary:
     name: Approve canary promotion to production
-    needs:
-      [
-        detect-release-mode,
-        prepare-services,
-        deploy-canary,
-        calculate-new-version
-      ]
+    needs: [detect-release-mode, prepare-services, deploy-canary, calculate-new-version]
     if: |
       always() &&
       needs.deploy-canary.result == 'success' &&
@@ -709,7 +683,7 @@ jobs:
         calculate-new-version,
         create-release-branch,
         create-github-release,
-        approve-canary
+        approve-canary,
       ]
     if: |
       always() &&
