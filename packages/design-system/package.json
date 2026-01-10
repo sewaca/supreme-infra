@@ -5,8 +5,7 @@
   "exports": {
     "./font.css": "./src/font.css",
     "./theme.css": "./src/theme.css",
-    "./typography": "./src/typography.ts",
-    "./palette": "./src/palette.ts"
+    "./variables.css": "./src/variables.css"
   },
   "files": [
     "src"
@@ -17,7 +16,8 @@
     "next": "catalog:",
     "react": "catalog:",
     "classnames": "catalog:",
-    "@mui/material": "catalog:"
+    "@mui/material": "catalog:",
+    "@mui/icons-material": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

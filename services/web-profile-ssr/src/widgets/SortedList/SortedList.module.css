@@ -1,0 +1,50 @@
+.number,
+.dragHandle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.dragHandle {
+  cursor: grab;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragOverBefore::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #1976d2;
+  z-index: 1;
+}
+
+.dragOverAfter::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #1976d2;
+  z-index: 1;
+}
+
+.numberInput {
+  -moz-appearance: textfield;
+}
+
+.numberInput::-webkit-outer-spin-button,
+.numberInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

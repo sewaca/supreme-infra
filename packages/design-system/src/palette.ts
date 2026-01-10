@@ -6,7 +6,7 @@ import type { PaletteOptions } from '@mui/material/styles';
  * Стандартные названия цветов MUI переназначены на наиболее подходящие из дизайн-системы
  * Значения для светлой темы
  */
-export const palette: PaletteOptions = {
+export const palette: Readonly<PaletteOptions> = {
   primary: {
     main: '#4ac2a8',
     light: '#74d6c2',
@@ -55,10 +55,10 @@ export const palette: PaletteOptions = {
   divider: '#00000014',
   action: {
     active: '#777a85',
-    hover: '#c7c9cf',
+    hover: '#b6b8bf',
     selected: '#777a85',
-    disabled: '#edeff2',
-    disabledBackground: '#f5f7f9',
+    disabled: '#b6b8bf',
+    disabledBackground: '#e1e3e8',
     focus: '#777a85',
   },
-} as const;
+};
