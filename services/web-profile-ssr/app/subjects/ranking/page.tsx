@@ -1,9 +1,7 @@
+import { SubjectsRankingPage } from 'services/web-profile-ssr/src/views/SubjectsRankingPage/SubjectsRankingPage';
+
 const RankingPage = async () => {
-  return (
-    <div>
-      <h1>Ranging</h1>
-    </div>
-  );
+  return <SubjectsRankingPage />;
 };
 
 export default RankingPage;
