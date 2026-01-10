@@ -30,6 +30,11 @@ interface IngressValues {
     controller: {
       replicaCount: number;
       allowSnippetAnnotations: boolean;
+      config?: {
+        'use-http2': string;
+        'http2-max-field-size': string;
+        'http2-max-header-size': string;
+      };
     };
   };
   ingress: {
@@ -67,6 +72,11 @@ export function updateIngressValues(): void {
       controller: {
         replicaCount: 2,
         allowSnippetAnnotations: true,
+        config: {
+          'use-http2': 'true',
+          'http2-max-field-size': '16k',
+          'http2-max-header-size': '32k',
+        },
       },
     },
     ingress: {
