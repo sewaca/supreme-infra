@@ -77,5 +77,15 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /student-id-card
+          method: GET
         - path: /web-documents-ssr/.*
+          method: GET
+    - service: web-profile-ssr
+      port: 80
+      type: next
+      paths:
+        - path: /
+          method: GET
+        - path: /web-profile-ssr/.*
           method: GET

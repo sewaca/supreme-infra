@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.ssr.json",
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", "svg.d.ts"],
+  "exclude": ["node_modules", ".next"],
+  "files": ["node_modules/@testing-library/jest-dom/types/index.d.ts"]
+}
+

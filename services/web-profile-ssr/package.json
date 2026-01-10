@@ -1,0 +1,56 @@
+{
+  "name": "web-profile-ssr",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "pnpm run -w lint",
+    "format": "pnpm run -w format",
+    "tsc": "tsc",
+    "unit": "vitest run --passWithNoTests",
+    "unit:watch": "vitest",
+    "unit:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@opentelemetry/api-logs": "catalog:",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/auto-instrumentations-node": "catalog:",
+    "@opentelemetry/exporter-logs-otlp-http": "catalog:",
+    "@opentelemetry/exporter-prometheus": "catalog:",
+    "@opentelemetry/instrumentation-http": "catalog:",
+    "@opentelemetry/resources": "catalog:",
+    "@opentelemetry/sdk-logs": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
+    "@opentelemetry/sdk-node": "catalog:",
+    "@opentelemetry/semantic-conventions": "catalog:",
+    "@supreme-int/api-client": "workspace:*",
+    "@supreme-int/design-system": "workspace:*",
+    "@supreme-int/instrumentation": "workspace:*",
+    "@supreme-int/nextjs-shared": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-use": "catalog:",
+    "typescript": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitest/ui": "catalog:",
+    "baseline-browser-mapping": "catalog:",
+    "identity-obj-proxy": "catalog:",
+    "jsdom": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
+
