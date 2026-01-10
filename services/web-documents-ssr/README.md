@@ -1,6 +1,6 @@
 # web-documents-ssr
 
-documents presentation 
+documents presentation
 
 ## Features
 
@@ -62,11 +62,11 @@ pnpm run start
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port | 3005 |
-| NODE_ENV | Environment | development |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default |
+| Variable                  | Description                      | Default     |
+| ------------------------- | -------------------------------- | ----------- |
+| PORT                      | Server port                      | 3005        |
+| NODE_ENV                  | Environment                      | development |
+| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default     |
 
 ## Project Structure
 
@@ -87,4 +87,3 @@ src/
 ## License
 
 ISC
-

@@ -4,4 +4,3 @@
   "exclude": ["node_modules", ".next"],
   "files": ["node_modules/@testing-library/jest-dom/types/index.d.ts"]
 }
-

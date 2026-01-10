@@ -31,4 +31,3 @@ patchConsole((logRecord: LogRecord) => consoleLogger.emit(logRecord));
 // Настраиваем обработчики ошибок
 const errorLogger = otelSDK.loggerProvider.getLogger('error-handler');
 setupErrorHandlers(errorLogger);
-
