@@ -1,14 +1,12 @@
-import BackShortArrow from '../../icons/BackShortArrow.inline.svg';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import styles from './BackButton.module.css';
 
-type Props = {
-  onBack: () => void;
-};
+type Props = { onBack: () => void };
 
 export const BackButton = ({ onBack }: Props) => {
   return (
     <div className={styles.block} onClick={onBack}>
-      <BackShortArrow />
+      <ArrowBackIosNewRoundedIcon fontSize="small" />
     </div>
   );
 };

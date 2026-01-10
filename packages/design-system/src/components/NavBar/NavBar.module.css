@@ -1,9 +1,9 @@
 .block {
-  height: var(--controls-navbar-height-m);
+  min-height: var(--controls-navbar-height-m);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--padding-xs) var(--padding-md);
+  padding: var(--spacing-xs) var(--spacing-md);
 }
 
 .leftSlot,

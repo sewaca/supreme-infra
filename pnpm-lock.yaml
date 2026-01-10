@@ -351,6 +351,9 @@ importers:
 
   packages/design-system:
     dependencies:
+      '@mui/icons-material':
+        specifier: 'catalog:'
+        version: 7.3.7(@mui/material@7.3.7(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.2.2)(react@19.1.0)
       '@mui/material':
         specifier: 'catalog:'
         version: 7.3.7(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -373,6 +376,8 @@ importers:
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.2
+
+  packages/i18n: {}
 
   packages/instrumentation:
     dependencies:
@@ -1188,6 +1193,9 @@ importers:
       '@supreme-int/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
+      '@supreme-int/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@supreme-int/instrumentation':
         specifier: workspace:*
         version: link:../../packages/instrumentation
