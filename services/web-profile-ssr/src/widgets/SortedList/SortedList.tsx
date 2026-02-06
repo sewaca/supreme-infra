@@ -1,5 +1,6 @@
 import { DragIndicator } from '@mui/icons-material';
 import { List, ListItem, TextField } from '@mui/material';
+import { useEffect, useRef } from 'react';
 import { reorderItems, updatePriorityAndSort } from './lib/reorder-utils';
 import { useDragAndDrop } from './lib/use-drag-and-drop';
 import { usePriorityEdit } from './lib/use-priority-edit';
@@ -15,13 +16,32 @@ type SortedListProps<T extends SortableItem> = {
 export const SortedList = <T extends SortableItem>({ items, onItemsChange, renderItem }: SortedListProps<T>) => {
   const dragAndDrop = useDragAndDrop();
   const priorityEdit = usePriorityEdit();
+  const listRef = useRef<HTMLUListElement>(null);
 
-  const handleDrop = (toItemId: string) => {
-    if (!dragAndDrop.draggedIndex) {
+  useEffect(() => {
+    const listElement = listRef.current;
+    if (!listElement) return;
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (dragAndDrop.draggedIndex) {
+        e.preventDefault();
+      }
+    };
+
+    listElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      listElement.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [dragAndDrop.draggedIndex]);
+
+  const handleDrop = (toItemId: string, fromItemId?: string, position?: 'before' | 'after') => {
+    const draggedItemId = fromItemId || dragAndDrop.draggedIndex?.itemId;
+    if (!draggedItemId) {
       return;
     }
 
-    const fromIndex = items.findIndex((item) => item.id === dragAndDrop.draggedIndex?.itemId);
+    const fromIndex = items.findIndex((item) => item.id === draggedItemId);
     const toIndex = items.findIndex((item) => item.id === toItemId);
 
     if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
@@ -29,8 +49,8 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
       return;
     }
 
-    const position = dragAndDrop.dragOverIndex?.position || 'after';
-    const reorderedItems = reorderItems(items, fromIndex, toIndex, position);
+    const dropPosition = position || dragAndDrop.dragOverIndex?.position || 'after';
+    const reorderedItems = reorderItems(items, fromIndex, toIndex, dropPosition);
     onItemsChange(reorderedItems);
     dragAndDrop.handleDragEnd();
   };
@@ -67,8 +87,16 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
     priorityEdit.stopEditing();
   };
 
+  const handleTouchEnd = () => {
+    const result = dragAndDrop.handleTouchEnd();
+    if (result.wasDragging && result.draggedItemId && result.targetItemId && result.position) {
+      handleDrop(result.targetItemId, result.draggedItemId, result.position);
+    }
+  };
+
   return (
     <List
+      ref={listRef}
       onDragOver={(e) => {
         if (dragAndDrop.draggedIndex) {
           e.preventDefault();
@@ -80,7 +108,7 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
         dragAndDrop.handleDragEnd();
       }}
       onTouchMove={dragAndDrop.handleTouchMove}
-      onTouchEnd={dragAndDrop.handleTouchEnd}
+      onTouchEnd={handleTouchEnd}
       onTouchCancel={dragAndDrop.handleTouchCancel}
       sx={{ touchAction: 'pan-y' }}
     >
@@ -101,14 +129,14 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
             onDrop={() => handleDrop(item.id)}
             onDragEnd={dragAndDrop.handleDragEnd}
             onTouchStart={(e) => dragAndDrop.handleTouchStart(e, item.id, styles.dragHandle)}
-            className={
+            className={`${
               isDragOver && dragOverPosition === 'before'
                 ? styles.dragOverBefore
                 : isDragOver && dragOverPosition === 'after'
                   ? styles.dragOverAfter
                   : ''
-            }
-            sx={{ opacity: isDragging ? 0.5 : 1, cursor: 'move', position: 'relative', touchAction: 'pan-y' }}
+            } ${isDragging ? styles.dragging : ''}`}
+            sx={{ cursor: 'move', position: 'relative', touchAction: 'pan-y' }}
           >
             <div className={styles.number}>
               <TextField

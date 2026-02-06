@@ -65,7 +65,7 @@ export const useDragAndDrop = () => {
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!touchStartY.current || !touchStartX.current || !touchStartItemId.current || !isDragging.current) {
+    if (!touchStartY.current || !touchStartX.current || !touchStartItemId.current) {
       return;
     }
 
@@ -98,6 +98,7 @@ export const useDragAndDrop = () => {
 
     // Если drag начался, предотвращаем скролл
     if (isDragging.current) {
+      e.preventDefault();
       e.stopPropagation();
       const listElement = e.currentTarget;
       const listItems = listElement.querySelectorAll('[data-item-id]');
@@ -122,6 +123,13 @@ export const useDragAndDrop = () => {
   };
 
   const handleTouchEnd = () => {
+    const result = {
+      draggedItemId: touchStartItemId.current,
+      targetItemId: dragOverIndex?.itemId || null,
+      position: dragOverIndex?.position || null,
+      wasDragging: isDragging.current,
+    };
+
     touchStartY.current = null;
     touchStartX.current = null;
     touchStartItemId.current = null;
@@ -129,6 +137,8 @@ export const useDragAndDrop = () => {
     isDragging.current = false;
     setDraggedIndex(null);
     setDragOverIndex(null);
+
+    return result;
   };
 
   const handleTouchCancel = () => {
