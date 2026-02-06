@@ -1,8 +1,8 @@
 'use client';
 import { createTheme } from '@mui/material/styles';
-import { components } from '@supreme-int/design-system/src/components-theme';
-import { palette } from '@supreme-int/design-system/src/palette';
-import { typography } from '@supreme-int/design-system/src/typography';
+import { components } from '@supreme-int/design-system/src/shared/mui/components';
+import { palette } from '@supreme-int/design-system/src/shared/mui/palette';
+import { typography } from '@supreme-int/design-system/src/shared/mui/typography';
 
 const theme = createTheme({
   palette,

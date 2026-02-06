@@ -11,6 +11,8 @@
 
 .dragHandle {
   cursor: grab;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .dragHandle:active {
@@ -37,6 +39,12 @@
   height: 2px;
   background-color: #1976d2;
   z-index: 1;
+}
+
+.dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .numberInput {

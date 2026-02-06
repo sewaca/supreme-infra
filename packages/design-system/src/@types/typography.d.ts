@@ -1,25 +1,23 @@
 import type { CSSProperties } from 'react';
 
 export type TypographyVariantsType = {
-  headline0Bold: CSSProperties;
-  headline1: CSSProperties;
-  headline1Bold: CSSProperties;
-  headline2: CSSProperties;
-  headline2Bold: CSSProperties;
-  headline3Bold: CSSProperties;
-  headline3: CSSProperties;
-  headline4: CSSProperties;
+  title1: CSSProperties;
+  title2: CSSProperties;
+  title3: CSSProperties;
+  body1: CSSProperties;
+  body2: CSSProperties;
+  body3: CSSProperties;
+  h0: CSSProperties;
 };
 
 export type TypographyPropsVariantOverridesType = {
-  headline0Bold: true;
-  headline1: true;
-  headline1Bold: true;
-  headline2: true;
-  headline2Bold: true;
-  headline3Bold: true;
-  headline3: true;
-  headline4: true;
+  title1: true;
+  title2: true;
+  title3: true;
+  body1: true;
+  body2: true;
+  body3: true;
+  h0: true;
 };
 
 declare module '@mui/material/styles' {
