@@ -44,7 +44,9 @@
 .dragging {
   opacity: 0.5;
   transform: scale(0.98);
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .numberInput {

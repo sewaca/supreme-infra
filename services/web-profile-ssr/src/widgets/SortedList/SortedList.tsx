@@ -138,7 +138,7 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
             } ${isDragging ? styles.dragging : ''}`}
             sx={{ cursor: 'move', position: 'relative', touchAction: 'pan-y' }}
           >
-            <div className={styles.number}>
+            <div className={styles.number} data-tour={item.priority === 1 ? 'priority-input' : undefined}>
               <TextField
                 type="number"
                 value={priorityEdit.getEditingValue(item.id, item.priority)}
@@ -173,6 +173,7 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
               className={styles.dragHandle}
               onTouchStart={(e) => dragAndDrop.handleDragHandleTouchStart(e, item.id)}
               style={{ touchAction: 'none' }}
+              data-tour={item.priority === 1 ? 'drag-handle' : undefined}
             >
               <DragIndicator color="action" />
             </div>

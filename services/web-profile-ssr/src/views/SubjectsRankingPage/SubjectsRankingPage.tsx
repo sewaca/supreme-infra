@@ -1,6 +1,8 @@
 'use client';
 
-import { Alert, AlertColor, Button, Snackbar } from '@mui/material';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Alert, AlertColor, Button, IconButton, Snackbar } from '@mui/material';
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
@@ -8,13 +10,17 @@ import Typography from '@mui/material/Typography';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
-import { Fragment, ReactNode, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { saveChoices } from 'services/web-profile-ssr/app/subjects/ranking/actions';
 import { SubjectRanking } from '../../entities/SubjectRanking/SubjectRanking';
+import { useProductTour } from '../../shared/hooks/useProductTour';
 import { SortedList } from '../../widgets/SortedList/SortedList';
 import type { SortableItem } from '../../widgets/SortedList/types';
+import { getSubjectsRankingTourSteps } from './tour-config';
 
 type Subject = SortableItem & { name: string; teacher: string };
+
+// DATA:
 const initialChoices: Subject[][] = [
   [
     { id: '1-1', name: i18n('Дисциплина 1'), priority: 1, teacher: i18n('Преподаватель 1') },
@@ -32,6 +38,7 @@ const initialChoices: Subject[][] = [
     { id: '3-3', name: i18n('Дисциплина 3'), priority: 3, teacher: i18n('Преподаватель 3') },
   ],
 ];
+const deadlineDate = '17.01.2026';
 
 const AlertMessage = ({ severity, children }: { severity: AlertColor; children: ReactNode }) => {
   return (
@@ -43,10 +50,31 @@ const AlertMessage = ({ severity, children }: { severity: AlertColor; children: 
   );
 };
 
+const TOUR_COMPLETED_KEY = 'subjects-ranking-tour-completed';
+
 export const SubjectsRankingPage = () => {
   const [choices, setChoices] = useState(initialChoices);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState<ReactNode>(null);
+
+  const { startTour } = useProductTour({
+    steps: getSubjectsRankingTourSteps(deadlineDate),
+    onComplete: () => localStorage.setItem(TOUR_COMPLETED_KEY, 'true'),
+    onSkip: () => localStorage.setItem(TOUR_COMPLETED_KEY, 'true'),
+    showProgress: true,
+    allowClose: true,
+  });
+
+  useEffect(() => {
+    const tourCompleted = localStorage.getItem(TOUR_COMPLETED_KEY);
+    if (!tourCompleted) {
+      const timer = setTimeout(() => {
+        startTour();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [startTour]);
 
   const createListOnChange = (listIndex: number) => (newItems: Subject[]) => {
     const newChoices = [...choices];
@@ -77,7 +105,17 @@ export const SubjectsRankingPage = () => {
       <NavBar onBack={() => {}} />
       <Container>
         <Spacer size={8} />
-        <Typography variant="h5">{i18n('Дисциплины по выбору')}</Typography>
+        <Box display="flex" alignItems="center" gap={1}>
+          <Typography variant="h5">{i18n('Дисциплины по выбору')}</Typography>
+          <IconButton
+            size="small"
+            onClick={startTour}
+            aria-label={i18n('Показать обучение')}
+            sx={{ color: 'text.secondary' }}
+          >
+            <HelpOutlineIcon fontSize="small" />
+          </IconButton>
+        </Box>
         <Spacer size={6} />
         <Typography variant="body2">
           {i18n('Отсортируйте дисциплины в порядке убывания приоритета, а затем нажмите сохранить.')}
@@ -110,7 +148,7 @@ export const SubjectsRankingPage = () => {
 
         <Spacer size={8} />
         <Container maxWidth="xs">
-          <Button fullWidth variant="outlined" onClick={handleSave} loading={loading}>
+          <Button fullWidth variant="outlined" onClick={handleSave} loading={loading} data-tour="save-button">
             <Typography variant="button" component="div">
               {i18n('Сохранить')}
             </Typography>
@@ -119,7 +157,7 @@ export const SubjectsRankingPage = () => {
           <Spacer size={2} />
 
           <Typography variant="caption" color="secondary" textAlign="center" component="p">
-            {i18n('Выбор можно изменить до {{date}}', { date: '17.01.2026' })}
+            {i18n('Выбор можно изменить до {{date}}', { date: deadlineDate })}
           </Typography>
         </Container>
         <Spacer size={16} />
