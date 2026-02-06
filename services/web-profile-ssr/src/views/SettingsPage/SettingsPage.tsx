@@ -1,9 +1,9 @@
 'use client';
 
-import { Box, Container, Paper, Stack, Switch, Typography } from '@mui/material';
-import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
+import { Container, Switch, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { ChangeEvent, useState } from 'react';
+import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 
 type UserSettings = {
   isNewMessageNotificationsEnabled: boolean;

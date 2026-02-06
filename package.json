@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "supreme infra setup",
   "engines": {
-    "node": "22",
-    "pnpm": "9"
+    "node": "24",
+    "pnpm": "10"
   },
   "scripts": {
     "lint": "biome check",
