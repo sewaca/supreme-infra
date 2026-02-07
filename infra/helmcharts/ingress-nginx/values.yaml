@@ -24,9 +24,9 @@ ingress:
           method: GET
         - path: /login
           method: GET
-        - path: /profile
+        - path: /profile-old
           method: GET
-        - path: /profile/[^/]+
+        - path: /profile-old/[^/]+
           method: GET
         - path: /register
           method: GET
