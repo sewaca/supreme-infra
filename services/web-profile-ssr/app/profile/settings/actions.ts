@@ -2,7 +2,10 @@
 
 import { i18n } from '@supreme-int/i18n';
 
-export const changeEmail = async (newEmail: string, confirmationCode: string): Promise<{ success: boolean; error?: string }> => {
+export const changeEmail = async (
+  newEmail: string,
+  confirmationCode: string,
+): Promise<{ success: boolean; error?: string }> => {
   'use server';
   console.log('[debug] changing email to', newEmail, 'with code', confirmationCode);
 
@@ -47,7 +50,11 @@ export const sendEmailConfirmationCode = async (email: string): Promise<{ succes
   return { success: true };
 };
 
-export const changePassword = async (_currentPassword: string, newPassword: string, confirmationCode: string): Promise<{ success: boolean; error?: string }> => {
+export const changePassword = async (
+  _currentPassword: string,
+  newPassword: string,
+  confirmationCode: string,
+): Promise<{ success: boolean; error?: string }> => {
   'use server';
   console.log('[debug] changing password with code', confirmationCode);
 

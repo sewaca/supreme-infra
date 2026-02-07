@@ -7,17 +7,16 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
 import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { saveChoices } from 'services/web-profile-ssr/app/subjects/ranking/actions';
 import { SubjectRanking } from '../../entities/SubjectRanking/SubjectRanking';
 import { useProductTour } from '../../shared/hooks/useProductTour';
+import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { SortedList } from '../../widgets/SortedList/SortedList';
 import type { SortableItem } from '../../widgets/SortedList/types';
 import { getSubjectsRankingTourSteps } from './tour-config';
-import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 
 type Subject = SortableItem & { name: string; teacher: string };
 

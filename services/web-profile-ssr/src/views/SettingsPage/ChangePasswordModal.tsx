@@ -1,6 +1,16 @@
 'use client';
 
-import { Alert, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  TextField,
+} from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { useState } from 'react';
 import { changePassword, sendPasswordConfirmationCode } from '../../../app/profile/settings/actions';

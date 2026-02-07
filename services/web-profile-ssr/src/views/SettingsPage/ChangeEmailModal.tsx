@@ -1,6 +1,16 @@
 'use client';
 
-import { Alert, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  TextField,
+} from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { useState } from 'react';
 import { changeEmail, sendEmailConfirmationCode } from '../../../app/profile/settings/actions';
@@ -107,7 +117,9 @@ export const ChangeEmailModal = ({ open, onClose }: ChangeEmailModalProps) => {
             </>
           )}
 
-          {step === 'success' && <Alert severity="success">{i18n('Email успешно изменён на {{email}}', { email })}</Alert>}
+          {step === 'success' && (
+            <Alert severity="success">{i18n('Email успешно изменён на {{email}}', { email })}</Alert>
+          )}
         </Stack>
       </DialogContent>
 
