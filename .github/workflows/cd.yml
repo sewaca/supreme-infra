@@ -13,7 +13,6 @@ on:
           - core-recipes-bff
           - frontend
           - auth-ssr
-          - web-documents-ssr
           - web-profile-ssr
         default: "core-auth-bff"
       # TODO: remove after development (or comment me)
