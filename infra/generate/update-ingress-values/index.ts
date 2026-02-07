@@ -26,22 +26,27 @@ interface IngressRule {
 }
 
 interface IngressValues {
-  'ingress-nginx': {
-    controller: {
-      replicaCount: number;
-      allowSnippetAnnotations: boolean;
+  'ingress-nginx'?: {
+    controller?: {
+      replicaCount?: number;
+      allowSnippetAnnotations?: boolean;
       config?: {
-        'use-http2': string;
-        'http2-max-field-size': string;
-        'http2-max-header-size': string;
+        'use-http2'?: string;
+        'http2-max-field-size'?: string;
+        'http2-max-header-size'?: string;
       };
     };
   };
-  ingress: {
-    enabled: boolean;
-    name: string;
-    namespace: string;
-    rules: IngressRule[];
+  ingress?: {
+    enabled?: boolean;
+    name?: string;
+    namespace?: string;
+    tls?: {
+      enabled?: boolean;
+      secretName?: string;
+      hosts?: string[];
+    };
+    rules?: IngressRule[];
   };
 }
 
@@ -67,8 +72,18 @@ export function updateIngressValues(): void {
 
   const ingressRules = generateIngressRules(services);
 
+  // Read existing values.yaml or use defaults
+  let existingValues: IngressValues = {};
+
+  if (fs.existsSync(ingressValuesPath)) {
+    const existingContent = fs.readFileSync(ingressValuesPath, 'utf-8');
+    existingValues = yaml.parse(existingContent) as IngressValues;
+    log('Loaded existing values.yaml', 'info');
+  }
+
+  // Merge with defaults, preserving all existing values
   const ingressValues: IngressValues = {
-    'ingress-nginx': {
+    'ingress-nginx': existingValues['ingress-nginx'] || {
       controller: {
         replicaCount: 2,
         allowSnippetAnnotations: true,
@@ -80,9 +95,11 @@ export function updateIngressValues(): void {
       },
     },
     ingress: {
-      enabled: true,
-      name: 'ingress-main',
-      namespace: 'default',
+      ...existingValues.ingress,
+      enabled: existingValues.ingress?.enabled ?? true,
+      name: existingValues.ingress?.name ?? 'ingress-main',
+      namespace: existingValues.ingress?.namespace ?? 'default',
+      // Only update rules, keep everything else (like tls)
       rules: ingressRules,
     },
   };
@@ -93,6 +110,7 @@ export function updateIngressValues(): void {
   const relativePath = path.relative(process.cwd(), ingressValuesPath);
   log(`Generated: ${relativePath}`, 'success');
   log(`  Total ingress rules: ${ingressRules.length}`, 'info');
+  log('  Preserved all existing values (including TLS config)', 'success');
 }
 
 function findServicesWithRouters(servicesDir: string): RouterConfig[] {
