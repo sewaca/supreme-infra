@@ -1,0 +1,5 @@
+# TLS certificates
+certs/
+*.crt
+*.key
+*.pem

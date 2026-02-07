@@ -10,6 +10,11 @@ ingress:
   enabled: true
   name: ingress-main
   namespace: default
+  tls:
+    enabled: true
+    secretName: supreme-tls-cert
+    hosts:
+      - supreme.local
   rules:
     - service: auth-ssr
       port: 80

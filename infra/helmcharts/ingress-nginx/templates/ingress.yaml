@@ -7,10 +7,19 @@ metadata:
   name: {{ $.Values.ingress.name }}-{{ $rule.service }}
   namespace: {{ $.Values.ingress.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
+  {{- if $.Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    {{- range $.Values.ingress.tls.hosts }}
+    - {{ . }}
+    {{- end }}
+    secretName: {{ $.Values.ingress.tls.secretName }}
+  {{- end }}
   rules:
   - http:
       paths:
