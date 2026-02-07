@@ -3,7 +3,7 @@ import { DecodedToken, RecipesApi, TOKEN_KEY, UserRole } from '@supreme-int/api-
 const isProd = process.env.NODE_ENV === 'production';
 
 function getBackendUrl(): string {
-  return '/core-recipes-bff';
+  return isProd ? '/core-recipes-bff' : '/core-recipes-bff';
   // TODO: fix for a while
   // const host = isProd ? '84.252.134.216' : 'localhost:4000';
   // return `http://${host}/core-recipes-bff`;
