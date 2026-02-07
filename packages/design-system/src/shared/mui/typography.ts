@@ -52,12 +52,12 @@ export const typography = {
   title1: {
     fontSize: '1.125rem', // 18px
     lineHeight: 1.112, // ~20px после округления браузером
-    fontWeight: 500,
+    fontWeight: 600,
   },
   title2: {
     fontSize: '1rem', // 16px
     lineHeight: 1.25, // 20px
-    fontWeight: 500,
+    fontWeight: 600,
   },
   title3: {
     fontSize: '0.875rem', // 14px
