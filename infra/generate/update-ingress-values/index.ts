@@ -143,6 +143,10 @@ function generateIngressRules(services: RouterConfig[]): IngressRule[] {
   const rules: IngressRule[] = [];
 
   for (const service of services) {
+    if (!service?.routes) {
+      continue;
+    }
+
     const paths: IngressPath[] = service.routes.map((route) => ({
       path: route.path,
       method: route.method,
