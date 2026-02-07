@@ -1,6 +1,6 @@
+import { ButtonBase, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 import styles from './ButtonCard.module.css';
-import { ButtonBase, Typography } from '@mui/material';
 
 type Props = {
   icon: ReactNode;

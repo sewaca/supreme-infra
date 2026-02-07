@@ -1,24 +1,24 @@
-import { ButtonBase, Container, IconButton, Paper, Typography } from '@mui/material';
-import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { LogoutOutlined } from '@mui/icons-material';
-import styles from './ProfilePage.module.css';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import ImportContactsIcon from '@mui/icons-material/ImportContacts';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { ButtonBase, Container, IconButton, Paper, Typography } from '@mui/material';
+import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import Coin from '@supreme-int/design-system/src/icons/Coin.png';
 import House from '@supreme-int/design-system/src/icons/House.png';
-import { Row } from '@supreme-int/design-system/src/components/Row/Row';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import { LinkRow } from '../../widgets/LinkRow/LinkRow';
-import ImportContactsIcon from '@mui/icons-material/ImportContacts';
-import SettingsIcon from '@mui/icons-material/Settings';
-import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import PersonIcon from '@mui/icons-material/Person';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { ButtonCard } from '../../widgets/ButtonCard/ButtonCard';
+import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
+import { LinkRow } from '../../widgets/LinkRow/LinkRow';
+import styles from './ProfilePage.module.css';
 
-type Props = {};
-export const ProfilePage = ({}: Props) => {
+type Props = { _un: string };
+export const ProfilePage = ({ _un: _und }: Props) => {
   return (
     <Paper sx={{ minHeight: '100dvh' }} elevation={0}>
       <DefaultNavbar
