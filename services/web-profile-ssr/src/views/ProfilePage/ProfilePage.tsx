@@ -17,9 +17,10 @@ import { ButtonCard } from '../../widgets/ButtonCard/ButtonCard';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { LinkRow } from '../../widgets/LinkRow/LinkRow';
 import styles from './ProfilePage.module.css';
+import { ProfileData } from '../../entities/Profile/ProfileData';
 
-type Props = { _un: string };
-export const ProfilePage = ({ _un: _und }: Props) => {
+type Props = { data: ProfileData };
+export const ProfilePage = ({ data }: Props) => {
   return (
     <Paper sx={{ minHeight: '100dvh' }} elevation={0}>
       <DefaultNavbar
@@ -32,28 +33,31 @@ export const ProfilePage = ({ _un: _und }: Props) => {
       />
 
       <Spacer size={14} />
-      <img src="https://placehold.co/600x600" className={styles.avatar} />
+      <img src={data.avatar} className={styles.avatar} />
       <Spacer size={6} />
+
       <Typography variant="h2" textAlign="center">
-        Булгаков Всеволод
+        {data.lastName} {data.name}
       </Typography>
 
       <Spacer size={22} />
 
-      <Row gap={2} direction="row" sx={{ padding: '0 16px' }}>
+      <Row gap={2} direction="row" sx={{ padding: '0 24px' }}>
         <ButtonCard
           icon={<img src={Coin.src} alt="Coin" />}
-          title="Стипендия"
-          subtitle="100 000 P/м."
-          status="success"
+          title={i18n('Стипендия')}
+          subtitle={data.scholarship ? `${data.scholarship.value} ₽/м.` : i18n('Вы не получаете стипендию')}
+          status={data.scholarship ? 'success' : 'error'}
+          notifications={data.scholarship?.notifications}
           href="/undefined-url"
         />
 
         <ButtonCard
           icon={<img src={House.src} alt="House" />}
-          title="Общежитие"
-          subtitle="ул. Караваевская, 34"
-          status="success"
+          title={i18n('Общежитие')}
+          subtitle={data.dormitory ? 'ул. Караваевская, 34' : i18n('Вы не проживаете в общежитии')}
+          status={data.dormitory ? 'success' : 'error'}
+          notifications={data.dormitory?.notifications}
           href="/undefined-url"
         />
       </Row>
