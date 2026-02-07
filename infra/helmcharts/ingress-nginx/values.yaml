@@ -89,6 +89,8 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /profile/settings
+          method: GET
         - path: /subjects/ranking
           method: GET
         - path: /web-profile-ssr/.*

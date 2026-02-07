@@ -5,6 +5,8 @@
 service: web-profile-ssr
 type: next
 routes:
+  - path: /profile/settings
+    method: GET
   - path: /subjects/ranking
     method: GET
   - path: /web-profile-ssr/.*
