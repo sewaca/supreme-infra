@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "touch .env && source .env && next dev --turbopack -p ${PORT:-3000}",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "pnpm run -w lint",
