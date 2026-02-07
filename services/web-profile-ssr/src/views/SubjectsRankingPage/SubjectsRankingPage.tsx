@@ -17,6 +17,7 @@ import { useProductTour } from '../../shared/hooks/useProductTour';
 import { SortedList } from '../../widgets/SortedList/SortedList';
 import type { SortableItem } from '../../widgets/SortedList/types';
 import { getSubjectsRankingTourSteps } from './tour-config';
+import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 
 type Subject = SortableItem & { name: string; teacher: string };
 
@@ -66,14 +67,10 @@ export const SubjectsRankingPage = () => {
   });
 
   useEffect(() => {
-    const tourCompleted = localStorage.getItem(TOUR_COMPLETED_KEY);
-    if (!tourCompleted) {
-      const timer = setTimeout(() => {
-        startTour();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-    return undefined;
+    if (localStorage.getItem(TOUR_COMPLETED_KEY) === 'true') return;
+
+    const timer = setTimeout(() => startTour, 500);
+    return () => clearTimeout(timer);
   }, [startTour]);
 
   const createListOnChange = (listIndex: number) => (newItems: Subject[]) => {
@@ -102,7 +99,7 @@ export const SubjectsRankingPage = () => {
 
   return (
     <>
-      <NavBar onBack={() => {}} />
+      <DefaultNavbar />
       <Container>
         <Spacer size={8} />
         <Box display="flex" alignItems="center" gap={1}>
