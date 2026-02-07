@@ -24,5 +24,6 @@
       "@supreme-int/api-client/types": ["packages/api-client/src/types.ts"]
     }
   },
+  "include": ["global.d.ts"],
   "exclude": ["**/node_modules", "**/.next"]
 }
