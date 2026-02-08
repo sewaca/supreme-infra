@@ -325,7 +325,7 @@ export function generateRoutePanels(
   }
 
   // Row для роута
-  panels.push(createRowPanel(`Route: ${route.method} ${route.path}`, panelId++, y++));
+  panels.push(createRowPanel(`${route.method} ${route.path}`, panelId++, y++));
 
   // Панели в одной строке: Timings | OK RPS | Bad RPS
   panels.push(createTimingsPanel(route, serviceName, panelId++, { x: 0, y }));
