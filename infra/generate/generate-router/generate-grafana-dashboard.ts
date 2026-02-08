@@ -361,36 +361,90 @@ export function updateGrafanaDashboard(serviceName: string): void {
 
   const dashboard = JSON.parse(fs.readFileSync(dashboardPath, 'utf-8'));
 
-  // Находим существующие панели (не route-specific)
-  const existingPanels = dashboard.panels.filter((panel: GrafanaPanel) => {
-    const title = panel.title?.toLowerCase() || '';
-    // Оставляем только общие панели (Main, By POD, Node JS и их содержимое)
-    return (
-      (panel.type === 'row' && (title.includes('main') || title.includes('by pod') || title.includes('node js'))) ||
-      (panel.title &&
-        !panel.title.includes('Route:') &&
-        (title.includes('timing') || title.includes('rps') || title.includes('eventloop') || title.includes('memory')))
-    );
-  });
+  // Группируем панели по секциям на основе row панелей
+  const mainPanels: GrafanaPanel[] = [];
+  const byPodPanels: GrafanaPanel[] = [];
+  const nodejsPanels: GrafanaPanel[] = [];
 
-  // Генерируем новые панели для роутов
+  let currentSection: 'main' | 'bypod' | 'nodejs' | 'routes' | 'other' = 'other';
+
+  for (const panel of dashboard.panels) {
+    const title = panel.title?.toLowerCase() || '';
+
+    // Определяем секцию по row панели
+    if (panel.type === 'row') {
+      if (title.includes('main')) {
+        currentSection = 'main';
+        mainPanels.push(panel);
+      } else if (title.includes('by pod')) {
+        currentSection = 'bypod';
+        byPodPanels.push(panel);
+      } else if (title.includes('node js') || title.includes('nodejs')) {
+        currentSection = 'nodejs';
+        nodejsPanels.push(panel);
+      } else if (title.includes('route')) {
+        currentSection = 'routes';
+        // Пропускаем старые route панели
+      } else {
+        currentSection = 'other';
+      }
+    } else {
+      // Добавляем панель в соответствующую секцию
+      if (currentSection === 'main') {
+        mainPanels.push(panel);
+      } else if (currentSection === 'bypod') {
+        byPodPanels.push(panel);
+      } else if (currentSection === 'nodejs') {
+        nodejsPanels.push(panel);
+      }
+      // Пропускаем панели из секции routes и other
+    }
+  }
+
+  // Пересчитываем позиции для всех панелей
+  let currentY = 0;
+
+  // 1. Main секция
+  for (const panel of mainPanels) {
+    if (panel.gridPos) {
+      panel.gridPos.y = currentY;
+      currentY += panel.gridPos.h || 1;
+    }
+  }
+
+  // 2. By POD секция
+  for (const panel of byPodPanels) {
+    if (panel.gridPos) {
+      panel.gridPos.y = currentY;
+      currentY += panel.gridPos.h || 1;
+    }
+  }
+
+  // 3. Node JS секция
+  for (const panel of nodejsPanels) {
+    if (panel.gridPos) {
+      panel.gridPos.y = currentY;
+      currentY += panel.gridPos.h || 1;
+    }
+  }
+
+  // 4. Генерируем новые панели для роутов
   const routePanels: GrafanaPanel[] = [];
   let nextPanelId = Math.max(...dashboard.panels.map((p: GrafanaPanel) => p.id || 0)) + 1;
-  let nextY = Math.max(...existingPanels.map((p: GrafanaPanel) => (p.gridPos?.y || 0) + (p.gridPos?.h || 0))) + 1;
 
   // Добавляем row для роутов
-  routePanels.push(createRowPanel('Routes Metrics', nextPanelId++, nextY++));
+  routePanels.push(createRowPanel('Routes Metrics', nextPanelId++, currentY++));
 
   // Генерируем панели для каждого роута
   for (const route of routerConfig.routes) {
-    const result = generateRoutePanels(route, serviceName, nextPanelId, nextY);
+    const result = generateRoutePanels(route, serviceName, nextPanelId, currentY);
     routePanels.push(...result.panels);
     nextPanelId = result.nextPanelId;
-    nextY = result.nextY;
+    currentY = result.nextY;
   }
 
-  // Объединяем панели
-  dashboard.panels = [...existingPanels, ...routePanels];
+  // Объединяем панели в правильном порядке: Main → By POD → Node JS → Routes
+  dashboard.panels = [...mainPanels, ...byPodPanels, ...nodejsPanels, ...routePanels];
 
   // Сохраняем обновленный дашборд
   fs.writeFileSync(dashboardPath, JSON.stringify(dashboard, null, 2), 'utf-8');
