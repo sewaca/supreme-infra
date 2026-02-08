@@ -644,7 +644,7 @@
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "VictoriaMetrics" },
-              "expr": "topk(10, sum by (http_target) (rate(http_server_duration_count{service=\"core-recipes-bff\"}[5m])))",
+              "expr": "topk(10, sum by (http_route) (rate(http_server_duration_count{service=\"core-recipes-bff\"}[5m])))",
               "legendFormat": "{{http_target}}",
               "refId": "A"
             }
