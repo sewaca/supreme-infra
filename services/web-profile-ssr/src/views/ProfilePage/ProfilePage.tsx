@@ -13,11 +13,11 @@ import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer'
 import Coin from '@supreme-int/design-system/src/icons/Coin.png';
 import House from '@supreme-int/design-system/src/icons/House.png';
 import { i18n } from '@supreme-int/i18n/src/i18n';
+import { ProfileData } from '../../entities/Profile/ProfileData';
 import { ButtonCard } from '../../widgets/ButtonCard/ButtonCard';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { LinkRow } from '../../widgets/LinkRow/LinkRow';
 import styles from './ProfilePage.module.css';
-import { ProfileData } from '../../entities/Profile/ProfileData';
 
 type Props = { data: ProfileData };
 export const ProfilePage = ({ data }: Props) => {

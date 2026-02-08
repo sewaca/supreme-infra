@@ -144,12 +144,7 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
                 value={priorityEdit.getEditingValue(item.id, item.priority)}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePriorityChange(e, item.id)}
                 onBlur={() => handlePriorityBlur(item.id)}
-                inputProps={{
-                  min: 0,
-                  max: 99,
-                  style: { textAlign: 'center', padding: '4px' },
-                  className: styles.numberInput,
-                }}
+                inputProps={{ style: { textAlign: 'center', padding: '4px' }, className: styles.numberInput }}
                 sx={{
                   width: '40px',
                   '& .MuiOutlinedInput-root': {

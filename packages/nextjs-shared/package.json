@@ -6,13 +6,19 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@supreme-int/i18n": "workspace:*",
+    "driver.js": "catalog:",
     "jose": "catalog:",
-    "zod": "catalog:",
     "next": "catalog:",
-    "typescript": "catalog:"
+    "react": "catalog:",
+    "typescript": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {

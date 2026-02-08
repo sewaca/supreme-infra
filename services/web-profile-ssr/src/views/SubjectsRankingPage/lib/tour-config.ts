@@ -1,7 +1,7 @@
 import { i18n } from '@supreme-int/i18n';
-import type { TourStep } from '../../shared/hooks/useProductTour';
+import type { DriveStep } from 'driver.js';
 
-export const getSubjectsRankingTourSteps = (deadlineDate: string): TourStep[] => [
+export const getSubjectsRankingTourSteps = (deadlineDate: string): DriveStep[] => [
   {
     popover: {
       title: i18n('Сортировка дисциплин'),

@@ -1,14 +1,14 @@
-import { Stack, Divider, Container, Button, Typography, Alert, AlertColor, Snackbar } from '@mui/material';
+import { Alert, AlertColor, Button, Container, Divider, Snackbar, Stack, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src';
 import { Fragment, memo, ReactNode, useState } from 'react';
+import { saveChoices } from 'services/web-profile-ssr/app/subjects/ranking/actions';
 import { SubjectRanking } from '../../entities/SubjectRanking/SubjectRanking';
 import { SortedList } from '../../widgets/SortedList/SortedList';
 import { Subject } from './SubjectsRankingPage';
-import { saveChoices } from 'services/web-profile-ssr/app/subjects/ranking/actions';
 
 type Props = {
-  subjects: Subject[][];
+  subjects: { id: string; subjects: Subject[] }[];
   deadlineDate: string;
 };
 export const SubjectsRankingPageView = memo(({ subjects, deadlineDate }: Props) => {
@@ -18,7 +18,7 @@ export const SubjectsRankingPageView = memo(({ subjects, deadlineDate }: Props) 
 
   const createListOnChange = (listIndex: number) => (newItems: Subject[]) => {
     const newChoices = [...choices];
-    newChoices[listIndex] = newItems;
+    newChoices[listIndex].subjects = newItems;
     setChoices(newChoices);
   };
 
@@ -41,7 +41,12 @@ export const SubjectsRankingPageView = memo(({ subjects, deadlineDate }: Props) 
     setAlert(null);
     setLoading(true);
     try {
-      const result = await saveChoices(choices as { [key: string]: string | number }[][]);
+      const choicesToSave = choices.map((group) => ({
+        id: group.id,
+        priorities: group.subjects.map((subject) => subject.id),
+      }));
+
+      const result = await saveChoices(choicesToSave);
 
       if (!result) {
         throw new Error('Failed to save choices');
@@ -61,7 +66,7 @@ export const SubjectsRankingPageView = memo(({ subjects, deadlineDate }: Props) 
         {choices.map((choice, listIndex) => (
           <Fragment key={`${listIndex + 1} discipline choice`}>
             <SortedList
-              items={choice}
+              items={choice.subjects}
               onItemsChange={createListOnChange(listIndex)}
               renderItem={(item) => <SubjectRanking name={item.name} teacher={item.teacher} />}
             />
