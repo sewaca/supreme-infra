@@ -1,6 +1,8 @@
 'use server';
 
-export const saveChoices = async (choices: { [key: string]: string | number }[][]): Promise<boolean> => {
+type Choice = { id: string; priorities: string[] };
+
+export const saveChoices = async (choices: Choice[]): Promise<boolean> => {
   'use server';
   console.log(`[debug] saved choices are: ${JSON.stringify(choices)}`);
 
