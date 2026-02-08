@@ -8,7 +8,9 @@ import { InstrumentType, View } from '@opentelemetry/sdk-metrics';
  * @see https://github.com/open-telemetry/opentelemetry-js/issues/3862
  */
 export function createHttpServerMetricViews(): View[] {
-  return [
+  console.log('[METRIC VIEWS] Creating HTTP server metric views...');
+
+  const views = [
     // View для http.server.duration (старая конвенция) - добавляем http.route
     new View({
       instrumentName: 'http.server.duration',
@@ -50,6 +52,13 @@ export function createHttpServerMetricViews(): View[] {
       attributeKeys: ['http.request.method', 'http.route', 'url.scheme', 'server.address', 'server.port'],
     }),
   ];
+
+  console.log(
+    '[METRIC VIEWS] Created views for instruments:',
+    views.map((v) => v.instrumentSelector),
+  );
+
+  return views;
 }
 
 /**

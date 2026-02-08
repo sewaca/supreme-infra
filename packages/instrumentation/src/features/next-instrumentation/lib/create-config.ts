@@ -1,9 +1,34 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
 import type { Span } from '@opentelemetry/api';
+import { metrics } from '@opentelemetry/api';
 import type { InstrumentationConfigMap } from '@opentelemetry/auto-instrumentations-node';
 
 type HttpRequest = IncomingMessage | ClientRequest;
 type HttpResponse = IncomingMessage | ServerResponse;
+
+// Глобальные метрики для HTTP запросов (создаются один раз)
+let httpDurationHistogram: ReturnType<ReturnType<typeof metrics.getMeter>['createHistogram']> | null = null;
+let httpRequestCounter: ReturnType<ReturnType<typeof metrics.getMeter>['createCounter']> | null = null;
+
+function getOrCreateMetrics(serviceName: string) {
+  if (!httpDurationHistogram || !httpRequestCounter) {
+    const meter = metrics.getMeter(serviceName);
+
+    httpDurationHistogram = meter.createHistogram('http.server.duration', {
+      description: 'HTTP server request duration with http.route',
+      unit: 'ms',
+    });
+
+    httpRequestCounter = meter.createCounter('http.server.requests', {
+      description: 'HTTP server request count with http.route',
+      unit: '1',
+    });
+
+    console.log('[METRICS] Created custom HTTP metrics for', serviceName);
+  }
+
+  return { httpDurationHistogram, httpRequestCounter };
+}
 
 /**
  * Нормализует путь для использования в качестве http.route
@@ -56,8 +81,10 @@ function normalizeRoute(urlPath: string): string {
 /**
  * Создает конфигурацию инструментации для Next.js приложений
  * Настраивает трейсинг для HTTP запросов с правильной обработкой URL и http.route
+ *
+ * @param serviceName - имя сервиса для создания кастомных метрик
  */
-export function createNextInstrumentationConfig(): InstrumentationConfigMap {
+export function createNextInstrumentationConfig(serviceName?: string): InstrumentationConfigMap {
   return {
     '@opentelemetry/instrumentation-fs': {
       enabled: false,
@@ -69,15 +96,20 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
           // Это server request (IncomingMessage)
           const urlPath = request.url.split('?')[0];
           const route = normalizeRoute(urlPath);
+          const method = request.method || 'GET';
+
+          // Сохраняем данные для метрик
+          // biome-ignore lint/suspicious/noExplicitAny: debugging
+          (span as any)._httpMetricsData = { startTime: Date.now(), route, method, urlPath };
 
           // Устанавливаем атрибуты согласно семантическим конвенциям (новые и старые для совместимости)
           span.setAttribute('http.route', route);
           span.setAttribute('http.target', urlPath); // Старая конвенция
           span.setAttribute('url.path', urlPath); // Новая конвенция
-          span.setAttribute('http.method', request.method || 'GET'); // Старая конвенция
-          span.setAttribute('http.request.method', request.method || 'GET'); // Новая конвенция
+          span.setAttribute('http.method', method); // Старая конвенция
+          span.setAttribute('http.request.method', method); // Новая конвенция
 
-          span.updateName(`${request.method} ${route}`);
+          span.updateName(`${method} ${route}`);
         } else {
           // Это client request (ClientRequest)
           const clientReq = request as ClientRequest & {
@@ -109,6 +141,30 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
         if ('statusCode' in response && response.statusCode) {
           span.setAttribute('http.status_code', response.statusCode); // Старая конвенция
           span.setAttribute('http.response.status_code', response.statusCode); // Новая конвенция
+
+          // Записываем кастомные метрики с http.route
+          if (serviceName) {
+            // biome-ignore lint/suspicious/noExplicitAny: debugging
+            const metricsData = (span as any)._httpMetricsData;
+
+            if (metricsData) {
+              const { httpDurationHistogram, httpRequestCounter } = getOrCreateMetrics(serviceName);
+
+              const { route, method, startTime } = metricsData;
+              const statusCode = response.statusCode;
+              const duration = Date.now() - startTime;
+
+              const attributes = {
+                'http.method': method,
+                'http.status_code': statusCode,
+                'http.route': route,
+              };
+
+              // Записываем метрики
+              httpDurationHistogram.record(duration, attributes);
+              httpRequestCounter.add(1, attributes);
+            }
+          }
         }
       },
     },
