@@ -25,7 +25,7 @@ export function createHttpServerMetricViews(): View[] {
         'net.host.port',
       ],
     }),
-    
+
     // View для http.server.request.duration (новая конвенция) - добавляем http.route
     new View({
       instrumentName: 'http.server.request.duration',
