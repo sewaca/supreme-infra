@@ -12,15 +12,15 @@ type HttpResponse = IncomingMessage | ServerResponse;
 function normalizeRoute(urlPath: string): string {
   // Убираем query параметры
   const pathWithoutQuery = urlPath.split('?')[0];
-  
+
   // Убираем trailing slash (кроме корневого пути)
   const normalized = pathWithoutQuery === '/' ? '/' : pathWithoutQuery.replace(/\/$/, '');
-  
+
   // Для Next.js специфичных путей
   if (normalized.startsWith('/_next/')) {
     return '/_next/*';
   }
-  
+
   if (normalized.startsWith('/api/')) {
     // Группируем API роуты
     const parts = normalized.split('/');
@@ -28,28 +28,28 @@ function normalizeRoute(urlPath: string): string {
     const routeParts = parts.map((part, index) => {
       // Пропускаем первые два элемента ('', 'api')
       if (index < 2) return part;
-      
+
       // Проверяем, является ли часть ID (число или UUID)
       if (/^\d+$/.test(part)) return ':id';
       if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(part)) return ':uuid';
-      
+
       return part;
     });
     return routeParts.join('/');
   }
-  
+
   // Для обычных роутов Next.js
   const parts = normalized.split('/');
   const routeParts = parts.map((part, index) => {
     if (index === 0) return part; // Пустая строка для начального /
-    
+
     // Заменяем потенциальные динамические сегменты
     if (/^\d+$/.test(part)) return ':id';
     if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(part)) return ':uuid';
-    
+
     return part;
   });
-  
+
   return routeParts.join('/');
 }
 
@@ -69,12 +69,12 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
           // Это server request (IncomingMessage)
           const urlPath = request.url.split('?')[0];
           const route = normalizeRoute(urlPath);
-          
+
           // Устанавливаем атрибуты согласно семантическим конвенциям
           span.setAttribute('http.route', route);
           span.setAttribute('url.path', urlPath);
           span.setAttribute('http.request.method', request.method || 'GET');
-          
+
           span.updateName(`${request.method} ${route}`);
         } else {
           // Это client request (ClientRequest)

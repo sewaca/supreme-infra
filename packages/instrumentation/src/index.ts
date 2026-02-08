@@ -1,6 +1,6 @@
+export * from './entities/otel/lib/create-metric-views';
 export * from './entities/otel/lib/create-sdk';
 export * from './entities/otel/lib/start-sdk';
-export * from './entities/otel/lib/create-metric-views';
 export * from './entities/otel/model/SeverityText';
 export * from './entities/otel/model/types';
 export * from './features/console-patching/lib/patch-console';

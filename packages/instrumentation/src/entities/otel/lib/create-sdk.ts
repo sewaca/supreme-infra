@@ -54,13 +54,12 @@ export function createOpenTelemetrySDK(config: OpenTelemetryConfig): OpenTelemet
     logRecordProcessor: new BatchLogRecordProcessor(logExporter),
     instrumentations: [getNodeAutoInstrumentations(instrumentationConfig)],
   };
-  
+
   if (views) {
     sdkConfig.views = views;
   }
-  
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sdk = new NodeSDK(sdkConfig as any);
+
+  const sdk = new NodeSDK(sdkConfig);
 
   return {
     sdk,
