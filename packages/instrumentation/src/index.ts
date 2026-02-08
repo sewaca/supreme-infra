@@ -6,3 +6,5 @@ export * from './features/console-patching/lib/patch-console';
 export * from './features/error-handling/lib/setup-handlers';
 export * from './features/nest-instrumentation/lib/create-config';
 export * from './features/next-instrumentation/lib/create-config';
+export * from './features/next-request-error/lib/create-request-error-handler';
+export * from './features/next-request-error/lib/handle-request-error';
