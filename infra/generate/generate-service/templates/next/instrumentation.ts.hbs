@@ -3,3 +3,6 @@ export async function register() {
     await import('./instrumentation.nodejs');
   }
 }
+
+// Импортируем onRequestError из отдельного файла
+export { onRequestError } from './instrumentation.edge';
