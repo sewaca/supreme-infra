@@ -1,5 +1,6 @@
 import type { LogRecord } from '@opentelemetry/api-logs';
 import {
+  createMetricViews,
   createNextInstrumentationConfig,
   createOpenTelemetrySDK,
   patchConsole,
@@ -15,10 +16,11 @@ const config = {
   prometheusEndpoint: '/metrics',
 };
 
-// Создаем и настраиваем OpenTelemetry SDK
+// Создаем и настраиваем OpenTelemetry SDK с Views для Next.js
 const otelSDK = createOpenTelemetrySDK({
   ...config,
   instrumentationConfig: createNextInstrumentationConfig(),
+  views: createMetricViews(), // Добавляем Views только для Next.js сервисов
 });
 
 // Запускаем SDK

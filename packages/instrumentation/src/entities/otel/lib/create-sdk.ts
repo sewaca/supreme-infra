@@ -24,6 +24,7 @@ export function createOpenTelemetrySDK(config: OpenTelemetryConfig): OpenTelemet
     prometheusPort = DEFAULT_PROMETHEUS_PORT,
     prometheusEndpoint = DEFAULT_PROMETHEUS_ENDPOINT,
     instrumentationConfig = {},
+    views,
   } = config;
 
   // Создаем ресурс с именем сервиса
@@ -45,14 +46,21 @@ export function createOpenTelemetrySDK(config: OpenTelemetryConfig): OpenTelemet
   const loggerProvider = new LoggerProvider({ resource });
   loggerProvider.addLogRecordProcessor(new BatchLogRecordProcessor(logExporter));
 
-  // Создаем NodeSDK
-  const sdk = new NodeSDK({
+  // Создаем NodeSDK с опциональными Views для метрик
+  const sdkConfig: Record<string, unknown> = {
     serviceName,
     resource,
     metricReader: prometheusExporter,
     logRecordProcessor: new BatchLogRecordProcessor(logExporter),
     instrumentations: [getNodeAutoInstrumentations(instrumentationConfig)],
-  });
+  };
+  
+  if (views) {
+    sdkConfig.views = views;
+  }
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sdk = new NodeSDK(sdkConfig as any);
 
   return {
     sdk,
