@@ -7,7 +7,6 @@ env:
   HELM_VERSION: "v3.16.3"
   GRAFANA_NAMESPACE: "monitoring"
   GRAFANA_RELEASE_NAME: "grafana"
-  DASHBOARDS_CONFIGMAP_NAME: "grafana-dashboards"
   SERVICE_NAME: "grafana"
 
 jobs:
@@ -151,12 +150,27 @@ jobs:
         run: |
           kubectl create namespace ${{ env.GRAFANA_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Create or update ConfigMap with dashboards
+      - name: Create or update ConfigMaps with dashboards
         run: |
-          kubectl create configmap ${{ env.DASHBOARDS_CONFIGMAP_NAME }} \
-            --from-file=./infra/helmcharts/grafana/dashboards/ \
-            --namespace ${{ env.GRAFANA_NAMESPACE }} \
-            --dry-run=client -o yaml | kubectl apply -f -
+          # Создаем отдельный ConfigMap для каждого дашборда
+          for dashboard in ./infra/helmcharts/grafana/dashboards/*.json; do
+            if [ -f "$dashboard" ]; then
+              # Получаем имя файла без расширения
+              filename=$(basename "$dashboard" .json)
+              configmap_name="grafana-dashboards-${filename}"
+              
+              echo "Creating ConfigMap: $configmap_name from $dashboard"
+              
+              kubectl create configmap "$configmap_name" \
+                --from-file="$dashboard" \
+                --namespace ${{ env.GRAFANA_NAMESPACE }} \
+                --dry-run=client -o yaml | \
+                kubectl label --local -f - grafana_dashboard=1 -o yaml | \
+                kubectl apply -f -
+            fi
+          done
+
+          echo "All dashboard ConfigMaps created successfully"
 
       - name: Deploy Grafana with Helm
         run: |
@@ -184,8 +198,8 @@ jobs:
           kubectl get svc -n ${{ env.GRAFANA_NAMESPACE }} ${{ env.GRAFANA_RELEASE_NAME }}
 
           echo ""
-          echo "Checking ConfigMap..."
-          kubectl get configmap -n ${{ env.GRAFANA_NAMESPACE }} ${{ env.DASHBOARDS_CONFIGMAP_NAME }}
+          echo "Checking dashboard ConfigMaps..."
+          kubectl get configmap -n ${{ env.GRAFANA_NAMESPACE }} -l grafana_dashboard=1
 
   create-github-release:
     name: Create GitHub release
@@ -220,6 +234,9 @@ jobs:
           echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
 
+          # Подсчитываем количество дашбордов
+          DASHBOARD_COUNT=$(ls -1 ./infra/helmcharts/grafana/dashboards/*.json 2>/dev/null | wc -l)
+
           {
             echo "# $RELEASE_NAME"
             echo ""
@@ -231,7 +248,8 @@ jobs:
             echo "## Deployment Details"
             echo "- **Namespace**: \`${{ env.GRAFANA_NAMESPACE }}\`"
             echo "- **Release Name**: \`${{ env.GRAFANA_RELEASE_NAME }}\`"
-            echo "- **ConfigMap**: \`${{ env.DASHBOARDS_CONFIGMAP_NAME }}\`"
+            echo "- **Dashboards**: ${DASHBOARD_COUNT} dashboards deployed in separate ConfigMaps"
+            echo "- **ConfigMaps**: Each dashboard has its own ConfigMap with label \`grafana_dashboard=1\`"
           } > "release_body.txt"
 
       - name: Create GitHub Release
