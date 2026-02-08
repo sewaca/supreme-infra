@@ -64,6 +64,12 @@ victoria-metrics-single:
               - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
                 action: replace
                 target_label: service
+              # Add container name label (useful for debugging)
+              - source_labels: [__meta_kubernetes_pod_container_name]
+                target_label: container
+              # Add node name label
+              - source_labels: [__meta_kubernetes_pod_node_name]
+                target_label: node
 
     # Service configuration
     service:
