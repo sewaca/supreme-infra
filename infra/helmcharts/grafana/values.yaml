@@ -67,9 +67,17 @@ grafana:
           options:
             path: /var/lib/grafana/dashboards/default
 
-  # Dashboards
-  dashboardsConfigMaps:
-    default: grafana-dashboards
+  # Sidecar для автоматической загрузки дашбордов из ConfigMaps
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      folder: /tmp/dashboards
+      defaultFolderName: default
+      searchNamespace: ALL
+      provider:
+        foldersFromFilesStructure: true
 
   # Grafana ini configuration
   grafana.ini:
