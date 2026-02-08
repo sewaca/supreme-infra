@@ -35,6 +35,7 @@
     "@supreme-int/design-system": "workspace:*",
     "@supreme-int/i18n": "workspace:*",
     "@supreme-int/instrumentation": "workspace:*",
+    "@supreme-int/lib": "workspace:*",
     "@supreme-int/nextjs-shared": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",

@@ -9,9 +9,7 @@ type Props = Omit<ComponentProps<typeof NavBar>, 'onBack'>;
 export const DefaultNavbar = (props: Props) => {
   const router = useRouter();
 
-  const onBack = () => {
-    router.back();
-  };
+  const onBack = () => router.back();
 
   return <NavBar onBack={onBack} {...props} />;
 };

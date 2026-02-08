@@ -42,7 +42,7 @@ export const ProfilePage = ({ data }: Props) => {
 
       <Spacer size={22} />
 
-      <Row gap={2} direction="row" sx={{ padding: '0 24px' }}>
+      <Row gap={2} direction="row" justifyContent="center" sx={{ padding: '0 24px' }}>
         <ButtonCard
           icon={<img src={Coin.src} alt="Coin" />}
           title={i18n('Стипендия')}
@@ -58,7 +58,7 @@ export const ProfilePage = ({ data }: Props) => {
           subtitle={data.dormitory ? 'ул. Караваевская, 34' : i18n('Вы не проживаете в общежитии')}
           status={data.dormitory ? 'success' : 'error'}
           notifications={data.dormitory?.notifications}
-          href="/undefined-url"
+          href="/profile/dormitory"
         />
       </Row>
 

@@ -13,7 +13,12 @@ type Props = {
 
 export const ButtonCard = ({ icon, title, subtitle, status, href, notifications }: Props) => {
   return (
-    <Badge color="error" badgeContent={notifications || undefined} sx={{ flex: 1, width: '50%' }} component="div">
+    <Badge
+      color="error"
+      badgeContent={notifications || undefined}
+      sx={{ flex: 1, width: '50%', maxWidth: '400px' }}
+      component="div"
+    >
       <ButtonBase sx={{ textAlign: 'center', width: '100%' }} href={href}>
         <div className={styles.buttonCard}>
           {!notifications && <div className={styles.statusBadge} style={{ background: `var(--color-${status})` }} />}
