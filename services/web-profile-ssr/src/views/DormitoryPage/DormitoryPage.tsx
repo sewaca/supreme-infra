@@ -1,9 +1,10 @@
-import Typography from '@mui/material/Typography';
-import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
-import { i18n } from '@supreme-int/i18n/src/i18n';
+import { Link } from '@mui/material';
 import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { Notification } from '../../entities/Notifications/Notifications';
+import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { NotificationsStack } from '../../widgets/NotificationsStack/NotificationsStack';
 import { MismatchDataButton } from './components/MismatchDataButton';
 
@@ -37,7 +38,7 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
         <Spacer size={6} />
 
         <Typography variant="body3" component="p" textAlign="center">
-          {i18n('Договор')} №{contract.number}
+          {i18n('Договор')} <Link href={`undefined-url`}>№{contract.number}</Link>
         </Typography>
         <Typography variant="caption" color="secondary" component="p" textAlign="center">
           {i18n(contract.endDate ? 'Действует с {{startDate}} по {{endDate}}' : 'Действует с {{startDate}}', {

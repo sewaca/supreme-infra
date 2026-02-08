@@ -4,9 +4,9 @@ import { i18n } from '@supreme-int/i18n/src';
 import { Fragment, memo, ReactNode, useState } from 'react';
 import { saveChoices } from 'services/web-profile-ssr/app/subjects/ranking/actions';
 import { SubjectRanking } from '../../entities/SubjectRanking/SubjectRanking';
+import { AlertMessage } from '../../widgets/AlertMessage/AlertMessage';
 import { SortedList } from '../../widgets/SortedList/SortedList';
 import { Subject } from './SubjectsRankingPage';
-import { AlertMessage } from '../../widgets/AlertMessage/AlertMessage';
 
 type Props = {
   subjects: { id: string; subjects: Subject[] }[];
