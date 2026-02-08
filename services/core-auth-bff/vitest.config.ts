@@ -6,7 +6,7 @@ import baseConfig from '../../vitest.config.global';
 export default mergeConfig(
   baseConfig,
   defineConfig({
-    // biome-ignore lint/suspicious/noExplicitAny: TODO: не смог победить при переезде
+    // biome-ignore lint/suspicious/noExplicitAny: не смог победить при переезде
     plugins: [swc.vite() as any],
     test: {
       environment: 'node',
