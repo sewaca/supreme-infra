@@ -152,25 +152,84 @@ jobs:
 
       - name: Create or update ConfigMaps with dashboards
         run: |
-          # Создаем отдельный ConfigMap для каждого дашборда
-          for dashboard in ./infra/helmcharts/grafana/dashboards/*.json; do
-            if [ -f "$dashboard" ]; then
-              # Получаем имя файла без расширения
-              filename=$(basename "$dashboard" .json)
-              configmap_name="grafana-dashboards-${filename}"
-              
-              echo "Creating ConfigMap: $configmap_name from $dashboard"
-              
-              kubectl create configmap "$configmap_name" \
+          # Функция для создания ConfigMap с retry
+          create_configmap_with_retry() {
+            local dashboard="$1"
+            local filename=$(basename "$dashboard" .json)
+            local configmap_name="grafana-dashboards-${filename}"
+            local max_retries=3
+            local retry_count=0
+            
+            # Проверяем размер файла
+            local file_size=$(wc -c < "$dashboard")
+            local file_size_kb=$((file_size / 1024))
+            
+            echo "Creating ConfigMap: $configmap_name from $dashboard (${file_size_kb}KB)"
+            
+            if [ $file_size -gt 900000 ]; then
+              echo "⚠ Warning: Dashboard file is large (${file_size_kb}KB). This may take longer..."
+            fi
+            
+            while [ $retry_count -lt $max_retries ]; do
+              if kubectl create configmap "$configmap_name" \
                 --from-file="$dashboard" \
                 --namespace ${{ env.GRAFANA_NAMESPACE }} \
                 --dry-run=client -o yaml | \
                 kubectl label --local -f - grafana_dashboard=1 -o yaml | \
-                kubectl apply -f -
+                kubectl apply -f -; then
+                echo "✓ Successfully created ConfigMap: $configmap_name"
+                return 0
+              else
+                retry_count=$((retry_count + 1))
+                if [ $retry_count -lt $max_retries ]; then
+                  echo "⚠ Failed to create ConfigMap: $configmap_name (attempt $retry_count/$max_retries)"
+                  echo "Waiting 10 seconds before retry..."
+                  sleep 10
+                  
+                  # Обновляем kubeconfig перед повторной попыткой
+                  echo "Refreshing kubeconfig..."
+                  yc managed-kubernetes cluster get-credentials \
+                    --id ${{ secrets.YC_K8S_CLUSTER_ID }} \
+                    --external \
+                    --force
+                else
+                  echo "✗ Failed to create ConfigMap: $configmap_name after $max_retries attempts"
+                  return 1
+                fi
+              fi
+            done
+          }
+          
+          # Создаем отдельный ConfigMap для каждого дашборда
+          failed_dashboards=()
+          dashboard_count=0
+          
+          for dashboard in ./infra/helmcharts/grafana/dashboards/*.json; do
+            if [ -f "$dashboard" ]; then
+              dashboard_count=$((dashboard_count + 1))
+              
+              if ! create_configmap_with_retry "$dashboard"; then
+                failed_dashboards+=("$(basename "$dashboard")")
+              fi
+              
+              # Пауза между созданием ConfigMaps для стабильности соединения
+              if [ $dashboard_count -lt $(ls -1 ./infra/helmcharts/grafana/dashboards/*.json 2>/dev/null | wc -l) ]; then
+                echo "Waiting 3 seconds before next ConfigMap..."
+                sleep 3
+              fi
             fi
           done
-
-          echo "All dashboard ConfigMaps created successfully"
+          
+          # Проверяем результаты
+          echo ""
+          echo "================================"
+          if [ ${#failed_dashboards[@]} -eq 0 ]; then
+            echo "✓ All $dashboard_count dashboard ConfigMaps created successfully"
+          else
+            echo "✗ Failed to create ConfigMaps for the following dashboards:"
+            printf '  - %s\n' "${failed_dashboards[@]}"
+            exit 1
+          fi
 
       - name: Deploy Grafana with Helm
         run: |
