@@ -422,6 +422,34 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/lib:
+    dependencies:
+      '@mui/icons-material':
+        specifier: 'catalog:'
+        version: 7.3.7(@mui/material@7.3.7(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.2.2)(react@19.1.0)
+      '@mui/material':
+        specifier: 'catalog:'
+        version: 7.3.7(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@supreme-int/nextjs-shared':
+        specifier: workspace:*
+        version: link:../nextjs-shared
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
+      next:
+        specifier: 'catalog:'
+        version: 16.1.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: 'catalog:'
+        version: 19.1.0
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.18.11
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.2
+
   packages/nestjs-shared:
     dependencies:
       '@fastify/helmet':
@@ -1220,6 +1248,9 @@ importers:
       '@supreme-int/instrumentation':
         specifier: workspace:*
         version: link:../../packages/instrumentation
+      '@supreme-int/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
       '@supreme-int/nextjs-shared':
         specifier: workspace:*
         version: link:../../packages/nextjs-shared

@@ -1,4 +1,4 @@
-import { Alert, AlertColor, Button, Container, Divider, Snackbar, Stack, Typography } from '@mui/material';
+import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src';
 import { Fragment, memo, ReactNode, useState } from 'react';
@@ -6,6 +6,7 @@ import { saveChoices } from 'services/web-profile-ssr/app/subjects/ranking/actio
 import { SubjectRanking } from '../../entities/SubjectRanking/SubjectRanking';
 import { SortedList } from '../../widgets/SortedList/SortedList';
 import { Subject } from './SubjectsRankingPage';
+import { AlertMessage } from '../../widgets/AlertMessage/AlertMessage';
 
 type Props = {
   subjects: { id: string; subjects: Subject[] }[];
@@ -20,21 +21,6 @@ export const SubjectsRankingPageView = memo(({ subjects, deadlineDate }: Props) 
     const newChoices = [...choices];
     newChoices[listIndex].subjects = newItems;
     setChoices(newChoices);
-  };
-
-  const AlertMessage = ({ severity, children }: { severity: AlertColor; children: ReactNode }) => {
-    return (
-      <Snackbar
-        onClose={() => setAlert(null)}
-        open={true}
-        autoHideDuration={5000}
-        anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-      >
-        <Alert severity={severity} variant="filled">
-          {children}
-        </Alert>
-      </Snackbar>
-    );
   };
 
   const handleSave = async () => {
@@ -52,9 +38,9 @@ export const SubjectsRankingPageView = memo(({ subjects, deadlineDate }: Props) 
         throw new Error('Failed to save choices');
       }
 
-      setAlert(<AlertMessage severity="success">{i18n('Сохранено!')}</AlertMessage>);
+      setAlert(<AlertMessage severity="success" title={i18n('Сохранено!')} setAlert={setAlert} />);
     } catch {
-      setAlert(<AlertMessage severity="error">{i18n('Что-то пошло не так')}</AlertMessage>);
+      setAlert(<AlertMessage severity="error" title={i18n('Что-то пошло не так')} setAlert={setAlert} />);
     } finally {
       setLoading(false);
     }
