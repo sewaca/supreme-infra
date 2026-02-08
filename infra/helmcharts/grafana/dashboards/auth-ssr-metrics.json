@@ -868,7 +868,7 @@
       "type": "timeseries"
     },
     {
-      "id": 17,
+      "id": 34,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -879,8 +879,8 @@
       }
     },
     {
-      "id": 18,
-      "title": "Route: GET /login",
+      "id": 35,
+      "title": "GET /login",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -890,7 +890,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 36,
       "title": "GET /login - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1011,7 +1011,7 @@
       }
     },
     {
-      "id": 20,
+      "id": 37,
       "title": "GET /login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 21,
+      "id": 38,
       "title": "GET /login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1197,8 +1197,8 @@
       }
     },
     {
-      "id": 22,
-      "title": "Route: GET /profile-old",
+      "id": 39,
+      "title": "GET /profile-old",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1208,7 +1208,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 40,
       "title": "GET /profile-old - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1329,7 +1329,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 41,
       "title": "GET /profile-old - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 42,
       "title": "GET /profile-old - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1515,8 +1515,8 @@
       }
     },
     {
-      "id": 26,
-      "title": "Route: GET /profile-old/[^/]+",
+      "id": 43,
+      "title": "GET /profile-old/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1526,7 +1526,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 44,
       "title": "GET /profile-old/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1647,7 +1647,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 45,
       "title": "GET /profile-old/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 29,
+      "id": 46,
       "title": "GET /profile-old/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1833,8 +1833,8 @@
       }
     },
     {
-      "id": 30,
-      "title": "Route: GET /register",
+      "id": 47,
+      "title": "GET /register",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1844,7 +1844,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 48,
       "title": "GET /register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1965,7 +1965,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 49,
       "title": "GET /register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 50,
       "title": "GET /register - Bad RPS",
       "type": "timeseries",
       "datasource": {
