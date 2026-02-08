@@ -1,3 +1,8 @@
+// ВАЖНО: Устанавливаем переменную окружения ДО импортов
+// Это заставляет HTTP instrumentation использовать новые семантические конвенции
+// которые включают http.route в метрики
+process.env.OTEL_SEMCONV_STABILITY_OPT_IN = 'http/dup';
+
 import { metrics } from '@opentelemetry/api';
 import type { LogRecord } from '@opentelemetry/api-logs';
 import { createMetricViews } from '@supreme-int/instrumentation/src/entities/otel/lib/create-metric-views';
