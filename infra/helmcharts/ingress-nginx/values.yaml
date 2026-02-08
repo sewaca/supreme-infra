@@ -86,6 +86,8 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /api/500
+          method: GET
         - path: /profile
           method: GET
         - path: /profile/settings
