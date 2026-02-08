@@ -70,10 +70,12 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
           const urlPath = request.url.split('?')[0];
           const route = normalizeRoute(urlPath);
 
-          // Устанавливаем атрибуты согласно семантическим конвенциям
+          // Устанавливаем атрибуты согласно семантическим конвенциям (новые и старые для совместимости)
           span.setAttribute('http.route', route);
-          span.setAttribute('url.path', urlPath);
-          span.setAttribute('http.request.method', request.method || 'GET');
+          span.setAttribute('http.target', urlPath); // Старая конвенция
+          span.setAttribute('url.path', urlPath); // Новая конвенция
+          span.setAttribute('http.method', request.method || 'GET'); // Старая конвенция
+          span.setAttribute('http.request.method', request.method || 'GET'); // Новая конвенция
 
           span.updateName(`${request.method} ${route}`);
         } else {
@@ -105,8 +107,8 @@ export function createNextInstrumentationConfig(): InstrumentationConfigMap {
       },
       responseHook: (span: Span, response: HttpResponse) => {
         if ('statusCode' in response && response.statusCode) {
-          span.setAttribute('http.response.status_code', response.statusCode);
-          span.setAttribute('http.status_code', response.statusCode); // Для обратной совместимости
+          span.setAttribute('http.status_code', response.statusCode); // Старая конвенция
+          span.setAttribute('http.response.status_code', response.statusCode); // Новая конвенция
         }
       },
     },
