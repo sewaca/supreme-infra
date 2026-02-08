@@ -199,11 +199,11 @@ jobs:
               fi
             done
           }
-          
+
           # Создаем отдельный ConfigMap для каждого дашборда
           failed_dashboards=()
           dashboard_count=0
-          
+
           for dashboard in ./infra/helmcharts/grafana/dashboards/*.json; do
             if [ -f "$dashboard" ]; then
               dashboard_count=$((dashboard_count + 1))
@@ -219,7 +219,7 @@ jobs:
               fi
             fi
           done
-          
+
           # Проверяем результаты
           echo ""
           echo "================================"
