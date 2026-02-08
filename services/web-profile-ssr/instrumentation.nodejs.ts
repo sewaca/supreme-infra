@@ -1,7 +1,7 @@
 import { metrics } from '@opentelemetry/api';
 import type { LogRecord } from '@opentelemetry/api-logs';
-import { createOpenTelemetrySDK } from '@supreme-int/instrumentation/src/entities/otel/lib/create-sdk';
 import { createMetricViews } from '@supreme-int/instrumentation/src/entities/otel/lib/create-metric-views';
+import { createOpenTelemetrySDK } from '@supreme-int/instrumentation/src/entities/otel/lib/create-sdk';
 import { startOpenTelemetrySDK } from '@supreme-int/instrumentation/src/entities/otel/lib/start-sdk';
 import { patchConsole } from '@supreme-int/instrumentation/src/features/console-patching/lib/patch-console';
 import { setupErrorHandlers } from '@supreme-int/instrumentation/src/features/error-handling/lib/setup-handlers';

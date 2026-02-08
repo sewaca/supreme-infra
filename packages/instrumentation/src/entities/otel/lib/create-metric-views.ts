@@ -1,9 +1,9 @@
-import { View, InstrumentType } from '@opentelemetry/sdk-metrics';
+import { InstrumentType, View } from '@opentelemetry/sdk-metrics';
 
 /**
  * Создает Views для метрик HTTP сервера
  * Добавляет http.route в метрики для правильной группировки по роутам
- * 
+ *
  * @see https://github.com/open-telemetry/opentelemetry-js/issues/3862
  */
 export function createHttpServerMetricViews(): View[] {
@@ -23,19 +23,13 @@ export function createHttpServerMetricViews(): View[] {
         'server.port',
       ],
     }),
-    
+
     // View для http.server.active_requests - добавляем http.route
     new View({
       instrumentName: 'http.server.active_requests',
       instrumentType: InstrumentType.UP_DOWN_COUNTER,
       meterName: '@opentelemetry/instrumentation-http',
-      attributeKeys: [
-        'http.request.method',
-        'http.route',
-        'url.scheme',
-        'server.address',
-        'server.port',
-      ],
+      attributeKeys: ['http.request.method', 'http.route', 'url.scheme', 'server.address', 'server.port'],
     }),
   ];
 }

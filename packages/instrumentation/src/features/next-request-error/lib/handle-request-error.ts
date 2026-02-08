@@ -34,19 +34,19 @@ export interface HttpRequestAttributes {
   'http.route'?: string;
   'url.path': string;
   'url.scheme'?: string;
-  
+
   // Next.js специфичные атрибуты
   'next.route_kind': string;
   'next.route_path'?: string;
   'next.route_type'?: string;
   'next.render_source'?: string;
   'next.revalidate_reason'?: string;
-  
+
   // Атрибуты ошибки (только для ошибок)
   'error.type'?: string;
   'error.message'?: string;
   'error.digest'?: string;
-  
+
   // Index signature для совместимости с OpenTelemetry Attributes
   [key: string]: string | number | boolean | undefined;
 }
@@ -67,41 +67,41 @@ export interface RequestErrorHandlerConfig {
 function normalizeRoute(urlPath: string): string {
   // Убираем query параметры
   const pathWithoutQuery = urlPath.split('?')[0];
-  
+
   // Убираем trailing slash (кроме корневого пути)
   const normalized = pathWithoutQuery === '/' ? '/' : pathWithoutQuery.replace(/\/$/, '');
-  
+
   // Для Next.js специфичных путей
   if (normalized.startsWith('/_next/')) {
     return '/_next/*';
   }
-  
+
   if (normalized.startsWith('/api/')) {
     // Группируем API роуты
     const parts = normalized.split('/');
     const routeParts = parts.map((part, index) => {
       if (index < 2) return part; // Пропускаем '', 'api'
-      
+
       // Заменяем ID на параметры
       if (/^\d+$/.test(part)) return ':id';
       if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(part)) return ':uuid';
-      
+
       return part;
     });
     return routeParts.join('/');
   }
-  
+
   // Для обычных роутов
   const parts = normalized.split('/');
   const routeParts = parts.map((part, index) => {
     if (index === 0) return part;
-    
+
     if (/^\d+$/.test(part)) return ':id';
     if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(part)) return ':uuid';
-    
+
     return part;
   });
-  
+
   return routeParts.join('/');
 }
 
@@ -115,14 +115,14 @@ export function createHttpRequestAttributes(
   error?: Error & { digest?: string },
 ): HttpRequestAttributes {
   const route = normalizeRoute(request.path);
-  
+
   const attributes: HttpRequestAttributes = {
     // Стандартные HTTP атрибуты
     'http.request.method': request.method,
     'http.response.status_code': statusCode,
     'http.route': route,
     'url.path': request.path,
-    
+
     // Next.js атрибуты
     'next.route_kind': context.routerKind,
   };
