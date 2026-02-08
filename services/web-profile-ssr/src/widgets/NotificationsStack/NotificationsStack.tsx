@@ -1,14 +1,14 @@
 'use client';
 
 import { ArrowForwardIos } from '@mui/icons-material';
-import { Stack, Alert } from '@mui/material';
-import { Notification } from '../../entities/Notifications/Notifications';
-import { useRouter } from 'next/navigation';
-import { handleDeeplink } from '../../shared/deeplinks';
-import { ReactNode, useState } from 'react';
-import { AlertMessage } from '../AlertMessage/AlertMessage';
+import { Alert, Stack } from '@mui/material';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { isDeeplink } from '@supreme-int/lib/src/deeplink';
+import { useRouter } from 'next/navigation';
+import { ReactNode, useState } from 'react';
+import { Notification } from '../../entities/Notifications/Notifications';
+import { handleDeeplink } from '../../shared/deeplinks';
+import { AlertMessage } from '../AlertMessage/AlertMessage';
 
 type Props = {
   notifications: Notification[];

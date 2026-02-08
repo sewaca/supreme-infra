@@ -9,6 +9,8 @@ routes:
     method: GET
   - path: /profile
     method: GET
+  - path: /profile/dormitory
+    method: GET
   - path: /profile/settings
     method: GET
   - path: /subjects/ranking
