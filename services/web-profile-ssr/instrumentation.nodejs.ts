@@ -3,6 +3,8 @@
 // которые включают http.route в метрики
 process.env.OTEL_SEMCONV_STABILITY_OPT_IN = 'http/dup';
 
+console.log('[OTEL DEBUG] OTEL_SEMCONV_STABILITY_OPT_IN set to:', process.env.OTEL_SEMCONV_STABILITY_OPT_IN);
+
 import { metrics } from '@opentelemetry/api';
 import type { LogRecord } from '@opentelemetry/api-logs';
 import { createMetricViews } from '@supreme-int/instrumentation/src/entities/otel/lib/create-metric-views';
@@ -22,11 +24,17 @@ const config = {
 };
 
 // Создаем и настраиваем OpenTelemetry SDK с Views для Next.js
+console.log('[OTEL DEBUG] Creating OpenTelemetry SDK with views...');
+const views = createMetricViews();
+console.log('[OTEL DEBUG] Created views:', views.length);
+
 const otelSDK = createOpenTelemetrySDK({
   ...config,
-  instrumentationConfig: createNextInstrumentationConfig(),
-  views: createMetricViews(), // Добавляем Views только для Next.js сервисов
+  instrumentationConfig: createNextInstrumentationConfig(config.serviceName), // Передаем serviceName для кастомных метрик
+  views, // Добавляем Views только для Next.js сервисов
 });
+
+console.log('[OTEL DEBUG] OpenTelemetry SDK created successfully');
 
 // Запускаем SDK
 startOpenTelemetrySDK(otelSDK, config);
