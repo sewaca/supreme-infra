@@ -38,7 +38,7 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
         <Spacer size={6} />
 
         <Typography variant="body3" component="p" textAlign="center">
-          {i18n('Договор')} <Link href={`undefined-url`}>№{contract.number}</Link>
+          {i18n('Договор')} <Link href={`/api/undefined-url`}>№{contract.number}</Link>
         </Typography>
         <Typography variant="caption" color="secondary" component="p" textAlign="center">
           {i18n(contract.endDate ? 'Действует с {{startDate}} по {{endDate}}' : 'Действует с {{startDate}}', {

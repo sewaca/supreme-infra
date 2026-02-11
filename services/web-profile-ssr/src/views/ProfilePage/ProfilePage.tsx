@@ -49,7 +49,7 @@ export const ProfilePage = ({ data }: Props) => {
           subtitle={data.scholarship ? `${data.scholarship.value} ₽/м.` : i18n('Вы не получаете стипендию')}
           status={data.scholarship ? 'success' : 'error'}
           notifications={data.scholarship?.notifications}
-          href="/undefined-url"
+          href="/api/undefined-url"
         />
 
         <ButtonCard
@@ -80,21 +80,21 @@ export const ProfilePage = ({ data }: Props) => {
           icon={<FileCopyIcon fontSize="medium" color="inherit" />}
           title={i18n('Получить справку')}
         />
-        <LinkRow href="/undefined-url" icon={<ImportContactsIcon fontSize="medium" />} title={i18n('Зачётка')} />
+        <LinkRow href="/api/undefined-url" icon={<ImportContactsIcon fontSize="medium" />} title={i18n('Зачётка')} />
         <LinkRow href="/profile/settings" icon={<SettingsIcon fontSize="medium" />} title={i18n('Настройки')} />
         <LinkRow
           href="/subjects/ranking"
           icon={<AutoAwesomeMotionIcon fontSize="medium" />}
           title={i18n('Дисциплины по выбору')}
         />
-        <LinkRow href="/undefined-url" icon={<TrendingUpIcon fontSize="medium" />} title={i18n('Мой рейтинг')} />
-        <LinkRow href="/undefined-url" icon={<PersonIcon fontSize="medium" />} title={i18n('Личные данные')} />
+        <LinkRow href="/api/undefined-url" icon={<TrendingUpIcon fontSize="medium" />} title={i18n('Мой рейтинг')} />
+        <LinkRow href="/api/undefined-url" icon={<PersonIcon fontSize="medium" />} title={i18n('Личные данные')} />
         <LinkRow
-          href="/undefined-url"
+          href="/api/undefined-url"
           icon={<AssignmentIndIcon fontSize="medium" />}
           title={i18n('Электронный студенческий')}
         />
-        <LinkRow href="/undefined-url" icon={<AccountBalanceIcon fontSize="medium" />} title={i18n('Приказы')} />
+        <LinkRow href="/api/undefined-url" icon={<AccountBalanceIcon fontSize="medium" />} title={i18n('Приказы')} />
       </Paper>
     </Paper>
   );
