@@ -55,7 +55,7 @@ export const ProfilePage = ({ data }: Props) => {
         <ButtonCard
           icon={<img src={House.src} alt="House" />}
           title={i18n('Общежитие')}
-          subtitle={data.dormitory ? 'ул. Караваевская, 34' : i18n('Вы не проживаете в общежитии')}
+          subtitle={data.dormitory ? data.dormitory.value : i18n('Вы не проживаете в общежитии')}
           status={data.dormitory ? 'success' : 'error'}
           notifications={data.dormitory?.notifications}
           href="/profile/dormitory"
@@ -76,7 +76,7 @@ export const ProfilePage = ({ data }: Props) => {
         }}
       >
         <LinkRow
-          href="/undefined-url"
+          href="/profile/references"
           icon={<FileCopyIcon fontSize="medium" color="inherit" />}
           title={i18n('Получить справку')}
         />

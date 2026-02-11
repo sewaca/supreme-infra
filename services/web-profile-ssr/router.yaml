@@ -5,11 +5,11 @@
 service: web-profile-ssr
 type: next
 routes:
-  - path: /api/500
-    method: GET
   - path: /profile
     method: GET
   - path: /profile/dormitory
+    method: GET
+  - path: /profile/references
     method: GET
   - path: /profile/settings
     method: GET
