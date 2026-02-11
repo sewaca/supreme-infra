@@ -5,6 +5,8 @@
 service: web-profile-ssr
 type: next
 routes:
+  - path: /api/undefined-url
+    method: GET
   - path: /profile
     method: GET
   - path: /profile/dormitory
