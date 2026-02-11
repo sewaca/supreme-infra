@@ -1,6 +1,4 @@
 'use client';
-import { CloseOutlined } from '@mui/icons-material';
-import { Alert, AlertColor, Box, IconButton, Modal, Snackbar, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { i18n } from '@supreme-int/i18n/src';
 import { ReactNode, useState } from 'react';
