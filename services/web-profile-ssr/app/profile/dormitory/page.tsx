@@ -12,7 +12,7 @@ const getDormitoryData = async () => {
       endDate: '01.01.2027',
     },
     notifications: [
-      { severity: 'warning' as const, message: 'Необходимо оплатить задолженность 2 000 ₽', action: '/contracts' },
+      { severity: 'warning' as const, message: 'Необходимо оплатить задолженность 2 000 ₽', action: '/undefined-url' },
       {
         severity: 'error' as const,
         message: 'Нужно загрузить согласие от родителей',
