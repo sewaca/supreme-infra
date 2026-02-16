@@ -12,7 +12,7 @@ All user profile data.
 6. /subjects/ranking
 
 ```
-TODO: 
+TODO:
   x. /profile/gradebook
   x. /profile/data
   x. /profile/student-id
