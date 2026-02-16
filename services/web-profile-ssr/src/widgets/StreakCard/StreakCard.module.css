@@ -1,0 +1,38 @@
+.card {
+  padding: 20px;
+  border-radius: 16px;
+  color: white;
+  margin: 16px 0;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.icon {
+  font-size: 3rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.best {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}

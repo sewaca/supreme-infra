@@ -1,0 +1,17 @@
+.container {
+  padding: 16px;
+  border-radius: 12px;
+  margin: 2px 0 16px 0;
+}
+
+.filtersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .filtersGrid {
+    grid-template-columns: 1fr;
+  }
+}

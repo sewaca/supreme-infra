@@ -17,4 +17,23 @@ export const components: Readonly<ThemeOptions['components']> = {
       filledInfo: { color: takeContrastText(palette.info) },
     },
   },
+  MuiPaper: {
+    styleOverrides: {
+      root: ({ ownerState }) => {
+        if (typeof ownerState.elevation !== 'number') {
+          return {};
+        }
+
+        if (ownerState.elevation <= 1) {
+          return { backgroundColor: '#ffffff' };
+        }
+
+        if (ownerState.elevation <= 3) {
+          return { backgroundColor: '#f9f9f9' };
+        }
+
+        return { backgroundColor: '#f2f4f7' };
+      },
+    },
+  },
 };
