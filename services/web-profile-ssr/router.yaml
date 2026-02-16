@@ -11,6 +11,8 @@ routes:
     method: GET
   - path: /profile/dormitory
     method: GET
+  - path: /profile/rating
+    method: GET
   - path: /profile/references
     method: GET
   - path: /profile/settings
