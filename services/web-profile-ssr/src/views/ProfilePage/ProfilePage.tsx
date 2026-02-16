@@ -25,6 +25,8 @@ export const ProfilePage = ({ data }: Props) => {
     <Paper sx={{ minHeight: '100dvh', background: '#edeff2' }} elevation={0}>
       <DefaultNavbar
         rightSlot={
+          // TODO: add logout action
+          // TODO: move logout button into another component
           <IconButton color="inherit">
             <LogoutOutlined />
           </IconButton>
