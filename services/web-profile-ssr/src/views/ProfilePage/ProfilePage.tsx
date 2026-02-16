@@ -22,7 +22,7 @@ import styles from './ProfilePage.module.css';
 type Props = { data: ProfileData };
 export const ProfilePage = ({ data }: Props) => {
   return (
-    <Paper sx={{ minHeight: '100dvh' }} elevation={0}>
+    <Paper sx={{ minHeight: '100dvh', background: '#edeff2' }} elevation={0}>
       <DefaultNavbar
         rightSlot={
           <IconButton color="inherit">
