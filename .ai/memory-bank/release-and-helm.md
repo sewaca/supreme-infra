@@ -1,1 +1,1 @@
-1. never use kubectl, helm and etc.
+1. never execute kubectl or helm commands.
