@@ -30,24 +30,28 @@ export const RankingCard = ({ title, icon, ranking }: Props) => {
   };
 
   return (
-    <Paper className={styles.card} elevation={2} sx={{borderLeft: `4px solid ${getPositionColor(ranking.percentile)}`}}>
+    <Paper
+      className={styles.card}
+      elevation={2}
+      sx={{ borderLeft: `4px solid ${getPositionColor(ranking.percentile)}` }}
+    >
       <Box className={styles.header}>
         <Typography variant="h4">{icon}</Typography>
-        <Typography variant="body2" sx={{color: 'text.secondary', fontWeight: 500}}>
+        <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
           {title}
         </Typography>
       </Box>
       <Box className={styles.content}>
         <Box className={styles.position}>
-          <Typography variant="h4" sx={{fontWeight: 700, color: getPositionColor(ranking.percentile)}}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: getPositionColor(ranking.percentile) }}>
             {getPositionEmoji(ranking.percentile)} #{ranking.position}
           </Typography>
-          <Typography variant="caption" sx={{color: 'text.secondary'}}>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             из {ranking.total}
           </Typography>
         </Box>
         <Box className={styles.percentile}>
-          <Typography variant="caption" sx={{color: 'text.secondary'}}>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             Топ {Math.round(100 - ranking.percentile)}%
           </Typography>
         </Box>

@@ -28,7 +28,7 @@ export const RatingFilters = ({ filters, onChange }: Props) => {
   };
 
   return (
-    <Paper className={styles.container} elevation={2} >
+    <Paper className={styles.container} elevation={2}>
       <Box className={styles.filtersGrid}>
         <FormControl fullWidth size="small">
           <InputLabel id="period-label">Период</InputLabel>

@@ -2,7 +2,6 @@
 
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Box, Chip, Divider, IconButton, Paper, Typography } from '@mui/material';
-import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
 import { useState } from 'react';

@@ -1,4 +1,13 @@
-export type AchievementType = 'excellent_student' | 'unstoppable' | 'top_1_percent' | 'first_try' | 'perfectionist' | 'group_leader' | 'communicative' | 'early_bird' | 'iron_man';
+export type AchievementType =
+  | 'excellent_student'
+  | 'unstoppable'
+  | 'top_1_percent'
+  | 'first_try'
+  | 'perfectionist'
+  | 'group_leader'
+  | 'communicative'
+  | 'early_bird'
+  | 'iron_man';
 
 export type Achievement = {
   id: AchievementType;

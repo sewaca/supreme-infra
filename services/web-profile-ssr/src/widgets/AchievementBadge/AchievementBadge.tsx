@@ -1,8 +1,8 @@
 'use client';
 
 import { Badge, Box, LinearProgress, Paper, Tooltip, Typography } from '@mui/material';
-import { Achievement } from '../../entities/Rating/RatingData';
 import { getAchievementProgress } from '../../entities/Rating/achievementsConfig';
+import { Achievement } from '../../entities/Rating/RatingData';
 import styles from './AchievementBadge.module.css';
 
 type Props = {
