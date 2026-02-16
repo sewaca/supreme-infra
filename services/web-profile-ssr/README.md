@@ -1,15 +1,24 @@
 # web-profile-ssr
 
-profile
+All user profile data.
 
-## Features
+## Pages (features)
 
-- Next.js 15 with App Router
-- Server-side rendering (SSR)
-- OpenTelemetry instrumentation
-- Prometheus metrics
-- TypeScript
-- SVG imports as React components
+1. /profile
+2. /profile/dormitory
+3. /profile/rating
+4. /profile/references
+5. /profile/settings
+6. /subjects/ranking
+
+```
+TODO: 
+  x. /profile/gradebook
+  x. /profile/data
+  x. /profile/student-id
+  x. /profile/orders?orderId=xxx&ordersType=xxx
+  x. /profile/scholarship
+```
 
 ## Prerequisites
 

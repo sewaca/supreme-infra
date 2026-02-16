@@ -15,6 +15,8 @@ export const MismatchDataButton = () => {
         fullWidth
         sx={{ marginTop: 'auto' }}
         onClick={() =>
+          // TODO: открывать в формате модалки с подробной информацией про студ городок (время работы, где находится, номер телефона и тд)
+          // TODO: когда доделаем чаты – сделать ссылку на чат с поддержкой и id=студ городок
           setAlert(
             <AlertMessage setAlert={setAlert} severity="info" title={i18n('Обновить данные можно в студгородке')} />,
           )
