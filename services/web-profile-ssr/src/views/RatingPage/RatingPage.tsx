@@ -4,6 +4,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Box, Chip, Divider, IconButton, Paper, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
+import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import { useState } from 'react';
 import { RatingData, RatingFilters as RatingFiltersType } from '../../entities/Rating/RatingData';
 import { AchievementBadge } from '../../widgets/AchievementBadge/AchievementBadge';
@@ -12,7 +13,6 @@ import { LevelProgress } from '../../widgets/LevelProgress/LevelProgress';
 import { RankingCard } from '../../widgets/RankingCard/RankingCard';
 import { RatingFilters } from '../../widgets/RatingFilters/RatingFilters';
 import { StreakCard } from '../../widgets/StreakCard/StreakCard';
-import { useRatingTour } from './lib/useRatingTour';
 import styles from './RatingPage.module.css';
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
 };
 
 export const RatingPage = ({ data }: Props) => {
-  const { startTour } = useRatingTour();
+  const { startTour } = usePageTour({ page: 'rating' });
   const [filters, setFilters] = useState<RatingFiltersType>({
     period: 'all_time',
     educationForm: 'all',
