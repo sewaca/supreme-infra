@@ -1,0 +1,20 @@
+{
+  "name": "@supreme-int/user-tours",
+  "version": "1.0.0",
+  "description": "User tours for Supreme-Infra pages",
+  "exports": {},
+  "files": [
+    "src"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "@supreme-int/i18n": "workspace:*",
+    "driver.js": "catalog:",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:"
+  },
+  "author": "sewaca",
+  "license": "ISC"
+}

@@ -516,9 +516,6 @@ importers:
       '@supreme-int/i18n':
         specifier: workspace:*
         version: link:../i18n
-      driver.js:
-        specifier: 'catalog:'
-        version: 1.3.1
       jose:
         specifier: 'catalog:'
         version: 6.1.3
@@ -550,6 +547,22 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 2.1.9(@types/node@22.18.11)(@vitest/ui@2.1.9)(jsdom@25.0.1)(terser@5.44.0)
+
+  packages/user-tours:
+    dependencies:
+      '@supreme-int/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      driver.js:
+        specifier: 'catalog:'
+        version: 1.3.1
+      react:
+        specifier: 'catalog:'
+        version: 19.1.0
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.2
 
   services/auth-ssr:
     dependencies:
@@ -1254,6 +1267,9 @@ importers:
       '@supreme-int/nextjs-shared':
         specifier: workspace:*
         version: link:../../packages/nextjs-shared
+      '@supreme-int/user-tours':
+        specifier: workspace:*
+        version: link:../../packages/user-tours
       '@types/node':
         specifier: 'catalog:'
         version: 22.18.11

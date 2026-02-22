@@ -41,6 +41,8 @@ export const useProductTour = ({
       prevBtnText: i18n('Назад'),
       doneBtnText: i18n('Закрыть'),
       onDestroyed: (_element, _step, options) => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         if (options.state.activeIndex === steps.length - 1) {
           onComplete?.();
         } else {

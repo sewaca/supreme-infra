@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@supreme-int/i18n": "workspace:*",
-    "driver.js": "catalog:",
     "jose": "catalog:",
     "next": "catalog:",
     "react": "catalog:",

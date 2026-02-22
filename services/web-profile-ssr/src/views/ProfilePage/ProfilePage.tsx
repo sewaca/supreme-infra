@@ -96,7 +96,7 @@ export const ProfilePage = ({ data }: Props) => {
           icon={<AssignmentIndIcon fontSize="medium" />}
           title={i18n('Электронный студенческий')}
         />
-        <LinkRow href="/api/undefined-url" icon={<AccountBalanceIcon fontSize="medium" />} title={i18n('Приказы')} />
+        <LinkRow href="/profile/orders" icon={<AccountBalanceIcon fontSize="medium" />} title={i18n('Приказы')} />
       </Paper>
     </Paper>
   );
