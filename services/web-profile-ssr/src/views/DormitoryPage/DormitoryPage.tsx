@@ -1,4 +1,3 @@
-import { Link } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
