@@ -3,10 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
+/** only client callback */
 export function useGoBack() {
   const router = useRouter();
-  // const pathname = usePathname();
-  // const searchParams = useSearchParams();
 
   const goBack = useCallback(() => {
     if (typeof window === 'undefined' || !window) return;
