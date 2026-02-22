@@ -14,7 +14,7 @@ import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer'
 import { i18n } from '@supreme-int/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { OrderTypeCounts } from 'services/web-profile-ssr/app/profile/orders/actions';
 import { ORDER_TYPE_LABELS } from 'services/web-profile-ssr/src/entities/Order/constants';
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';
@@ -27,6 +27,8 @@ type Props = {
   initialOrders: Order[];
   typeCounts: OrderTypeCounts;
   loadMore: (offset: number, limit: number, types: OrderType[]) => Promise<Order[]>;
+  initialSelectedOrder?: Order | null;
+  initialSelectedTypes?: OrderType[];
 };
 
 type TypeFilter = 'all' | OrderType;
@@ -41,17 +43,24 @@ const TYPE_OPTIONS: { value: TypeFilter; label: string }[] = [
 
 const INITIAL_LOAD_SIZE = 20;
 
-export const OrdersPage = ({ initialOrders, typeCounts, loadMore }: Props) => {
+export const OrdersPage = ({
+  initialOrders,
+  typeCounts,
+  loadMore,
+  initialSelectedOrder,
+  initialSelectedTypes,
+}: Props) => {
   const { startTour } = usePageTour({ page: 'orders' });
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedTypes, setSelectedTypes] = useState<TypeFilter[]>(['all']);
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [ordersCache, setOrdersCache] = useState<Map<string, Order[]>>(new Map([['all', initialOrders]]));
+  const initialTypes: TypeFilter[] = initialSelectedTypes?.length ? initialSelectedTypes : ['all'];
+  const initialCacheKey = initialTypes.includes('all') ? 'all' : [...initialTypes].sort().join(',');
+  const [selectedTypes, setSelectedTypes] = useState<TypeFilter[]>(initialTypes);
+  const [detailModalOpen, setDetailModalOpen] = useState(!!initialSelectedOrder);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(initialSelectedOrder || null);
+  const [ordersCache, setOrdersCache] = useState<Map<string, Order[]>>(new Map([[initialCacheKey, initialOrders]]));
   const [currentOrders, setCurrentOrders] = useState<Order[]>(initialOrders);
   const [loading, setLoading] = useState(false);
-  const isInitialMount = useRef(true);
 
   const getCacheKey = useCallback((types: TypeFilter[]): string => {
     if (types.includes('all')) return 'all';
@@ -83,30 +92,6 @@ export const OrdersPage = ({ initialOrders, typeCounts, loadMore }: Props) => {
     },
     [ordersCache, loadMore, getCacheKey],
   );
-
-  useEffect(() => {
-    if (!isInitialMount.current) return;
-    isInitialMount.current = false;
-
-    const ordersTypeParam = searchParams.get('ordersType');
-    const orderIdParam = searchParams.get('orderId');
-
-    if (ordersTypeParam) {
-      const types = ordersTypeParam.split(',').filter((t) => Object.values(ORDER_TYPE).includes(t as OrderType));
-      if (types.length > 0) {
-        setSelectedTypes(types as OrderType[]);
-        loadOrdersForTypes(types as OrderType[]);
-      }
-    }
-
-    if (orderIdParam) {
-      const order = currentOrders.find((o) => o.id === orderIdParam);
-      if (order) {
-        setSelectedOrder(order);
-        setDetailModalOpen(true);
-      }
-    }
-  }, [searchParams, currentOrders, loadOrdersForTypes]);
 
   const handleTypeChange = useCallback(
     async (_: React.MouseEvent<HTMLElement>, newTypes: TypeFilter[]) => {

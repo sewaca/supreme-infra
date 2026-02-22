@@ -3,6 +3,7 @@
 import { AppBar } from '@mui/material';
 import { ComponentProps, ReactNode } from 'react';
 import { BackButton } from '../BackButton/BackButton';
+import { CloseButton } from '../CloseButton/CloseButton';
 import styles from './NavBar.module.css';
 
 type Props = {
@@ -10,12 +11,21 @@ type Props = {
   leftSlot?: ReactNode;
   center?: ReactNode;
   rightSlot?: ReactNode;
+  onClose?: () => void;
 
   color?: ComponentProps<typeof AppBar>['color'];
   position?: ComponentProps<typeof AppBar>['position'];
 };
 
-export const NavBar = ({ onBack, leftSlot, center, rightSlot, color = 'transparent', position = 'static' }: Props) => {
+export const NavBar = ({
+  onBack,
+  leftSlot,
+  center,
+  rightSlot,
+  onClose,
+  color = 'transparent',
+  position = 'static',
+}: Props) => {
   return (
     <AppBar color={color} position={position} elevation={0}>
       <div className={styles.block}>
@@ -23,7 +33,9 @@ export const NavBar = ({ onBack, leftSlot, center, rightSlot, color = 'transpare
 
         <div className={styles.center}>{center}</div>
 
-        <div className={styles.rightSlot}>{rightSlot}</div>
+        <div className={styles.rightSlot}>
+          {rightSlot ? rightSlot : onClose ? <CloseButton onClose={onClose} /> : null}
+        </div>
       </div>
     </AppBar>
   );

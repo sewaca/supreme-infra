@@ -1,12 +1,12 @@
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
-import styles from './BackButton.module.css';
+import IconButton from '@mui/material/IconButton';
 
 type Props = { onBack: () => void };
 
 export const BackButton = ({ onBack }: Props) => {
   return (
-    <div className={styles.block} onClick={onBack}>
+    <IconButton onClick={onBack} size="small" sx={{ color: 'text.primary' }}>
       <ArrowBackIosNewRoundedIcon fontSize="small" />
-    </div>
+    </IconButton>
   );
 };
