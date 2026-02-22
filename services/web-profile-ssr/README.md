@@ -11,12 +11,12 @@ All user profile data.
 5. /profile/settings
 6. /profile/data
 7. /subjects/ranking
+8. /profile/orders?orderId=xxx&ordersType=xxx
 
 ```
 TODO:
   x. /profile/gradebook
   x. /profile/student-id
-  x. /profile/orders?orderId=xxx&ordersType=xxx
   x. /profile/scholarship
 ```
 

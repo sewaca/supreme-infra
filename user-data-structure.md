@@ -12,6 +12,10 @@ erDiagram
         string avatar
         string email
         string passwordHash
+        date birthDate
+        string snils
+        date snilsIssueDate
+        string region
         datetime createdAt
         datetime updatedAt
     }
@@ -55,6 +59,15 @@ erDiagram
         int course
         string faculty
         string specialty
+        string direction
+        string profile
+        string group
+        string status
+        string qualification
+        int startYear
+        int endYear
+        string studentCardNumber
+        string university
         decimal averageGrade
         string educationForm
         datetime updatedAt
@@ -120,6 +133,36 @@ erDiagram
         string pdfUrl
     }
 
+    ORDER {
+        uuid id PK
+        uuid userId FK
+        string type
+        string number
+        string title
+        date date
+        string comment
+        date startDate
+        date endDate
+        string educationForm
+        string educationType
+        string direction
+        string faculty
+        string course
+        string group
+        string qualification
+        string pdfUrl
+        datetime createdAt
+    }
+
+    ORDER_NOTIFICATION {
+        uuid id PK
+        uuid orderId FK
+        string severity
+        string message
+        string action
+        datetime createdAt
+    }
+
     SUBJECT_CHOICE {
         uuid id PK
         string choiceId UK
@@ -146,6 +189,8 @@ erDiagram
     USER ||--|| STREAK : has
     USER ||--o{ USER_GRADE : has
     USER ||--o{ REFERENCE_ORDER : places
+    USER ||--o{ ORDER : has
+    ORDER ||--o{ ORDER_NOTIFICATION : has
     SUBJECT_CHOICE ||--o{ USER_SUBJECT_PRIORITY : has
     USER ||--o{ USER_SUBJECT_PRIORITY : has
 ```
@@ -158,6 +203,7 @@ erDiagram
 **Используется в:**
 
 - Главная страница профиля (`/profile`) - отображение имени, фамилии, аватара
+- Страница личных данных (`/profile/data`) - отображение ФИО, даты рождения, СНИЛС, региона
 - Все страницы - навигационная панель с аватаром
 
 ### USER_SETTINGS
@@ -189,10 +235,11 @@ erDiagram
 
 ### STUDENT_STATS
 
-**Описание:** Статистика студента  
+**Описание:** Статистика и академическая информация студента  
 **Используется в:**
 
 - Страница рейтинга (`/profile/rating`) - отображение курса, факультета, специальности, среднего балла, формы обучения
+- Страница личных данных (`/profile/data`) - отображение учебного заведения, факультета, специальности, направления, профиля, группы, статуса, квалификации, курса, годов обучения, номера студенческого билета
 
 ### RATING_LEVEL
 
@@ -257,6 +304,26 @@ erDiagram
 
 - Страница дисциплин по выбору (`/subjects/ranking`) - сохранение и отображение порядка дисциплин
 - `subjectId` ссылается на конкретную дисциплину в JSON
+
+### ORDER
+
+**Описание:** Приказы студента (о зачислении, стипендии, общежитии и др.)  
+**Используется в:**
+
+- Страница приказов (`/profile/orders`) - список всех приказов с фильтрацией по типам
+- `type` может быть: `dormitory` (общежитие), `scholarship` (стипендия), `education` (обучение), `general` (общий)
+- Содержит информацию о номере, дате, сроках действия, образовательных данных
+- `pdfUrl` - ссылка на скачивание приказа в формате PDF
+
+### ORDER_NOTIFICATION
+
+**Описание:** Уведомления по приказам  
+**Используется в:**
+
+- Страница приказов (`/profile/orders`) - отображение уведомлений в деталке приказа
+- Карточки приказов - badge с количеством уведомлений
+- `severity`: `error`, `info`, `success`, `warning`
+- `action` может содержать deeplink или URL для перехода
 
 ## API Endpoints
 
@@ -496,6 +563,145 @@ erDiagram
 #### `POST /api/subjects/save-priorities`
 
 Сохранение приоритетов дисциплин
+
+### Личные данные
+
+#### `GET /api/profile/personal-data`
+
+Получение личных данных пользователя (ФИО, дата рождения, СНИЛС, регион) и академической информации (учебное заведение, факультет, специальность, направление, профиль, группа, статус, квалификация, курс, годы обучения, номер студенческого билета)
+
+**Response:**
+
+```json
+{
+  "user": {
+    "name": "Всеволод",
+    "lastName": "Булгаков",
+    "middleName": "Денисович",
+    "avatar": "https://example.com/avatar.jpg",
+    "birthDate": "2005-12-10",
+    "snils": "123-456-789 00",
+    "snilsIssueDate": "2009-01-13",
+    "region": "Санкт-Петербург"
+  },
+  "academicInfo": [
+    { "label": "Учебное заведение", "value": "Университет телекоммуникаций" },
+    { "label": "Факультет", "value": "Информационных технологий и программной инженерии (ИТПИ)" },
+    { "label": "Специальность/направление", "value": "09.03.04 - Программная инженерия" },
+    { "label": "Форма обучения", "value": "Очная" },
+    { "label": "Квалификация", "value": "Бакалавр" },
+    { "label": "Профиль", "value": "Разработка программного обеспечения и приложений искусственного интеллекта в киберфизических системах" },
+    { "label": "Группа", "value": "ИКПИ-25" },
+    { "label": "Статус", "value": "Обучается (Бюджет)" },
+    { "label": "Курс", "value": "4" },
+    { "label": "Год начала обучения", "value": "2022" },
+    { "label": "Год окончания обучения", "value": "2026" },
+    { "label": "Студенческий билет", "value": "№ 9900001" }
+  ]
+}
+```
+
+### Приказы
+
+#### `GET /api/orders`
+
+Получение списка приказов пользователя
+
+**Query параметры:**
+
+- `type` (optional) - фильтр по типу приказа (может быть несколько через запятую: `dormitory,scholarship`)
+- `offset` (optional, default: 0) - смещение для пагинации
+- `limit` (optional, default: 20) - количество приказов на страницу
+
+**Примеры:**
+
+- `GET /api/orders` - все приказы (первые 20)
+- `GET /api/orders?type=dormitory` - только приказы по общежитию
+- `GET /api/orders?type=dormitory,scholarship` - приказы по общежитию и стипендии
+- `GET /api/orders?offset=20&limit=20` - следующие 20 приказов
+
+**Response:**
+
+```json
+{
+  "orders": [
+    {
+      "id": "uuid",
+      "type": "scholarship",
+      "number": "250/кс",
+      "title": "Назначить стипендию",
+      "date": "2026-02-18",
+      "comment": "№250/кс от 18.02.2026\nГАС ИТПИ 2 сем 25/26",
+      "startDate": "2026-02-01",
+      "endDate": "2026-04-30",
+      "educationForm": "Очная",
+      "educationType": "Бюджет",
+      "direction": "09.03.04 - Программная инженерия",
+      "faculty": "ИТПИ",
+      "course": "4",
+      "group": "ИКПИ-25",
+      "qualification": "Бакалавр",
+      "pdfUrl": "/api/orders/uuid/pdf",
+      "notificationsCount": 1
+    }
+  ],
+  "total": 200,
+  "hasMore": true
+}
+```
+
+#### `GET /api/orders/counts`
+
+Получение количества приказов по типам
+
+**Response:**
+
+```json
+{
+  "dormitory": 50,
+  "scholarship": 50,
+  "education": 50,
+  "general": 50
+}
+```
+
+#### `GET /api/orders/:id`
+
+Получение детальной информации о приказе по ID
+
+**Response:**
+
+```json
+{
+  "id": "uuid",
+  "type": "scholarship",
+  "number": "250/кс",
+  "title": "Назначить стипендию",
+  "date": "2026-02-18",
+  "comment": "№250/кс от 18.02.2026\nГАС ИТПИ 2 сем 25/26",
+  "startDate": "2026-02-01",
+  "endDate": "2026-04-30",
+  "educationForm": "Очная",
+  "educationType": "Бюджет",
+  "direction": "09.03.04 - Программная инженерия",
+  "faculty": "ИТПИ",
+  "course": "4",
+  "group": "ИКПИ-25",
+  "qualification": "Бакалавр",
+  "pdfUrl": "/api/orders/uuid/pdf",
+  "notifications": [
+    {
+      "severity": "info",
+      "message": "Стипендия будет начислена 15 числа",
+      "action": null
+    }
+  ]
+}
+```
+
+#### `GET /api/orders/:id/pdf`
+
+Получение PDF-файла приказа
 
 ## Константы для вынесения в JSON базу
 
@@ -775,6 +981,7 @@ export const REFERENCE_STATUS_LABELS: Record<string, string> = {
 7. **Типы заявлений (USER_APPLICATION.applicationType)**: `scholarship`, `dormitory`, и другие
 8. **Типы оценок (USER_GRADE.gradeType)**: `exam`, `test`, `coursework`, `lab`, etc.
 9. **Статусы API ответов**: `success`, `need2fa`, `error`
+10. **Типы приказов (ORDER.type)**: `dormitory` (общежитие), `scholarship` (стипендия), `education` (обучение), `general` (общий)
 
 ### Оптимизация хранения
 
