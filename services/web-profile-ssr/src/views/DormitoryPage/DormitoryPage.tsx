@@ -2,6 +2,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
+import { Suspense } from 'react';
 import { Notification } from '../../entities/Notifications/Notifications';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { NotificationsStack } from '../../widgets/NotificationsStack/NotificationsStack';
@@ -49,7 +50,9 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
 
         <NotificationsStack notifications={notifications} />
 
-        <MismatchDataButton />
+        <Suspense>
+          <MismatchDataButton />
+        </Suspense>
       </Container>
     </>
   );

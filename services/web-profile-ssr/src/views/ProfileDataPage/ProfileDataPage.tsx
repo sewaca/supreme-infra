@@ -1,6 +1,7 @@
-import { Container, Paper, Stack, Typography } from '@mui/material';
+import { Container, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
+import { Suspense } from 'react';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { MismatchDataButton } from '../DormitoryPage/components/MismatchDataButton';
 import styles from './ProfileDataPage.module.css';
@@ -44,7 +45,9 @@ export const ProfileDataPage = ({ avatar, lastName, name, middleName, data }: Pr
         </Paper>
 
         <Spacer size={12} />
-        <MismatchDataButton />
+        <Suspense fallback={<Skeleton variant="rectangular" height={36} width="100%" />}>
+          <MismatchDataButton />
+        </Suspense>
         <Spacer size={12} />
       </Container>
     </Paper>

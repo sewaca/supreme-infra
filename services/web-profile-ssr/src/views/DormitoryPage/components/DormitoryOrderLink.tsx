@@ -2,8 +2,7 @@
 
 import { Link, Typography } from '@mui/material';
 import { i18n } from '@supreme-int/i18n/src';
-import { useLocation } from '@supreme-int/nextjs-shared/src/shared/hooks/useLocation';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ORDER_TYPE } from 'services/web-profile-ssr/src/entities/Order/Order';
 
@@ -17,12 +16,14 @@ type Props = {
 };
 
 export const DormitoryOrderLink = ({ contract }: Props) => {
-  const location = useLocation();
+  const [orderLink, setOrderLink] = useState('');
 
-  const orderLink = useMemo(() => {
-    const params = new URLSearchParams({ orderId: contract.id, ordersType: ORDER_TYPE.DORMITORY, retpath: location });
-    return `/profile/orders?${params.toString()}`;
-  }, [contract.id, location]);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search).toString();
+    const retpath = searchParams ? `${window.location.pathname}?${searchParams}` : window.location.pathname;
+    const params = new URLSearchParams({ orderId: contract.id, ordersType: ORDER_TYPE.DORMITORY, retpath });
+    setOrderLink(`/profile/orders?${params.toString()}`);
+  }, [contract.id]);
 
   return (
     <Typography variant="body3" component="p" textAlign="center">
