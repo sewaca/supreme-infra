@@ -4,9 +4,9 @@ import Typography from '@mui/material/Typography';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { Notification } from '../../entities/Notifications/Notifications';
-import { ORDER_TYPE } from '../../entities/Order/Order';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { NotificationsStack } from '../../widgets/NotificationsStack/NotificationsStack';
+import { DormitoryOrderLink } from './components/DormitoryOrderLink';
 import { MismatchDataButton } from './components/MismatchDataButton';
 
 type Props = {
@@ -38,12 +38,7 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
 
         <Spacer size={6} />
 
-        <Typography variant="body3" component="p" textAlign="center">
-          {i18n('Договор')}
-          <Link href={`/profile/orders?orderId=${contract.id}&ordersType=${ORDER_TYPE.DORMITORY}`}>
-            №{contract.number}
-          </Link>
-        </Typography>
+        <DormitoryOrderLink contract={contract} />
         <Typography variant="caption" color="secondary" component="p" textAlign="center">
           {i18n(contract.endDate ? 'Действует с {{startDate}} по {{endDate}}' : 'Действует с {{startDate}}', {
             startDate: contract.startDate,
