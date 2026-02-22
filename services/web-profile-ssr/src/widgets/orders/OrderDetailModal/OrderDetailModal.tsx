@@ -3,11 +3,25 @@
 import { ArrowForwardIos } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Alert, Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { isDeeplink } from '@supreme-int/lib/src/deeplink';
 import { useRouter } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import type { Order } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { handleDeeplink } from 'services/web-profile-ssr/src/shared/deeplinks';
 import { AlertMessage } from '../../AlertMessage/AlertMessage';
@@ -75,97 +89,97 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
               </Stack>
             )}
 
-          <Table size="small">
-            <TableBody>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Номер приказа')}
-                </TableCell>
-                <TableCell>{order.number}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Название приказа')}
-                </TableCell>
-                <TableCell>{order.title}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Дата приказа')}
-                </TableCell>
-                <TableCell>{order.date}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Комментарий')}
-                </TableCell>
-                <TableCell sx={{ whiteSpace: 'pre-line' }}>{order.comment}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Дата начала действия')}
-                </TableCell>
-                <TableCell>{order.startDate}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Дата окончания действия')}
-                </TableCell>
-                <TableCell>{order.endDate}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Форма обучения')}
-                </TableCell>
-                <TableCell>{order.educationForm}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Тип обучения')}
-                </TableCell>
-                <TableCell>{order.educationType}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Направление/Специальность')}
-                </TableCell>
-                <TableCell>{order.direction}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Факультет')}
-                </TableCell>
-                <TableCell>{order.faculty}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Курс')}
-                </TableCell>
-                <TableCell>{order.course}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Группа')}
-                </TableCell>
-                <TableCell>{order.group}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {i18n('Квалификация')}
-                </TableCell>
-                <TableCell>{order.qualification}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+            <Table size="small">
+              <TableBody>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Номер приказа')}
+                  </TableCell>
+                  <TableCell>{order.number}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Название приказа')}
+                  </TableCell>
+                  <TableCell>{order.title}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Дата приказа')}
+                  </TableCell>
+                  <TableCell>{order.date}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Комментарий')}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: 'pre-line' }}>{order.comment}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Дата начала действия')}
+                  </TableCell>
+                  <TableCell>{order.startDate}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Дата окончания действия')}
+                  </TableCell>
+                  <TableCell>{order.endDate}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Форма обучения')}
+                  </TableCell>
+                  <TableCell>{order.educationForm}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Тип обучения')}
+                  </TableCell>
+                  <TableCell>{order.educationType}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Направление/Специальность')}
+                  </TableCell>
+                  <TableCell>{order.direction}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Факультет')}
+                  </TableCell>
+                  <TableCell>{order.faculty}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Курс')}
+                  </TableCell>
+                  <TableCell>{order.course}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Группа')}
+                  </TableCell>
+                  <TableCell>{order.group}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    {i18n('Квалификация')}
+                  </TableCell>
+                  <TableCell>{order.qualification}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
 
-          {order.pdfUrl && (
-            <Button variant="contained" startIcon={<DownloadIcon />} onClick={handleDownloadPdf} fullWidth>
-              {i18n('Скачать приказ в PDF')}
-            </Button>
-          )}
-        </Stack>
-      </DialogContent>
-    </Dialog>
+            {order.pdfUrl && (
+              <Button variant="contained" startIcon={<DownloadIcon />} onClick={handleDownloadPdf} fullWidth>
+                {i18n('Скачать приказ в PDF')}
+              </Button>
+            )}
+          </Stack>
+        </DialogContent>
+      </Dialog>
       {alert}
     </>
   );

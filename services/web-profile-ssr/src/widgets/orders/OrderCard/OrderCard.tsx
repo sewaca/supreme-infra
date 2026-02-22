@@ -1,8 +1,8 @@
 import { Badge, Card, CardActionArea, Stack, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { i18n } from '@supreme-int/i18n/src/i18n';
-import type { Order } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { ORDER_TYPE_LABELS } from 'services/web-profile-ssr/src/entities/Order/constants';
+import type { Order } from 'services/web-profile-ssr/src/entities/Order/Order';
 
 type Props = {
   order: Order;

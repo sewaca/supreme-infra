@@ -1,8 +1,8 @@
 'use server';
 
+import { MOCK_ORDERS } from 'services/web-profile-ssr/src/entities/Order/mockOrders';
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { ORDER_TYPE } from 'services/web-profile-ssr/src/entities/Order/Order';
-import { MOCK_ORDERS } from 'services/web-profile-ssr/src/entities/Order/mockOrders';
 
 export type OrderTypeCounts = Record<OrderType, number>;
 

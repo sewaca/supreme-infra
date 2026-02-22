@@ -1,8 +1,8 @@
 import { Container, Paper, Stack, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
-import { MismatchDataButton } from '../DormitoryPage/components/MismatchDataButton';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
+import { MismatchDataButton } from '../DormitoryPage/components/MismatchDataButton';
 import styles from './ProfileDataPage.module.css';
 
 type Props = {
