@@ -11,9 +11,9 @@
 #### web-profile-ssr
 
 - [ ] /profile/gradebook
-- [ ] /profile/data
+- [x] /profile/data
 - [ ] /profile/student-id
-- [ ] /profile/orders?orderId=xxx&ordersType=xxx
+- [x] /profile/orders?orderId=xxx&ordersType=xxx
 - [ ] /profile/scholarship
 - [ ] добавить флоу разлогина при клике на кнопку на страничке /profile
 - [ ] доработать страничку про общежития для тех, кто пока не живёт в общежитии – добавить возможность подать заявление
