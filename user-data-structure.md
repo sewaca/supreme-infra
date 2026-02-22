@@ -1033,3 +1033,4 @@ export const calculateXPFromGrades = (averageGrade: number, achievements: number
 - Средний балл × 200
 - Количество достижений × 50
 - Длина серии × 10
+
