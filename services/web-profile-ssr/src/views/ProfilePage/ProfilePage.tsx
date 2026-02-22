@@ -90,7 +90,7 @@ export const ProfilePage = ({ data }: Props) => {
           title={i18n('Дисциплины по выбору')}
         />
         <LinkRow href="/profile/rating" icon={<TrendingUpIcon fontSize="medium" />} title={i18n('Мой рейтинг')} />
-        <LinkRow href="/api/undefined-url" icon={<PersonIcon fontSize="medium" />} title={i18n('Личные данные')} />
+        <LinkRow href="/profile/data" icon={<PersonIcon fontSize="medium" />} title={i18n('Личные данные')} />
         <LinkRow
           href="/api/undefined-url"
           icon={<AssignmentIndIcon fontSize="medium" />}
