@@ -140,17 +140,9 @@ erDiagram
         string number
         string title
         date date
-        string comment
-        date startDate
-        date endDate
-        string educationForm
-        string educationType
-        string direction
-        string faculty
-        string course
-        string group
-        string qualification
+        jsonb additionalFields
         string pdfUrl
+        jsonb actions
         datetime createdAt
     }
 
@@ -312,8 +304,26 @@ erDiagram
 
 - Страница приказов (`/profile/orders`) - список всех приказов с фильтрацией по типам
 - `type` может быть: `dormitory` (общежитие), `scholarship` (стипендия), `education` (обучение), `general` (общий)
-- Содержит информацию о номере, дате, сроках действия, образовательных данных
-- `pdfUrl` - ссылка на скачивание приказа в формате PDF
+- Обязательные поля: `title` (название), `number` (номер), `date` (дата приказа)
+- `additionalFields` - объект с дополнительными полями приказа (Record<string, string>), где ключи - это i18n ключи для отображения лейблов:
+  - `order.field.comment` - комментарий к приказу
+  - `order.field.startDate` - дата начала действия
+  - `order.field.endDate` - дата окончания действия
+  - `order.field.educationForm` - форма обучения
+  - `order.field.educationType` - тип обучения
+  - `order.field.direction` - направление/специальность
+  - `order.field.faculty` - факультет
+  - `order.field.course` - курс
+  - `order.field.group` - группа
+  - `order.field.qualification` - квалификация
+- `pdfUrl` - ссылка на скачивание приказа в формате PDF (deprecated, используйте `actions`)
+- `actions` - объект с действиями для приказа:
+  - `primary` - основное действие (например, скачивание PDF):
+    - `title` - текст кнопки
+    - `action` - URL или deeplink для выполнения действия
+  - `secondary` - дополнительное действие (опционально):
+    - `title` - текст кнопки
+    - `action` - URL или deeplink для выполнения действия
 
 ### ORDER_NOTIFICATION
 
@@ -590,7 +600,10 @@ erDiagram
     { "label": "Специальность/направление", "value": "09.03.04 - Программная инженерия" },
     { "label": "Форма обучения", "value": "Очная" },
     { "label": "Квалификация", "value": "Бакалавр" },
-    { "label": "Профиль", "value": "Разработка программного обеспечения и приложений искусственного интеллекта в киберфизических системах" },
+    {
+      "label": "Профиль",
+      "value": "Разработка программного обеспечения и приложений искусственного интеллекта в киберфизических системах"
+    },
     { "label": "Группа", "value": "ИКПИ-25" },
     { "label": "Статус", "value": "Обучается (Бюджет)" },
     { "label": "Курс", "value": "4" },

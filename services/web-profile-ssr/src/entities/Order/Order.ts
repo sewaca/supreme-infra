@@ -9,22 +9,22 @@ export const ORDER_TYPE = {
 
 export type OrderType = (typeof ORDER_TYPE)[keyof typeof ORDER_TYPE];
 
+export type OrderAction = {
+  title: string;
+  action: string;
+};
+
 export type Order = {
   id: string;
   type: OrderType;
   number: string;
   title: string;
   date: string;
-  comment: string;
-  startDate: string;
-  endDate: string;
-  educationForm: string;
-  educationType: string;
-  direction: string;
-  faculty: string;
-  course: string;
-  group: string;
-  qualification: string;
+  additionalFields?: Record<string, string>;
   pdfUrl?: string;
   notifications?: Notification[];
+  actions?: {
+    primary?: OrderAction;
+    secondary?: OrderAction;
+  };
 };

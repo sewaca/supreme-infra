@@ -23,6 +23,18 @@ export const deeplinkConfig: DeeplinkConfig = {
       });
     },
   },
+  'deeplink://common/download_file': {
+    action: (_deeplink, params) => {
+      return new Promise((resolve, reject) => {
+        const fileUrl = params.fileUrl;
+        if (!fileUrl) return reject(new Error('No fileUrl provided'));
+
+        window.open(fileUrl, '_blank');
+
+        resolve(true);
+      });
+    },
+  },
 };
 
 export const handleDeeplink = async (deeplink: string) => {

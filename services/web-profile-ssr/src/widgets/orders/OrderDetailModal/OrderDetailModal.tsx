@@ -8,14 +8,11 @@ import {
   Box,
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
   Typography,
 } from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
@@ -38,13 +35,7 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
 
   if (!order) return null;
 
-  const handleDownloadPdf = () => {
-    if (order.pdfUrl) {
-      window.open(order.pdfUrl, '_blank');
-    }
-  };
-
-  const handleNotificationClick = async (action?: string) => {
+  const handleActionClick = async (action?: string) => {
     if (!action) return;
 
     if (!isDeeplink(action)) return router.push(action);
@@ -61,7 +52,7 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
 
   return (
     <>
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth sx={{ backgroundColor: 'background.paper' }}>
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h6">{i18n('Информация о приказе')}</Typography>
@@ -80,7 +71,7 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
                     severity={notification.severity}
                     slotProps={{ message: { sx: { width: '100%' } }, action: { sx: { paddingTop: 0 } } }}
                     sx={{ cursor: notification.action ? 'pointer' : 'default' }}
-                    onClick={() => handleNotificationClick(notification.action)}
+                    onClick={() => handleActionClick(notification.action)}
                     action={notification.action && <ArrowForwardIos fontSize="inherit" sx={{ margin: 'auto 0' }} />}
                   >
                     <span>{notification.message}</span>
@@ -89,96 +80,65 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
               </Stack>
             )}
 
-            <Table size="small">
-              <TableBody>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Номер приказа')}
-                  </TableCell>
-                  <TableCell>{order.number}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Название приказа')}
-                  </TableCell>
-                  <TableCell>{order.title}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Дата приказа')}
-                  </TableCell>
-                  <TableCell>{order.date}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Комментарий')}
-                  </TableCell>
-                  <TableCell sx={{ whiteSpace: 'pre-line' }}>{order.comment}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Дата начала действия')}
-                  </TableCell>
-                  <TableCell>{order.startDate}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Дата окончания действия')}
-                  </TableCell>
-                  <TableCell>{order.endDate}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Форма обучения')}
-                  </TableCell>
-                  <TableCell>{order.educationForm}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Тип обучения')}
-                  </TableCell>
-                  <TableCell>{order.educationType}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Направление/Специальность')}
-                  </TableCell>
-                  <TableCell>{order.direction}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Факультет')}
-                  </TableCell>
-                  <TableCell>{order.faculty}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Курс')}
-                  </TableCell>
-                  <TableCell>{order.course}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Группа')}
-                  </TableCell>
-                  <TableCell>{order.group}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {i18n('Квалификация')}
-                  </TableCell>
-                  <TableCell>{order.qualification}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <Stack direction="column" spacing={2}>
+              <div>
+                <Typography variant="caption" color="secondary" component="p">
+                  {i18n('Название приказа')}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  {order.title}
+                </Typography>
+              </div>
 
-            {order.pdfUrl && (
-              <Button variant="contained" startIcon={<DownloadIcon />} onClick={handleDownloadPdf} fullWidth>
-                {i18n('Скачать приказ в PDF')}
-              </Button>
-            )}
+              <div>
+                <Typography variant="caption" color="secondary" component="p">
+                  {i18n('Номер приказа')}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  {order.number}
+                </Typography>
+              </div>
+
+              <div>
+                <Typography variant="caption" color="secondary" component="p">
+                  {i18n('Дата приказа')}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  {order.date}
+                </Typography>
+              </div>
+
+              {order.additionalFields &&
+                Object.entries(order.additionalFields).map(([key, value]) => (
+                  <div key={key}>
+                    <Typography variant="caption" color="secondary" component="p">
+                      {i18n(key)}
+                    </Typography>
+                    <Typography variant="body2" component="p" sx={{ whiteSpace: 'pre-line' }}>
+                      {value}
+                    </Typography>
+                  </div>
+                ))}
+            </Stack>
           </Stack>
         </DialogContent>
+        <DialogActions>
+          {order.actions?.secondary && (
+            <Button variant="outlined" onClick={() => handleActionClick(order.actions?.secondary?.action)} fullWidth>
+              {order.actions.secondary.title}
+            </Button>
+          )}
+          {order.actions?.primary && (
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={() => handleActionClick(order.actions?.primary?.action)}
+              fullWidth
+            >
+              {order.actions.primary.title}
+            </Button>
+          )}
+        </DialogActions>
       </Dialog>
       {alert}
     </>
