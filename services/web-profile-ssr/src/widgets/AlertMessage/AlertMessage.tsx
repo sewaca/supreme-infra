@@ -13,7 +13,7 @@ export const AlertMessage = ({ severity, title, setAlert }: Props) => {
       onClose={() => setAlert(null)}
       open={true}
       autoHideDuration={5000}
-      sx={{ width: '70vw' }}
+      sx={{ width: '70vw', margin: '0 auto' }}
       anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
     >
       <Alert

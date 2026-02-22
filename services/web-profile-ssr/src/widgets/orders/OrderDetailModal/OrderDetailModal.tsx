@@ -10,15 +10,17 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogProps,
   DialogTitle,
   IconButton,
   Stack,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { isDeeplink } from '@supreme-int/lib/src/deeplink';
 import { useRouter } from 'next/navigation';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import type { Order } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { handleDeeplink } from 'services/web-profile-ssr/src/shared/deeplinks';
 import { AlertMessage } from '../../AlertMessage/AlertMessage';
@@ -32,6 +34,14 @@ type Props = {
 export const OrderDetailModal = ({ order, open, onClose }: Props) => {
   const router = useRouter();
   const [alert, setAlert] = useState<ReactNode>(null);
+
+  const isMobile = useMediaQuery('(max-width: 600px)');
+  const hasActions = !!(order?.actions?.primary || order?.actions?.secondary);
+
+  const dialogProps = useMemo<Partial<DialogProps>>(
+    () => (isMobile ? { fullScreen: true } : { fullWidth: true, maxWidth: 'md' }),
+    [isMobile],
+  );
 
   if (!order) return null;
 
@@ -52,7 +62,12 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
 
   return (
     <>
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth sx={{ backgroundColor: 'background.paper' }}>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        {...dialogProps}
+        slotProps={{ paper: { sx: { backgroundColor: 'var(--color-background)' } } }}
+      >
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h6">{i18n('Информация о приказе')}</Typography>
@@ -122,23 +137,25 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
             </Stack>
           </Stack>
         </DialogContent>
-        <DialogActions>
-          {order.actions?.secondary && (
-            <Button variant="outlined" onClick={() => handleActionClick(order.actions?.secondary?.action)} fullWidth>
-              {order.actions.secondary.title}
-            </Button>
-          )}
-          {order.actions?.primary && (
-            <Button
-              variant="contained"
-              startIcon={<DownloadIcon />}
-              onClick={() => handleActionClick(order.actions?.primary?.action)}
-              fullWidth
-            >
-              {order.actions.primary.title}
-            </Button>
-          )}
-        </DialogActions>
+        {hasActions && (
+          <DialogActions sx={{ paddingX: 3, paddingY: 2 }}>
+            {order.actions?.secondary && (
+              <Button variant="outlined" onClick={() => handleActionClick(order.actions?.secondary?.action)} fullWidth>
+                {order.actions.secondary.title}
+              </Button>
+            )}
+            {order.actions?.primary && (
+              <Button
+                variant="contained"
+                startIcon={<DownloadIcon />}
+                onClick={() => handleActionClick(order.actions?.primary?.action)}
+                fullWidth
+              >
+                {order.actions.primary.title}
+              </Button>
+            )}
+          </DialogActions>
+        )}
       </Dialog>
       {alert}
     </>

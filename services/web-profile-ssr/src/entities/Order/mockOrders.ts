@@ -32,7 +32,7 @@ const generateDormitoryOrders = (): Order[] =>
         ? [
             {
               severity: 'warning' as const,
-              message: 'Необходимо оплатить задолженность 2 000 ₽',
+              message: 'Необходимо оплатить задолженность 2 000 ₽',
               action: '/undefined-url',
             },
             {

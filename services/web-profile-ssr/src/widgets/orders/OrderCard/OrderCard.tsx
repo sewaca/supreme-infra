@@ -13,19 +13,21 @@ export const OrderCard = ({ order, onClick }: Props) => {
   const hasNotifications = order.notifications && order.notifications?.length > 0;
 
   return (
-    <Card elevation={2} sx={{ borderRadius: 2 }}>
-      <CardActionArea onClick={onClick} sx={{ p: 2 }}>
+    <Card elevation={2} sx={{ borderRadius: 2, backgroundColor: 'var(--color-background-secondary)' }}>
+      <CardActionArea onClick={onClick} sx={{ p: 2, backgroundColor: 'var(--color-background-secondary)' }}>
         <Stack spacing={1}>
           <Row justifyContent="space-between" alignItems="flex-start">
             <Stack spacing={0.5} flex={1}>
-              <Typography variant="body2" color="text.secondary">
-                {ORDER_TYPE_LABELS[order.type]}
-              </Typography>
+              <Row gap={1} flexWrap="wrap">
+                <Typography variant="body2" color="primary">
+                  {ORDER_TYPE_LABELS[order.type]}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {i18n('№{{orderNumber}} от {{orderDate}}', { orderNumber: order.number, orderDate: order.date })}
+                </Typography>
+              </Row>
               <Typography variant="h6" fontWeight={600}>
                 {order.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {i18n('№{{orderNumber}} от {{orderDate}}', { orderNumber: order.number, orderDate: order.date })}
               </Typography>
             </Stack>
             {hasNotifications && <Badge badgeContent={order?.notifications?.length} color="error" />}
