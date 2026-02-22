@@ -21,7 +21,10 @@ type Props = {
 };
 
 export const SubjectsRankingPage = ({ subjects, deadlineDate }: Props) => {
-  const { startTour } = usePageTour({ page: 'subjects-ranking', params: { deadlineDate, subjectsLength: subjects?.length } });
+  const { startTour } = usePageTour({
+    page: 'subjects-ranking',
+    params: { deadlineDate, subjectsLength: subjects?.length },
+  });
 
   return (
     <>
