@@ -206,7 +206,6 @@ export const OrdersPage = ({ initialOrders, typeCounts, loadMore }: Props) => {
       />
       <Container sx={{ minHeight: '100dvh', paddingBottom: 4 }}>
         <Spacer size={8} />
-
         <Box
           data-tour="orders-filters"
           sx={{
@@ -238,8 +237,7 @@ export const OrdersPage = ({ initialOrders, typeCounts, loadMore }: Props) => {
             ))}
           </ToggleButtonGroup>
         </Box>
-
-        <Spacer size={4} />
+        <Spacer size={12} />
 
         <Box data-tour="orders-list">
           {loading ? (
