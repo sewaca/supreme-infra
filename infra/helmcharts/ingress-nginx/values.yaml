@@ -90,7 +90,11 @@ ingress:
           method: GET
         - path: /profile
           method: GET
+        - path: /profile/data
+          method: GET
         - path: /profile/dormitory
+          method: GET
+        - path: /profile/orders
           method: GET
         - path: /profile/rating
           method: GET
