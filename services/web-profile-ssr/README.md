@@ -9,12 +9,12 @@ All user profile data.
 3. /profile/rating
 4. /profile/references
 5. /profile/settings
-6. /subjects/ranking
+6. /profile/data
+7. /subjects/ranking
 
 ```
 TODO:
   x. /profile/gradebook
-  x. /profile/data
   x. /profile/student-id
   x. /profile/orders?orderId=xxx&ordersType=xxx
   x. /profile/scholarship

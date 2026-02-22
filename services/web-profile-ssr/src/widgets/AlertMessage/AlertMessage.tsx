@@ -19,6 +19,7 @@ export const AlertMessage = ({ severity, title, setAlert }: Props) => {
       <Alert
         severity={severity}
         variant="filled"
+        slotProps={{ action: { sx: { paddingTop: 0 } } }}
         sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
         onClose={() => setAlert(null)}
       >
