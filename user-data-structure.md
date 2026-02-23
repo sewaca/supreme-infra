@@ -286,7 +286,7 @@ erDiagram
 **Описание:** Выборы дисциплин с дедлайнами  
 **Используется в:**
 
-- Страница дисциплин по выбору (`/subjects/ranking`) - отображение дедлайна
+- Страница дисциплин по выбору (`/profile/subjects-ranking`) - отображение дедлайна
 - `choiceId` ссылается на группу дисциплин в JSON (например, `math`, `physics`, `programming`)
 
 ### USER_SUBJECT_PRIORITY
@@ -294,7 +294,7 @@ erDiagram
 **Описание:** Приоритеты дисциплин пользователя  
 **Используется в:**
 
-- Страница дисциплин по выбору (`/subjects/ranking`) - сохранение и отображение порядка дисциплин
+- Страница дисциплин по выбору (`/profile/subjects-ranking`) - сохранение и отображение порядка дисциплин
 - `subjectId` ссылается на конкретную дисциплину в JSON
 
 ### ORDER
@@ -883,8 +883,8 @@ export const REFERENCE_STATUS_LABELS: Record<string, string> = {
 
 **Файлы:**
 
-- `services/web-profile-ssr/app/subjects/ranking/api/getAvailableChoices.ts`
-- `services/web-profile-ssr/app/subjects/ranking/api/getUserPriorities.ts`
+- `services/web-profile-ssr/app/profile/subjects-ranking/api/getAvailableChoices.ts`
+- `services/web-profile-ssr/app/profile/subjects-ranking/api/getUserPriorities.ts`
 
 **Структура JSON:**
 

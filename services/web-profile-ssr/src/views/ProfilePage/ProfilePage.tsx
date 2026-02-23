@@ -85,7 +85,7 @@ export const ProfilePage = ({ data }: Props) => {
         <LinkRow href="/api/undefined-url" icon={<ImportContactsIcon fontSize="medium" />} title={i18n('Зачётка')} />
         <LinkRow href="/profile/settings" icon={<SettingsIcon fontSize="medium" />} title={i18n('Настройки')} />
         <LinkRow
-          href="/subjects/ranking"
+          href="/profile/subjects-ranking"
           icon={<AutoAwesomeMotionIcon fontSize="medium" />}
           title={i18n('Дисциплины по выбору')}
         />

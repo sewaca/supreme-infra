@@ -2,7 +2,7 @@ import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src';
 import { Fragment, memo, ReactNode, useState } from 'react';
-import { saveChoices } from 'services/web-profile-ssr/app/subjects/ranking/actions';
+import { saveChoices } from 'services/web-profile-ssr/app/profile/subjects-ranking/actions';
 import { SubjectRanking } from '../../entities/SubjectRanking/SubjectRanking';
 import { AlertMessage } from '../../widgets/AlertMessage/AlertMessage';
 import { SortedList } from '../../widgets/SortedList/SortedList';

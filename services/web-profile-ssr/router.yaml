@@ -21,7 +21,7 @@ routes:
     method: GET
   - path: /profile/settings
     method: GET
-  - path: /subjects/ranking
+  - path: /profile/subjects-ranking
     method: GET
   - path: /web-profile-ssr/.*
     method: GET

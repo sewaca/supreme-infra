@@ -10,7 +10,7 @@ All user profile data.
 4. /profile/references
 5. /profile/settings
 6. /profile/data
-7. /subjects/ranking
+7. /profile/subjects-ranking
 8. /profile/orders?orderId=xxx&ordersType=xxx
 
 ```
