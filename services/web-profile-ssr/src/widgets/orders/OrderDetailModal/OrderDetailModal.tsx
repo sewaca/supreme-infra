@@ -68,6 +68,8 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
       >
         <DialogTitle sx={{ padding: 0, paddingBottom: 2 }}>
           <DefaultNavbar
+            // biome-ignore lint/complexity/noUselessFragments: Нужно чтобы не показвыать кнопку назад в навбаре
+            leftSlot={<></>}
             onClose={onClose}
             center={<Typography variant="title1">{i18n('Информация о приказе')}</Typography>}
           />
