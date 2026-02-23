@@ -43,8 +43,6 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
   }, []);
 
   const currentOptions = useMemo(() => {
-    console.log('[test] currentType', currentType);
-    console.log('[test] orderOptions.types', orderOptions.types);
     if (!currentType) return orderOptions.types;
     if (orderOptions.types.some((t) => t.label.toLowerCase().startsWith(currentType.toLowerCase())))
       return orderOptions.types;
