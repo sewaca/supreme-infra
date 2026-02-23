@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   orderReference,
   type ReferenceOrderOptions,
@@ -35,6 +35,21 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentType, setCurrentType] = useState<string>('');
+
+  const onChangeTypeInput = useCallback((_: unknown, value: string) => {
+    setFormState((prev) => ({ ...prev, type: (value ?? '').trim() }));
+    setCurrentType(value || '');
+  }, []);
+
+  const currentOptions = useMemo(() => {
+    console.log('[test] currentType', currentType);
+    console.log('[test] orderOptions.types', orderOptions.types);
+    if (!currentType) return orderOptions.types;
+    if (orderOptions.types.some((t) => t.label.toLowerCase().startsWith(currentType.toLowerCase())))
+      return orderOptions.types;
+    return [{ id: currentType, label: currentType }, ...orderOptions.types];
+  }, [currentType, orderOptions.types]);
 
   const { type, pickupPointId, virtualOnly } = formState;
   const pickupIds = type ? (orderOptions.pickupPointIdsByType[type] ?? orderOptions.defaultPickupPointIds) : [];
@@ -85,7 +100,8 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
         <Autocomplete<TypeOption, false, false, true>
           freeSolo
           data-tour="reference-type-input"
-          options={orderOptions.types}
+          getOptionKey={(option) => (typeof option === 'string' ? `custom-${option}` : option.id)}
+          options={currentOptions}
           disableClearable={false}
           slotProps={{ paper: { sx: { bgcolor: '#fff' } } }}
           getOptionLabel={getTypeLabel}
@@ -100,7 +116,7 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
               type: (typeof value === 'string' ? value : ((value as ReferenceTypeOption)?.id ?? '')).trim(),
             }))
           }
-          onInputChange={(_, value) => setFormState((prev) => ({ ...prev, type: value.trim() }))}
+          onInputChange={onChangeTypeInput}
           renderInput={(params) => (
             <TextField
               {...params}
