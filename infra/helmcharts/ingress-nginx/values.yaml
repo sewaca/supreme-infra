@@ -14,7 +14,8 @@ ingress:
     enabled: true
     secretName: supreme-tls-cert
     hosts:
-      - supreme.local
+      - sewaca.ru
+      - diploma.sewaca.ru
   rules:
     - service: auth-ssr
       port: 80

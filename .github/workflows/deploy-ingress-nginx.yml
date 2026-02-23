@@ -150,36 +150,26 @@ jobs:
         run: |
           kubectl create namespace ${{ env.INGRESS_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Generate and create TLS certificate if not exists
+      - name: Create or update TLS certificate secret from Let's Encrypt
+        env:
+          TLS_CERT: ${{ secrets.TLS_CERT }}
+          TLS_KEY: ${{ secrets.TLS_KEY }}
         run: |
           SECRET_NAME="supreme-tls-cert"
           NAMESPACE="default"
 
-          # Check if secret already exists
-          if kubectl get secret $SECRET_NAME -n $NAMESPACE >/dev/null 2>&1; then
-            echo "TLS Secret $SECRET_NAME already exists in namespace $NAMESPACE"
-          else
-            echo "Creating self-signed TLS certificate..."
-            
-            # Generate private key
-            openssl genrsa -out tls.key 2048
-            
-            # Generate certificate
-            openssl req -new -x509 -key tls.key -out tls.crt -days 365 \
-              -subj "/C=RU/ST=Moscow/L=Moscow/O=Supreme/OU=IT/CN=supreme.local" \
-              -addext "subjectAltName=DNS:supreme.local,DNS:*.supreme.local"
-            
-            # Create Kubernetes secret
-            kubectl create secret tls $SECRET_NAME \
-              --cert=tls.crt \
-              --key=tls.key \
-              -n $NAMESPACE
-            
-            echo "TLS Secret $SECRET_NAME created successfully"
-            
-            # Cleanup
-            rm -f tls.key tls.crt
-          fi
+          echo "$TLS_CERT" > tls.crt
+          echo "$TLS_KEY" > tls.key
+
+          kubectl create secret tls $SECRET_NAME \
+            --cert=tls.crt \
+            --key=tls.key \
+            -n $NAMESPACE \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+          echo "TLS Secret $SECRET_NAME applied successfully"
+
+          rm -f tls.key tls.crt
 
       - name: Deploy Ingress NGINX with Helm
         run: |

@@ -6,11 +6,12 @@ This document describes how to manage secrets in the deployment pipeline.
 
 Sensitive configuration values like JWT secrets, API keys, and database passwords should never be committed to the repository. Instead, they are stored in GitHub Secrets and passed to the application during deployment.
 
-This repository requires **8 secrets** to be configured in GitHub:
+This repository requires **10 secrets** to be configured in GitHub:
 
 - **3 Infrastructure/CI/CD secrets** (PAT, Docker Hub credentials)
 - **4 Yandex Cloud/Kubernetes secrets** (Cloud credentials and IDs)
 - **1 Application secret** (JWT_SECRET for backend authentication)
+- **2 TLS secrets** (Let's Encrypt certificate and private key for `diploma.sewaca.ru`)
 
 ### Secrets Quick Reference
 
@@ -24,6 +25,8 @@ This repository requires **8 secrets** to be configured in GitHub:
 | YC_FOLDER_ID           | Cloud       | CD Pipeline (deployment)            | ✅       |
 | YC_K8S_CLUSTER_ID      | Cloud       | CD Pipeline (deployment)            | ✅       |
 | JWT_SECRET             | Application | Backend service (runtime)           | ✅       |
+| TLS_CERT               | TLS         | Deploy Ingress NGINX (TLS secret)   | ✅       |
+| TLS_KEY                | TLS         | Deploy Ingress NGINX (TLS secret)   | ✅       |
 
 ## GitHub Secrets Configuration
 
@@ -84,6 +87,19 @@ The following secrets must be configured in your GitHub repository:
    - How to generate: `openssl rand -base64 32`
    - Example: `JWT_SECRET=your-secure-random-string`
 
+#### TLS Secrets
+
+9. **TLS_CERT** - Let's Encrypt TLS certificate for `diploma.sewaca.ru`
+   - Used by: `deploy-ingress-nginx.yml` to create the `supreme-tls-cert` Kubernetes secret
+   - Format: PEM-encoded certificate. Use **"Сертификат и цепочка сертификатов"** (certificate + chain) — preferred, ensures browsers build the full trust chain
+   - How to obtain: Download from your Let's Encrypt provider (e.g. Certbot, ZeroSSL, etc.)
+   - Value: Full contents of the `.crt` / `.pem` file (including `-----BEGIN CERTIFICATE-----` headers)
+
+10. **TLS_KEY** - Private key for the Let's Encrypt certificate
+    - Used by: `deploy-ingress-nginx.yml` to create the `supreme-tls-cert` Kubernetes secret
+    - Format: PEM-encoded private key. Use **"Только приватный ключ"**
+    - Value: Full contents of the `.key` file (including `-----BEGIN PRIVATE KEY-----` headers)
+
 ### How to Add Secrets
 
 1. Go to your GitHub repository
@@ -120,6 +136,8 @@ yc iam key create --service-account-name <sa-name> --output key.json
 - [ ] YC_FOLDER_ID
 - [ ] YC_K8S_CLUSTER_ID
 - [ ] JWT_SECRET
+- [ ] TLS_CERT (Let's Encrypt certificate for diploma.sewaca.ru)
+- [ ] TLS_KEY (Private key for diploma.sewaca.ru)
 
 ## Secrets Usage by Workflow
 
@@ -146,6 +164,15 @@ Different GitHub Actions workflows use different sets of secrets:
 - **YC_FOLDER_ID** - For Yandex Cloud resource management
 - **YC_K8S_CLUSTER_ID** - For Kubernetes cluster access
 - **JWT_SECRET** - For backend service configuration
+
+### Deploy Ingress NGINX (`.github/workflows/deploy-ingress-nginx.yml`)
+
+- **YC_SA_JSON_CREDENTIALS** - For Yandex Cloud authentication
+- **YC_CLOUD_ID** - For Yandex Cloud operations
+- **YC_FOLDER_ID** - For Yandex Cloud resource management
+- **YC_K8S_CLUSTER_ID** - For Kubernetes cluster access
+- **TLS_CERT** - Let's Encrypt certificate applied to the `supreme-tls-cert` Kubernetes secret
+- **TLS_KEY** - Private key applied to the `supreme-tls-cert` Kubernetes secret
 
 ## How It Works
 
