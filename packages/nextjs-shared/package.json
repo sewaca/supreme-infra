@@ -19,8 +19,5 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "vitest": "catalog:"
-  },
-  "peerDependencies": {
-    "next": "^15.0.0"
   }
 }

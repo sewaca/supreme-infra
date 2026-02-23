@@ -9,13 +9,5 @@
     "@types/node": "catalog:",
     "next": "catalog:",
     "typescript": "catalog:"
-  },
-  "peerDependencies": {
-    "next": "^15.0.0"
-  },
-  "peerDependenciesMeta": {
-    "next": {
-      "optional": true
-    }
   }
 }

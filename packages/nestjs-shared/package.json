@@ -27,17 +27,5 @@
     "typescript": "catalog:",
     "unplugin-swc": "catalog:",
     "vitest": "catalog:"
-  },
-  "peerDependencies": {
-    "@fastify/helmet": "^12.0.0",
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/config": "^3.0.0",
-    "@nestjs/core": "^11.0.0",
-    "@nestjs/passport": "^10.0.0",
-    "@nestjs/platform-fastify": "^11.0.0",
-    "@nestjs/typeorm": "^10.0.0",
-    "passport-jwt": "^4.0.0",
-    "typeorm": "^0.3.0",
-    "zod": "^3.0.0"
   }
 }

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "lint": "biome check",
+    "lint:deps": "tsx infra/validate-deps/index.ts",
     "format": "pnpm run format:biome && pnpm run format:prettier",
     "format:biome": "biome check --fix",
     "format:prettier": "prettier --write \"**/*.{md,yaml,yml}\" --ignore-unknown",
@@ -19,7 +20,7 @@
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@inquirer/prompts": "catalog:",
-    "@svgr/webpack": "^8.1.0",
+    "@svgr/webpack": "catalog:",
     "@types/handlebars": "catalog:",
     "@types/inquirer": "catalog:",
     "@types/node": "catalog:",
@@ -34,6 +35,19 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "yaml": "catalog:"
+  },
+  "peerDependencies": {
+    "@fastify/helmet": "^12.0.0",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^3.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/passport": "^10.0.0",
+    "@nestjs/platform-fastify": "^11.0.0",
+    "@nestjs/typeorm": "^10.0.0",
+    "next": "^15.0.0",
+    "passport-jwt": "^4.0.0",
+    "typeorm": "^0.3.0",
+    "zod": "^3.0.0"
   },
   "author": "sewaca",
   "license": "ISC"
