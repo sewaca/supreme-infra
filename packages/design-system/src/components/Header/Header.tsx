@@ -32,7 +32,7 @@ export async function Header({ logoText = '🍳 Рецепты', logoHref = '/' 
           {user ? (
             <>
               <span className={styles.userName}>Привет, {user.name}!</span>
-              <Link href="/profile" className={styles.button}>
+              <Link href="/profile-old" className={styles.button}>
                 Профиль
               </Link>
             </>
