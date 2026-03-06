@@ -29,7 +29,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       const response = mode === 'login' ? await backendApi.login(formData) : await backendApi.register(formData);
 
       setAuthToken(response.accessToken);
-      router.push('/profile');
+      router.push('/profile-old');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {

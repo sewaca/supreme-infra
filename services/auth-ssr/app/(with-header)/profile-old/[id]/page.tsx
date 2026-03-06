@@ -18,7 +18,7 @@ export default async function ProfileByIdPage({ params }: ProfileByIdPageProps) 
   const userId = Number.parseInt(id, 10);
 
   if (Number.isNaN(userId)) {
-    redirect('/profile');
+    redirect('/profile-old');
   }
 
   const token = await getAuthToken();
@@ -34,7 +34,7 @@ export default async function ProfileByIdPage({ params }: ProfileByIdPageProps) 
       redirect('/login');
     }
     if (error instanceof Error && error.message === 'User not found') {
-      redirect('/profile');
+      redirect('/profile-old');
     }
     throw error;
   }
