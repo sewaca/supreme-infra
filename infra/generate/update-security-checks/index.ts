@@ -10,6 +10,7 @@ export function updateSecurityChecks(): void {
   // Загружаем сервисы из services.yaml
   const nestServices = getServicesByType('nest').map((s) => s.name);
   const nextServices = getServicesByType('next').map((s) => s.name);
+  const fastapiServices = getServicesByType('fastapi').map((s) => s.name);
 
   // Читаем security-checks.yml
   const securityChecksPath = path.join(projectRoot, '.github', 'workflows', 'security-checks.yml');
@@ -41,10 +42,21 @@ export function updateSecurityChecks(): void {
     }
   }
 
+  // Обновляем security-scan-fastapi
+  const securityScanFastapi = jobs?.get('security-scan-fastapi') as yaml.YAMLMap;
+  if (securityScanFastapi) {
+    const strategy = securityScanFastapi.get('strategy') as yaml.YAMLMap;
+    const matrix = strategy?.get('matrix') as yaml.YAMLMap;
+    if (matrix) {
+      matrix.set('service-name', fastapiServices);
+    }
+  }
+
   // Сохраняем обновленный файл
   fs.writeFileSync(securityChecksPath, workflow.toString(), 'utf-8');
 
   console.log('✓ Security checks updated successfully!');
   console.log(`  Nest services: ${nestServices.join(', ') || 'none'}`);
   console.log(`  Next services: ${nextServices.join(', ') || 'none'}`);
+  console.log(`  FastAPI services: ${fastapiServices.join(', ') || 'none'}`);
 }

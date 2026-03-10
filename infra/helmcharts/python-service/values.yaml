@@ -1,0 +1,97 @@
+replicaCount: 1
+
+image:
+  repository: ""
+  # tag will be provided externally during CD deployment
+  tag: ""
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+metrics:
+  enabled: true
+  port: 9464
+
+env:
+  PORT: "8000"
+  PYTHON_ENV: "production"
+  LOKI_ENDPOINT: "http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs"
+
+# Secrets that should be passed from external sources (e.g., GitHub Secrets)
+# These will be stored in Kubernetes Secrets and mounted as environment variables
+secrets: {}
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+livenessProbe:
+  httpGet:
+    path: /api/status
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 3
+  failureThreshold: 5
+
+readinessProbe:
+  httpGet:
+    path: /api/status
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 3
+  failureThreshold: 5
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 85
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 90
+      policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 30
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 30
+        - type: Pods
+          value: 1
+          periodSeconds: 10
+      selectPolicy: Min
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 100%
+
+canary:
+  enabled: false
+  replicas: 1
+  image:
+    repository: ""
+    tag: ""

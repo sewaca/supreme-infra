@@ -20,6 +20,7 @@ export function updateDatabaseWorkflow(): void {
   const allServices: ServiceWithDatabase[] = [
     ...(servicesConfig.services.nest || []),
     ...(servicesConfig.services.next || []),
+    ...(servicesConfig.services.fastapi || []),
   ];
 
   // Filter services with database enabled

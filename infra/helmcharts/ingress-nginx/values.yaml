@@ -48,6 +48,58 @@ ingress:
           method: GET
         - path: /core-auth-bff/auth/users/[^/]+
           method: DELETE
+    - service: core-client-info
+      port: 80
+      type: fastapi
+      paths:
+        - path: /core-client-info/.*
+          method: GET
+        - path: /core-client-info/[^/]+
+          method: GET
+        - path: /core-client-info/[^/]+
+          method: GET
+        - path: /core-client-info/[^/]+/cancel
+          method: POST
+        - path: /core-client-info/[^/]+/extend-storage
+          method: POST
+        - path: /core-client-info/[^/]+/pdf
+          method: GET
+        - path: /core-client-info/[^/]+/pdf
+          method: GET
+        - path: /core-client-info/achievements
+          method: GET
+        - path: /core-client-info/choices
+          method: GET
+        - path: /core-client-info/counts
+          method: GET
+        - path: /core-client-info/email
+          method: POST
+        - path: /core-client-info/grade-improvements
+          method: GET
+        - path: /core-client-info/grades
+          method: GET
+        - path: /core-client-info/level
+          method: GET
+        - path: /core-client-info/order
+          method: POST
+        - path: /core-client-info/parent-agreement
+          method: POST
+        - path: /core-client-info/password
+          method: POST
+        - path: /core-client-info/personal-data
+          method: GET
+        - path: /core-client-info/rankings
+          method: GET
+        - path: /core-client-info/save-priorities
+          method: POST
+        - path: /core-client-info/stats
+          method: GET
+        - path: /core-client-info/streak
+          method: GET
+        - path: /core-client-info/user
+          method: GET
+        - path: /core-client-info/user-priorities/[^/]+
+          method: GET
     - service: core-recipes-bff
       port: 80
       type: nest

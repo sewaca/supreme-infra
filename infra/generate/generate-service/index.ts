@@ -6,7 +6,7 @@ import * as yaml from 'yaml';
 
 interface ServiceConfig {
   serviceName: string;
-  serviceType: 'nest' | 'next';
+  serviceType: 'nest' | 'next' | 'fastapi';
   description: string;
   port: number;
   apiPrefix?: string;
@@ -28,6 +28,13 @@ interface ServicesYaml {
     next: Array<{
       name: string;
       description: string;
+    }>;
+    fastapi: Array<{
+      name: string;
+      description: string;
+      database?: {
+        enabled: boolean;
+      };
     }>;
   };
 }
@@ -54,6 +61,7 @@ async function promptServiceConfig(): Promise<ServiceConfig> {
     choices: [
       { name: 'NestJS (Backend)', value: 'nest' },
       { name: 'Next.js (Frontend)', value: 'next' },
+      { name: 'FastAPI (Python Backend)', value: 'fastapi' },
     ],
   });
 
@@ -62,9 +70,10 @@ async function promptServiceConfig(): Promise<ServiceConfig> {
     validate: (value: string) => (value ? true : 'Описание обязательно'),
   });
 
+  const defaultPort = serviceType === 'nest' ? 4000 : serviceType === 'fastapi' ? 8000 : 3000;
   const port = await number({
     message: 'Порт для локальной разработки:',
-    default: serviceType === 'nest' ? 4000 : 3000,
+    default: defaultPort,
     validate: (value: number | undefined) => {
       if (!value || value < 1024 || value > 65535) return 'Порт должен быть от 1024 до 65535';
       return true;
@@ -77,9 +86,10 @@ async function promptServiceConfig(): Promise<ServiceConfig> {
   let databaseUser: string | undefined;
   let databasePasswordSecret: string | undefined;
 
-  if (serviceType === 'nest') {
+  if (serviceType === 'nest' || serviceType === 'fastapi') {
+    const typeLabel = serviceType === 'nest' ? 'NestJS' : 'FastAPI';
     apiPrefix = await input({
-      message: 'API префикс (для NestJS):',
+      message: `API префикс (для ${typeLabel}):`,
       default: serviceName,
     });
 
@@ -127,7 +137,7 @@ async function promptServiceConfig(): Promise<ServiceConfig> {
 
   return {
     serviceName,
-    serviceType: serviceType as 'nest' | 'next',
+    serviceType: serviceType as 'nest' | 'next' | 'fastapi',
     description,
     port: port as number,
     apiPrefix,
@@ -168,7 +178,7 @@ function generateGrafanaDashboard(config: ServiceConfig): void {
 }
 
 function generateDatabaseInitScript(config: ServiceConfig): void {
-  if (!config.hasDatabase || config.serviceType !== 'nest') {
+  if (!config.hasDatabase || (config.serviceType !== 'nest' && config.serviceType !== 'fastapi')) {
     return;
   }
 
@@ -179,13 +189,13 @@ function generateDatabaseInitScript(config: ServiceConfig): void {
   }
 
   // Generate init.sql
-  const initSqlTemplatePath = path.join(COMMON_TEMPLATES_DIR, 'nest', 'database-init.sql.hbs');
+  const initSqlTemplatePath = path.join(COMMON_TEMPLATES_DIR, config.serviceType, 'database-init.sql.hbs');
   const initSqlTargetPath = path.join(dbDir, 'init.sql');
   copyTemplateFile(initSqlTemplatePath, initSqlTargetPath, config, true);
 }
 
 function generateDatabaseServiceYaml(config: ServiceConfig): void {
-  if (!config.hasDatabase || config.serviceType !== 'nest') {
+  if (!config.hasDatabase || (config.serviceType !== 'nest' && config.serviceType !== 'fastapi')) {
     return;
   }
 
@@ -237,6 +247,16 @@ function generateDatabaseServiceYaml(config: ServiceConfig): void {
   fs.writeFileSync(serviceYamlPath, yamlContent);
 }
 
+const FASTAPI_DATABASE_ONLY_ITEMS = new Set(['alembic', 'alembic.ini']);
+
+function shouldSkipItem(item: string, config: ServiceConfig): boolean {
+  if (config.serviceType === 'fastapi' && !config.hasDatabase) {
+    const baseName = item.endsWith('.hbs') ? item.slice(0, -4) : item;
+    return FASTAPI_DATABASE_ONLY_ITEMS.has(baseName);
+  }
+  return false;
+}
+
 function copyTemplateDirectory(templateDir: string, targetDir: string, config: ServiceConfig): void {
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
@@ -245,6 +265,8 @@ function copyTemplateDirectory(templateDir: string, targetDir: string, config: S
   const items = fs.readdirSync(templateDir);
 
   for (const item of items) {
+    if (shouldSkipItem(item, config)) continue;
+
     const templatePath = path.join(templateDir, item);
     const stat = fs.statSync(templatePath);
 
@@ -268,7 +290,11 @@ function updateServicesYaml(config: ServiceConfig): void {
     const content = fs.readFileSync(SERVICES_YAML_PATH, 'utf-8');
     servicesConfig = yaml.parse(content) as ServicesYaml;
   } else {
-    servicesConfig = { services: { nest: [], next: [] } };
+    servicesConfig = { services: { nest: [], next: [], fastapi: [] } };
+  }
+
+  if (!servicesConfig.services.fastapi) {
+    servicesConfig.services.fastapi = [];
   }
 
   if (config.serviceType === 'nest') {
@@ -286,6 +312,19 @@ function updateServicesYaml(config: ServiceConfig): void {
     }
 
     servicesConfig.services.nest.push(serviceEntry);
+  } else if (config.serviceType === 'fastapi') {
+    const serviceEntry: ServicesYaml['services']['fastapi'][0] = {
+      name: config.serviceName,
+      description: config.description,
+    };
+
+    if (config.hasDatabase) {
+      serviceEntry.database = {
+        enabled: true,
+      };
+    }
+
+    servicesConfig.services.fastapi.push(serviceEntry);
   } else {
     servicesConfig.services.next.push({
       name: config.serviceName,
@@ -309,10 +348,12 @@ async function generateService(): Promise<void> {
   console.log('📋 Конфигурация сервиса:');
   console.log('───────────────────────────────────────────────────────────');
   console.log(`  Название: ${config.serviceName}`);
-  console.log(`  Тип: ${config.serviceType === 'nest' ? 'NestJS' : 'Next.js'}`);
+  const typeLabel =
+    config.serviceType === 'nest' ? 'NestJS' : config.serviceType === 'fastapi' ? 'FastAPI (Python)' : 'Next.js';
+  console.log(`  Тип: ${typeLabel}`);
   console.log(`  Описание: ${config.description}`);
   console.log(`  Порт: ${config.port}`);
-  if (config.serviceType === 'nest') {
+  if (config.serviceType === 'nest' || config.serviceType === 'fastapi') {
     console.log(`  API префикс: ${config.apiPrefix}`);
     console.log(`  База данных: ${config.hasDatabase ? 'Да' : 'Нет'}`);
     if (config.hasDatabase) {
@@ -356,7 +397,7 @@ async function generateService(): Promise<void> {
     console.log(`✓ Grafana дашборд создан: infra/helmcharts/grafana/dashboards/${config.serviceName}-metrics.json`);
 
     // Generate database files if needed
-    if (config.hasDatabase && config.serviceType === 'nest') {
+    if (config.hasDatabase && (config.serviceType === 'nest' || config.serviceType === 'fastapi')) {
       console.log('→ Генерация конфигурации базы данных...');
       generateDatabaseInitScript(config);
       console.log(`  ✓ init.sql создан: infra/databases/${config.serviceName}-db/init.sql`);
@@ -377,13 +418,23 @@ async function generateService(): Promise<void> {
     console.log('📝 Следующие шаги:');
     console.log('');
     console.log(`  1. Установите зависимости:`);
-    console.log(`     cd services/${config.serviceName} && pnpm install`);
+    if (config.serviceType === 'fastapi') {
+      console.log(`     cd services/${config.serviceName} && uv sync`);
+    } else {
+      console.log(`     cd services/${config.serviceName} && pnpm install`);
+    }
     console.log('');
     console.log(`  2. Запустите генераторы инфраструктуры:`);
     console.log(`     pnpm run generate`);
     console.log('');
     console.log(`  3. Запустите сервис локально:`);
-    console.log(`     cd services/${config.serviceName} && pnpm run dev`);
+    if (config.serviceType === 'fastapi') {
+      console.log(
+        `     cd services/${config.serviceName} && uv run uvicorn app.main:app --reload --port ${config.port}`,
+      );
+    } else {
+      console.log(`     cd services/${config.serviceName} && pnpm run dev`);
+    }
     console.log('');
 
     if (config.hasDatabase) {

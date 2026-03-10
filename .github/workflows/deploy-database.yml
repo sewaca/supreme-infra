@@ -9,6 +9,7 @@ on:
         options:
           - core-auth-bff
           - core-recipes-bff
+          - core-client-info
         default: core-auth-bff
       action:
         description: Deployment action

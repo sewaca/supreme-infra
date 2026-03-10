@@ -1,0 +1,46 @@
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.config import settings
+from app.instrumentation import instrument_app, setup_instrumentation
+from app.routers import status
+{{#if hasDatabase}}
+from app.database import engine, Base
+{{/if}}
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    {{#if hasDatabase}}
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    {{/if}}
+    yield
+    {{#if hasDatabase}}
+    await engine.dispose()
+    {{/if}}
+
+
+setup_instrumentation()
+
+app = FastAPI(
+    title="{{serviceName}}",
+    description="{{description}}",
+    version="0.1.0",
+    root_path="/{{apiPrefix}}",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+instrument_app(app)
+
+app.include_router(status.router, prefix="/api")

@@ -19,6 +19,7 @@ interface ServicesYaml {
   services: {
     nest?: ServiceConfig[];
     next?: ServiceConfig[];
+    fastapi?: ServiceConfig[];
   };
 }
 
@@ -37,7 +38,7 @@ export function updateCdWorkflow(): void {
   const allServices: string[] = [];
   const servicesWithDb: Array<{ name: string; passwordSecret: string }> = [];
 
-  for (const serviceType of ['nest', 'next'] as const) {
+  for (const serviceType of ['nest', 'next', 'fastapi'] as const) {
     const services = servicesYaml.services[serviceType] || [];
     for (const service of services) {
       allServices.push(service.name);

@@ -56,6 +56,8 @@ runs:
           CHART_PATH="./infra/helmcharts/backend-service"
         elif [ "$SERVICE_TYPE" = "next" ]; then
           CHART_PATH="./infra/helmcharts/frontend-service"
+        elif [ "$SERVICE_TYPE" = "fastapi" ]; then
+          CHART_PATH="./infra/helmcharts/python-service"
         else
           echo "Error: Unknown service type $SERVICE_TYPE"
           exit 1

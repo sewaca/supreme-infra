@@ -204,6 +204,7 @@ export function generateDatabaseValues(): void {
   const allServices: ServiceWithDatabase[] = [
     ...(servicesConfig.services.nest || []),
     ...(servicesConfig.services.next || []),
+    ...(servicesConfig.services.fastapi || []),
   ];
 
   const servicesWithDb = allServices.filter((s) => s.database?.enabled);

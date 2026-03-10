@@ -14,6 +14,7 @@ on:
           - frontend
           - auth-ssr
           - web-profile-ssr
+          - core-client-info
         default: "core-auth-bff"
       # TODO: remove after development (or comment me)
       skip-canary:
@@ -91,11 +92,14 @@ jobs:
 
           IS_NEST=$(yq eval ".services.nest[] | select(.name == \"$SELECTED_SERVICE\") | .name" services.yaml)
           IS_NEXT=$(yq eval ".services.next[] | select(.name == \"$SELECTED_SERVICE\") | .name" services.yaml)
+          IS_FASTAPI=$(yq eval ".services.fastapi[] | select(.name == \"$SELECTED_SERVICE\") | .name" services.yaml)
 
           if [ -n "$IS_NEST" ]; then
             SERVICE_TYPE="nest"
           elif [ -n "$IS_NEXT" ]; then
             SERVICE_TYPE="next"
+          elif [ -n "$IS_FASTAPI" ]; then
+            SERVICE_TYPE="fastapi"
           else
             echo "Error: Service $SELECTED_SERVICE not found in services.yaml"
             exit 1
@@ -606,6 +610,11 @@ jobs:
             DB_SECRET=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
           fi
 
+          # If not found in next, check fastapi services
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
           # Default to DB_PASSWORD if not specified
           if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
             DB_SECRET="DB_PASSWORD"
@@ -741,6 +750,11 @@ jobs:
           # If not found in nest, check next services
           if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
             DB_SECRET=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
+          # If not found in next, check fastapi services
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
           fi
 
           # Default to DB_PASSWORD if not specified

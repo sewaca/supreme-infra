@@ -39,11 +39,27 @@ jobs:
         with:
           service-name: ${{ matrix.service-name }}
 
+  # run security scan for all fastapi services
+  security-scan-fastapi:
+    name: Security scan for FastAPI ${{ matrix.service-name }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service-name:
+          - core-client-info
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Security scan check for service ${{ matrix.service-name }}
+        uses: ./.github/workflows/jobs/fastapi-application-security-check
+        with:
+          service-name: ${{ matrix.service-name }}
+
   # final job that waits for all security checks
   security-checks-summary:
     name: Security checks summary
     runs-on: ubuntu-latest
-    needs: [security-scan-nest, security-scan-next]
+    needs: [security-scan-nest, security-scan-next, security-scan-fastapi]
     if: always()
     steps:
       - name: Check all security scans status

@@ -7,6 +7,7 @@ import type { ServiceConfig } from './types';
 const HELM_CHART_MAPPING: Record<string, string> = {
   nest: 'backend-service',
   next: 'frontend-service',
+  fastapi: 'python-service',
 };
 
 const ENVIRONMENTS = ['development', 'production'];
@@ -47,12 +48,12 @@ function deepMerge<T>(target: T, source: Partial<T>): T {
   return result;
 }
 
-function getHelmChartPath(serviceType: 'nest' | 'next'): string {
+function getHelmChartPath(serviceType: 'nest' | 'next' | 'fastapi'): string {
   const chartName = HELM_CHART_MAPPING[serviceType];
   return path.join(__dirname, '../../helmcharts', chartName);
 }
 
-function loadHelmDefaults(serviceType: 'nest' | 'next'): ServiceConfig {
+function loadHelmDefaults(serviceType: 'nest' | 'next' | 'fastapi'): ServiceConfig {
   const helmChartPath = getHelmChartPath(serviceType);
   const valuesPath = path.join(helmChartPath, 'values.yaml');
   const content = fs.readFileSync(valuesPath, 'utf-8');
@@ -99,11 +100,18 @@ function generateValuesForService(serviceName: string, environment: string): Ser
   values = deepMerge(values, serviceBaseConfig);
   values = deepMerge(values, envOverrides);
 
-  // Устанавливаем NODE_ENV
-  values.env = {
-    ...values.env,
-    NODE_ENV: environment === 'development' ? 'development' : 'production',
-  };
+  // Устанавливаем NODE_ENV / PYTHON_ENV в зависимости от типа сервиса
+  if (serviceInfo.type === 'fastapi') {
+    values.env = {
+      ...values.env,
+      PYTHON_ENV: environment === 'development' ? 'development' : 'production',
+    };
+  } else {
+    values.env = {
+      ...values.env,
+      NODE_ENV: environment === 'development' ? 'development' : 'production',
+    };
+  }
 
   return values;
 }
@@ -144,7 +152,8 @@ export function generateValuesForAllServices(): void {
   const services = loadServices();
   const nestServices = services.nest || [];
   const nextServices = services.next || [];
-  const allServices = [...nestServices, ...nextServices];
+  const fastapiServices = services.fastapi || [];
+  const allServices = [...nestServices, ...nextServices, ...fastapiServices];
 
   log(`Found ${allServices.length} service(s) to process:`, 'info');
   for (const service of nestServices) {
@@ -152,6 +161,9 @@ export function generateValuesForAllServices(): void {
   }
   for (const service of nextServices) {
     log(`  • ${service.name} (next)${service.description ? ` - ${service.description}` : ''}`, 'info');
+  }
+  for (const service of fastapiServices) {
+    log(`  • ${service.name} (fastapi)${service.description ? ` - ${service.description}` : ''}`, 'info');
   }
 
   let successCount = 0;

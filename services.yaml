@@ -24,3 +24,11 @@ services:
     #   description: "documents presentation "
     - name: web-profile-ssr
       description: "profile "
+  fastapi:
+    - name: core-client-info
+      description: "Client information service — user profile, settings, ratings, achievements, grades, references, orders"
+      database:
+        enabled: true
+        name: core_client_info_db
+        user: core_client_info_user
+        passwordSecret: DB_PASSWORD
