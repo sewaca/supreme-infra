@@ -15,5 +15,7 @@ COPY services/core-client-info/pyproject.toml services/core-client-info/uv.lock*
 RUN uv sync --frozen --no-dev
 
 COPY services/core-client-info/app ./app
+COPY services/core-client-info/alembic.ini ./alembic.ini
+COPY services/core-client-info/alembic ./alembic
 
 CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

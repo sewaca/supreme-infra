@@ -86,7 +86,7 @@ async def get_streak(user_id: UUID, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Streak).where(Streak.user_id == user_id))
     streak = result.scalar_one_or_none()
     if streak is None:
-        raise NotImplementedError("streak not found")
+        return StreakResponse(current=0, best=0, last_updated=None)
     return StreakResponse(current=streak.current, best=streak.best, last_updated=streak.last_updated)
 
 

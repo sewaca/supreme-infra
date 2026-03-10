@@ -22,8 +22,8 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
 Set up environment variables:
 
 ```bash
-export BASE_URL="https://diploma.sewaca.ru"
-export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidnNldm9sb2QuYnVsZ2Frb3ZAZXhhbXBsZS5jb20iLCJuYW1lIjoi0JLRgdC10LLQvtC70L7QtCDQkdGD0LvQs9Cw0LrQvtCyIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDk5ODU2MDAsImV4cCI6MTc0MTUyMTYwMH0.8xHqnKimVJW8rZ5JvVvhZ9YvGx4vQE5rJ8sK9mN2pLo"
+export BASE_URL="https://diploma.sewaca.ru/core-client-info"
+export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW4gVXNlciIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3MjgwODI5OCwiZXhwIjoxNzczNDEzMDk4fQ.dbmj5JTdOWEiRBOGKVYm_GWCNZQi4bJKPPo4mdIc_zI"
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 ```
 
