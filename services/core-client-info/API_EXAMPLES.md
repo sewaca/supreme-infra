@@ -7,12 +7,13 @@ Base URL: `https://your-domain.ru/core-client-info`
 After running the `001_add_test_data` migration, the database contains test data for:
 
 - **Test User ID:** `550e8400-e29b-41d4-a716-446655440000`
-- **JWT Token (valid until 2029):** 
+- **JWT Token (valid until 2029):**
   ```
   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidnNldm9sb2QuYnVsZ2Frb3ZAZXhhbXBsZS5jb20iLCJuYW1lIjoi0JLRgdC10LLQvtC70L7QtCDQkdGD0LvQs9Cw0LrQvtCyIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDk5ODU2MDAsImV4cCI6MTc0MTUyMTYwMH0.8xHqnKimVJW8rZ5JvVvhZ9YvGx4vQE5rJ8sK9mN2pLo
   ```
 
 This JWT contains:
+
 - `sub`: 1
 - `email`: vsevolod.bulgakov@example.com
 - `name`: Всеволод Булгаков
@@ -197,7 +198,7 @@ Expected response (from test data):
 ```json
 [
   { "ranking_type": "byCourse", "position": 5, "total": 120, "percentile": 95.83 },
-  { "ranking_type": "byFaculty", "position": 15, "total": 500, "percentile": 97.00 },
+  { "ranking_type": "byFaculty", "position": 15, "total": 500, "percentile": 97.0 },
   { "ranking_type": "byUniversity", "position": 42, "total": 5000, "percentile": 99.16 }
 ]
 ```
@@ -711,11 +712,11 @@ TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidnNldm9sb2
 async def test_api():
     async with httpx.AsyncClient() as client:
         headers = {"Authorization": f"Bearer {TOKEN}"}
-        
+
         # Health check
         response = await client.get(f"{BASE_URL}/api/status")
         print(f"Health: {response.json()}")
-        
+
         # Get settings
         response = await client.get(
             f"{BASE_URL}/api/settings",
@@ -723,7 +724,7 @@ async def test_api():
             headers=headers
         )
         print(f"Settings: {response.json()}")
-        
+
         # Get rating level
         response = await client.get(
             f"{BASE_URL}/api/rating/level",
@@ -731,7 +732,7 @@ async def test_api():
             headers=headers
         )
         print(f"Level: {response.json()}")
-        
+
         # Get orders with filters
         response = await client.get(
             f"{BASE_URL}/api/orders",
@@ -739,7 +740,7 @@ async def test_api():
             headers=headers
         )
         print(f"Orders: {response.json()}")
-        
+
         # Get all grades
         response = await client.get(
             f"{BASE_URL}/api/rating/grades",
@@ -747,7 +748,7 @@ async def test_api():
             headers=headers
         )
         print(f"Grades: {response.json()}")
-        
+
         # Get achievements
         response = await client.get(
             f"{BASE_URL}/api/rating/achievements",
@@ -849,6 +850,7 @@ curl -X GET "http://your-pod-ip:9464/metrics"
 ```
 
 Expected metrics include:
+
 - `http_server_duration_bucket` — request latency histogram
 - `http_server_duration_count` — request count
 - `process_resident_memory_bytes` — memory usage

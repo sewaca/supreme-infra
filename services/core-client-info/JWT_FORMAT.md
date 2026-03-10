@@ -51,6 +51,7 @@ jwt_secret: str = "local-development-secret"
 For testing with user ID `550e8400-e29b-41d4-a716-446655440000`:
 
 **Payload:**
+
 ```json
 {
   "sub": 1,
@@ -63,11 +64,13 @@ For testing with user ID `550e8400-e29b-41d4-a716-446655440000`:
 ```
 
 **Full JWT Token:**
+
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidnNldm9sb2QuYnVsZ2Frb3ZAZXhhbXBsZS5jb20iLCJuYW1lIjoi0JLRgdC10LLQvtC70L7QtCDQkdGD0LvQs9Cw0LrQvtCyIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDk5ODU2MDAsImV4cCI6MTc0MTUyMTYwMH0.8xHqnKimVJW8rZ5JvVvhZ9YvGx4vQE5rJ8sK9mN2pLo
 ```
 
 This token:
+
 - Is valid until 2029-03-10
 - Uses the local development secret
 - Can be used for all test API requests
@@ -96,18 +99,18 @@ print(token)
 ### Using Node.js (jsonwebtoken)
 
 ```javascript
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const payload = {
   sub: 1,
-  email: 'test@example.com',
-  name: 'Test User',
-  role: 'user',
+  email: "test@example.com",
+  name: "Test User",
+  role: "user",
   iat: Math.floor(Date.now() / 1000),
-  exp: Math.floor(Date.now() / 1000) + (365 * 24 * 60 * 60)
+  exp: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
 };
 
-const token = jwt.sign(payload, 'local-development-secret');
+const token = jwt.sign(payload, "local-development-secret");
 console.log(token);
 ```
 
@@ -146,6 +149,7 @@ Note: The API uses `user_id` as a query parameter (UUID format), but the JWT `su
 3. Or use the same ID format in both JWT and database
 
 For testing purposes, we use:
+
 - JWT `sub`: `1` (numeric ID from auth system)
 - Query param `user_id`: `550e8400-e29b-41d4-a716-446655440000` (UUID in client info database)
 
