@@ -33,7 +33,7 @@ resources:
     memory: 300Mi
 livenessProbe:
   httpGet:
-    path: /core-client-info/api/status
+    path: /core-client-info/status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 20
@@ -41,7 +41,7 @@ livenessProbe:
   failureThreshold: 5
 readinessProbe:
   httpGet:
-    path: /core-client-info/api/status
+    path: /core-client-info/status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 20
