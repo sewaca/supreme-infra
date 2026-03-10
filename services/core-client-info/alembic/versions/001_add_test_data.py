@@ -108,31 +108,6 @@ def upgrade() -> None:
             ('77777777-7777-7777-7777-77777777777a', '{test_user_id}', 'Английский язык', 5.0, 'credit', '2026-01-18 12:00:00+00');
     """)
     
-    # Insert test reference orders
-    op.execute(f"""
-        INSERT INTO reference_order (id, user_id, reference_type, type_label, status, order_date, pickup_point_id, virtual_only, storage_until, pdf_url)
-        VALUES 
-            ('88888888-8888-8888-8888-888888888888', '{test_user_id}', 'rdzd', 'РЖД', 'ready', '2025-01-28 00:00:00+00', 'spbkt_hr', FALSE, '2025-02-14 00:00:00+00', '/api/references/88888888-8888-8888-8888-888888888888/pdf'),
-            ('88888888-8888-8888-8888-888888888889', '{test_user_id}', 'study_confirmation', 'Справка об обучении', 'preparation', '2026-03-09 00:00:00+00', 'spbkt_hr', FALSE, NULL, NULL);
-    """)
-    
-    # Insert test orders
-    op.execute(f"""
-        INSERT INTO "order" (id, user_id, type, number, title, date, additional_fields, pdf_url, actions)
-        VALUES 
-            ('99999999-9999-9999-9999-999999999999', '{test_user_id}', 'scholarship', '250/кс', 'Назначить стипендию', '2026-02-18', '{{"comment": "№250/кс от 18.02.2026", "startDate": "2026-02-01", "endDate": "2026-04-30"}}', '/api/orders/99999999-9999-9999-9999-999999999999/pdf', '{{"primary": {{"title": "Скачать PDF", "action": "/api/orders/99999999-9999-9999-9999-999999999999/pdf"}}}}'),
-            ('99999999-9999-9999-9999-99999999999a', '{test_user_id}', 'dormitory', '150/об', 'О заселении в общежитие', '2025-09-01', '{{"comment": "№150/об от 01.09.2025", "dormitoryAddress": "ул. Примерная, д. 10", "roomNumber": "305"}}', '/api/orders/99999999-9999-9999-9999-99999999999a/pdf', NULL),
-            ('99999999-9999-9999-9999-99999999999b', '{test_user_id}', 'education', '75/уч', 'О переводе на следующий курс', '2025-07-15', '{{"comment": "№75/уч от 15.07.2025", "fromCourse": "3", "toCourse": "4"}}', '/api/orders/99999999-9999-9999-9999-99999999999b/pdf', NULL);
-    """)
-    
-    # Insert test order notifications
-    op.execute(f"""
-        INSERT INTO order_notification (id, order_id, severity, message, action)
-        VALUES 
-            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '99999999-9999-9999-9999-999999999999', 'info', 'Стипендия будет начислена 15 числа', NULL),
-            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaab', '99999999-9999-9999-9999-99999999999a', 'warning', 'Необходимо подписать договор в течение 7 дней', '/api/dormitory/sign-contract');
-    """)
-    
     # Insert test subject choice
     op.execute(f"""
         INSERT INTO subject_choice (id, choice_id, deadline_date, is_active)
@@ -160,9 +135,6 @@ def downgrade() -> None:
     
     op.execute(f"DELETE FROM user_subject_priority WHERE user_id = '{test_user_id}';")
     op.execute(f"DELETE FROM subject_choice WHERE choice_id = 'math_electives_2026';")
-    op.execute(f"DELETE FROM order_notification WHERE order_id IN (SELECT id FROM \"order\" WHERE user_id = '{test_user_id}');")
-    op.execute(f"DELETE FROM \"order\" WHERE user_id = '{test_user_id}';")
-    op.execute(f"DELETE FROM reference_order WHERE user_id = '{test_user_id}';")
     op.execute(f"DELETE FROM user_grade WHERE user_id = '{test_user_id}';")
     op.execute(f"DELETE FROM streak WHERE user_id = '{test_user_id}';")
     op.execute(f"DELETE FROM user_achievement WHERE user_id = '{test_user_id}';")

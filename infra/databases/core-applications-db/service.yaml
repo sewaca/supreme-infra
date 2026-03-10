@@ -1,0 +1,24 @@
+# Database configuration for core-applications-db
+# This file is used by the database deployment workflow
+
+database:
+  name: core_applications_db
+  user: core_applications_user
+
+  # Resource limits for the PostgreSQL container
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  # Storage configuration
+  storage:
+    size: "5Gi"
+    storageClass: "standard"
+
+  # Backup configuration (optional)
+  backup:
+    enabled: false

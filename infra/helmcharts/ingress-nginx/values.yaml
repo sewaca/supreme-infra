@@ -32,6 +32,36 @@ ingress:
           method: GET
         - path: /register
           method: GET
+    - service: core-applications
+      port: 80
+      type: fastapi
+      paths:
+        - path: /core-applications/applications
+          method: GET
+        - path: /core-applications/applications/notifications
+          method: GET
+        - path: /core-applications/dormitory/parent-agreement
+          method: POST
+        - path: /core-applications/orders
+          method: GET
+        - path: /core-applications/orders/[^/]+
+          method: GET
+        - path: /core-applications/orders/[^/]+/pdf
+          method: GET
+        - path: /core-applications/orders/counts
+          method: GET
+        - path: /core-applications/references
+          method: GET
+        - path: /core-applications/references/[^/]+
+          method: GET
+        - path: /core-applications/references/[^/]+/cancel
+          method: POST
+        - path: /core-applications/references/[^/]+/extend-storage
+          method: POST
+        - path: /core-applications/references/[^/]+/pdf
+          method: GET
+        - path: /core-applications/references/order
+          method: POST
     - service: core-auth-bff
       port: 80
       type: nest
@@ -52,53 +82,37 @@ ingress:
       port: 80
       type: fastapi
       paths:
-        - path: /core-client-info/.*
+        - path: /core-client-info/profile/personal-data
           method: GET
-        - path: /core-client-info/[^/]+
+        - path: /core-client-info/profile/user
           method: GET
-        - path: /core-client-info/[^/]+
+        - path: /core-client-info/rating/achievements
           method: GET
-        - path: /core-client-info/[^/]+/cancel
+        - path: /core-client-info/rating/grade-improvements
+          method: GET
+        - path: /core-client-info/rating/grades
+          method: GET
+        - path: /core-client-info/rating/level
+          method: GET
+        - path: /core-client-info/rating/rankings
+          method: GET
+        - path: /core-client-info/rating/stats
+          method: GET
+        - path: /core-client-info/rating/streak
+          method: GET
+        - path: /core-client-info/settings
+          method: GET
+        - path: /core-client-info/settings
+          method: PUT
+        - path: /core-client-info/settings/email
           method: POST
-        - path: /core-client-info/[^/]+/extend-storage
+        - path: /core-client-info/settings/password
           method: POST
-        - path: /core-client-info/[^/]+/pdf
+        - path: /core-client-info/subjects/choices
           method: GET
-        - path: /core-client-info/[^/]+/pdf
-          method: GET
-        - path: /core-client-info/achievements
-          method: GET
-        - path: /core-client-info/choices
-          method: GET
-        - path: /core-client-info/counts
-          method: GET
-        - path: /core-client-info/email
+        - path: /core-client-info/subjects/save-priorities
           method: POST
-        - path: /core-client-info/grade-improvements
-          method: GET
-        - path: /core-client-info/grades
-          method: GET
-        - path: /core-client-info/level
-          method: GET
-        - path: /core-client-info/order
-          method: POST
-        - path: /core-client-info/parent-agreement
-          method: POST
-        - path: /core-client-info/password
-          method: POST
-        - path: /core-client-info/personal-data
-          method: GET
-        - path: /core-client-info/rankings
-          method: GET
-        - path: /core-client-info/save-priorities
-          method: POST
-        - path: /core-client-info/stats
-          method: GET
-        - path: /core-client-info/streak
-          method: GET
-        - path: /core-client-info/user
-          method: GET
-        - path: /core-client-info/user-priorities/[^/]+
+        - path: /core-client-info/subjects/user-priorities/[^/]+
           method: GET
     - service: core-recipes-bff
       port: 80

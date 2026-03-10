@@ -47,6 +47,7 @@ jobs:
       matrix:
         service-name:
           - core-client-info
+          - core-applications
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

@@ -1,6 +1,8 @@
 # core-client-info
 
-Client information service — stores user profile, settings, ratings, achievements, grades, references, orders, and subject priorities.
+Client information service — stores user profile, settings, ratings, achievements, grades, and subject priorities.
+
+**Note**: References, orders, dormitory, and applications have been moved to the `core-applications` service.
 
 ## Tech Stack
 
@@ -15,7 +17,7 @@ Client information service — stores user profile, settings, ratings, achieveme
 This service owns all user data EXCEPT:
 
 - Authentication (passwords, login sessions) — owned by `core-auth-bff`
-- Applications/contracts (USER_APPLICATION, APPLICATION_NOTIFICATION) — owned by `core-auth-bff`
+- Applications, references, orders, dormitory — owned by `core-applications`
 
 ### Database Tables
 
@@ -28,9 +30,6 @@ This service owns all user data EXCEPT:
 | `user_achievement`      | Earned achievements (config loaded from JSON)            |
 | `streak`                | Attendance streak (current and best)                     |
 | `user_grade`            | All grades for all subjects                              |
-| `reference_order`       | Certificate orders (справки)                             |
-| `order`                 | Administrative orders (приказы)                          |
-| `order_notification`    | Notifications attached to orders                         |
 | `subject_choice`        | Available elective subject choice groups                 |
 | `user_subject_priority` | User's priority ordering for elective subjects           |
 
@@ -91,31 +90,11 @@ After starting the server, API docs are available at:
 - `GET /api/rating/grades` — all grades
 - `GET /api/rating/grade-improvements` — recent grade improvements
 
-### References (Справки)
-
-- `GET /api/references` — list all references
-- `GET /api/references/:id` — reference details
-- `POST /api/references/order` — order new reference
-- `POST /api/references/:id/cancel` — cancel order
-- `POST /api/references/:id/extend-storage` — extend storage period
-- `GET /api/references/:id/pdf` — download PDF
-
-### Orders (Приказы)
-
-- `GET /api/orders` — list orders (filterable by type, paginated)
-- `GET /api/orders/counts` — counts by type
-- `GET /api/orders/:id` — order details with notifications
-- `GET /api/orders/:id/pdf` — download PDF
-
 ### Subjects
 
 - `GET /api/subjects/choices` — active subject choices
 - `GET /api/subjects/user-priorities/:choiceId` — user's priorities
 - `POST /api/subjects/save-priorities` — save priority order
-
-### Dormitory
-
-- `POST /api/dormitory/parent-agreement` — upload parent agreement
 
 ## Health Check
 

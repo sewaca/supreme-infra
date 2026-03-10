@@ -15,6 +15,7 @@ on:
           - auth-ssr
           - web-profile-ssr
           - core-client-info
+          - core-applications
         default: "core-auth-bff"
       # TODO: remove after development (or comment me)
       skip-canary:
