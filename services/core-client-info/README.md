@@ -120,7 +120,7 @@ After starting the server, API docs are available at:
 ## Health Check
 
 ```
-GET /core-client-info/api/status
+GET /core-client-info/status
 ```
 
 ## Metrics

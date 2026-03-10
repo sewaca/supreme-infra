@@ -34,7 +34,7 @@ export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 ## Health Check
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/status"
+curl -X GET "https://your-domain.ru/core-client-info/status"
 ```
 
 Expected response:
@@ -50,14 +50,14 @@ Expected response:
 ### Get User Basic Info
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/profile/user?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/profile/user?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
 ### Get Personal Data (Full Profile)
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/profile/personal-data?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/profile/personal-data?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -95,7 +95,7 @@ Expected response (based on test data):
 ### Get User Settings
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/settings?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/settings?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -113,7 +113,7 @@ Expected response (from test data):
 ### Update Settings
 
 ```bash
-curl -X PUT "https://your-domain.ru/core-client-info/api/settings?user_id=$USER_ID" \
+curl -X PUT "https://your-domain.ru/core-client-info/settings?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"is_new_message_notifications_enabled": false, "telegram_token": "test_token_123"}'
@@ -122,7 +122,7 @@ curl -X PUT "https://your-domain.ru/core-client-info/api/settings?user_id=$USER_
 ### Change Email (Step 1 - Request 2FA)
 
 ```bash
-curl -X POST "https://your-domain.ru/core-client-info/api/settings/email?user_id=$USER_ID" \
+curl -X POST "https://your-domain.ru/core-client-info/settings/email?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"new_email": "newemail@example.com"}'
@@ -137,7 +137,7 @@ Expected response:
 ### Change Email (Step 2 - Confirm with Code)
 
 ```bash
-curl -X POST "https://your-domain.ru/core-client-info/api/settings/email?user_id=$USER_ID" \
+curl -X POST "https://your-domain.ru/core-client-info/settings/email?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"new_email": "newemail@example.com", "confirmation_code": "123456"}'
@@ -150,7 +150,7 @@ curl -X POST "https://your-domain.ru/core-client-info/api/settings/email?user_id
 ### Get Student Stats
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/rating/stats?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/rating/stats?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -170,7 +170,7 @@ Expected response (from test data):
 ### Get Rating Level
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/rating/level?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/rating/level?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -189,7 +189,7 @@ Expected response (from test data):
 ### Get Rankings
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/rating/rankings?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/rating/rankings?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -206,7 +206,7 @@ Expected response (from test data):
 ### Get Achievements
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/rating/achievements?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/rating/achievements?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -244,7 +244,7 @@ Expected response (from test data):
 ### Get Streak
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/rating/streak?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/rating/streak?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -262,11 +262,11 @@ Expected response (from test data):
 
 ```bash
 # All grades
-curl -X GET "https://your-domain.ru/core-client-info/api/rating/grades?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/rating/grades?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 
 # Filter by period
-curl -X GET "https://your-domain.ru/core-client-info/api/rating/grades?user_id=$USER_ID&period=last_session" \
+curl -X GET "https://your-domain.ru/core-client-info/rating/grades?user_id=$USER_ID&period=last_session" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -312,7 +312,7 @@ Expected response (from test data):
 ### Get All References
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/references?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/references?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -329,7 +329,7 @@ Expected response (from test data):
     "pickup_point_id": "spbkt_hr",
     "virtual_only": false,
     "storage_until": "2025-02-14T00:00:00Z",
-    "pdf_url": "/api/references/88888888-8888-8888-8888-888888888888/pdf"
+    "pdf_url": "/references/88888888-8888-8888-8888-888888888888/pdf"
   },
   {
     "id": "88888888-8888-8888-8888-888888888889",
@@ -348,14 +348,14 @@ Expected response (from test data):
 ### Get Reference Details
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/references/88888888-8888-8888-8888-888888888888?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/references/88888888-8888-8888-8888-888888888888?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
 ### Order New Reference
 
 ```bash
-curl -X POST "https://your-domain.ru/core-client-info/api/references/order?user_id=$USER_ID" \
+curl -X POST "https://your-domain.ru/core-client-info/references/order?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"reference_type": "rdzd", "pickup_point_id": "spbkt_hr", "virtual_only": false}'
@@ -364,7 +364,7 @@ curl -X POST "https://your-domain.ru/core-client-info/api/references/order?user_
 ### Cancel Reference
 
 ```bash
-curl -X POST "https://your-domain.ru/core-client-info/api/references/88888888-8888-8888-8888-888888888889/cancel?user_id=$USER_ID" \
+curl -X POST "https://your-domain.ru/core-client-info/references/88888888-8888-8888-8888-888888888889/cancel?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -376,15 +376,15 @@ curl -X POST "https://your-domain.ru/core-client-info/api/references/88888888-88
 
 ```bash
 # First page (default: 20 items)
-curl -X GET "https://your-domain.ru/core-client-info/api/orders?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/orders?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 
 # Filter by type
-curl -X GET "https://your-domain.ru/core-client-info/api/orders?user_id=$USER_ID&type=scholarship,dormitory" \
+curl -X GET "https://your-domain.ru/core-client-info/orders?user_id=$USER_ID&type=scholarship,dormitory" \
   -H "Authorization: Bearer $JWT_TOKEN"
 
 # Pagination
-curl -X GET "https://your-domain.ru/core-client-info/api/orders?user_id=$USER_ID&offset=20&limit=20" \
+curl -X GET "https://your-domain.ru/core-client-info/orders?user_id=$USER_ID&offset=20&limit=20" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -404,11 +404,11 @@ Expected response (from test data):
         "startDate": "2026-02-01",
         "endDate": "2026-04-30"
       },
-      "pdf_url": "/api/orders/99999999-9999-9999-9999-999999999999/pdf",
+      "pdf_url": "/orders/99999999-9999-9999-9999-999999999999/pdf",
       "actions": {
         "primary": {
           "title": "Скачать PDF",
-          "action": "/api/orders/99999999-9999-9999-9999-999999999999/pdf"
+          "action": "/orders/99999999-9999-9999-9999-999999999999/pdf"
         }
       },
       "notifications_count": 1
@@ -424,7 +424,7 @@ Expected response (from test data):
         "dormitoryAddress": "ул. Примерная, д. 10",
         "roomNumber": "305"
       },
-      "pdf_url": "/api/orders/99999999-9999-9999-9999-99999999999a/pdf",
+      "pdf_url": "/orders/99999999-9999-9999-9999-99999999999a/pdf",
       "actions": null,
       "notifications_count": 1
     },
@@ -439,7 +439,7 @@ Expected response (from test data):
         "fromCourse": "3",
         "toCourse": "4"
       },
-      "pdf_url": "/api/orders/99999999-9999-9999-9999-99999999999b/pdf",
+      "pdf_url": "/orders/99999999-9999-9999-9999-99999999999b/pdf",
       "actions": null,
       "notifications_count": 0
     }
@@ -452,7 +452,7 @@ Expected response (from test data):
 ### Get Orders Counts
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/orders/counts?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/orders/counts?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -470,7 +470,7 @@ Expected response (from test data):
 ### Get Order Details
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/orders/99999999-9999-9999-9999-999999999999?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/orders/99999999-9999-9999-9999-999999999999?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -488,11 +488,11 @@ Expected response (from test data):
     "startDate": "2026-02-01",
     "endDate": "2026-04-30"
   },
-  "pdf_url": "/api/orders/99999999-9999-9999-9999-999999999999/pdf",
+  "pdf_url": "/orders/99999999-9999-9999-9999-999999999999/pdf",
   "actions": {
     "primary": {
       "title": "Скачать PDF",
-      "action": "/api/orders/99999999-9999-9999-9999-999999999999/pdf"
+      "action": "/orders/99999999-9999-9999-9999-999999999999/pdf"
     }
   },
   "notifications": [
@@ -512,7 +512,7 @@ Expected response (from test data):
 ### Get Active Subject Choices
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/subjects/choices" \
+curl -X GET "https://your-domain.ru/core-client-info/subjects/choices" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -532,7 +532,7 @@ Expected response (from test data):
 ### Get User Priorities for Choice
 
 ```bash
-curl -X GET "https://your-domain.ru/core-client-info/api/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" \
+curl -X GET "https://your-domain.ru/core-client-info/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN"
 ```
 
@@ -561,7 +561,7 @@ Expected response (from test data):
 ### Save Subject Priorities
 
 ```bash
-curl -X POST "https://your-domain.ru/core-client-info/api/subjects/save-priorities?user_id=$USER_ID" \
+curl -X POST "https://your-domain.ru/core-client-info/subjects/save-priorities?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"choice_id": "math_electives_2026", "priorities": ["math-1", "math-3", "math-2", "math-4"]}'
@@ -580,7 +580,7 @@ Expected response:
 ### Upload Parent Agreement
 
 ```bash
-curl -X POST "https://your-domain.ru/core-client-info/api/dormitory/parent-agreement?user_id=$USER_ID" \
+curl -X POST "https://your-domain.ru/core-client-info/dormitory/parent-agreement?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -F "file=@/path/to/parent-agreement.pdf"
 ```
@@ -596,14 +596,14 @@ export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoid
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 
 echo "=== Health Check ==="
-curl -s "https://your-domain.ru/core-client-info/api/status" | jq .
+curl -s "https://your-domain.ru/core-client-info/status" | jq .
 
 echo -e "\n=== Student Stats ==="
-curl -s "https://your-domain.ru/core-client-info/api/rating/stats?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/rating/stats?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Personal Data ==="
-curl -s "https://your-domain.ru/core-client-info/api/profile/personal-data?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/profile/personal-data?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 ```
 
@@ -614,23 +614,23 @@ export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoid
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 
 echo "=== Rating Level ==="
-curl -s "https://your-domain.ru/core-client-info/api/rating/level?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/rating/level?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Rankings ==="
-curl -s "https://your-domain.ru/core-client-info/api/rating/rankings?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/rating/rankings?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Achievements ==="
-curl -s "https://your-domain.ru/core-client-info/api/rating/achievements?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/rating/achievements?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Streak ==="
-curl -s "https://your-domain.ru/core-client-info/api/rating/streak?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/rating/streak?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Grades ==="
-curl -s "https://your-domain.ru/core-client-info/api/rating/grades?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/rating/grades?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 ```
 
@@ -641,23 +641,23 @@ export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoid
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 
 echo "=== All Orders ==="
-curl -s "https://your-domain.ru/core-client-info/api/orders?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/orders?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Orders Counts ==="
-curl -s "https://your-domain.ru/core-client-info/api/orders/counts?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/orders/counts?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Scholarship Order Details ==="
-curl -s "https://your-domain.ru/core-client-info/api/orders/99999999-9999-9999-9999-999999999999?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/orders/99999999-9999-9999-9999-999999999999?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== All References ==="
-curl -s "https://your-domain.ru/core-client-info/api/references?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/references?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Ready Reference Details ==="
-curl -s "https://your-domain.ru/core-client-info/api/references/88888888-8888-8888-8888-888888888888?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/references/88888888-8888-8888-8888-888888888888?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 ```
 
@@ -668,11 +668,11 @@ export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoid
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 
 echo "=== Active Subject Choices ==="
-curl -s "https://your-domain.ru/core-client-info/api/subjects/choices" \
+curl -s "https://your-domain.ru/core-client-info/subjects/choices" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== User Subject Priorities ==="
-curl -s "https://your-domain.ru/core-client-info/api/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 ```
 
@@ -683,17 +683,17 @@ export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoid
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 
 echo "=== Current Settings ==="
-curl -s "https://your-domain.ru/core-client-info/api/settings?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/settings?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 echo -e "\n=== Update Settings ==="
-curl -s -X PUT "https://your-domain.ru/core-client-info/api/settings?user_id=$USER_ID" \
+curl -s -X PUT "https://your-domain.ru/core-client-info/settings?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"is_new_message_notifications_enabled": false, "telegram_token": "test_telegram_token_123"}' | jq .
 
 echo -e "\n=== Verify Updated Settings ==="
-curl -s "https://your-domain.ru/core-client-info/api/settings?user_id=$USER_ID" \
+curl -s "https://your-domain.ru/core-client-info/settings?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" | jq .
 ```
 
@@ -714,12 +714,12 @@ async def test_api():
         headers = {"Authorization": f"Bearer {TOKEN}"}
 
         # Health check
-        response = await client.get(f"{BASE_URL}/api/status")
+        response = await client.get(f"{BASE_URL}/status")
         print(f"Health: {response.json()}")
 
         # Get settings
         response = await client.get(
-            f"{BASE_URL}/api/settings",
+            f"{BASE_URL}/settings",
             params={"user_id": USER_ID},
             headers=headers
         )
@@ -727,7 +727,7 @@ async def test_api():
 
         # Get rating level
         response = await client.get(
-            f"{BASE_URL}/api/rating/level",
+            f"{BASE_URL}/rating/level",
             params={"user_id": USER_ID},
             headers=headers
         )
@@ -735,7 +735,7 @@ async def test_api():
 
         # Get orders with filters
         response = await client.get(
-            f"{BASE_URL}/api/orders",
+            f"{BASE_URL}/orders",
             params={"user_id": USER_ID, "type": "scholarship", "limit": 5},
             headers=headers
         )
@@ -743,7 +743,7 @@ async def test_api():
 
         # Get all grades
         response = await client.get(
-            f"{BASE_URL}/api/rating/grades",
+            f"{BASE_URL}/rating/grades",
             params={"user_id": USER_ID},
             headers=headers
         )
@@ -751,7 +751,7 @@ async def test_api():
 
         # Get achievements
         response = await client.get(
-            f"{BASE_URL}/api/rating/achievements",
+            f"{BASE_URL}/rating/achievements",
             params={"user_id": USER_ID},
             headers=headers
         )
@@ -778,59 +778,59 @@ echo "Testing core-client-info API with test data..."
 echo
 
 echo "1. Health check..."
-curl -s "$BASE_URL/api/status" | jq .
+curl -s "$BASE_URL/status" | jq .
 echo
 
 echo "2. Get settings..."
-curl -s "$BASE_URL/api/settings?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/settings?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "3. Get student stats..."
-curl -s "$BASE_URL/api/rating/stats?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/rating/stats?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "4. Get rating level..."
-curl -s "$BASE_URL/api/rating/level?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/rating/level?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "5. Get rankings..."
-curl -s "$BASE_URL/api/rating/rankings?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/rating/rankings?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "6. Get achievements..."
-curl -s "$BASE_URL/api/rating/achievements?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/rating/achievements?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "7. Get streak..."
-curl -s "$BASE_URL/api/rating/streak?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/rating/streak?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "8. Get grades..."
-curl -s "$BASE_URL/api/rating/grades?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/rating/grades?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "9. Get orders counts..."
-curl -s "$BASE_URL/api/orders/counts?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/orders/counts?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "10. Get all orders..."
-curl -s "$BASE_URL/api/orders?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/orders?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "11. Get scholarship order details..."
-curl -s "$BASE_URL/api/orders/99999999-9999-9999-9999-999999999999?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/orders/99999999-9999-9999-9999-999999999999?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "12. Get all references..."
-curl -s "$BASE_URL/api/references?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/references?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "13. Get subject choices..."
-curl -s "$BASE_URL/api/subjects/choices" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/subjects/choices" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "14. Get user subject priorities..."
-curl -s "$BASE_URL/api/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
+curl -s "$BASE_URL/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" -H "Authorization: Bearer $TOKEN" | jq .
 echo
 
 echo "All tests completed successfully!"
@@ -868,7 +868,7 @@ export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoid
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 
 # Run any of the examples above with $BASE_URL
-curl -s "$BASE_URL/api/status" | jq .
+curl -s "$BASE_URL/status" | jq .
 ```
 
 ---

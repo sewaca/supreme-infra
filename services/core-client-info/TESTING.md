@@ -22,7 +22,7 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
 Set up environment variables:
 
 ```bash
-export BASE_URL="http://localhost:8000"
+export BASE_URL="https://diploma.sewaca.ru"
 export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidnNldm9sb2QuYnVsZ2Frb3ZAZXhhbXBsZS5jb20iLCJuYW1lIjoi0JLRgdC10LLQvtC70L7QtCDQkdGD0LvQs9Cw0LrQvtCyIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDk5ODU2MDAsImV4cCI6MTc0MTUyMTYwMH0.8xHqnKimVJW8rZ5JvVvhZ9YvGx4vQE5rJ8sK9mN2pLo"
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 ```
@@ -31,43 +31,43 @@ export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 
 ```bash
 # Health
-curl -s "$BASE_URL/api/status" | jq .
+curl -s "$BASE_URL/status" | jq .
 
 # Settings
-curl -s "$BASE_URL/api/settings?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/settings?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Student stats
-curl -s "$BASE_URL/api/rating/stats?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/rating/stats?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Rating level (should show: advanced, 850 XP)
-curl -s "$BASE_URL/api/rating/level?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/rating/level?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Rankings (should show 3 positions)
-curl -s "$BASE_URL/api/rating/rankings?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/rating/rankings?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Achievements (should show 3: 2 unlocked, 1 in progress)
-curl -s "$BASE_URL/api/rating/achievements?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/rating/achievements?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Streak (current: 15, best: 42)
-curl -s "$BASE_URL/api/rating/streak?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/rating/streak?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Grades (should show 4 grades)
-curl -s "$BASE_URL/api/rating/grades?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/rating/grades?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Orders (should show 3 orders)
-curl -s "$BASE_URL/api/orders?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/orders?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Orders counts
-curl -s "$BASE_URL/api/orders/counts?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/orders/counts?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # References (should show 2 references)
-curl -s "$BASE_URL/api/references?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/references?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # Subject choices (should show 1 active choice)
-curl -s "$BASE_URL/api/subjects/choices" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/subjects/choices" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 
 # User priorities (should show 3 subjects)
-curl -s "$BASE_URL/api/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
+curl -s "$BASE_URL/subjects/user-priorities/math_electives_2026?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
 ```
 
 ## Expected Test Data Summary
