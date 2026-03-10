@@ -58,6 +58,12 @@ jobs:
             DB_ENABLED=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.enabled" services.yaml)
           fi
 
+          # If not found in next, check fastapi services
+
+          if [ -z "$DB_ENABLED" ] || [ "$DB_ENABLED" = "null" ]; then
+            DB_ENABLED=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .database.enabled" services.yaml)
+          fi
+
 
           if [ "$DB_ENABLED" != "true" ]; then
             echo "Error: Service $SERVICE_NAME does not have database enabled"
@@ -82,6 +88,10 @@ jobs:
           fi
 
           if [ -z "$DB_NAME" ] || [ "$DB_NAME" = "null" ]; then
+            DB_NAME=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .database.name" services.yaml)
+          fi
+
+          if [ -z "$DB_NAME" ] || [ "$DB_NAME" = "null" ]; then
             DB_NAME="${SERVICE_NAME}_db"
           fi
 
@@ -91,6 +101,10 @@ jobs:
 
           if [ -z "$DB_USER" ] || [ "$DB_USER" = "null" ]; then
             DB_USER=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.user" services.yaml)
+          fi
+
+          if [ -z "$DB_USER" ] || [ "$DB_USER" = "null" ]; then
+            DB_USER=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .database.user" services.yaml)
           fi
 
           if [ -z "$DB_USER" ] || [ "$DB_USER" = "null" ]; then
