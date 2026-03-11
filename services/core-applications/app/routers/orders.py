@@ -84,11 +84,10 @@ async def get_order(order_id: UUID, user_id: UUID, db: AsyncSession = Depends(ge
     order = result.scalar_one_or_none()
     if order is None:
         from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail="Order not found")
 
-    notifications_result = await db.execute(
-        select(OrderNotification).where(OrderNotification.order_id == order_id)
-    )
+        raise HTTPException(status_code=404, code="NOT_FOUND")
+
+    notifications_result = await db.execute(select(OrderNotification).where(OrderNotification.order_id == order_id))
     notifications = notifications_result.scalars().all()
 
     return OrderDetailResponse(
@@ -101,8 +100,7 @@ async def get_order(order_id: UUID, user_id: UUID, db: AsyncSession = Depends(ge
         pdf_url=order.pdf_url,
         actions=order.actions,
         notifications=[
-            OrderNotificationResponse(severity=n.severity, message=n.message, action=n.action)
-            for n in notifications
+            OrderNotificationResponse(severity=n.severity, message=n.message, action=n.action) for n in notifications
         ],
     )
 

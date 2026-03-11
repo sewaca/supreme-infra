@@ -1,16 +1,15 @@
-from app.models.user import UserSettings
-from app.models.student import StudentStats
-from app.models.rating import RatingLevel, RankingPosition, UserAchievement, Streak, UserGrade
+from app.models.rating import RankingPosition, RatingLevel, Streak, UserAchievement, UserGrade
 from app.models.subject import SubjectChoice, UserSubjectPriority
+from app.models.user import User, UserSettings
 
 __all__ = [
-    "UserSettings",
-    "StudentStats",
-    "RatingLevel",
     "RankingPosition",
-    "UserAchievement",
+    "RatingLevel",
     "Streak",
-    "UserGrade",
     "SubjectChoice",
+    "User",
+    "UserAchievement",
+    "UserGrade",
+    "UserSettings",
     "UserSubjectPriority",
 ]

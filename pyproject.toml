@@ -1,0 +1,90 @@
+[project]
+name = "supreme-infra"
+version = "1.0.0"
+description = "Supreme infrastructure monorepo"
+requires-python = ">=3.12"
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.8.0",
+]
+
+[tool.ruff]
+# Exclude directories
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "node_modules",
+    ".pytest_cache",
+    ".mypy_cache",
+    "dist",
+    "build",
+    "*.egg-info",
+]
+
+# Line length matching Biome's lineWidth
+line-length = 120
+
+# Python version
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable recommended rules similar to Biome
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort (import sorting)
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "SIM",    # flake8-simplify
+    "RET",    # flake8-return
+    "PTH",    # flake8-use-pathlib
+    "ERA",    # eradicate (commented-out code)
+    "PL",     # pylint
+    "PERF",   # perflint (performance)
+    "RUF",    # ruff-specific rules
+]
+
+# Ignore specific rules
+ignore = [
+    "E501",     # line too long (handled by formatter)
+    "PLR0913",  # too many arguments
+    "PLR2004",  # magic value comparison
+    "B008",     # function call in default argument (FastAPI Depends/Query pattern)
+    "PLC0415",  # import outside top-level (sometimes needed for conditional imports)
+]
+
+# Allow fix for all enabled rules
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+# Use spaces for indentation (matching Biome's indentStyle)
+indent-style = "space"
+
+# Quote style (matching Biome's quoteStyle: 'single' for JS, but Python convention is double)
+quote-style = "double"
+
+# Line ending style
+line-ending = "auto"
+
+# Skip magic trailing comma
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint.isort]
+# Import sorting configuration
+combine-as-imports = true
+force-wrap-aliases = true
+known-first-party = ["app"]
+
+[tool.ruff.lint.pylint]
+# Pylint-specific settings
+max-args = 10
+max-branches = 15
+max-returns = 8
+max-statements = 60

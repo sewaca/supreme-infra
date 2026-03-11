@@ -16,7 +16,9 @@ class RatingLevel(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, nullable=False, index=True)
     level: Mapped[str] = mapped_column(String, nullable=False, default="novice")
     current_xp: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
 
 
 class RankingPosition(Base):
@@ -51,7 +53,9 @@ class Streak(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, nullable=False, index=True)
     current: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     best: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    last_updated: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    last_updated: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
 
 
 class UserGrade(Base):

@@ -22,7 +22,9 @@ async def get_settings(user_id: UUID, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(UserSettings).where(UserSettings.user_id == user_id))
     settings = result.scalar_one_or_none()
     if settings is None:
-        return SettingsResponse(is_new_message_notifications_enabled=True, is_schedule_change_notifications_enabled=True)
+        return SettingsResponse(
+            is_new_message_notifications_enabled=True, is_schedule_change_notifications_enabled=True
+        )
     return SettingsResponse(
         is_new_message_notifications_enabled=settings.is_new_message_notifications_enabled,
         is_schedule_change_notifications_enabled=settings.is_schedule_change_notifications_enabled,

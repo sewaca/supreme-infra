@@ -13,7 +13,7 @@ router = APIRouter(prefix="/subjects", tags=["subjects"])
 
 @router.get("/choices", response_model=list[SubjectChoiceResponse])
 async def get_choices(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(SubjectChoice).where(SubjectChoice.is_active == True))
+    result = await db.execute(select(SubjectChoice).where(SubjectChoice.is_active))
     choices = result.scalars().all()
     return [
         SubjectChoiceResponse(id=c.id, choice_id=c.choice_id, deadline_date=c.deadline_date, is_active=c.is_active)
@@ -27,6 +27,7 @@ async def get_user_priorities(choice_id: str, user_id: UUID, db: AsyncSession = 
     choice = choice_result.scalar_one_or_none()
     if choice is None:
         from fastapi import HTTPException
+
         raise HTTPException(status_code=404, detail="Subject choice not found")
 
     result = await db.execute(
@@ -47,6 +48,7 @@ async def save_priorities(user_id: UUID, body: SavePrioritiesRequest, db: AsyncS
     choice = choice_result.scalar_one_or_none()
     if choice is None:
         from fastapi import HTTPException
+
         raise HTTPException(status_code=404, detail="Subject choice not found")
 
     existing_result = await db.execute(
@@ -60,7 +62,9 @@ async def save_priorities(user_id: UUID, body: SavePrioritiesRequest, db: AsyncS
         if subject_id in existing:
             existing[subject_id].priority = priority_idx
         else:
-            db.add(UserSubjectPriority(user_id=user_id, choice_id=choice.id, subject_id=subject_id, priority=priority_idx))
+            db.add(
+                UserSubjectPriority(user_id=user_id, choice_id=choice.id, subject_id=subject_id, priority=priority_idx)
+            )
 
     await db.flush()
     return {"status": "success"}

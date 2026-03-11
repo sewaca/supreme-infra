@@ -5,12 +5,12 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models.rating import RatingLevel, RankingPosition, Streak, UserAchievement, UserGrade
-from app.models.student import StudentStats
+from app.models.rating import RankingPosition, RatingLevel, Streak, UserAchievement, UserGrade
+from app.models.user import User
 from app.schemas.rating import (
     GradeImprovementResponse,
-    RatingLevelResponse,
     RankingPositionResponse,
+    RatingLevelResponse,
     StreakResponse,
     StudentStatsResponse,
     UserAchievementResponse,
@@ -22,21 +22,21 @@ router = APIRouter(prefix="/rating", tags=["rating"])
 
 @router.get("/stats", response_model=StudentStatsResponse)
 async def get_stats(user_id: UUID, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(StudentStats).where(StudentStats.user_id == user_id))
-    stats = result.scalar_one_or_none()
-    if stats is None:
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    if user is None:
         return StudentStatsResponse()
     return StudentStatsResponse(
-        course=stats.course,
-        faculty=stats.faculty,
-        specialty=stats.specialty,
-        direction=stats.direction,
-        profile=stats.profile,
-        group=stats.group,
-        status=stats.status,
-        qualification=stats.qualification,
-        average_grade=stats.average_grade,
-        education_form=stats.education_form,
+        course=user.course,
+        faculty=user.faculty,
+        specialty=user.specialty,
+        direction=user.direction,
+        profile=user.profile,
+        group=user.group,
+        status=user.status,
+        qualification=user.qualification,
+        average_grade=user.average_grade,
+        education_form=user.education_form,
     )
 
 

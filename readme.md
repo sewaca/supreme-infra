@@ -233,6 +233,8 @@ Examples of correctly named PRs:
 
 #### Code Formatting & Linting
 
+##### JavaScript/TypeScript
+
 We use **Biome** as our primary code formatter and linter:
 
 - **Indentation**: 2 spaces
@@ -264,6 +266,32 @@ We use **Biome** as our primary code formatter and linter:
     }
   }
 }
+```
+
+##### Python
+
+We use **Ruff** as our Python formatter and linter (equivalent to Biome for Python):
+
+- **Indentation**: 4 spaces (Python standard)
+- **Quotes**: Double quotes
+- **Line length**: 120 characters (matching Biome)
+- **Import sorting**: Enabled with isort
+- **Python version**: 3.12+
+
+**Ruff configuration** (`pyproject.toml`):
+
+```toml
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "RET", "PTH", "ERA", "PL", "PERF", "RUF"]
+ignore = ["B008", "PLC0415"]  # Allow FastAPI patterns
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"
 ```
 
 #### TypeScript Configuration
@@ -443,8 +471,13 @@ import { PostSummary } from "./types";
 **Available commands**:
 
 ```bash
-pnpm lint              # Run Biome linting
-pnpm format            # Run Biome formatting
+# JavaScript/TypeScript
+pnpm lint              # Run Biome and Ruff linting
+pnpm format            # Run Biome, Prettier, and Ruff formatting
+pnpm format:biome      # Run Biome formatting only
+pnpm format:python     # Run Ruff formatting only
+
+# Code generation
 pnpm generate:router   # Generate service router configuration
 pnpm generate:overrides # Generate Helm overrides
 pnpm generate          # Run all generators

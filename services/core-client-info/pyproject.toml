@@ -31,6 +31,7 @@ dev = [
     "httpx>=0.28.0",
     "pip-audit>=2.7.0",
     "bandit>=1.8.0",
+    "ruff>=0.8.0",
 ]
 
 [build-system]

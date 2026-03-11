@@ -3,8 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import settings
-from app.database import engine, Base
+from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.routers import applications, dormitory, orders, references, status
 
