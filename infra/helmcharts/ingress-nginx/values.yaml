@@ -100,6 +100,14 @@ ingress:
           method: GET
         - path: /core-client-info/rating/streak
           method: GET
+        - path: /core-client-info/settings
+          method: GET
+        - path: /core-client-info/settings
+          method: PUT
+        - path: /core-client-info/settings/email
+          method: POST
+        - path: /core-client-info/settings/password
+          method: POST
         - path: /core-client-info/subjects/choices
           method: GET
         - path: /core-client-info/subjects/save-priorities

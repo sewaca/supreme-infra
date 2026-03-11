@@ -17,8 +17,8 @@ const APIROUTER_PREFIX_REGEX = /APIRouter\s*\(\s*[^)]*prefix\s*=\s*["']([^"']*)[
 // Matches app.include_router(module.router) or app.include_router(module.router, prefix="/xxx")
 const INCLUDE_ROUTER_REGEX = /include_router\s*\(\s*(\w+)\.router\s*(?:,\s*[^)]*prefix\s*=\s*["']([^"']*)["'])?\s*\)/;
 
-// Matches: from app.routers import a, b, c as d
-const ROUTER_IMPORT_REGEX = /from\s+app\.routers\s+import\s+([\w\s,]+)/;
+// Matches: from app.routers import a, b, c as d (single line or multiline with parentheses)
+const ROUTER_IMPORT_REGEX = /from\s+app\.routers\s+import\s+(?:\(([^)]+)\)|([\w\s,]+))/s;
 
 function convertFastapiPathToRegex(routePath: string): string {
   // FastAPI uses {param} for path parameters
@@ -38,9 +38,15 @@ function parseRouterImports(mainContent: string): Map<string, string> {
   const match = ROUTER_IMPORT_REGEX.exec(mainContent);
   if (!match) return aliasToModule;
 
-  const importList = match[1];
+  // match[1] is for parenthesized imports, match[2] is for single-line imports
+  const importList = match[1] || match[2];
+  if (!importList) return aliasToModule;
+
   // Parse "dormitory, orders, profile, rating, references, settings as settings_router, status, subjects"
-  const items = importList.split(',').map((s) => s.trim());
+  const items = importList
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
   for (const item of items) {
     if (item.includes(' as ')) {
       const [moduleName, alias] = item.split(/\s+as\s+/).map((s) => s.trim());
