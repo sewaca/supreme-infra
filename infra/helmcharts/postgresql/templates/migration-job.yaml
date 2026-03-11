@@ -1,4 +1,4 @@
-{{- if .Values.migrations }}
+{{- if and .Values.migrations (ne .Values.skipMigrations true) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -22,6 +22,44 @@ spec:
         - name: migrations
           configMap:
             name: {{ include "postgresql.fullname" . }}-migrations
+      initContainers:
+        - name: wait-for-db
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "=========================================="
+              echo "Waiting for PostgreSQL to be ready..."
+              echo "=========================================="
+              echo "Host: {{ include "postgresql.fullname" . }}"
+              echo "Port: 5432"
+              echo "User: {{ .Values.database.user }}"
+              echo ""
+              
+              MAX_RETRIES=30
+              RETRY_COUNT=0
+              
+              until pg_isready -h {{ include "postgresql.fullname" . }} -p 5432 -U {{ .Values.database.user }}; do
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+                  echo "✗ PostgreSQL did not become ready after $MAX_RETRIES attempts"
+                  echo "Please check if PostgreSQL pod is running:"
+                  echo "  kubectl get pods -l app.kubernetes.io/name=postgresql"
+                  exit 1
+                fi
+                echo "PostgreSQL is not ready yet (attempt $RETRY_COUNT/$MAX_RETRIES), waiting..."
+                sleep 2
+              done
+              
+              echo ""
+              echo "✓ PostgreSQL is ready!"
+              echo "=========================================="
+          env:
+            - name: PGHOST
+              value: {{ include "postgresql.fullname" . }}
+            - name: PGPORT
+              value: "5432"
       containers:
         - name: migration
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -29,19 +67,58 @@ spec:
             - /bin/sh
             - -c
             - |
-              echo "Starting database migrations..."
+              set -e
+              echo "=========================================="
+              echo "Starting database migrations"
+              echo "=========================================="
+              echo "Database: $POSTGRES_DB"
+              echo "User: $POSTGRES_USER"
+              echo "Host: $PGHOST:$PGPORT"
+              echo ""
+              
+              # Test connection first
+              echo "Testing database connection..."
+              if ! psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT version();" > /dev/null 2>&1; then
+                echo "✗ Failed to connect to database"
+                echo "Connection details:"
+                echo "  Host: $PGHOST"
+                echo "  Port: $PGPORT"
+                echo "  Database: $POSTGRES_DB"
+                echo "  User: $POSTGRES_USER"
+                exit 1
+              fi
+              echo "✓ Database connection successful"
+              echo ""
+              
               cd /migrations
+              MIGRATION_COUNT=$(ls *.sql 2>/dev/null | wc -l)
+              
+              if [ "$MIGRATION_COUNT" -eq 0 ]; then
+                echo "No migrations found in /migrations"
+                exit 0
+              fi
+              
+              echo "Found $MIGRATION_COUNT migration(s) to apply"
+              echo ""
+              
               for file in $(ls *.sql | sort); do
+                echo "----------------------------------------"
                 echo "Applying migration: $file"
-                psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$file"
-                if [ $? -eq 0 ]; then
+                echo "----------------------------------------"
+                
+                if psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$file" 2>&1; then
                   echo "✓ Successfully applied: $file"
                 else
                   echo "✗ Failed to apply: $file"
+                  echo "Migration failed, aborting..."
                   exit 1
                 fi
+                echo ""
               done
+              
+              echo "=========================================="
               echo "All migrations completed successfully!"
+              echo "=========================================="
           env:
             - name: POSTGRES_DB
               value: {{ .Values.database.name }}

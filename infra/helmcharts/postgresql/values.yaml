@@ -49,6 +49,10 @@ initScript: ""
 # Format: { "001_migration.sql": "content", "002_migration.sql": "content" }
 migrations: {}
 
+# Skip migrations (emergency use only)
+# Set to true to skip migration job during upgrade
+skipMigrations: false
+
 # Environment overrides (default values for each environment)
 # These are applied if service.yaml doesn't specify environment-specific values
 # Priority: base values < environment overrides < service.yaml base < service.yaml overrides

@@ -329,3 +329,4 @@ migrations:
         ('cccccccc-cccc-cccc-cccc-ccccccccccce', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'math-2', 2)
     ON CONFLICT (user_id, choice_id, subject_id) DO NOTHING;
 
+skipMigrations: false

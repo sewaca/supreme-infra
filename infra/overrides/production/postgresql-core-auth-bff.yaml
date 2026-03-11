@@ -58,3 +58,4 @@ initScript: >+
   ON CONFLICT (email) DO NOTHING;
 
 migrations: {}
+skipMigrations: false
