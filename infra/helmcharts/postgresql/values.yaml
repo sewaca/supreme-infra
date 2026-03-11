@@ -44,6 +44,11 @@ securityContext:
 # This will be mounted to /docker-entrypoint-initdb.d/
 initScript: ""
 
+# Migrations (SQL files to run on every upgrade)
+# This will be executed via Kubernetes Job with post-upgrade hook
+# Format: { "001_migration.sql": "content", "002_migration.sql": "content" }
+migrations: {}
+
 # Environment overrides (default values for each environment)
 # These are applied if service.yaml doesn't specify environment-specific values
 # Priority: base values < environment overrides < service.yaml base < service.yaml overrides

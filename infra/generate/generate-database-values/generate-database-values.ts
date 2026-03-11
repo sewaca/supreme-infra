@@ -74,6 +74,7 @@ function buildFinalValues(
   serviceConfig: DatabaseServiceConfig | null,
   environment: 'development' | 'production',
   initScript: string,
+  migrations: Record<string, string>,
 ): Record<string, unknown> {
   // Start with base values
   let result: Record<string, unknown> = { ...baseValues };
@@ -87,6 +88,9 @@ function buildFinalValues(
     // No service config, return base values + chart overrides + init script
     if (initScript) {
       result.initScript = initScript;
+    }
+    if (Object.keys(migrations).length > 0) {
+      result.migrations = migrations;
     }
     return result;
   }
@@ -129,6 +133,11 @@ function buildFinalValues(
     result.initScript = initScript;
   }
 
+  // Add migrations if exist
+  if (Object.keys(migrations).length > 0) {
+    result.migrations = migrations;
+  }
+
   return result;
 }
 
@@ -154,6 +163,23 @@ function generateDatabaseValuesForService(service: ServiceWithDatabase, baseChar
     console.log(`  ✓ Found init script: infra/databases/${serviceName}-db/init.sql`);
   }
 
+  // Read migrations if exist
+  const migrationsDir = path.join(projectRoot, 'infra/databases', `${serviceName}-db/migrations`);
+  const migrations: Record<string, string> = {};
+  if (fs.existsSync(migrationsDir)) {
+    const migrationFiles = fs
+      .readdirSync(migrationsDir)
+      .filter((f) => f.endsWith('.sql'))
+      .sort();
+    for (const file of migrationFiles) {
+      const content = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');
+      migrations[file] = content;
+    }
+    if (migrationFiles.length > 0) {
+      console.log(`  ✓ Found ${migrationFiles.length} migration(s): ${migrationFiles.join(', ')}`);
+    }
+  }
+
   // Get service configuration
   const serviceConfig = getServiceConfig(serviceName, projectRoot);
 
@@ -163,7 +189,7 @@ function generateDatabaseValuesForService(service: ServiceWithDatabase, baseChar
   for (const env of environments) {
     const baseValues = getDefaultDatabaseValues(serviceName, dbName, dbUser, baseChartValues);
     const baseChartEnvOverrides = baseChartValues.overrides?.[env] as Record<string, unknown> | undefined;
-    const finalValues = buildFinalValues(baseValues, baseChartEnvOverrides, serviceConfig, env, initScript);
+    const finalValues = buildFinalValues(baseValues, baseChartEnvOverrides, serviceConfig, env, initScript, migrations);
 
     // Add header comment
     const header = [

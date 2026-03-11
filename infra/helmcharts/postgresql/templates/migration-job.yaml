@@ -1,0 +1,62 @@
+{{- if .Values.migrations }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "postgresql.fullname" . }}-migration-{{ now | date "20060102-150405" }}
+  labels:
+    {{- include "postgresql.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ include "postgresql.fullname" . }}-migration
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: migrations
+          configMap:
+            name: {{ include "postgresql.fullname" . }}-migrations
+      containers:
+        - name: migration
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Starting database migrations..."
+              cd /migrations
+              for file in $(ls *.sql | sort); do
+                echo "Applying migration: $file"
+                psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$file"
+                if [ $? -eq 0 ]; then
+                  echo "✓ Successfully applied: $file"
+                else
+                  echo "✗ Failed to apply: $file"
+                  exit 1
+                fi
+              done
+              echo "All migrations completed successfully!"
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.database.name }}
+            - name: POSTGRES_USER
+              value: {{ .Values.database.user }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "postgresql.fullname" . }}-secret
+                  key: POSTGRES_PASSWORD
+            - name: PGHOST
+              value: {{ include "postgresql.fullname" . }}
+            - name: PGPORT
+              value: "5432"
+          volumeMounts:
+            - name: migrations
+              mountPath: /migrations
+{{- end }}

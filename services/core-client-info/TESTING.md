@@ -2,19 +2,51 @@
 
 ## Setup Test Data
 
-1. **Run database migrations:**
+The database is automatically initialized with test data when deployed via Helm:
+
+1. **Initial setup** (`init.sql`): Creates schema and tables on first database creation
+2. **Migrations** (`migrations/*.sql`): Applied on every `helm upgrade` to ensure test data exists
+
+### Manual setup (for local development)
+
+If you're running locally without Helm:
 
 ```bash
 cd services/core-client-info
 uv run alembic upgrade head
 ```
 
-This will create all tables and insert test data for user `550e8400-e29b-41d4-a716-446655440000`.
+Then manually insert test data from `infra/databases/core-client-info-db/migrations/001_initial_user.sql`.
 
 2. **Start the service:**
 
 ```bash
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+## Verify Test Data in Database
+
+Before running API tests, verify the test user exists:
+
+```bash
+kubectl exec -n supreme-infra postgresql-core-client-info-0 -- \
+  psql -U core_client_info_user -d core_client_info_db \
+  -c "SELECT id, name, last_name, email, course, faculty FROM \"user\" WHERE id = '550e8400-e29b-41d4-a716-446655440000';"
+```
+
+Expected output:
+
+```
+                  id                  | name | last_name |          email           | course | faculty
+--------------------------------------+------+-----------+--------------------------+--------+---------
+ 550e8400-e29b-41d4-a716-446655440000 | Иван | Иванов    | ivan.ivanov@example.com |      4 | ИТПИ
+(1 row)
+```
+
+If the user doesn't exist, check migration job logs:
+
+```bash
+kubectl logs -n supreme-infra -l app=postgresql-core-client-info-migration --tail=50
 ```
 
 ## Quick Test Commands
@@ -401,15 +433,58 @@ JWT_SECRET=local-development-secret
 
 ### No Test Data
 
-If queries return empty results, re-run migrations:
+If queries return empty results:
+
+**For Kubernetes deployment:**
+
+```bash
+# Check if migrations ran successfully
+kubectl logs -n supreme-infra -l app=postgresql-core-client-info-migration --tail=50
+
+# Verify user exists in database
+kubectl exec -n supreme-infra postgresql-core-client-info-0 -- \
+  psql -U core_client_info_user -d core_client_info_db \
+  -c "SELECT id, name, last_name, email FROM \"user\" WHERE id = '550e8400-e29b-41d4-a716-446655440000';"
+
+# If user doesn't exist, trigger database upgrade via GitHub Actions
+# This will run the migration job automatically
+```
+
+**For local development:**
 
 ```bash
 uv run alembic downgrade base
 uv run alembic upgrade head
 ```
 
+## Database Migrations
+
+The database uses a two-tier system:
+
+1. **init.sql** - Runs once on first database creation (schema, tables, indexes)
+2. **migrations/** - Run on every `helm upgrade` (data updates, test users)
+
+To add new test data or schema changes, create a migration file:
+
+```bash
+# Create new migration
+cd infra/databases/core-client-info-db/migrations
+touch 002_my_migration.sql
+
+# Write idempotent SQL
+echo "INSERT INTO \"user\" (...) VALUES (...) ON CONFLICT (id) DO NOTHING;" > 002_my_migration.sql
+
+# Regenerate values
+pnpm run generate
+
+# Deploy (migrations run automatically)
+```
+
+See `infra/databases/DATABASE_MIGRATIONS.md` for complete documentation.
+
 ## See Also
 
 - `API_EXAMPLES.md` — Complete API documentation with all endpoints
 - `JWT_FORMAT.md` — JWT structure and how to generate custom tokens
 - `README.md` — Service overview and setup instructions
+- `infra/databases/DATABASE_MIGRATIONS.md` — Database migration system documentation

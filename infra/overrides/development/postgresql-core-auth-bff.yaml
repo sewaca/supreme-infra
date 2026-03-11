@@ -57,3 +57,4 @@ initScript: >+
     ('user@example.com', '$2b$10$4INUj5alxEjHmoM/szXUBeIMDLowl42WnqOxJoULh.3qDFmnj/e9.', 'Regular User', 'user', NOW())
   ON CONFLICT (email) DO NOTHING;
 
+migrations: {}
