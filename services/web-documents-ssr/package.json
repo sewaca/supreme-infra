@@ -35,7 +35,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-use": "catalog:",
-    "turbopack-inline-svg-loader": "^1.0.2",
+    "turbopack-inline-svg-loader": "catalog:",
     "typescript": "catalog:"
   },
   "devDependencies": {

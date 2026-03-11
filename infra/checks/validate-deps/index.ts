@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-const ROOT = path.join(__dirname, '../..');
+const ROOT = path.join(__dirname, '../../..');
 const WORKSPACES = ['services', 'packages'];
 const DEP_FIELDS = ['dependencies', 'devDependencies', 'optionalDependencies'] as const;
 const ALLOWED_PREFIXES = ['catalog:', 'workspace:'];

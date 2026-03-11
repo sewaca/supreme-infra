@@ -85,6 +85,7 @@ catalog:
   ts-node: 10.9.2
   tsconfig-paths: 4.2.0
   tsx: 4.20.6
+  turbopack-inline-svg-loader: 1.0.2
   typeorm: 0.3.28
   typescript: 5.9.3
   unplugin-swc: 1.5.9

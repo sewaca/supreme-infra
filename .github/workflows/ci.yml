@@ -48,6 +48,7 @@ jobs:
         shell: bash
       - name: lint
         run: pnpm lint
+
   check-tsc:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
@@ -70,6 +71,30 @@ jobs:
         shell: bash
       - name: pnpm tsc
         run: pnpm -r tsc
+
+  check-deps:
+    runs-on: ubuntu-latest
+    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    strategy:
+      matrix:
+        node-version: [24]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
+      - name: pnpm lint:deps
+        run: pnpm lint:deps
+
   check-unit:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'

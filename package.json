@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "biome check && ruff check .",
-    "lint:deps": "tsx infra/validate-deps/index.ts",
+    "lint:deps": "tsx infra/checks/validate-deps/index.ts",
     "format": "pnpm run format:biome && pnpm run format:prettier && pnpm run format:python",
     "format:biome": "biome check --fix",
     "format:prettier": "prettier --write \"**/*.{md,yaml,yml}\" --ignore-unknown",
