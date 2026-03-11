@@ -142,10 +142,19 @@ spec:
                 secretKeyRef:
                   name: {{ include "postgresql.fullname" . }}-secret
                   key: POSTGRES_PASSWORD
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "postgresql.fullname" . }}-secret
+                  key: POSTGRES_PASSWORD
             - name: PGHOST
               value: {{ include "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGPORT
               value: "5432"
+            - name: PGUSER
+              value: {{ .Values.database.user }}
+            - name: PGDATABASE
+              value: {{ .Values.database.name }}
           volumeMounts:
             - name: migrations
               mountPath: /migrations
