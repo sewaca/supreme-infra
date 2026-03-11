@@ -32,7 +32,7 @@ spec:
               echo "=========================================="
               echo "Waiting for PostgreSQL to be ready..."
               echo "=========================================="
-              echo "Host: {{ include "postgresql.fullname" . }}"
+              echo "Host: {{ include "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
               echo "Port: 5432"
               echo "User: {{ .Values.database.user }}"
               echo ""
@@ -40,7 +40,7 @@ spec:
               MAX_RETRIES=30
               RETRY_COUNT=0
               
-              until pg_isready -h {{ include "postgresql.fullname" . }} -p 5432 -U {{ .Values.database.user }}; do
+              until pg_isready -h {{ include "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local -p 5432 -U {{ .Values.database.user }}; do
                 RETRY_COUNT=$((RETRY_COUNT + 1))
                 if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
                   echo "✗ PostgreSQL did not become ready after $MAX_RETRIES attempts"
@@ -57,7 +57,7 @@ spec:
               echo "=========================================="
           env:
             - name: PGHOST
-              value: {{ include "postgresql.fullname" . }}
+              value: {{ include "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGPORT
               value: "5432"
       containers:
@@ -78,16 +78,29 @@ spec:
               
               # Test connection first
               echo "Testing database connection..."
-              if ! psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT version();" > /dev/null 2>&1; then
+              echo "Attempting to connect..."
+              
+              if psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT version();" 2>&1; then
+                echo ""
+                echo "✓ Database connection successful"
+              else
+                echo ""
                 echo "✗ Failed to connect to database"
+                echo ""
                 echo "Connection details:"
                 echo "  Host: $PGHOST"
                 echo "  Port: $PGPORT"
                 echo "  Database: $POSTGRES_DB"
                 echo "  User: $POSTGRES_USER"
+                echo ""
+                echo "Debugging information:"
+                echo "  Checking if host resolves..."
+                nslookup $PGHOST || echo "  DNS lookup failed"
+                echo ""
+                echo "  Checking if port is open..."
+                nc -zv $PGHOST $PGPORT 2>&1 || echo "  Port check failed"
                 exit 1
               fi
-              echo "✓ Database connection successful"
               echo ""
               
               cd /migrations
@@ -130,7 +143,7 @@ spec:
                   name: {{ include "postgresql.fullname" . }}-secret
                   key: POSTGRES_PASSWORD
             - name: PGHOST
-              value: {{ include "postgresql.fullname" . }}
+              value: {{ include "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGPORT
               value: "5432"
           volumeMounts:
