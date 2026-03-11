@@ -121,6 +121,35 @@ CREATE INDEX IF NOT EXISTS idx_user_subject_priority_user_id ON user_subject_pri
 
 -- Insert test data for user_id: 550e8400-e29b-41d4-a716-446655440000
 
+INSERT INTO "user" (id, name, last_name, middle_name, email, avatar, birth_date, snils, snils_issue_date, region, course, faculty, specialty, direction, profile, "group", status, qualification, start_year, end_year, student_card_number, university, average_grade, education_form)
+VALUES (
+    '550e8400-e29b-41d4-a716-446655440000',
+    'Иван',
+    'Иванов',
+    'Иванович',
+    'ivan.ivanov@example.com',
+    NULL,
+    '2000-01-15',
+    '123-456-789 00',
+    '2015-06-01',
+    'Санкт-Петербург',
+    4,
+    'ИТПИ',
+    'Информатика и вычислительная техника',
+    NULL,
+    NULL,
+    '1234',
+    'active',
+    'bachelor',
+    2022,
+    2026,
+    'STU123456',
+    'СПбГУТ им. Бонч-Бруевича',
+    4.75,
+    'full_time'
+)
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO user_settings (id, user_id, is_new_message_notifications_enabled, is_schedule_change_notifications_enabled, telegram_token, vk_token)
 VALUES (
     '11111111-1111-1111-1111-111111111111',
