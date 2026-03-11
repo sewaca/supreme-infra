@@ -2,10 +2,15 @@
   "name": "@supreme-int/api-client",
   "version": "1.0.0",
   "scripts": {
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "generate": "openapi-ts",
+    "generate:schemas": "node scripts/copy-schemas.mjs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@hey-api/client-fetch": "catalog:"
+  },
   "devDependencies": {
+    "@hey-api/openapi-ts": "catalog:",
     "@types/node": "catalog:",
     "next": "catalog:",
     "typescript": "catalog:"

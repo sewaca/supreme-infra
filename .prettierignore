@@ -20,4 +20,4 @@ yarn.lock
 # Cache
 .cache
 .turbo
-
+.venv

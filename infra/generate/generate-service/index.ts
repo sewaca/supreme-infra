@@ -336,6 +336,89 @@ function updateServicesYaml(config: ServiceConfig): void {
   fs.writeFileSync(SERVICES_YAML_PATH, yamlContent);
 }
 
+function updateOpenapiTsConfig(config: ServiceConfig): void {
+  if (config.serviceType !== 'fastapi') {
+    return;
+  }
+
+  const apiClientDir = path.join(__dirname, '../../../packages/api-client');
+  const openapiConfigPath = path.join(apiClientDir, 'openapi-ts.config.ts');
+
+  if (!fs.existsSync(openapiConfigPath)) {
+    console.log('⚠ openapi-ts.config.ts not found, skipping update');
+    return;
+  }
+
+  const content = fs.readFileSync(openapiConfigPath, 'utf-8');
+
+  // Parse the existing config to extract input and output arrays
+  const inputMatch = content.match(/input:\s*\[(.*?)\]/s);
+  const outputMatch = content.match(/output:\s*\[(.*?)\]/s);
+
+  if (!inputMatch || !outputMatch) {
+    console.log('⚠ Could not parse openapi-ts.config.ts, skipping update');
+    return;
+  }
+
+  // Extract existing entries
+  const inputEntries = inputMatch[1]
+    .split(',')
+    .map((e) => e.trim())
+    .filter((e) => e.length > 0);
+  const outputEntries = outputMatch[1]
+    .split(',')
+    .map((e) => e.trim())
+    .filter((e) => e.length > 0);
+
+  // Add new service
+  inputEntries.push(`'./schemas/${config.serviceName}.json'`);
+  outputEntries.push(`'./src/${config.serviceName}'`);
+
+  // Generate new config
+  const newConfig = `import { defineConfig } from '@hey-api/openapi-ts';
+
+export default defineConfig({
+  input: [${inputEntries.join(', ')}],
+  output: [${outputEntries.join(', ')}],
+});
+`;
+
+  fs.writeFileSync(openapiConfigPath, newConfig);
+}
+
+function updateApiClientIndex(config: ServiceConfig): void {
+  if (config.serviceType !== 'fastapi') {
+    return;
+  }
+
+  const apiClientDir = path.join(__dirname, '../../../packages/api-client');
+  const indexPath = path.join(apiClientDir, 'src', 'index.ts');
+
+  if (!fs.existsSync(indexPath)) {
+    console.log('⚠ api-client/src/index.ts not found, skipping update');
+    return;
+  }
+
+  const content = fs.readFileSync(indexPath, 'utf-8');
+
+  // Convert service-name to PascalCase for namespace
+  const namespaceName = config.serviceName
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+
+  const exportLine = `export * as ${namespaceName} from './${config.serviceName}';`;
+
+  // Check if export already exists
+  if (content.includes(exportLine) || content.includes(`from './${config.serviceName}'`)) {
+    return;
+  }
+
+  // Add export at the end
+  const newContent = `${content.trimEnd()}\n${exportLine}\n`;
+  fs.writeFileSync(indexPath, newContent);
+}
+
 async function generateService(): Promise<void> {
   console.log('═══════════════════════════════════════════════════════════');
   console.log('🚀 Генератор микросервисов Supreme Infrastructure');
@@ -409,6 +492,17 @@ async function generateService(): Promise<void> {
     console.log('→ Обновление services.yaml...');
     updateServicesYaml(config);
     console.log('✓ services.yaml обновлен');
+
+    // Update openapi-ts.config.ts for FastAPI services
+    if (config.serviceType === 'fastapi') {
+      console.log('→ Обновление openapi-ts.config.ts...');
+      updateOpenapiTsConfig(config);
+      console.log('✓ openapi-ts.config.ts обновлен');
+
+      console.log('→ Обновление api-client/src/index.ts...');
+      updateApiClientIndex(config);
+      console.log('✓ api-client/src/index.ts обновлен');
+    }
 
     console.log('');
     console.log('═══════════════════════════════════════════════════════════');

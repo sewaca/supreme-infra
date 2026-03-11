@@ -6,7 +6,13 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": true
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!packages/api-client/src/core-client-info",
+      "!packages/api-client/src/core-applications",
+      "!packages/api-client/schemas"
+    ]
   },
   "formatter": {
     "enabled": true,

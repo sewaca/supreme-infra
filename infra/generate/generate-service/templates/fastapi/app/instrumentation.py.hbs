@@ -45,6 +45,9 @@ def setup_logging() -> None:
 
 
 def setup_instrumentation() -> None:
+    import os
+    if os.environ.get("SKIP_INSTRUMENTATION") == "1":
+        return
     setup_metrics()
     setup_tracing()
     setup_logging()
