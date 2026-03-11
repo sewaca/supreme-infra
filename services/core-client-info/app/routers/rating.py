@@ -113,5 +113,31 @@ async def get_grades(
 
 @router.get("/grade-improvements", response_model=list[GradeImprovementResponse])
 async def get_grade_improvements(user_id: UUID, db: AsyncSession = Depends(get_db)):
-    # TODO: implement — calculate improvements by comparing consecutive grades per subject
-    raise NotImplementedError("grade_improvements not implemented")
+    query = select(UserGrade).where(UserGrade.user_id == user_id).order_by(UserGrade.subject, UserGrade.grade_date)
+    result = await db.execute(query)
+    grades = result.scalars().all()
+
+    improvements = []
+    grades_by_subject: dict[str, list[UserGrade]] = {}
+
+    for grade in grades:
+        if grade.subject not in grades_by_subject:
+            grades_by_subject[grade.subject] = []
+        grades_by_subject[grade.subject].append(grade)
+
+    for subject, subject_grades in grades_by_subject.items():
+        for i in range(1, len(subject_grades)):
+            old_grade = subject_grades[i - 1].grade
+            new_grade = subject_grades[i].grade
+            if new_grade > old_grade:
+                improvements.append(
+                    GradeImprovementResponse(
+                        subject=subject,
+                        old_grade=old_grade,
+                        new_grade=new_grade,
+                        improvement=new_grade - old_grade,
+                        grade_date=subject_grades[i].grade_date,
+                    )
+                )
+
+    return improvements

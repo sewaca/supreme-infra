@@ -30,7 +30,6 @@ class RankingPosition(Base):
     position: Mapped[int] = mapped_column(Integer, nullable=False)
     total: Mapped[int] = mapped_column(Integer, nullable=False)
     percentile: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False)
-    calculated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 class UserAchievement(Base):
