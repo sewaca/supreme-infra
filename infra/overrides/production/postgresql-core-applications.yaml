@@ -168,13 +168,13 @@ initScript: >
   INSERT INTO reference_order (id, user_id, reference_type, type_label, status,
   order_date, pickup_point_id, virtual_only, storage_until, pdf_url) VALUES
   ('88888888-8888-8888-8888-888888888888',
-  '550e8400-e29b-41d4-a716-446655440000', 'rdzd', 'РЖД', 'ready', '2025-01-28
-  00:00:00+00', 'spbkt_hr', FALSE, '2025-02-14 00:00:00+00',
-  '/references/88888888-8888-8888-8888-888888888888/pdf'),
+  '550e8400-e29b-41d4-a716-446655440000', 'rdzd', 'references.type.rdzd',
+  'ready', '2025-01-28 00:00:00+00', 'spbkt_hr', FALSE, '2025-02-14
+  00:00:00+00', '/references/88888888-8888-8888-8888-888888888888/pdf'),
   ('88888888-8888-8888-8888-888888888889',
-  '550e8400-e29b-41d4-a716-446655440000', 'study_confirmation', 'Справка об
-  обучении', 'preparation', '2026-03-09 00:00:00+00', 'spbkt_hr', FALSE, NULL,
-  NULL);
+  '550e8400-e29b-41d4-a716-446655440000', 'study_confirmation',
+  'references.type.study_confirmation', 'preparation', '2026-03-09 00:00:00+00',
+  'spbkt_hr', FALSE, NULL, NULL);
 
 
   INSERT INTO "order" (id, user_id, type, number, title, date,

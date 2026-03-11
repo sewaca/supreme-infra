@@ -87,6 +87,7 @@ uv sync
 ### Проблема: IDE всё ещё показывает ошибки
 
 **Решение:**
+
 1. Перезагрузите окно IDE: `Cmd+Shift+P` → "Developer: Reload Window"
 2. Убедитесь, что выбран правильный интерпретатор (см. в статус-баре внизу)
 3. Проверьте, что зависимости установлены: `cd services/core-applications && .venv/bin/python -c "import sqlalchemy"`

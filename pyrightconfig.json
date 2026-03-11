@@ -1,19 +1,7 @@
 {
-  "include": [
-    "services/core-applications/app",
-    "services/core-client-info/app",
-    "infra/checks"
-  ],
-  "exclude": [
-    "**/node_modules",
-    "**/__pycache__",
-    "**/.venv",
-    "**/alembic/versions"
-  ],
-  "ignore": [
-    "**/node_modules",
-    "**/.venv"
-  ],
+  "include": ["services/core-applications/app", "services/core-client-info/app", "infra/checks"],
+  "exclude": ["**/node_modules", "**/__pycache__", "**/.venv", "**/alembic/versions"],
+  "ignore": ["**/node_modules", "**/.venv"],
   "defineConstant": {
     "DEBUG": true
   },
@@ -27,17 +15,13 @@
       "root": "services/core-applications",
       "pythonVersion": "3.12",
       "pythonPlatform": "Darwin",
-      "extraPaths": [
-        "services/core-applications"
-      ]
+      "extraPaths": ["services/core-applications"]
     },
     {
       "root": "services/core-client-info",
       "pythonVersion": "3.12",
       "pythonPlatform": "Darwin",
-      "extraPaths": [
-        "services/core-client-info"
-      ]
+      "extraPaths": ["services/core-client-info"]
     }
   ]
 }
