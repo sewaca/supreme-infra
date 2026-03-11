@@ -59,6 +59,8 @@ export function updateCdWorkflow(): void {
     return;
   }
 
+  allServices.sort();
+
   // Read and parse CD workflow (preserving comments)
   const cdWorkflowContent = fs.readFileSync(cdWorkflowPath, 'utf-8');
   const cdWorkflow = yaml.parseDocument(cdWorkflowContent);

@@ -7,16 +7,20 @@
     "pnpm": "10"
   },
   "scripts": {
-    "lint": "biome check && ruff check .",
+    "lint": "pnpm run lint:ts && pnpm run lint:python && pnpm run lint:deps",
+    "lint:ts": "biome check --write",
+    "lint:python": "ruff check .",
     "lint:deps": "tsx infra/checks/validate-deps/index.ts",
+
     "format": "pnpm run format:biome && pnpm run format:prettier && pnpm run format:python",
     "format:biome": "biome check --fix",
     "format:prettier": "prettier --write \"**/*.{md,yaml,yml}\" --ignore-unknown",
     "format:python": "ruff check --fix . && ruff format .",
-    "generate:router": "tsx infra/generate/generate-router/index.ts",
-    "generate:overrides": "tsx infra/generate-overrides/index.ts",
-    "generate:service": "tsx infra/generate/generate-service/index.ts",
+
     "generate:api-client": "node infra/generate/generate-api-client.mjs",
+    "generate:overrides": "tsx infra/generate-overrides/index.ts",
+    "generate:router": "tsx infra/generate/generate-router/index.ts",
+    "generate:service": "tsx infra/generate/generate-service/index.ts",
     "generate": "tsx infra/generate/index.ts"
   },
   "devDependencies": {

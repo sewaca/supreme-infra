@@ -9,14 +9,14 @@ on:
         type: choice
         # List of available services (auto-generated)
         options:
+          - auth-ssr
+          - core-applications
           - core-auth-bff
+          - core-client-info
           - core-recipes-bff
           - frontend
-          - auth-ssr
           - web-profile-ssr
-          - core-client-info
-          - core-applications
-        default: "core-auth-bff"
+        default: "auth-ssr"
       # TODO: remove after development (or comment me)
       skip-canary:
         description: "Skip canary deployment and go directly to production"
