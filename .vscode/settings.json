@@ -1,9 +1,4 @@
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/services/core-applications/.venv/bin/python",
-  "python.analysis.extraPaths": [
-    "${workspaceFolder}/services/core-applications",
-    "${workspaceFolder}/services/core-client-info"
-  ],
   "python.analysis.autoSearchPaths": true,
   "python.analysis.diagnosticMode": "workspace",
   "python.analysis.typeCheckingMode": "basic",

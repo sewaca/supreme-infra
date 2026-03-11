@@ -1,18 +1,4 @@
 {
-  "folders": [
-    {
-      "name": "Root",
-      "path": "."
-    },
-    {
-      "name": "core-applications",
-      "path": "services/core-applications"
-    },
-    {
-      "name": "core-client-info",
-      "path": "services/core-client-info"
-    }
-  ],
   "settings": {
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     "python.analysis.extraPaths": ["${workspaceFolder}"],
