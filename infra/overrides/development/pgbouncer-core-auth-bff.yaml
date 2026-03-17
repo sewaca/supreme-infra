@@ -6,8 +6,8 @@
 nameOverride: pgbouncer-core-auth-bff
 fullnameOverride: pgbouncer-core-auth-bff
 image:
-  repository: bitnami/pgbouncer
-  tag: 1.23.1
+  repository: edoburu/pgbouncer
+  tag: 1.23.1-p2
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP

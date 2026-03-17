@@ -5,8 +5,8 @@ nameOverride: "pgbouncer"
 fullnameOverride: "pgbouncer"
 
 image:
-  repository: bitnami/pgbouncer
-  tag: "1.23.1"
+  repository: edoburu/pgbouncer
+  tag: "1.23.1-p2"
   pullPolicy: IfNotPresent
 
 service:
