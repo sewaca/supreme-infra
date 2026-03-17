@@ -1,11 +1,28 @@
+import logging
+import time
+
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 from app.config import settings
 
-engine = create_async_engine(settings.database_url, echo=settings.python_env != "production")
+logger = logging.getLogger("sqlalchemy.query")
+
+engine = create_async_engine(settings.database_url)
 
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+
+@event.listens_for(engine.sync_engine, "before_cursor_execute")
+def _before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    conn.info["query_start_time"] = time.perf_counter()
+
+
+@event.listens_for(engine.sync_engine, "after_cursor_execute")
+def _after_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    elapsed = time.perf_counter() - conn.info.get("query_start_time", 0)
+    logger.info("SQL [%.3fms] %s | params: %s", elapsed * 1000, statement, parameters)
 
 
 class Base(DeclarativeBase):
