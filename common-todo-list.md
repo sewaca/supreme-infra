@@ -28,4 +28,5 @@
 
 #### core-applications
 
-- [ ] ...
+- [ ] сгенерировать grafana dashboard
+

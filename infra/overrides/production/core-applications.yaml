@@ -19,7 +19,7 @@ env:
   PORT: "8001"
   PYTHON_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
-  DB_HOST: postgresql-core-applications
+  DB_HOST: pgbouncer-core-applications
   DB_PORT: "5432"
   DB_NAME: core_applications_db
   DB_USER: core_applications_user

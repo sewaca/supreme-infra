@@ -19,7 +19,7 @@ env:
   PORT: "4002"
   NODE_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
-  DB_HOST: postgresql-core-recipes-bff
+  DB_HOST: pgbouncer-core-recipes-bff
   DB_PORT: "5432"
   DB_NAME: core_recipes_bff_db
   DB_USER: core_recipes_bff_user

@@ -1,0 +1,65 @@
+# Base PgBouncer Helm Chart Values
+# These values are used by the pgbouncer values generator as defaults
+
+nameOverride: "pgbouncer"
+fullnameOverride: "pgbouncer"
+
+image:
+  repository: bitnami/pgbouncer
+  tag: "1.23.1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5432
+
+pgbouncer:
+  poolMode: transaction
+  maxClientConn: 200
+  defaultPoolSize: 20
+  minPoolSize: 5
+  reservePoolSize: 5
+  listenPort: 5432
+
+database:
+  host: ""
+  port: 5432
+  name: ""
+  user: ""
+  password: ""
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+overrides:
+  development:
+    pgbouncer:
+      maxClientConn: 50
+      defaultPoolSize: 5
+      minPoolSize: 2
+      reservePoolSize: 2
+    resources:
+      limits:
+        cpu: 100m
+        memory: 64Mi
+      requests:
+        cpu: 25m
+        memory: 32Mi
+  production:
+    pgbouncer:
+      maxClientConn: 200
+      defaultPoolSize: 20
+      minPoolSize: 5
+      reservePoolSize: 5
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi

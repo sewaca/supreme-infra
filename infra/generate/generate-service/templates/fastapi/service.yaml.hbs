@@ -18,7 +18,7 @@ metrics:
 env:
   PORT: "{{port}}"
   PYTHON_ENV: "production"{{#if hasDatabase}}
-  DB_HOST: "postgresql-{{serviceName}}"
+  DB_HOST: "pgbouncer-{{serviceName}}"
   DB_PORT: "5432"
   DB_NAME: "{{databaseName}}"
   DB_USER: "{{databaseUser}}"

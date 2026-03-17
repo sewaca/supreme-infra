@@ -1,0 +1,6 @@
+apiVersion: v2
+name: pgbouncer
+description: PgBouncer connection pooler for PostgreSQL
+type: application
+version: 1.0.0
+appVersion: "1.23.1"

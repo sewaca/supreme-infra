@@ -18,7 +18,7 @@ metrics:
 env:
   PORT: "4001"
   NODE_ENV: "production"
-  DB_HOST: "postgresql-core-auth-bff"
+  DB_HOST: "pgbouncer-core-auth-bff"
   DB_PORT: "5432"
   DB_NAME: "core_auth_bff_db"
   DB_USER: "core_auth_bff_user"

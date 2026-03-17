@@ -18,7 +18,7 @@ metrics:
 env:
   PORT: "8001"
   PYTHON_ENV: "production"
-  DB_HOST: "postgresql-core-applications"
+  DB_HOST: "pgbouncer-core-applications"
   DB_PORT: "5432"
   DB_NAME: "core_applications_db"
   DB_USER: "core_applications_user"
