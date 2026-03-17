@@ -13,9 +13,6 @@ spec:
     metadata:
       labels:
         {{- include "pgbouncer.selectorLabels" . | nindent 8 }}
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       containers:
         - name: pgbouncer
@@ -25,39 +22,44 @@ spec:
             - name: pgbouncer
               containerPort: {{ .Values.pgbouncer.listenPort }}
               protocol: TCP
+          env:
+            - name: PGBOUNCER_DATABASE
+              value: {{ .Values.database.name | quote }}
+            - name: POSTGRESQL_HOST
+              value: {{ .Values.database.host | quote }}
+            - name: POSTGRESQL_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: POSTGRESQL_USERNAME
+              value: {{ .Values.database.user | quote }}
+            - name: POSTGRESQL_PASSWORD
+              value: {{ .Values.database.password | quote }}
+            - name: PGBOUNCER_PORT
+              value: {{ .Values.pgbouncer.listenPort | quote }}
+            - name: PGBOUNCER_POOL_MODE
+              value: {{ .Values.pgbouncer.poolMode | quote }}
+            - name: PGBOUNCER_MAX_CLIENT_CONN
+              value: {{ .Values.pgbouncer.maxClientConn | quote }}
+            - name: PGBOUNCER_DEFAULT_POOL_SIZE
+              value: {{ .Values.pgbouncer.defaultPoolSize | quote }}
+            - name: PGBOUNCER_MIN_POOL_SIZE
+              value: {{ .Values.pgbouncer.minPoolSize | quote }}
+            - name: PGBOUNCER_RESERVE_POOL_SIZE
+              value: {{ .Values.pgbouncer.reservePoolSize | quote }}
+            - name: PGBOUNCER_AUTH_TYPE
+              value: "md5"
           livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - pg_isready -h 127.0.0.1 -p {{ .Values.pgbouncer.listenPort }}
+            tcpSocket:
+              port: {{ .Values.pgbouncer.listenPort }}
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 6
           readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - pg_isready -h 127.0.0.1 -p {{ .Values.pgbouncer.listenPort }}
+            tcpSocket:
+              port: {{ .Values.pgbouncer.listenPort }}
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 3
             failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - name: config
-              mountPath: /bitnami/pgbouncer/conf/pgbouncer.ini
-              subPath: pgbouncer.ini
-            - name: secret
-              mountPath: /etc/pgbouncer/userlist.txt
-              subPath: userlist.txt
-      volumes:
-        - name: config
-          configMap:
-            name: {{ include "pgbouncer.fullname" . }}-config
-        - name: secret
-          secret:
-            secretName: {{ include "pgbouncer.fullname" . }}-secret
