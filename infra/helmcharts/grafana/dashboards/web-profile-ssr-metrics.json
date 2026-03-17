@@ -3744,10 +3744,7 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": [
-    "web-profile-ssr",
-    "opentelemetry"
-  ],
+  "tags": ["web-profile-ssr", "opentelemetry"],
   "templating": {
     "list": []
   },
