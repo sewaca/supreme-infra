@@ -10,17 +10,17 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.PAT }}
           fetch-depth: 0
-      - uses: actions/setup-python@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-python@v6
+      - uses: actions/setup-node@v5
         with:
           node-version: "24"
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
 

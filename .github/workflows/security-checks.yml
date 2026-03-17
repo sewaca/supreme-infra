@@ -15,7 +15,7 @@ jobs:
           - core-recipes-bff
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Security scan check for service ${{ matrix.service-name }}
         uses: ./.github/workflows/jobs/nest-application-security-check
         with:
@@ -33,7 +33,7 @@ jobs:
           - web-profile-ssr
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Security scan check for service ${{ matrix.service-name }}
         uses: ./.github/workflows/jobs/next-application-security-check
         with:
@@ -50,7 +50,7 @@ jobs:
           - core-applications
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Security scan check for service ${{ matrix.service-name }}
         uses: ./.github/workflows/jobs/fastapi-application-security-check
         with:
