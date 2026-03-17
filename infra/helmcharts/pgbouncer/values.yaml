@@ -6,7 +6,7 @@ fullnameOverride: "pgbouncer"
 
 image:
   repository: edoburu/pgbouncer
-  tag: "1.23.1-p2"
+  tag: "v1.23.1-p2"
   pullPolicy: IfNotPresent
 
 service:

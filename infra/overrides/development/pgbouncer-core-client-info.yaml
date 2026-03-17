@@ -7,7 +7,7 @@ nameOverride: pgbouncer-core-client-info
 fullnameOverride: pgbouncer-core-client-info
 image:
   repository: edoburu/pgbouncer
-  tag: 1.23.1-p2
+  tag: v1.23.1-p2
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
