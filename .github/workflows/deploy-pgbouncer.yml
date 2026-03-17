@@ -232,14 +232,14 @@ jobs:
         run: |
           echo "Verifying PgBouncer deployment..."
 
-          # Wait for pod to be ready
-          kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=pgbouncer \
+          # Wait for pod to be ready (nameOverride = pgbouncer-{service}, so use instance label)
+          kubectl wait --for=condition=ready pod \
             -l app.kubernetes.io/instance="$RELEASE_NAME" \
             -n "$NAMESPACE" \
             --timeout=120s
 
           # Get pod name
-          POD_NAME=$(kubectl get pods -l app.kubernetes.io/name=pgbouncer \
+          POD_NAME=$(kubectl get pods \
             -l app.kubernetes.io/instance="$RELEASE_NAME" \
             -n "$NAMESPACE" \
             -o jsonpath='{.items[0].metadata.name}')
