@@ -122,24 +122,26 @@ jobs:
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
           NAMESPACE: default
         run: |
-          if helm list -n "$NAMESPACE" | grep -q "^$RELEASE_NAME"; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Release $RELEASE_NAME exists in namespace $NAMESPACE"
-          else
+          STATUS=$(helm list -n "$NAMESPACE" --filter "^$RELEASE_NAME$" -o json | jq -r '.[0].status // "not_found"')
+          if [ "$STATUS" = "not_found" ] || [ "$STATUS" = "null" ]; then
             echo "exists=false" >> $GITHUB_OUTPUT
+            echo "status=not_found" >> $GITHUB_OUTPUT
             echo "Release $RELEASE_NAME does not exist in namespace $NAMESPACE"
+          else
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "status=$STATUS" >> $GITHUB_OUTPUT
+            echo "Release $RELEASE_NAME exists in namespace $NAMESPACE (status: $STATUS)"
           fi
       - name: Install PgBouncer
-        if: github.event.inputs.action == 'install' &&
-          steps.check-release.outputs.exists == 'false'
+        if: github.event.inputs.action == 'install'
         env:
           SERVICE_NAME: ${{ github.event.inputs.service }}
           RELEASE_NAME: ${{ needs.validate-service.outputs.release_name }}
           NAMESPACE: default
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          EXISTS: ${{ steps.check-release.outputs.exists }}
+          RELEASE_STATUS: ${{ steps.check-release.outputs.status }}
         run: |
-          echo "Installing PgBouncer for $SERVICE_NAME in default namespace"
-
           VALUES_FILE="infra/overrides/production/pgbouncer-${SERVICE_NAME}.yaml"
 
           if [ ! -f "$VALUES_FILE" ]; then
@@ -147,6 +149,17 @@ jobs:
             echo "Please run 'pnpm run generate' to create it"
             exit 1
           fi
+
+          # Clean up failed release before reinstalling
+          if [ "$EXISTS" = "true" ] && [ "$RELEASE_STATUS" = "failed" ]; then
+            echo "Found failed release, uninstalling before reinstall..."
+            helm uninstall "$RELEASE_NAME" --namespace "$NAMESPACE" --wait || true
+          elif [ "$EXISTS" = "true" ] && [ "$RELEASE_STATUS" = "deployed" ]; then
+            echo "Release $RELEASE_NAME is already deployed. Use 'upgrade' action instead."
+            exit 0
+          fi
+
+          echo "Installing PgBouncer for $SERVICE_NAME in default namespace"
 
           helm install "$RELEASE_NAME" ./infra/helmcharts/pgbouncer \
             --namespace "$NAMESPACE" \
