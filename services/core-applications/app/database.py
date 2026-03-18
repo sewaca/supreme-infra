@@ -1,4 +1,5 @@
 import logging
+import sys
 import time
 
 from sqlalchemy import event
@@ -8,6 +9,10 @@ from sqlalchemy.orm import DeclarativeBase
 from app.config import settings
 
 logger = logging.getLogger("sqlalchemy.query")
+logger.setLevel(logging.INFO)
+_handler = logging.StreamHandler(sys.stdout)
+_handler.setFormatter(logging.Formatter("%(levelname)s:     %(message)s"))
+logger.addHandler(_handler)
 
 engine = create_async_engine(settings.database_url)
 
