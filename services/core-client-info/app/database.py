@@ -14,7 +14,10 @@ _handler = logging.StreamHandler(sys.stdout)
 _handler.setFormatter(logging.Formatter("%(levelname)s:     %(message)s"))
 logger.addHandler(_handler)
 
-engine = create_async_engine(settings.database_url)
+engine = create_async_engine(
+    settings.database_url,
+    connect_args={"statement_cache_size": 0},
+)
 
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
