@@ -7,7 +7,7 @@ type: next
 routes:
   - path: /documents/gradebook
     method: GET
-  - path: /student-id-card
+  - path: /documents/student-id-card
     method: GET
   - path: /web-documents-ssr/.*
     method: GET
