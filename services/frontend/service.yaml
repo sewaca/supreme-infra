@@ -23,10 +23,10 @@ env:
 
 resources:
   limits:
-    cpu: 300m
+    cpu: 500m
     memory: 512Mi
   requests:
-    cpu: 200m
+    cpu: 300m
     memory: 300Mi
 
 # HPA настройки для frontend
