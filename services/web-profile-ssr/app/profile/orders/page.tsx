@@ -5,6 +5,8 @@ import { ORDER_TYPE } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { OrdersPage } from 'services/web-profile-ssr/src/views/OrdersPage/OrdersPage';
 import { getOrderById, getOrders, getOrderTypeCounts } from './actions';
 
+export const dynamic = 'force-dynamic';
+
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };

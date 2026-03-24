@@ -11,6 +11,8 @@ import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/cl
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { RatingPage } from 'services/web-profile-ssr/src/views/RatingPage/RatingPage';
 
+export const dynamic = 'force-dynamic';
+
 export default async () => {
   const userId = getUserId();
 

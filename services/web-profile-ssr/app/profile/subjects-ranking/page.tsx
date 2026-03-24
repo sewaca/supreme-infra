@@ -5,6 +5,8 @@ import { SubjectsRankingPage } from 'services/web-profile-ssr/src/views/Subjects
 import { getAvailableChoices } from './api/getAvailableChoices';
 import { getUserPriorities } from './api/getUserPriorities';
 
+export const dynamic = 'force-dynamic';
+
 type GroupId = 'math' | 'physics' | 'programming';
 type PrioritizedSubjectInfo = { id: string; name: string; teacher: string; priority: number };
 

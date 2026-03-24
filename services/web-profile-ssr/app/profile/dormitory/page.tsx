@@ -4,6 +4,8 @@ import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { DormitoryPage } from 'services/web-profile-ssr/src/views/DormitoryPage/DormitoryPage';
 
+export const dynamic = 'force-dynamic';
+
 export default async () => {
   const userId = getUserId();
 

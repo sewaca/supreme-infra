@@ -3,6 +3,8 @@ import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/cl
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { ProfileDataPage } from 'services/web-profile-ssr/src/views/ProfileDataPage/ProfileDataPage';
 
+export const dynamic = 'force-dynamic';
+
 export default async () => {
   const userId = getUserId();
 

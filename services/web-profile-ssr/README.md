@@ -18,7 +18,17 @@ TODO:
   x. /profile/gradebook
   x. /profile/student-id
   x. /profile/scholarship
+  x. Извлекать user_id из JWT (сейчас хардкод DEV_USER_ID)
+  x. Каталог предметов (subjects-ranking) — перенести на бэкенд (сейчас статика на фронте)
+  x. Справки: pickupPointIdsByType — перенести на бэкенд (сейчас статика)
 ```
+
+## Backend Dependencies
+
+All pages fetch data from real backend services:
+
+- **core-client-info** (port 8000) — профиль, личные данные, рейтинг, достижения, настройки, дисциплины по выбору
+- **core-applications** (port 8001) — приказы, справки, общежитие, стипендия
 
 ## Prerequisites
 
@@ -72,11 +82,14 @@ pnpm run start
 
 ## Environment Variables
 
-| Variable                  | Description                      | Default     |
-| ------------------------- | -------------------------------- | ----------- |
-| PORT                      | Server port                      | 3005        |
-| NODE_ENV                  | Environment                      | development |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default     |
+| Variable                  | Description                          | Default                                        |
+| ------------------------- | ------------------------------------ | ---------------------------------------------- |
+| PORT                      | Server port                          | 3005                                           |
+| NODE_ENV                  | Environment                          | development                                    |
+| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend     | default                                        |
+| CORE_APPLICATIONS_URL     | URL сервиса core-applications        | http://localhost:8001/core-applications         |
+| CORE_CLIENT_INFO_URL      | URL сервиса core-client-info         | http://localhost:8000/core-client-info          |
+| JWT_SECRET                | Секрет для валидации JWT             | local-development-secret                       |
 
 ## Project Structure
 
