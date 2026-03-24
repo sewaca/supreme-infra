@@ -116,8 +116,8 @@ export const Gradebook = ({ grades }: Props) => {
             <tbody>
               {active.rows.map((row, idx) => {
                 const isExam = row.grade_type === 'exam';
-                const examGrade = isExam ? formatGrade(row.grade) : '';
-                const creditGrade = !isExam ? (row.grade === null ? 'зачтено' : formatGrade(row.grade)) : '';
+                const examGrade = isExam ? formatGrade(row?.grade ?? null) : '';
+                const creditGrade = !isExam ? (row.grade === null ? 'зачтено' : formatGrade(row?.grade ?? null)) : '';
 
                 return (
                   <tr key={row.id}>

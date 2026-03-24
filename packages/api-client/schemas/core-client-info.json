@@ -1223,6 +1223,14 @@
           "is_active": {
             "type": "boolean",
             "title": "Is Active"
+          },
+          "subjects": {
+            "items": {
+              "$ref": "#/components/schemas/SubjectInfo"
+            },
+            "type": "array",
+            "title": "Subjects",
+            "default": []
           }
         },
         "type": "object",
@@ -1233,6 +1241,29 @@
           "is_active"
         ],
         "title": "SubjectChoiceResponse"
+      },
+      "SubjectInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "teacher": {
+            "type": "string",
+            "title": "Teacher"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "teacher"
+        ],
+        "title": "SubjectInfo"
       },
       "TwoFaResponse": {
         "properties": {
@@ -1365,8 +1396,15 @@
             "title": "Subject"
           },
           "grade": {
-            "type": "string",
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Grade"
           },
           "grade_type": {
@@ -1377,15 +1415,34 @@
             "type": "string",
             "format": "date-time",
             "title": "Grade Date"
+          },
+          "course": {
+            "type": "integer",
+            "title": "Course"
+          },
+          "semester": {
+            "type": "integer",
+            "title": "Semester"
+          },
+          "hours": {
+            "type": "integer",
+            "title": "Hours"
+          },
+          "teacher": {
+            "type": "string",
+            "title": "Teacher"
           }
         },
         "type": "object",
         "required": [
           "id",
           "subject",
-          "grade",
           "grade_type",
-          "grade_date"
+          "grade_date",
+          "course",
+          "semester",
+          "hours",
+          "teacher"
         ],
         "title": "UserGradeResponse"
       },

@@ -265,6 +265,28 @@ export type SubjectChoiceResponse = {
      * Is Active
      */
     is_active: boolean;
+    /**
+     * Subjects
+     */
+    subjects?: Array<SubjectInfo>;
+};
+
+/**
+ * SubjectInfo
+ */
+export type SubjectInfo = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Teacher
+     */
+    teacher: string;
 };
 
 /**
@@ -348,7 +370,7 @@ export type UserGradeResponse = {
     /**
      * Grade
      */
-    grade: string;
+    grade?: string | null;
     /**
      * Grade Type
      */
@@ -357,6 +379,22 @@ export type UserGradeResponse = {
      * Grade Date
      */
     grade_date: string;
+    /**
+     * Course
+     */
+    course: number;
+    /**
+     * Semester
+     */
+    semester: number;
+    /**
+     * Hours
+     */
+    hours: number;
+    /**
+     * Teacher
+     */
+    teacher: string;
 };
 
 /**
