@@ -12,7 +12,7 @@ victoria-metrics-single:
     # Resources
     resources:
       limits:
-        cpu: 500m
+        cpu: 300m
         memory: 512Mi
       requests:
         cpu: 256m

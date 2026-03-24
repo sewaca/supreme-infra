@@ -5,15 +5,20 @@ import { useGoBack } from '@supreme-int/nextjs-shared/src/shared/hooks/useGoBack
 import { usePathname, useRouter } from 'next/navigation';
 import { ComponentProps } from 'react';
 
-type Props = Omit<ComponentProps<typeof NavBar>, 'onBack'>;
+type Props = Omit<ComponentProps<typeof NavBar>, 'onBack'> & { backPath?: string };
 
-export const DefaultNavbar = (props: Props) => {
+export const DefaultNavbar = ({ backPath, ...props }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
   const goBack = useGoBack();
 
   const onBack = () => {
+    if (backPath) {
+      router.push(backPath);
+      return;
+    }
+
     if (typeof window !== 'undefined' && window) {
       goBack();
       return;

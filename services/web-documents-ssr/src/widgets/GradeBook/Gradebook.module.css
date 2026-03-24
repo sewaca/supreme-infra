@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background: #edeff2;
+  background: #ffffff;
   padding: 16px;
   box-sizing: border-box;
 }
@@ -27,38 +27,6 @@
   margin-top: 4px;
 }
 
-/* ── Вкладки семестров ── */
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-
-.tab {
-  font-family: "Times New Roman", Times, serif;
-  font-size: 13px;
-  padding: 4px 12px;
-  border: 1px solid #8a7a60;
-  background: #faf7f0;
-  color: #3a3020;
-  cursor: pointer;
-  border-radius: 2px;
-  transition:
-    background 0.15s,
-    color 0.15s;
-}
-
-.tab:hover {
-  background: #e8e0cc;
-}
-
-.tabActive {
-  background: #3a3020;
-  color: #faf7f0;
-  border-color: #3a3020;
-}
-
 /* ── Обёртка таблицы ── */
 .tableWrapper {
   overflow-x: auto;
@@ -67,15 +35,16 @@
   box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.18);
 }
 
-.semesterHeading {
+/* ── Разделитель семестра внутри таблицы ── */
+.semesterDivider td {
   font-family: "Times New Roman", Times, serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   text-align: center;
-  padding: 6px 0;
-  border-bottom: 1px solid #1a1a1a;
-  background: #f5f0e6;
+  padding: 6px 8px;
+  background: #e8e4d8;
   letter-spacing: 0.5px;
+  border-top: 2px solid #1a1a1a;
 }
 
 /* ── Таблица ── */

@@ -1,7 +1,7 @@
 'use client';
 
 import type { UserGradeResponse } from '@supreme-int/api-client/src/core-client-info/types.gen';
-import { useState } from 'react';
+import { Fragment } from 'react';
 import styles from './Gradebook.module.css';
 
 interface Props {
@@ -26,7 +26,7 @@ function groupBySemester(grades: UserGradeResponse[]): SemesterGroup[] {
   }
 
   return Array.from(map.values()).sort((a, b) =>
-    a.course !== b.course ? b.course - a.course : b.semester - a.semester,
+    a.course !== b.course ? a.course - b.course : a.semester - b.semester,
   );
 }
 
@@ -47,11 +47,6 @@ function formatGrade(grade: string | null): string {
 
 export const Gradebook = ({ grades }: Props) => {
   const groups = groupBySemester(grades);
-  const [activeSemester, setActiveSemester] = useState<string>(
-    groups.length > 0 ? `${groups[0].course}-${groups[0].semester}` : '',
-  );
-
-  const active = groups.find((g) => `${g.course}-${g.semester}` === activeSemester);
 
   return (
     <div className={styles.page}>
@@ -62,82 +57,70 @@ export const Gradebook = ({ grades }: Props) => {
         </div>
       </div>
 
-      <div className={styles.tabs}>
-        {groups.map((g) => {
-          const key = `${g.course}-${g.semester}`;
-          return (
-            <button
-              key={key}
-              type="button"
-              className={`${styles.tab} ${activeSemester === key ? styles.tabActive : ''}`}
-              onClick={() => setActiveSemester(key)}
-            >
-              {g.course} курс, {g.semester} сем.
-            </button>
-          );
-        })}
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th className={styles.colNum}>№ п/п</th>
+              <th className={styles.colName}>Наименование учебных дисциплин и практик</th>
+              <th className={styles.colHours}>
+                Кол-во
+                <br />
+                часов по
+                <br />
+                уч.плану
+              </th>
+              <th className={styles.colGrade} colSpan={2}>
+                Оценка
+              </th>
+              <th className={styles.colTeacher}>ФИО преподавателя, дата сдачи экзамена (зачёта)</th>
+            </tr>
+            <tr>
+              <th />
+              <th />
+              <th />
+              <th className={styles.colExam}>
+                Экз./
+                <br />
+                КР/КП
+              </th>
+              <th className={styles.colCredit}>Зачёт</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {groups.map((group) => (
+              <Fragment key={`${group.course}-${group.semester}`}>
+                <tr className={styles.semesterDivider}>
+                  <td colSpan={6}>
+                    {group.course} курс — {group.semester} семестр
+                  </td>
+                </tr>
+                {group.rows.map((row, idx) => {
+                  const isExam = row.grade_type === 'exam';
+                  const examGrade = isExam ? formatGrade(row?.grade ?? null) : '';
+                  const creditGrade = !isExam ? (row.grade === null ? 'зачтено' : formatGrade(row?.grade ?? null)) : '';
+
+                  return (
+                    <tr key={row.id}>
+                      <td>{idx + 1}</td>
+                      <td className={styles.nameCell}>{row.subject}</td>
+                      <td>{row.hours}</td>
+                      <td className={styles.gradeCell}>{examGrade}</td>
+                      <td className={styles.gradeCell}>{creditGrade}</td>
+                      <td className={styles.teacherCell}>
+                        {row.teacher}
+                        <br />
+                        <span className={styles.dateStr}>{formatDate(row.grade_date)}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
       </div>
-
-      {active && (
-        <div className={styles.tableWrapper}>
-          <div className={styles.semesterHeading}>
-            {active.course} курс — {active.semester} семестр
-          </div>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={styles.colNum}>№ п/п</th>
-                <th className={styles.colName}>Наименование учебных дисциплин и практик</th>
-                <th className={styles.colHours}>
-                  Кол-во
-                  <br />
-                  часов по
-                  <br />
-                  уч.плану
-                </th>
-                <th className={styles.colGrade} colSpan={2}>
-                  Оценка
-                </th>
-                <th className={styles.colTeacher}>ФИО преподавателя, дата сдачи экзамена (зачёта)</th>
-              </tr>
-              <tr>
-                <th />
-                <th />
-                <th />
-                <th className={styles.colExam}>
-                  Экз./
-                  <br />
-                  КР/КП
-                </th>
-                <th className={styles.colCredit}>Зачёт</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {active.rows.map((row, idx) => {
-                const isExam = row.grade_type === 'exam';
-                const examGrade = isExam ? formatGrade(row?.grade ?? null) : '';
-                const creditGrade = !isExam ? (row.grade === null ? 'зачтено' : formatGrade(row?.grade ?? null)) : '';
-
-                return (
-                  <tr key={row.id}>
-                    <td>{idx + 1}</td>
-                    <td className={styles.nameCell}>{row.subject}</td>
-                    <td>{row.hours}</td>
-                    <td className={styles.gradeCell}>{examGrade}</td>
-                    <td className={styles.gradeCell}>{creditGrade}</td>
-                    <td className={styles.teacherCell}>
-                      {row.teacher}
-                      <br />
-                      <span className={styles.dateStr}>{formatDate(row.grade_date)}</span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 };

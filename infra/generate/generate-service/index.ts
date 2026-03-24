@@ -215,8 +215,8 @@ function generateDatabaseServiceYaml(config: ServiceConfig): void {
     resources: {
       production: {
         limits: {
-          cpu: '500m',
-          memory: '500Mi',
+          cpu: '300m',
+          memory: '300Mi',
         },
         requests: {
           cpu: '100m',

@@ -19,7 +19,7 @@ persistence:
 resources:
   production:
     limits:
-      cpu: 500m
+      cpu: 300m
       memory: 500Mi
     requests:
       cpu: 100m

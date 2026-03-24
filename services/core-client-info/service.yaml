@@ -34,7 +34,7 @@ readinessProbe:
 
 resources:
   limits:
-    cpu: 500m
+    cpu: 350m
     memory: 512Mi
   requests:
     cpu: 150m
@@ -43,7 +43,7 @@ resources:
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 

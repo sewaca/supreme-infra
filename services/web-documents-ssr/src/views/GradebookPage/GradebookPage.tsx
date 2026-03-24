@@ -9,7 +9,7 @@ interface Props {
 export const GradebookPage = ({ grades }: Props) => {
   return (
     <>
-      <DefaultNavbar center="Зачётная книжка" />
+      <DefaultNavbar center="Зачётная книжка" backPath="/profile" />
       <Gradebook grades={grades} />
     </>
   );

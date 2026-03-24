@@ -23,10 +23,10 @@ env:
 secrets: {}
 resources:
   limits:
-    cpu: 600m
+    cpu: 300m
     memory: 512Mi
   requests:
-    cpu: 180m
+    cpu: 200m
     memory: 300Mi
 livenessProbe:
   httpGet:
