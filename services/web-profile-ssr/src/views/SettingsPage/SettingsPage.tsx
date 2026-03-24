@@ -5,22 +5,22 @@ import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
 import { ChangeEvent, useState } from 'react';
+// import { updateSettings } from 'services/web-profile-ssr/app/profile/settings/actions';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ChangeEmailModal } from './ChangeEmailModal';
 import { ChangePasswordModal } from './ChangePasswordModal';
 
-type UserSettings = {
+export type UserSettings = {
   isNewMessageNotificationsEnabled: boolean;
   isScheduleChangeNotificationsEnabled: boolean;
 };
 
-const mockedUserSettings: UserSettings = {
-  isNewMessageNotificationsEnabled: true,
-  isScheduleChangeNotificationsEnabled: true,
+type Props = {
+  initialSettings: UserSettings;
 };
 
-export const SettingsPage = () => {
-  const [userSettings, setUserSettings] = useState<UserSettings>(mockedUserSettings);
+export const SettingsPage = ({ initialSettings }: Props) => {
+  const [userSettings, setUserSettings] = useState<UserSettings>(initialSettings);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 

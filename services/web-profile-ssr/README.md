@@ -82,14 +82,14 @@ pnpm run start
 
 ## Environment Variables
 
-| Variable                  | Description                          | Default                                        |
-| ------------------------- | ------------------------------------ | ---------------------------------------------- |
-| PORT                      | Server port                          | 3005                                           |
-| NODE_ENV                  | Environment                          | development                                    |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend     | default                                        |
-| CORE_APPLICATIONS_URL     | URL сервиса core-applications        | http://localhost:8001/core-applications         |
-| CORE_CLIENT_INFO_URL      | URL сервиса core-client-info         | http://localhost:8000/core-client-info          |
-| JWT_SECRET                | Секрет для валидации JWT             | local-development-secret                       |
+| Variable                  | Description                      | Default                                 |
+| ------------------------- | -------------------------------- | --------------------------------------- |
+| PORT                      | Server port                      | 3005                                    |
+| NODE_ENV                  | Environment                      | development                             |
+| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default                                 |
+| CORE_APPLICATIONS_URL     | URL сервиса core-applications    | http://localhost:8001/core-applications |
+| CORE_CLIENT_INFO_URL      | URL сервиса core-client-info     | http://localhost:8000/core-client-info  |
+| JWT_SECRET                | Секрет для валидации JWT         | local-development-secret                |
 
 ## Project Structure
 

@@ -5,6 +5,28 @@ import { i18n } from '@supreme-int/i18n';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
+export const updateSettings = async (settings: {
+  isNewMessageNotificationsEnabled?: boolean;
+  isScheduleChangeNotificationsEnabled?: boolean;
+}): Promise<{ success: boolean; error?: string }> => {
+  'use server';
+
+  const userId = getUserId();
+  try {
+    await CoreClientInfo.updateSettingsSettingsPut({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: {
+        is_new_message_notifications_enabled: settings.isNewMessageNotificationsEnabled,
+        is_schedule_change_notifications_enabled: settings.isScheduleChangeNotificationsEnabled,
+      },
+    });
+    return { success: true };
+  } catch {
+    return { success: false, error: i18n('Не удалось обновить настройки') };
+  }
+};
+
 export const changeEmail = async (
   newEmail: string,
   confirmationCode: string,

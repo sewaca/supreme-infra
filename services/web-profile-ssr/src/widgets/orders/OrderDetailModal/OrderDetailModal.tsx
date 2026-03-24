@@ -25,6 +25,20 @@ import { handleDeeplink } from 'services/web-profile-ssr/src/shared/deeplinks';
 import { AlertMessage } from '../../AlertMessage/AlertMessage';
 import { DefaultNavbar } from '../../DefaultNavbar/DefaultNavbar';
 
+const ADDITIONAL_FIELD_LABELS: Record<string, string> = {
+  comment: i18n('Комментарий'),
+  startDate: i18n('Дата начала'),
+  endDate: i18n('Дата окончания'),
+  dormitoryAddress: i18n('Адрес общежития'),
+  roomNumber: i18n('Номер комнаты'),
+  fromCourse: i18n('С курса'),
+  toCourse: i18n('На курс'),
+  practicePlace: i18n('Место практики'),
+  topic: i18n('Тема'),
+  faculty: i18n('Факультет'),
+  specialty: i18n('Специальность'),
+};
+
 type Props = {
   order: Order | null;
   open: boolean;
@@ -130,7 +144,7 @@ export const OrderDetailModal = ({ order, open, onClose }: Props) => {
                   Object.entries(order.additionalFields).map(([key, value]) => (
                     <div key={key}>
                       <Typography variant="caption" color="secondary" component="p">
-                        {i18n(key)}
+                        {ADDITIONAL_FIELD_LABELS[key] ?? i18n(key)}
                       </Typography>
                       <Typography variant="body2" component="p" sx={{ whiteSpace: 'pre-line' }}>
                         {value}

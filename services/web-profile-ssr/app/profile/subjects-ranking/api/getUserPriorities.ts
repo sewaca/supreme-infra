@@ -21,10 +21,11 @@ export const getUserPriorities = async () => {
   }
 
   // Get user priorities for each active choice
+  // API expects semantic choice_id (e.g. "math_electives_2026"), not UUID
   const prioritiesPromises = activeChoices.map((choice) =>
     CoreClientInfo.getUserPrioritiesSubjectsUserPrioritiesChoiceIdGet({
       client: coreClientInfoClient,
-      path: { choice_id: choice.id },
+      path: { choice_id: choice.choice_id },
       query: { user_id: userId },
     }),
   );

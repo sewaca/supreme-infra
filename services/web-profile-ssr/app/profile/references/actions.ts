@@ -16,14 +16,25 @@ export type ReferenceOrderOptions = {
   defaultPickupPointIds: string[];
 };
 
+const REFERENCE_TYPE_LABELS: Record<string, string> = {
+  rdzd: i18n('РЖД'),
+  workplace: i18n('По месту работы'),
+  parents_workplace: i18n('По месту работы родителей'),
+  military: i18n('Для военкомата'),
+  scholarship: i18n('О стипендии'),
+  study_confirmation: i18n('Подтверждение обучения'),
+  academic_leave: i18n('Академический отпуск'),
+  transcript: i18n('Транскрипт'),
+};
+
+function resolveTypeLabel(referenceType: string, rawLabel: string): string {
+  return REFERENCE_TYPE_LABELS[referenceType] ?? rawLabel;
+}
+
 const REFERENCE_ORDER_OPTIONS: ReferenceOrderOptions = {
-  types: [
-    { id: 'rdzd', label: i18n('РЖД') },
-    { id: 'workplace', label: i18n('По месту работы') },
-    { id: 'parents_workplace', label: i18n('По месту работы родителей') },
-    { id: 'military', label: i18n('Для военкомата') },
-    { id: 'scholarship', label: i18n('О стипендии') },
-  ],
+  types: Object.entries(REFERENCE_TYPE_LABELS)
+    .slice(0, 5)
+    .map(([id, label]) => ({ id, label })),
   pickupPointIdsByType: {
     rdzd: ['spbgt_hr', 'spbkt_hr'],
     workplace: ['spbgt_hr', 'spbkt_hr'],
@@ -39,7 +50,7 @@ function mapReference(ref: ReferenceOrderResponse): OrderedReference {
   return {
     id: ref.id,
     type: ref.reference_type as OrderedReference['type'],
-    typeLabel: ref.type_label,
+    typeLabel: resolveTypeLabel(ref.reference_type, ref.type_label),
     status: ref.status as ReferenceStatus,
     orderDate: ref.order_date,
     pickupPoint,
