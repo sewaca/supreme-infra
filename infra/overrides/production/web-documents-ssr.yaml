@@ -20,6 +20,7 @@ env:
   NODE_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
   BACKEND_SERVICE_NAMESPACE: default
+  CORE_CLIENT_INFO_URL: http://core-client-info.default.svc.cluster.local/core-client-info
 secrets: {}
 resources:
   limits:
