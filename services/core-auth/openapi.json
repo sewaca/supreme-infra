@@ -8,9 +8,7 @@
   "paths": {
     "/status": {
       "get": {
-        "tags": [
-          "status"
-        ],
+        "tags": ["status"],
         "summary": "Get Status",
         "operationId": "get_status_status_get",
         "responses": {
@@ -27,9 +25,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Login",
         "operationId": "login_auth_login_post",
         "requestBody": {
@@ -68,9 +64,7 @@
     },
     "/auth/register": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Register",
         "operationId": "register_auth_register_post",
         "requestBody": {
@@ -109,9 +103,7 @@
     },
     "/auth/me": {
       "get": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Get Me",
         "operationId": "get_me_auth_me_get",
         "responses": {
@@ -147,10 +139,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "access_token",
-          "user"
-        ],
+        "required": ["access_token", "user"],
         "title": "AuthResponse"
       },
       "HTTPValidationError": {
@@ -178,10 +167,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "title": "LoginRequest"
       },
       "MessageResponse": {
@@ -192,9 +178,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "message"
-        ],
+        "required": ["message"],
         "title": "MessageResponse"
       },
       "RegisterRequest": {
@@ -213,11 +197,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "email",
-          "password",
-          "name"
-        ],
+        "required": ["email", "password", "name"],
         "title": "RegisterRequest"
       },
       "UserInfo": {
@@ -241,12 +221,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "email",
-          "name",
-          "role"
-        ],
+        "required": ["id", "email", "name", "role"],
         "title": "UserInfo"
       },
       "ValidationError": {
@@ -282,11 +257,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       }
     },

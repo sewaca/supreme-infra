@@ -41,6 +41,7 @@ uv run alembic downgrade -1
 ## API Documentation
 
 After starting the server, API docs are available at:
+
 - Swagger UI: http://localhost:8002/core-auth/docs
 - ReDoc: http://localhost:8002/core-auth/redoc
 
@@ -56,7 +57,7 @@ Prometheus metrics are exposed on port `9464` at `/metrics`.
 
 ## Test Users
 
-| Email | Password | Role |
-|-------|----------|------|
+| Email                   | Password    | Role    |
+| ----------------------- | ----------- | ------- |
 | ivan.ivanov@example.com | password123 | student |
-| admin@example.com | admin123 | admin |
+| admin@example.com       | admin123    | admin   |

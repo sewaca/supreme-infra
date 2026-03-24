@@ -13,6 +13,12 @@ export default async function Page() {
     query: { user_id: userId },
   });
 
+  if (gradesRes.error) {
+    console.error('[gradebook] API error:', gradesRes.error);
+  } else {
+    console.log('[gradebook] received grades count:', gradesRes.data?.length ?? 0);
+  }
+
   const grades = gradesRes.data ?? [];
 
   return <GradebookPage grades={grades} />;

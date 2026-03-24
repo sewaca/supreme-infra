@@ -2154,10 +2154,7 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": [
-    "auth-ssr",
-    "opentelemetry"
-  ],
+  "tags": ["auth-ssr", "opentelemetry"],
   "templating": {
     "list": []
   },

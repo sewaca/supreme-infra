@@ -235,23 +235,23 @@ The token returned by `/auth/login` has the following payload:
 }
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `sub` | UUID string | User ID — same UUID as in `core-client-info` |
-| `email` | string | User email |
-| `name` | string | Display name |
-| `role` | string | `student` / `teacher` / `moderator` / `admin` |
-| `iat` | Unix timestamp | Issued at |
-| `exp` | Unix timestamp | Expires at (7 days from issue) |
+| Field   | Type           | Description                                   |
+| ------- | -------------- | --------------------------------------------- |
+| `sub`   | UUID string    | User ID — same UUID as in `core-client-info`  |
+| `email` | string         | User email                                    |
+| `name`  | string         | Display name                                  |
+| `role`  | string         | `student` / `teacher` / `moderator` / `admin` |
+| `iat`   | Unix timestamp | Issued at                                     |
+| `exp`   | Unix timestamp | Expires at (7 days from issue)                |
 
 ---
 
 ## Test Users Reference
 
-| ID | Email | Password | Role |
-|----|-------|----------|------|
+| ID                                     | Email                     | Password      | Role      |
+| -------------------------------------- | ------------------------- | ------------- | --------- |
 | `550e8400-e29b-41d4-a716-446655440000` | `ivan.ivanov@example.com` | `password123` | `student` |
-| `550e8400-e29b-41d4-a716-446655440001` | `admin@example.com` | `admin123` | `admin` |
+| `550e8400-e29b-41d4-a716-446655440001` | `admin@example.com`       | `admin123`    | `admin`   |
 
 ---
 
