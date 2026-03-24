@@ -19,6 +19,8 @@ routes:
     method: GET
   - path: /profile/references
     method: GET
+  - path: /profile/scolarship
+    method: GET
   - path: /profile/settings
     method: GET
   - path: /profile/subjects-ranking
