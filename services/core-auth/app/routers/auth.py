@@ -1,3 +1,5 @@
+import logging
+
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -8,6 +10,8 @@ from app.database import get_db
 from app.models.user import AuthUser
 from app.schemas.auth import AuthResponse, LoginRequest, MessageResponse, RegisterRequest, UserInfo
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
@@ -17,9 +21,19 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = result.scalar_one_or_none()
 
     if not user:
+        logger.debug("[login] user not found: email=%s", body.email)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-    if not bcrypt.checkpw(body.password.encode("utf-8"), user.password_hash.encode("utf-8")):
+    logger.debug(
+        "[login] checking password: email=%s | input=%r | stored_hash=%r",
+        body.email,
+        body.password,
+        user.password_hash,
+    )
+    match = bcrypt.checkpw(body.password.encode("utf-8"), user.password_hash.encode("utf-8"))
+    logger.debug("[login] bcrypt.checkpw result: %s", match)
+
+    if not match:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     if not user.is_active:
