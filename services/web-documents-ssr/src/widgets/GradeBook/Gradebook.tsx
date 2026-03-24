@@ -53,7 +53,7 @@ export const Gradebook = ({ grades }: Props) => {
       <div className={styles.header}>
         <div className={styles.headerTitle}>Зачётная книжка</div>
         <div className={styles.headerSub}>
-          Санкт-Петербургский государственный электротехнический университет «ЛЭТИ»
+          Санкт-Петербургский государственный университет телекоммуникаций имени профессора М. А. Бонч-Бруевича
         </div>
       </div>
 

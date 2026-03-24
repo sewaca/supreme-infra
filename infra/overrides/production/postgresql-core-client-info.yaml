@@ -17,20 +17,12 @@ persistence:
   size: 10Gi
   accessMode: ReadWriteOnce
 resources:
-  production:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 150Mi
-  development:
-    limits:
-      cpu: 250m
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 150Mi
 database:
   name: core_client_info_db
   user: core_client_info_user
@@ -218,7 +210,7 @@ migrations:
         2022,
         2026,
         '№ 9900051',
-        'СПбГЭТУ «ЛЭТИ»',
+        'СПбГУТ им. Бонч-Бруевича',
         4.75,
         'full_time'
     )

@@ -111,7 +111,7 @@ curl -s "$BASE_URL/profile/personal-data?user_id=$USER_ID" -H "Authorization: Be
     "region": "Санкт-Петербург"
   },
   "academic_info": [
-    { "label": "profile.academic.university", "value": "СПбГЭТУ «ЛЭТИ»" },
+    { "label": "profile.academic.university", "value": "СПбГУТ им. Бонч-Бруевича" },
     { "label": "profile.academic.faculty", "value": "ИТПИ" },
     { "label": "profile.academic.course", "value": "4" }
   ]

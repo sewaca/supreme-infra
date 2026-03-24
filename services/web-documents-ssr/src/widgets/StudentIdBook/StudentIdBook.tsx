@@ -1,42 +1,112 @@
-import { useEffect, useRef, useState } from 'react';
+import type {
+  PersonalDataResponse,
+  StudentStatsResponse,
+} from '@supreme-int/api-client/src/core-client-info/types.gen';
 import styles from './StudentIdBook.module.css';
 
-export const StudentIdBook = () => {
-  const tableRef = useRef<HTMLTableElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [landscape, setLandscape] = useState(false);
-  const viewportRef = useRef<HTMLDivElement | null>(null);
+interface Props {
+  user: PersonalDataResponse['user'] | null;
+  stats: StudentStatsResponse | null;
+}
 
-  useEffect(() => {
-    const updateLayout = () => {
-      const isLandscape = window.innerWidth < window.innerHeight;
-      setLandscape(isLandscape);
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  return `${day}.${month}.${d.getFullYear()}`;
+}
 
-      const table = tableRef.current;
-      const container = containerRef.current;
-      const viewport = viewportRef.current;
+export const StudentIdBook = ({ user, stats }: Props) => {
+  if (!user) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <div className={styles.empty}>Данные не найдены</div>
+        </div>
+      </div>
+    );
+  }
 
-      if (!table || !container || !viewport) return;
+  const initials = `${user.last_name[0] ?? ''}${user.name[0] ?? ''}`;
+  const fullFirstMiddle = [user.name, user.middle_name].filter(Boolean).join(' ');
 
-      if (isLandscape) {
-        const tableWidth = table.offsetWidth;
-        viewport.style.height = `${tableWidth}px`;
-        container.style.height = `${tableWidth}px`;
-        container.style.width = '100vw';
-      } else {
-        container.style.height = 'auto';
-        container.style.width = '100vw';
-      }
-    };
+  const singleFields: { label: string; value: string }[] = [
+    { label: 'Факультет', value: stats?.faculty },
+    { label: 'Направление', value: stats?.direction ?? stats?.specialty },
+    { label: 'Профиль', value: stats?.profile },
+    { label: 'Форма обучения', value: stats?.education_form },
+    { label: 'Квалификация', value: stats?.qualification },
+  ].filter((f) => f.value) as { label: string; value: string }[];
 
-    updateLayout();
-    window.addEventListener('resize', updateLayout);
-    return () => window.removeEventListener('resize', updateLayout);
-  }, []);
+  const hasGroupOrCourse = stats?.group || stats?.course;
 
   return (
-    <div className={styles.viewport} ref={viewportRef}>
-      <div ref={containerRef} className={`${styles.container} ${landscape ? styles.landscape : styles.portrait}`}></div>
+    <div className={styles.page}>
+      <div className={styles.card}>
+        {/* ── Header ── */}
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <span className={styles.headerCrest}>🎓</span>
+            <div>
+              <div className={styles.headerTitle}>Студенческий билет</div>
+              <div className={styles.headerSubtitle}>
+                Санкт-Петербургский государственный <br />
+                университет телекоммуникаций им. М. А. Бонч-Бруевича
+              </div>
+            </div>
+          </div>
+          <div className={styles.headerBadge}>РФ</div>
+        </div>
+
+        {/* ── Профиль ── */}
+        <div className={styles.profile}>
+          {user.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.avatar} alt="Фото" className={styles.photo} />
+          ) : (
+            <div className={styles.photoPlaceholder}>{initials}</div>
+          )}
+          <div className={styles.nameBlock}>
+            <div className={styles.lastName}>{user.last_name}</div>
+            <div className={styles.firstMiddleName}>{fullFirstMiddle}</div>
+            {user.birth_date && <div className={styles.birthDate}>{formatDate(user.birth_date)}</div>}
+            {stats?.status && <div className={styles.statusBadge}>{stats.status}</div>}
+          </div>
+        </div>
+
+        {/* ── Академические поля ── */}
+        <div className={styles.fields}>
+          {singleFields.map((f) => (
+            <div key={f.label} className={styles.fieldRow}>
+              <div className={styles.fieldLabel}>{f.label}</div>
+              <div className={styles.fieldValue}>{f.value}</div>
+            </div>
+          ))}
+
+          {hasGroupOrCourse && (
+            <div className={styles.fieldGridRow}>
+              {stats?.group && (
+                <div>
+                  <div className={styles.fieldLabel}>Группа</div>
+                  <div className={styles.fieldValue}>{stats.group}</div>
+                </div>
+              )}
+              {stats?.course && (
+                <div>
+                  <div className={styles.fieldLabel}>Курс</div>
+                  <div className={styles.fieldValue}>{stats.course}</div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ── Подвал ── */}
+        <div className={styles.footer}>
+          <div className={styles.footerText}>Действителен на период обучения</div>
+          <div className={styles.footerYear}>{new Date().getFullYear()}</div>
+        </div>
+      </div>
     </div>
   );
 };

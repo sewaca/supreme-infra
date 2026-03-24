@@ -1,0 +1,207 @@
+/* ── Страница ── */
+.page {
+  background: #edeff2;
+  min-height: 100vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Карточка ── */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 440px;
+}
+
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #9aabbd;
+  font-size: 15px;
+}
+
+/* ── Шапка ── */
+.header {
+  background: linear-gradient(135deg, #1a2e4a 0%, #2b4878 100%);
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.headerCrest {
+  font-size: 36px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.headerTitle {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.headerSubtitle {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 11px;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.headerBadge {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+/* ── Профиль ── */
+.profile {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  align-items: flex-start;
+  background: #fafbfd;
+  border-bottom: 1px solid #e8ecf0;
+}
+
+.photo {
+  width: 80px;
+  height: 100px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #dde5ef;
+  flex-shrink: 0;
+}
+
+.photoPlaceholder {
+  width: 80px;
+  height: 100px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2b4878 0%, #1a2e4a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  flex-shrink: 0;
+}
+
+.nameBlock {
+  flex: 1;
+  min-width: 0;
+}
+
+.lastName {
+  font-size: 21px;
+  font-weight: 700;
+  color: #1a2e4a;
+  line-height: 1.2;
+}
+
+.firstMiddleName {
+  font-size: 15px;
+  color: #4a6080;
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.birthDate {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #7a90a8;
+}
+
+.statusBadge {
+  display: inline-block;
+  margin-top: 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+/* ── Поля ── */
+.fields {
+  padding: 8px 20px 16px;
+}
+
+.fieldRow {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+
+.fieldRow:last-child {
+  border-bottom: none;
+}
+
+.fieldLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: #9aabbd;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 3px;
+}
+
+.fieldValue {
+  font-size: 15px;
+  color: #1a2e4a;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.fieldGridRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+
+/* ── Подвал ── */
+.footer {
+  background: #f5f7fb;
+  border-top: 1px solid #e0e7ef;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerText {
+  font-size: 11px;
+  color: #9aabbd;
+}
+
+.footerYear {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2b4878;
+}

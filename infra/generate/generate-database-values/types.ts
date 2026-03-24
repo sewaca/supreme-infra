@@ -107,6 +107,11 @@ export interface EnvironmentOverrides {
   };
 }
 
+export interface ResourceSpec {
+  limits?: { cpu: string; memory: string };
+  requests?: { cpu: string; memory: string };
+}
+
 export interface DatabaseServiceConfig {
   persistence?: {
     size?: string;
@@ -114,16 +119,7 @@ export interface DatabaseServiceConfig {
     storageClass?: string;
     accessMode?: string;
   };
-  resources?: {
-    limits?: {
-      cpu: string;
-      memory: string;
-    };
-    requests?: {
-      cpu: string;
-      memory: string;
-    };
-  };
+  resources?: ResourceSpec | { production?: ResourceSpec; development?: ResourceSpec };
   image?: {
     repository?: string;
     tag?: string;

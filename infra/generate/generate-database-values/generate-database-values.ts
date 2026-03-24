@@ -106,7 +106,8 @@ function buildFinalValues(
     );
   }
   if (resources) {
-    result.resources = resources;
+    const envResources = (resources as Record<string, unknown>)[environment];
+    result.resources = envResources !== undefined ? envResources : resources;
   }
   if (image) {
     result.image = deepMerge(result.image as Record<string, unknown>, image as Record<string, unknown>);
