@@ -1,0 +1,53 @@
+image:
+  repository: core-auth
+
+nameOverride: "core-auth"
+fullnameOverride: "core-auth"
+
+replicas: 1
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8002
+
+metrics:
+  enabled: true
+  port: 9464
+
+env:
+  PORT: "8002"
+  PYTHON_ENV: "production"
+  DB_HOST: "pgbouncer-core-auth"
+  DB_PORT: "5432"
+  DB_NAME: "core_auth_db"
+  DB_USER: "core_auth_user"
+  # DB_PASSWORD is passed from GitHub Secrets during deployment
+
+livenessProbe:
+  httpGet:
+    path: /core-auth/status
+
+readinessProbe:
+  httpGet:
+    path: /core-auth/status
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 300Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+overrides:
+  production:
+    canary:
+      enabled: true

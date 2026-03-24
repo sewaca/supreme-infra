@@ -9,6 +9,7 @@ on:
         options:
           - core-auth-bff
           - core-recipes-bff
+          - core-auth
           - core-client-info
           - core-applications
         default: core-auth-bff

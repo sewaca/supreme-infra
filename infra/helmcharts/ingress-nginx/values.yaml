@@ -62,6 +62,16 @@ ingress:
           method: GET
         - path: /core-applications/references/order
           method: POST
+    - service: core-auth
+      port: 80
+      type: fastapi
+      paths:
+        - path: /core-auth/auth/login
+          method: POST
+        - path: /core-auth/auth/me
+          method: GET
+        - path: /core-auth/auth/register
+          method: POST
     - service: core-auth-bff
       port: 80
       type: nest

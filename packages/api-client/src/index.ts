@@ -1,5 +1,6 @@
 export * from './base-api';
 export * as CoreApplications from './core-applications';
+export * as CoreAuth from './core-auth';
 export * from './core-auth-bff';
 
 // FastAPI generated clients - use namespaced imports to avoid conflicts
