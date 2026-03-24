@@ -1,5 +1,8 @@
 import { redirect } from 'next/navigation';
 import { getUser } from '../../../src/shared/lib/auth.server';
+
+export const dynamic = 'force-dynamic';
+
 import { ProfilePage } from '../../../src/views/ProfilePage/ProfilePage';
 
 export default async function Profile() {

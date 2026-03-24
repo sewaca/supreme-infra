@@ -1,12 +1,5 @@
 services:
   nest:
-    - name: core-auth-bff
-      description: "core-auth-bff "
-      database:
-        enabled: true
-        name: core_auth_bff_db
-        user: core_auth_bff_user
-        passwordSecret: DB_PASSWORD
     - name: core-recipes-bff
       description: "recipes backend "
       database:

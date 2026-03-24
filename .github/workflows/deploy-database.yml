@@ -7,12 +7,11 @@ on:
         required: true
         type: choice
         options:
-          - core-auth-bff
-          - core-recipes-bff
           - core-auth
+          - core-recipes-bff
           - core-client-info
           - core-applications
-        default: core-auth-bff
+        default: core-auth
       action:
         description: Deployment action
         required: true

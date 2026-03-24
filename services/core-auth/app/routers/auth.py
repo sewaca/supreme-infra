@@ -34,8 +34,20 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/register", response_model=MessageResponse)
-async def register(body: RegisterRequest):
-    return MessageResponse(message="Registration successful")
+async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(AuthUser).where(AuthUser.email == body.email))
+    if result.scalar_one_or_none():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+
+    password_hash = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+    user = AuthUser(email=body.email, password_hash=password_hash, name=body.name)
+    db.add(user)
+    await db.commit()
+
+    # TODO: sync new user profile with core-client-info service
+
+    return MessageResponse(message="User created successfully")
 
 
 @router.get("/me", response_model=UserInfo)

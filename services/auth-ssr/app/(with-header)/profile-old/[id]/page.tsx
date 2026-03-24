@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation';
-import type { User } from '../../../../src/shared/api/backendApi.types';
-import { getAuthToken, getUser, rscAuthApi } from '../../../../src/shared/lib/auth.server';
+import { getUser } from '../../../../src/shared/lib/auth.server';
 import { ProfilePage } from '../../../../src/views/ProfilePage/ProfilePage';
+
+export const dynamic = 'force-dynamic';
 
 interface ProfileByIdPageProps {
   params: Promise<{ id: string }>;
@@ -15,29 +16,13 @@ export default async function ProfileByIdPage({ params }: ProfileByIdPageProps) 
   }
 
   const { id } = await params;
-  const userId = Number.parseInt(id, 10);
 
-  if (Number.isNaN(userId)) {
+  // TODO: getUserById is not supported by core-auth yet.
+  // If the requested ID matches the current user, show their profile.
+  // Otherwise redirect to own profile.
+  if (id !== currentUser.id) {
     redirect('/profile-old');
   }
 
-  const token = await getAuthToken();
-  if (!token) {
-    redirect('/login');
-  }
-
-  let user: User;
-  try {
-    user = await rscAuthApi.getUserById(userId, token);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Unauthorized') {
-      redirect('/login');
-    }
-    if (error instanceof Error && error.message === 'User not found') {
-      redirect('/profile-old');
-    }
-    throw error;
-  }
-
-  return <ProfilePage user={user} isViewingOtherUser={true} />;
+  return <ProfilePage user={currentUser} isViewingOtherUser={false} />;
 }

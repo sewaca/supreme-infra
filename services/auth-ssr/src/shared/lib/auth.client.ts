@@ -1,48 +1,40 @@
-import { AuthApi, DecodedToken, TOKEN_KEY, UserRole } from '@supreme-int/api-client/src/index';
+import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/core-auth';
+import { TOKEN_KEY, type UserRole } from '@supreme-int/api-client/src/core-auth-bff';
 
-const isProd = process.env.NODE_ENV === 'production';
+// Client-side calls go through ingress at /core-auth
+const AUTH_URL = '/core-auth';
 
-function getAuthBffUrl(): string {
-  return isProd ? '/core-auth-bff' : '/core-auth-bff';
-  // TODO: fix for a while
-  // const host = isProd ? '84.252.134.216' : 'localhost:4000';
-  // return `http://${host}/core-auth-bff`;
-}
+export { TOKEN_KEY };
+export type { UserRole };
 
-export const clientAuthApi = new AuthApi(getAuthBffUrl());
+// ─── Token helpers ────────────────────────────────────────────────────────────
 
 export function getAuthToken(): string | undefined {
-  if (typeof document === 'undefined') {
-    return undefined;
-  }
-
-  const cookies = document.cookie.split(';');
-  const tokenCookie = cookies.find((cookie) => cookie.trim().startsWith(`${TOKEN_KEY}=`));
-
-  if (!tokenCookie) {
-    return undefined;
-  }
-
-  return tokenCookie.split('=')[1];
+  if (typeof document === 'undefined') return undefined;
+  const tokenCookie = document.cookie.split(';').find((c) => c.trim().startsWith(`${TOKEN_KEY}=`));
+  return tokenCookie?.split('=')[1];
 }
 
 function base64UrlDecode(str: string): string {
   const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
   const padding = '='.repeat((4 - (base64.length % 4)) % 4);
-  const base64WithPadding = base64 + padding;
-  return atob(base64WithPadding);
+  return atob(base64 + padding);
 }
+
+export type DecodedToken = {
+  sub: string;
+  email: string;
+  name: string;
+  role: string;
+  iat: number;
+  exp: number;
+};
 
 export function decodeToken(token: string): DecodedToken | null {
   try {
     const parts = token.split('.');
-    if (parts.length !== 3) {
-      return null;
-    }
-
-    const payload = parts[1];
-    const decoded = base64UrlDecode(payload);
-    return JSON.parse(decoded) as DecodedToken;
+    if (parts.length !== 3) return null;
+    return JSON.parse(base64UrlDecode(parts[1])) as DecodedToken;
   } catch {
     return null;
   }
@@ -50,28 +42,58 @@ export function decodeToken(token: string): DecodedToken | null {
 
 export function getUserRole(): UserRole | null {
   const token = getAuthToken();
-  if (!token) {
-    return null;
-  }
-
-  const decoded = decodeToken(token);
-  return decoded?.role ?? null;
+  if (!token) return null;
+  return (decodeToken(token)?.role as UserRole) ?? null;
 }
 
 export function setAuthToken(token: string): void {
-  if (typeof document === 'undefined') {
-    return;
-  }
-
+  if (typeof document === 'undefined') return;
   // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks universal browser support
   document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
 }
 
 export function removeAuthToken(): void {
-  if (typeof document === 'undefined') {
-    return;
-  }
-
+  if (typeof document === 'undefined') return;
   // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks universal browser support
   document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
+}
+
+// ─── API calls ────────────────────────────────────────────────────────────────
+
+async function callCoreAuth<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${AUTH_URL}${path}`, init);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail ?? err.message ?? 'Request failed');
+  }
+  return res.json() as Promise<T>;
+}
+
+export async function login(data: { email: string; password: string }): Promise<AuthResponse> {
+  return callCoreAuth<AuthResponse>('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+// Костыль для совместимости: core-auth register не возвращает токен,
+// поэтому после регистрации делаем auto-login.
+export async function register(data: { email: string; password: string; name: string }): Promise<AuthResponse> {
+  await callCoreAuth('/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return login({ email: data.email, password: data.password });
+}
+
+export async function getCurrentUser(token: string): Promise<UserInfo> {
+  return callCoreAuth<UserInfo>('/auth/me', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function deleteUser(_id: string, _token: string): Promise<void> {
+  throw new Error('deleteUser is not supported by core-auth');
 }
