@@ -28,11 +28,13 @@ def setup_logging() -> None:
     handler = LoggingHandler(level=0, logger_provider=provider)
 
     import logging
+
     logging.getLogger().addHandler(handler)
 
 
 def setup_instrumentation() -> None:
     import os
+
     if os.environ.get("SKIP_INSTRUMENTATION") == "1":
         return
     setup_metrics()
