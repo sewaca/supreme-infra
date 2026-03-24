@@ -15,6 +15,7 @@ on:
           - core-client-info
           - core-recipes-bff
           - frontend
+          - web-documents-ssr
           - web-profile-ssr
         default: "auth-ssr"
       # TODO: remove after development (or comment me)

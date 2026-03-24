@@ -19,9 +19,8 @@ services:
       description: Frontend service (Next.js)
     - name: auth-ssr
       description: authorization-ssr-sservice
-    # ! service is empty now and will not be used for now
-    # - name: web-documents-ssr
-    #   description: "documents presentation "
+    - name: web-documents-ssr
+      description: "documents presentation "
     - name: web-profile-ssr
       description: "profile "
   fastapi:

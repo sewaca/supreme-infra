@@ -368,9 +368,9 @@ export type UserGradeResponse = {
      */
     subject: string;
     /**
-     * Grade
+     * Grade (null = зачтено)
      */
-    grade: string;
+    grade: string | null;
     /**
      * Grade Type
      */
@@ -379,6 +379,22 @@ export type UserGradeResponse = {
      * Grade Date
      */
     grade_date: string;
+    /**
+     * Course (year)
+     */
+    course: number;
+    /**
+     * Semester
+     */
+    semester: number;
+    /**
+     * Hours per curriculum
+     */
+    hours: number;
+    /**
+     * Teacher name
+     */
+    teacher: string;
 };
 
 /**

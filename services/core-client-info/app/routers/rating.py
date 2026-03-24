@@ -106,6 +106,10 @@ async def get_grades(
             grade=g.grade,
             grade_type=g.grade_type,
             grade_date=g.grade_date,
+            course=g.course,
+            semester=g.semester,
+            hours=g.hours,
+            teacher=g.teacher,
         )
         for g in grades
     ]
@@ -113,7 +117,11 @@ async def get_grades(
 
 @router.get("/grade-improvements", response_model=list[GradeImprovementResponse])
 async def get_grade_improvements(user_id: UUID, db: AsyncSession = Depends(get_db)):
-    query = select(UserGrade).where(UserGrade.user_id == user_id).order_by(UserGrade.subject, UserGrade.grade_date)
+    query = (
+        select(UserGrade)
+        .where(UserGrade.user_id == user_id, UserGrade.grade.isnot(None))
+        .order_by(UserGrade.subject, UserGrade.grade_date)
+    )
     result = await db.execute(query)
     grades = result.scalars().all()
 

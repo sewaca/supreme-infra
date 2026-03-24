@@ -1,72 +1,172 @@
-.viewport {
-  width: 100vw;
+.page {
   min-height: 100vh;
+  background: #f0ede4;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* ── Шапка ── */
+.header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.headerTitle {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.headerSub {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+}
+
+/* ── Вкладки семестров ── */
+.tabs {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
-/* Контейнер для поворота */
-.container {
-  transform-origin: center center;
-  transition: transform 0.3s ease;
+.tab {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 13px;
+  padding: 4px 12px;
+  border: 1px solid #8a7a60;
+  background: #faf7f0;
+  color: #3a3020;
+  cursor: pointer;
+  border-radius: 2px;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
-/* Ориентации */
-.portrait {
-  transform: none;
+.tab:hover {
+  background: #e8e0cc;
 }
 
-.landscape {
-  transform: rotate(-90deg);
+.tabActive {
+  background: #3a3020;
+  color: #faf7f0;
+  border-color: #3a3020;
 }
 
-/* Таблица */
-.table {
-  border-collapse: collapse;
-  background: #fff;
-  font-family: "Times New Roman", serif;
+/* ── Обёртка таблицы ── */
+.tableWrapper {
+  overflow-x: auto;
+  background: #fffef7;
+  border: 2px solid #1a1a1a;
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.semesterHeading {
+  font-family: "Times New Roman", Times, serif;
   font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #1a1a1a;
+  background: #f5f0e6;
+  letter-spacing: 0.5px;
 }
 
-/* Общие ячейки */
+/* ── Таблица ── */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 13px;
+  color: #1a1a1a;
+}
+
 .table th,
 .table td {
+  border: 1px solid #1a1a1a;
+  padding: 4px 6px;
   text-align: center;
   vertical-align: middle;
-  border: 1px solid #000;
-  padding: 2px 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* ===== ФИКСИРОВАННЫЕ СТОЛБЦЫ ===== */
+.table thead th {
+  background: #f5f0e6;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.3;
+}
 
+.table tbody tr:nth-child(even) {
+  background: #faf8f2;
+}
+
+.table tbody tr:hover {
+  background: #f0ead8;
+}
+
+/* ── Колонки ── */
 .colNum {
-  width: 40px;
+  width: 36px;
+  min-width: 36px;
 }
 
 .colName {
-  width: 240px;
+  min-width: 200px;
+  max-width: 320px;
+  text-align: left !important;
 }
 
 .colHours {
-  width: 80px;
+  width: 60px;
+  min-width: 60px;
 }
 
 .colGrade {
-  width: 90px;
+  /* spans 2 columns */
 }
 
-.colDate {
-  width: 100px;
+.colExam {
+  width: 54px;
+  min-width: 54px;
 }
 
-.colSign {
-  width: 120px;
+.colCredit {
+  width: 70px;
+  min-width: 70px;
 }
 
 .colTeacher {
-  width: 160px;
+  min-width: 160px;
+  max-width: 240px;
+  text-align: left !important;
+}
+
+/* ── Ячейки ── */
+.nameCell {
+  text-align: left !important;
+  white-space: normal;
+  line-height: 1.35;
+}
+
+.gradeCell {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.teacherCell {
+  text-align: left !important;
+  white-space: normal;
+  line-height: 1.4;
+  font-size: 12px;
+}
+
+.dateStr {
+  color: #555;
+  font-size: 11px;
 }

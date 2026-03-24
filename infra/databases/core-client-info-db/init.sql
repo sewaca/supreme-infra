@@ -90,9 +90,13 @@ CREATE TABLE IF NOT EXISTS user_grade (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     subject VARCHAR NOT NULL,
-    grade NUMERIC(3, 1) NOT NULL,
+    grade NUMERIC(4, 2),
     grade_type VARCHAR NOT NULL,
     grade_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    course INTEGER NOT NULL DEFAULT 1,
+    semester INTEGER NOT NULL DEFAULT 1,
+    hours INTEGER NOT NULL DEFAULT 0,
+    teacher VARCHAR NOT NULL DEFAULT '',
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 

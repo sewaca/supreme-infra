@@ -51,9 +51,13 @@ class StreakResponse(BaseModel):
 class UserGradeResponse(BaseModel):
     id: UUID
     subject: str
-    grade: Decimal
+    grade: Decimal | None = None
     grade_type: str
     grade_date: datetime
+    course: int
+    semester: int
+    hours: int
+    teacher: str
 
 
 class GradeImprovementResponse(BaseModel):
