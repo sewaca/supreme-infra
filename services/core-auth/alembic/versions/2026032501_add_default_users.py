@@ -41,6 +41,4 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.execute(
-        sa.text("DELETE FROM auth_user WHERE email IN ('admin@example.com', 'moderator@example.com')")
-    )
+    op.execute(sa.text("DELETE FROM auth_user WHERE email IN ('admin@example.com', 'moderator@example.com')"))
