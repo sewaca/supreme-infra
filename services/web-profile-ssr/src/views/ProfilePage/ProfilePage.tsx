@@ -82,7 +82,7 @@ export const ProfilePage = ({ data }: Props) => {
           icon={<FileCopyIcon fontSize="medium" color="inherit" />}
           title={i18n('Получить справку')}
         />
-        <LinkRow href="/api/undefined-url" icon={<ImportContactsIcon fontSize="medium" />} title={i18n('Зачётка')} />
+        <LinkRow href="/documents/gradebook" icon={<ImportContactsIcon fontSize="medium" />} title={i18n('Зачётка')} />
         <LinkRow href="/profile/settings" icon={<SettingsIcon fontSize="medium" />} title={i18n('Настройки')} />
         <LinkRow
           href="/profile/subjects-ranking"
@@ -92,7 +92,7 @@ export const ProfilePage = ({ data }: Props) => {
         <LinkRow href="/profile/rating" icon={<TrendingUpIcon fontSize="medium" />} title={i18n('Мой рейтинг')} />
         <LinkRow href="/profile/data" icon={<PersonIcon fontSize="medium" />} title={i18n('Личные данные')} />
         <LinkRow
-          href="/api/undefined-url"
+          href="/documents/student-id-card"
           icon={<AssignmentIndIcon fontSize="medium" />}
           title={i18n('Электронный студенческий')}
         />
