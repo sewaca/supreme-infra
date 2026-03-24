@@ -5,10 +5,11 @@ import { useEffect } from 'react';
 import { getOrdersTourSteps } from './configs/orders';
 import { getRatingTourSteps } from './configs/rating';
 import { getReferencesTourSteps } from './configs/references';
+import { getScholarshipTourSteps } from './configs/scholarship';
 import { getSubjectsRankingTourSteps } from './configs/subjects-ranking';
 import { useProductTour } from './useProductTour';
 
-export type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking';
+export type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking' | 'scholarship';
 
 type TourConfig = { key: string; steps: DriveStep[] };
 
@@ -27,6 +28,8 @@ const getTourConfig = (page: PageTourType, params?: Record<string, unknown>): To
         key: 'subjects-ranking-tour-completed',
         steps: getSubjectsRankingTourSteps((params?.deadlineDate as string) || ''),
       };
+    case 'scholarship':
+      return { key: 'scholarship-tour-completed', steps: getScholarshipTourSteps() };
     default:
       throw new Error(`Unknown page tour type: ${page}`);
   }
