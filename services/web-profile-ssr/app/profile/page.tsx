@@ -1,38 +1,53 @@
-import { ProfileData } from 'services/web-profile-ssr/src/entities/Profile/ProfileData';
+import { CoreApplications, CoreClientInfo } from '@supreme-int/api-client/src/index';
+import type { ProfileData } from 'services/web-profile-ssr/src/entities/Profile/ProfileData';
+import { coreApplicationsClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { ProfilePage } from 'services/web-profile-ssr/src/views/ProfilePage/ProfilePage';
 
-const getUserData = async () => {
-  const baseUserInfo: ProfileData = {
-    name: 'Всеволод',
-    lastName: 'Булгаков',
-    middleName: 'Денисович',
-    avatar: 'https://placehold.co/600x1000',
+export default async () => {
+  const userId = getUserId();
+
+  const [userRes, applicationsRes] = await Promise.all([
+    CoreClientInfo.getUserProfileUserGet({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+    }),
+    CoreApplications.getApplicationsApplicationsGet({
+      client: coreApplicationsClient,
+      query: { user_id: userId },
+    }),
+  ]);
+
+  const user = userRes.data;
+  const applications = applicationsRes.data ?? [];
+
+  if (!user) {
+    throw 'no user found';
+  }
+
+  const scholarshipApp = applications.find((a) => a.application_type === 'scholarship' && a.is_active);
+  const dormitoryApp = applications.find((a) => a.application_type === 'dormitory' && a.is_active);
+
+  const profileData: ProfileData = {
+    name: user.name,
+    lastName: user.last_name,
+    middleName: user.middle_name ?? undefined,
+    avatar: user.avatar ?? 'https://placehold.co/600x1000',
+    scholarship: scholarshipApp
+      ? {
+          value: scholarshipApp.additional_fields?.amount
+            ? String(scholarshipApp.additional_fields.amount)
+            : scholarshipApp.application_number,
+          notifications: scholarshipApp.notifications_count || undefined,
+        }
+      : undefined,
+    dormitory: dormitoryApp
+      ? {
+          value: (dormitoryApp.additional_fields?.address as string) ?? dormitoryApp.application_number,
+          notifications: dormitoryApp.notifications_count || undefined,
+        }
+      : undefined,
   };
 
-  const hasScholarship = Math.random() > 0.5;
-  const hasDormitory = Math.random() > 0.5;
-
-  if (hasScholarship) {
-    const hasNotifications = Math.random() > 0.5;
-    baseUserInfo.scholarship = {
-      value: '100 000',
-      notifications: hasNotifications ? Math.floor(Math.random() * 100) : undefined,
-    };
-  }
-
-  if (hasDormitory) {
-    const hasNotifications = Math.random() > 0.5;
-    baseUserInfo.dormitory = {
-      value: 'ул. Караваевская, 34',
-      notifications: hasNotifications ? Math.floor(Math.random() * 100) : undefined,
-    };
-  }
-
-  return baseUserInfo;
-};
-
-export default async () => {
-  const userInfo = await getUserData();
-
-  return <ProfilePage data={userInfo} />;
+  return <ProfilePage data={profileData} />;
 };

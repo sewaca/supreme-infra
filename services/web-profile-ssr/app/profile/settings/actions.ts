@@ -1,17 +1,16 @@
 'use server';
 
+import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n';
+import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export const changeEmail = async (
   newEmail: string,
   confirmationCode: string,
 ): Promise<{ success: boolean; error?: string }> => {
   'use server';
-  console.log('[debug] changing email to', newEmail, 'with code', confirmationCode);
 
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // Simulate validation
   if (!newEmail.includes('@')) {
     return { success: false, error: i18n('Неверный формат email') };
   }
@@ -20,47 +19,56 @@ export const changeEmail = async (
     return { success: false, error: i18n('Код подтверждения должен содержать 6 цифр') };
   }
 
-  const isError = Math.random() > 0.8;
-  if (isError) {
-    console.log('[debug] failed to change email');
+  const userId = getUserId();
+  try {
+    const res = await CoreClientInfo.changeEmailSettingsEmailPost({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: { new_email: newEmail, confirmation_code: confirmationCode },
+    });
+
+    const data = res.data;
+    if (data && data.status === 'success') {
+      return { success: true };
+    }
+    return { success: false, error: data?.message ?? i18n('Не удалось изменить email. Попробуйте позже.') };
+  } catch {
     return { success: false, error: i18n('Не удалось изменить email. Попробуйте позже.') };
   }
-
-  console.log('[debug] email changed successfully');
-  return { success: true };
 };
 
 export const sendEmailConfirmationCode = async (email: string): Promise<{ success: boolean; error?: string }> => {
   'use server';
-  console.log('[debug] sending confirmation code to', email);
-
-  await new Promise((resolve) => setTimeout(resolve, 300));
 
   if (!email.includes('@')) {
     return { success: false, error: i18n('Неверный формат email') };
   }
 
-  const isError = Math.random() > 0.9;
-  if (isError) {
-    console.log('[debug] failed to send confirmation code');
+  const userId = getUserId();
+  try {
+    const res = await CoreClientInfo.changeEmailSettingsEmailPost({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: { new_email: email },
+    });
+
+    const data = res.data;
+    if (data && data.status === '2fa_required') {
+      return { success: true };
+    }
+    return { success: false, error: data?.message ?? i18n('Не удалось отправить код подтверждения') };
+  } catch {
     return { success: false, error: i18n('Не удалось отправить код подтверждения') };
   }
-
-  console.log('[debug] confirmation code sent');
-  return { success: true };
 };
 
 export const changePassword = async (
-  _currentPassword: string,
+  currentPassword: string,
   newPassword: string,
   confirmationCode: string,
 ): Promise<{ success: boolean; error?: string }> => {
   'use server';
-  console.log('[debug] changing password with code', confirmationCode);
 
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // Simulate validation
   if (newPassword.length < 6) {
     return { success: false, error: i18n('Новый пароль должен содержать минимум 6 символов') };
   }
@@ -69,28 +77,45 @@ export const changePassword = async (
     return { success: false, error: i18n('Код подтверждения должен содержать 6 цифр') };
   }
 
-  const isError = Math.random() > 0.8;
-  if (isError) {
-    console.log('[debug] failed to change password');
+  const userId = getUserId();
+  try {
+    const res = await CoreClientInfo.changePasswordSettingsPasswordPost({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: {
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirmation_code: confirmationCode,
+      },
+    });
+
+    const data = res.data;
+    if (data && data.status === 'success') {
+      return { success: true };
+    }
+    return { success: false, error: data?.message ?? i18n('Не удалось изменить пароль. Попробуйте позже.') };
+  } catch {
     return { success: false, error: i18n('Не удалось изменить пароль. Попробуйте позже.') };
   }
-
-  console.log('[debug] password changed successfully');
-  return { success: true };
 };
 
 export const sendPasswordConfirmationCode = async (): Promise<{ success: boolean; error?: string }> => {
   'use server';
-  console.log('[debug] sending password confirmation code');
 
-  await new Promise((resolve) => setTimeout(resolve, 300));
+  const userId = getUserId();
+  try {
+    const res = await CoreClientInfo.changePasswordSettingsPasswordPost({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: { current_password: '', new_password: '' },
+    });
 
-  const isError = Math.random() > 0.9;
-  if (isError) {
-    console.log('[debug] failed to send confirmation code');
+    const data = res.data;
+    if (data && data.status === '2fa_required') {
+      return { success: true };
+    }
+    return { success: false, error: data?.message ?? i18n('Не удалось отправить код подтверждения') };
+  } catch {
     return { success: false, error: i18n('Не удалось отправить код подтверждения') };
   }
-
-  console.log('[debug] confirmation code sent');
-  return { success: true };
 };

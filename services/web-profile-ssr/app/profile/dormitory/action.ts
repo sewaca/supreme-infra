@@ -1,7 +1,11 @@
 'use server';
 
+import { CoreApplications } from '@supreme-int/api-client/src/index';
+import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+
 export const submitParentAgreement = async ({
-  applicationId,
+  applicationId: _applicationId,
   file,
 }: {
   applicationId: string;
@@ -9,9 +13,15 @@ export const submitParentAgreement = async ({
 }): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
-  console.debug(
-    `[submit-parent-agreement] submitting parent agreement for applicationId="${applicationId}", file="${file.name}"`,
-  );
-
-  return { success: true };
+  const userId = getUserId();
+  try {
+    await CoreApplications.uploadParentAgreementDormitoryParentAgreementPost({
+      client: coreApplicationsClient,
+      query: { user_id: userId },
+      body: { file },
+    });
+    return { success: true };
+  } catch {
+    return { success: false, error: 'Не удалось загрузить файл' };
+  }
 };

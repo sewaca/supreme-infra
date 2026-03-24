@@ -1,22 +1,38 @@
+import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n/src/i18n';
+import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { SubjectsRankingPage } from 'services/web-profile-ssr/src/views/SubjectsRankingPage/SubjectsRankingPage';
 import { getAvailableChoices } from './api/getAvailableChoices';
 import { getUserPriorities } from './api/getUserPriorities';
 
 type GroupId = 'math' | 'physics' | 'programming';
-type SubjectInfo = { id: string; name: string; teacher: string };
-type PrioritizedSubjectInfo = SubjectInfo & { priority: number };
+type PrioritizedSubjectInfo = { id: string; name: string; teacher: string; priority: number };
 
 const getInitialData = async () => {
-  const [choices, userPriorities] = await Promise.all([getAvailableChoices(), getUserPriorities()]);
+  const [choices, userPriorities, choicesRes] = await Promise.all([
+    getAvailableChoices(),
+    getUserPriorities(),
+    CoreClientInfo.getChoicesSubjectsChoicesGet({ client: coreClientInfoClient }),
+  ]);
 
-  // TODO: вынести сортировку на клиент
+  const activeChoice = (choicesRes.data ?? []).find((c) => c.is_active);
+
+  // Sort subjects by user priorities
   choices.forEach((choice) => {
     const priorities = userPriorities[choice.id];
     if (!priorities) return;
 
     choice.subjects.sort((a, b) => priorities.indexOf(a.id) - priorities.indexOf(b.id));
   });
+
+  // Format deadline from API or fallback
+  let deadlineDate: string;
+  if (activeChoice) {
+    const d = new Date(activeChoice.deadline_date);
+    deadlineDate = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
+  } else {
+    deadlineDate = '01.04.2026';
+  }
 
   const result: { subjects: { id: GroupId; subjects: PrioritizedSubjectInfo[] }[]; deadlineDate: string } = {
     subjects: choices.map((choice) => ({
@@ -32,7 +48,7 @@ const getInitialData = async () => {
         };
       }),
     })),
-    deadlineDate: `${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}.${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}.2026`,
+    deadlineDate,
   };
 
   return result;

@@ -1,57 +1,115 @@
+import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { ACHIEVEMENT_CONFIGS } from 'services/web-profile-ssr/src/entities/Rating/achievementsConfig';
-import { calculateLevel, calculateXPFromGrades } from 'services/web-profile-ssr/src/entities/Rating/levelConfig';
-import { RatingData } from 'services/web-profile-ssr/src/entities/Rating/RatingData';
+import { LEVEL_CONFIGS } from 'services/web-profile-ssr/src/entities/Rating/levelConfig';
+import type {
+  Achievement,
+  RankingPosition,
+  RatingData,
+  StudentLevel,
+} from 'services/web-profile-ssr/src/entities/Rating/RatingData';
+import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { RatingPage } from 'services/web-profile-ssr/src/views/RatingPage/RatingPage';
 
-const getMockRatingData = async (): Promise<RatingData> => {
-  const studentStats = {
-    course: 3,
-    faculty: 'ИТПИ',
-    specialty: 'Программная инженерия',
-    averageGrade: 4.67,
-    educationForm: 'budget' as const,
-  };
-  const unlockedAchievementsWithCounts: Record<string, number> = {
-    excellent_student: 3,
-    unstoppable: 1,
-    early_bird: 4,
-    group_leader: 2,
-  };
-  const achievements = Object.values(ACHIEVEMENT_CONFIGS).map((config) => {
-    const isUnlocked = config.id in unlockedAchievementsWithCounts;
-    const timesEarned = isUnlocked ? unlockedAchievementsWithCounts[config.id] : undefined;
+export default async () => {
+  const userId = getUserId();
+
+  const [statsRes, levelRes, rankingsRes, achievementsRes, streakRes, improvementsRes] = await Promise.all([
+    CoreClientInfo.getStatsRatingStatsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    CoreClientInfo.getLevelRatingLevelGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    CoreClientInfo.getRankingsRatingRankingsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    CoreClientInfo.getAchievementsRatingAchievementsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    CoreClientInfo.getStreakRatingStreakGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    CoreClientInfo.getGradeImprovementsRatingGradeImprovementsGet({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+    }),
+  ]);
+
+  // biome-ignore lint/style/noNonNullAssertion: TODO: non-null-assertion
+  const stats = statsRes.data!;
+  // biome-ignore lint/style/noNonNullAssertion: TODO: non-null-assertion
+  const level = levelRes.data!;
+  const rankings = rankingsRes.data ?? [];
+  const apiAchievements = achievementsRes.data ?? [];
+  // biome-ignore lint/style/noNonNullAssertion: TODO: non-null-assertion
+  const streak = streakRes.data!;
+  const improvements = improvementsRes.data ?? [];
+
+  // Map API achievements to local Achievement type, merging with config
+  const achievementMap = new Map(apiAchievements.map((a) => [a.achievement_id, a]));
+  const achievements: Achievement[] = Object.values(ACHIEVEMENT_CONFIGS).map((config) => {
+    const apiData = achievementMap.get(config.id);
+    if (apiData) {
+      return {
+        ...config,
+        unlocked: apiData.unlocked,
+        unlockedAt: apiData.unlocked_at ?? undefined,
+        progress: apiData.unlocked ? undefined : apiData.progress,
+        maxProgress: apiData.unlocked ? undefined : apiData.max_progress,
+        timesEarned: apiData.times_earned || undefined,
+      };
+    }
     return {
       ...config,
-      unlocked: isUnlocked,
-      unlockedAt: isUnlocked ? '2025-12-15T10:30:00Z' : undefined,
-      progress: isUnlocked ? undefined : Math.floor(Math.random() * 80),
-      maxProgress: isUnlocked ? undefined : 100,
-      timesEarned,
+      unlocked: false,
+      progress: 0,
+      maxProgress: 100,
     };
   });
-  const xp = calculateXPFromGrades(studentStats.averageGrade, Object.keys(unlockedAchievementsWithCounts).length, 15);
-  const level = calculateLevel(xp);
-  return {
-    studentStats,
-    level,
+
+  // Map rankings to the expected shape
+  const rankingsByType: Record<string, RankingPosition> = {};
+  for (const r of rankings) {
+    rankingsByType[r.ranking_type] = {
+      position: r.position,
+      total: r.total,
+      percentile: Number(r.percentile),
+    };
+  }
+
+  const emptyRanking: RankingPosition = { position: 0, total: 0, percentile: 0 };
+
+  // Map level to local LevelInfo
+  const levelKey = level.level as StudentLevel;
+  const levelConfig = LEVEL_CONFIGS[levelKey] ?? LEVEL_CONFIGS.novice;
+
+  const ratingData: RatingData = {
+    studentStats: {
+      course: stats.course ?? 0,
+      faculty: stats.faculty ?? '',
+      specialty: stats.specialty ?? '',
+      averageGrade: Number(stats.average_grade ?? 0),
+      educationForm:
+        stats.education_form === 'full_time' ? 'budget' : ((stats.education_form as 'budget' | 'contract') ?? 'budget'),
+    },
+    level: {
+      level: levelKey,
+      title: level.title ?? levelConfig.title,
+      currentXP: level.current_xp,
+      nextLevelXP: level.next_level_xp ?? levelConfig.minXP,
+      color: level.color ?? levelConfig.color,
+    },
     rankings: {
-      byCourse: { position: 3, total: 120, percentile: 97.5 },
-      byFaculty: { position: 15, total: 450, percentile: 96.7 },
-      byUniversity: { position: 45, total: 2500, percentile: 98.2 },
-      bySpecialty: { position: 8, total: 200, percentile: 96.0 },
-      byAttendance: { position: 12, total: 120, percentile: 90.0 },
+      byCourse: rankingsByType.byCourse ?? emptyRanking,
+      byFaculty: rankingsByType.byFaculty ?? emptyRanking,
+      byUniversity: rankingsByType.byUniversity ?? emptyRanking,
+      bySpecialty: rankingsByType.bySpecialty ?? emptyRanking,
+      byAttendance: rankingsByType.byAttendance ?? emptyRanking,
     },
     achievements,
-    streak: { current: 15, best: 28, description: 'Дней без пропусков' },
-    recentImprovements: [
-      { subject: 'Алгоритмы и структуры данных', oldGrade: 4.0, newGrade: 5.0, date: '2026-01-20T00:00:00Z' },
-      { subject: 'Базы данных', oldGrade: 4.5, newGrade: 5.0, date: '2026-01-15T00:00:00Z' },
-      { subject: 'Веб-разработка', oldGrade: 3.5, newGrade: 4.5, date: '2026-01-10T00:00:00Z' },
-    ],
+    streak: {
+      current: streak.current,
+      best: streak.best,
+      description: 'Дней без пропусков',
+    },
+    recentImprovements: improvements.map((imp) => ({
+      subject: imp.subject,
+      oldGrade: Number(imp.old_grade),
+      newGrade: Number(imp.new_grade),
+      date: imp.grade_date,
+    })),
   };
-};
 
-export default async () => {
-  const ratingData = await getMockRatingData();
   return <RatingPage data={ratingData} />;
 };

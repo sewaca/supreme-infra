@@ -1,22 +1,41 @@
 'use server';
 
+import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+
 type Choice = { id: string; priorities: string[] };
 
 export const saveChoices = async (choices: Choice[]): Promise<boolean> => {
   'use server';
-  console.log(`[debug] saved choices are: ${JSON.stringify(choices)}`);
 
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  const userId = getUserId();
 
-  const isError = Math.random() > 0.7;
-  if (isError) {
-    // return status 500
-    console.log('[debug] random error occurred');
-    throw new Error('Failed to save choices');
+  // Get active choices to find the correct choice_id for the API
+  const choicesRes = await CoreClientInfo.getChoicesSubjectsChoicesGet({
+    client: coreClientInfoClient,
+  });
+
+  const activeChoices = (choicesRes.data ?? []).filter((c) => c.is_active);
+
+  // Save priorities for each choice group
+  // Use the first active choice's ID as the choice_id
+  const choiceId = activeChoices[0]?.id;
+  if (!choiceId) {
+    throw new Error('No active subject choice period found');
   }
 
-  const result = Math.random() > 0.5;
+  // Flatten all priorities from all groups and save
+  for (const choice of choices) {
+    await CoreClientInfo.savePrioritiesSubjectsSavePrioritiesPost({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: {
+        choice_id: choiceId,
+        priorities: choice.priorities,
+      },
+    });
+  }
 
-  console.log(`[debug] status: "200", result: ${result}`);
-  return result;
+  return true;
 };

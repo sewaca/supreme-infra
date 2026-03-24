@@ -20,6 +20,8 @@ env:
   PORT: "3005"
   NODE_ENV: "production"
   BACKEND_SERVICE_NAMESPACE: "default"
+  CORE_APPLICATIONS_URL: "http://core-applications.default.svc.cluster.local/core-applications"
+  CORE_CLIENT_INFO_URL: "http://core-client-info.default.svc.cluster.local/core-client-info"
 
 resources:
   limits:
