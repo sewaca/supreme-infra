@@ -246,24 +246,6 @@ export type StudentStatsResponse = {
 };
 
 /**
- * SubjectInfo
- */
-export type SubjectInfo = {
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Teacher
-     */
-    teacher: string;
-};
-
-/**
  * SubjectChoiceResponse
  */
 export type SubjectChoiceResponse = {
@@ -283,10 +265,6 @@ export type SubjectChoiceResponse = {
      * Is Active
      */
     is_active: boolean;
-    /**
-     * Subjects
-     */
-    subjects: Array<SubjectInfo>;
 };
 
 /**
@@ -368,9 +346,9 @@ export type UserGradeResponse = {
      */
     subject: string;
     /**
-     * Grade (null = зачтено)
+     * Grade
      */
-    grade: string | null;
+    grade: string;
     /**
      * Grade Type
      */
@@ -379,22 +357,6 @@ export type UserGradeResponse = {
      * Grade Date
      */
     grade_date: string;
-    /**
-     * Course (year)
-     */
-    course: number;
-    /**
-     * Semester
-     */
-    semester: number;
-    /**
-     * Hours per curriculum
-     */
-    hours: number;
-    /**
-     * Teacher name
-     */
-    teacher: string;
 };
 
 /**
