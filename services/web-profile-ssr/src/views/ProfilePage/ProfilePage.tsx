@@ -51,7 +51,7 @@ export const ProfilePage = ({ data }: Props) => {
           subtitle={data.scholarship ? `${data.scholarship.value} ₽/м.` : i18n('Вы не получаете стипендию')}
           status={data.scholarship ? 'success' : 'error'}
           notifications={data.scholarship?.notifications}
-          href="/profile/scolarship"
+          href="/profile/scholarship"
         />
 
         <ButtonCard
