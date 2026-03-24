@@ -5,7 +5,7 @@ import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
 import { ChangeEvent, useState } from 'react';
-// import { updateSettings } from 'services/web-profile-ssr/app/profile/settings/actions';
+import { updateSettings } from 'services/web-profile-ssr/app/profile/settings/actions';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ChangeEmailModal } from './ChangeEmailModal';
 import { ChangePasswordModal } from './ChangePasswordModal';
@@ -24,8 +24,10 @@ export const SettingsPage = ({ initialSettings }: Props) => {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
-  const createOnSwitchChange = (key: keyof UserSettings) => (event: ChangeEvent<HTMLInputElement>) => {
-    setUserSettings((prev) => ({ ...prev, [key]: event.target.checked }));
+  const createOnSwitchChange = (key: keyof UserSettings) => async (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.checked;
+    setUserSettings((prev) => ({ ...prev, [key]: newValue }));
+    await updateSettings({ [key]: newValue });
   };
 
   return (

@@ -99,13 +99,28 @@ VALUES
     ('77777777-7777-7777-7777-77777777777c', '550e8400-e29b-41d4-a716-446655440000', 'Веб-разработка', 4.5, 'exam', '2025-06-22 14:00:00+00')
 ON CONFLICT (id) DO NOTHING;
 
--- Insert subject choice
-INSERT INTO subject_choice (id, choice_id, deadline_date, is_active)
+-- Insert subject choices (3 groups matching frontend mock data)
+INSERT INTO subject_choice (id, choice_id, deadline_date, is_active, subjects)
 VALUES (
     'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
-    'math_electives_2026',
+    'math',
     '2026-04-01 23:59:59+00',
-    TRUE
+    TRUE,
+    '[{"id":"math-1","name":"Математический анализ","teacher":"Иванова Г. Ю."},{"id":"math-2","name":"Линейная алгебра и геометрия","teacher":"Смирнов М. В."},{"id":"math-3","name":"Дискретная математика","teacher":"Павлов С. Н."},{"id":"math-4","name":"Теория вероятностей и статистика","teacher":"Морозова Е. А."}]'
+),
+(
+    'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbc',
+    'physics',
+    '2026-04-01 23:59:59+00',
+    TRUE,
+    '[{"id":"physics-1","name":"Физика (механика)","teacher":"Белов О. И."},{"id":"physics-2","name":"Физика (электричество и магнетизм)","teacher":"Кузнецова Т. С."}]'
+),
+(
+    'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbd',
+    'programming',
+    '2026-04-01 23:59:59+00',
+    TRUE,
+    '[{"id":"programming-1","name":"Программирование на Python","teacher":"Петренко Д. А."},{"id":"programming-2","name":"Введение в алгоритмы и структуры данных","teacher":"Романова А. В."},{"id":"programming-3","name":"Основы веб\u2011разработки","teacher":"Попов И. М."}]'
 )
 ON CONFLICT (choice_id) DO NOTHING;
 
@@ -115,5 +130,8 @@ VALUES
     ('cccccccc-cccc-cccc-cccc-cccccccccccc', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'math-3', 0),
     ('cccccccc-cccc-cccc-cccc-cccccccccccd', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'math-2', 1),
     ('cccccccc-cccc-cccc-cccc-ccccccccccce', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'math-1', 2),
-    ('cccccccc-cccc-cccc-cccc-cccccccccccf', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'math-4', 3)
+    ('cccccccc-cccc-cccc-cccc-cccccccccccf', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'math-4', 3),
+    ('cccccccc-cccc-cccc-cccc-cccccccccd00', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbd', 'programming-3', 0),
+    ('cccccccc-cccc-cccc-cccc-cccccccccd01', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbd', 'programming-2', 1),
+    ('cccccccc-cccc-cccc-cccc-cccccccccd02', '550e8400-e29b-41d4-a716-446655440000', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbd', 'programming-1', 2)
 ON CONFLICT (user_id, choice_id, subject_id) DO NOTHING;

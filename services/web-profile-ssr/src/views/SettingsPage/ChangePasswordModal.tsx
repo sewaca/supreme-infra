@@ -13,20 +13,19 @@ import {
 } from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { useState } from 'react';
-import { changePassword, sendPasswordConfirmationCode } from '../../../app/profile/settings/actions';
+import { changePassword } from '../../../app/profile/settings/actions';
 
 type ChangePasswordModalProps = {
   open: boolean;
   onClose: () => void;
 };
 
-type Step = 'password' | 'code' | 'success';
+type Step = 'password' | 'success';
 
 export const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
   const [step, setStep] = useState<Step>('password');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +33,6 @@ export const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps)
     setStep('password');
     setNewPassword('');
     setConfirmPassword('');
-    setCode('');
     setError(null);
     setLoading(false);
   };
@@ -44,7 +42,7 @@ export const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps)
     onClose();
   };
 
-  const handleSendCode = async () => {
+  const handleConfirm = async () => {
     setError(null);
 
     if (newPassword !== confirmPassword) {
@@ -60,25 +58,7 @@ export const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps)
     setLoading(true);
 
     try {
-      const result = await sendPasswordConfirmationCode();
-      if (result.success) {
-        setStep('code');
-      } else {
-        setError(result.error || i18n('Произошла ошибка'));
-      }
-    } catch {
-      setError(i18n('Произошла ошибка при отправке кода'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleConfirm = async () => {
-    setError(null);
-    setLoading(true);
-
-    try {
-      const result = await changePassword('', newPassword, code);
+      const result = await changePassword(newPassword);
       if (result.success) {
         setStep('success');
       } else {
@@ -95,7 +75,6 @@ export const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps)
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         {step === 'password' && i18n('Изменить пароль')}
-        {step === 'code' && i18n('Подтверждение изменения пароля')}
         {step === 'success' && i18n('Пароль изменён')}
       </DialogTitle>
 
@@ -125,21 +104,6 @@ export const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps)
             </>
           )}
 
-          {step === 'code' && (
-            <>
-              <Alert severity="info">{i18n('Код подтверждения отправлен на ваш email')}</Alert>
-              <TextField
-                label={i18n('Код подтверждения')}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                fullWidth
-                autoFocus
-                disabled={loading}
-                inputProps={{ maxLength: 6 }}
-              />
-            </>
-          )}
-
           {step === 'success' && <Alert severity="success">{i18n('Пароль успешно изменён')}</Alert>}
         </Stack>
       </DialogContent>
@@ -150,19 +114,8 @@ export const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps)
             <Button onClick={handleClose} disabled={loading}>
               {i18n('Отмена')}
             </Button>
-            <Button onClick={handleSendCode} variant="contained" disabled={!newPassword || !confirmPassword || loading}>
-              {loading ? <CircularProgress size={24} /> : i18n('Далее')}
-            </Button>
-          </>
-        )}
-
-        {step === 'code' && (
-          <>
-            <Button onClick={() => setStep('password')} disabled={loading}>
-              {i18n('Назад')}
-            </Button>
-            <Button onClick={handleConfirm} variant="contained" disabled={code.length !== 6 || loading}>
-              {loading ? <CircularProgress size={24} /> : i18n('Подтвердить')}
+            <Button onClick={handleConfirm} variant="contained" disabled={!newPassword || !confirmPassword || loading}>
+              {loading ? <CircularProgress size={24} /> : i18n('Сохранить')}
             </Button>
           </>
         )}

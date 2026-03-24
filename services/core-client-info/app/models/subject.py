@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, Integer, String, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -15,6 +15,7 @@ class SubjectChoice(Base):
     choice_id: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     deadline_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    subjects: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
 
 
 class UserSubjectPriority(Base):

@@ -13,26 +13,24 @@ import {
 } from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { useState } from 'react';
-import { changeEmail, sendEmailConfirmationCode } from '../../../app/profile/settings/actions';
+import { changeEmail } from '../../../app/profile/settings/actions';
 
 type ChangeEmailModalProps = {
   open: boolean;
   onClose: () => void;
 };
 
-type Step = 'email' | 'code' | 'success';
+type Step = 'email' | 'success';
 
 export const ChangeEmailModal = ({ open, onClose }: ChangeEmailModalProps) => {
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleReset = () => {
     setStep('email');
     setEmail('');
-    setCode('');
     setError(null);
     setLoading(false);
   };
@@ -42,30 +40,12 @@ export const ChangeEmailModal = ({ open, onClose }: ChangeEmailModalProps) => {
     onClose();
   };
 
-  const handleSendCode = async () => {
-    setError(null);
-    setLoading(true);
-
-    try {
-      const result = await sendEmailConfirmationCode(email);
-      if (result.success) {
-        setStep('code');
-      } else {
-        setError(result.error || i18n('Произошла ошибка'));
-      }
-    } catch {
-      setError(i18n('Произошла ошибка при отправке кода'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleConfirm = async () => {
     setError(null);
     setLoading(true);
 
     try {
-      const result = await changeEmail(email, code);
+      const result = await changeEmail(email);
       if (result.success) {
         setStep('success');
       } else {
@@ -82,7 +62,6 @@ export const ChangeEmailModal = ({ open, onClose }: ChangeEmailModalProps) => {
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         {step === 'email' && i18n('Изменить email')}
-        {step === 'code' && i18n('Подтверждение email')}
         {step === 'success' && i18n('Email изменён')}
       </DialogTitle>
 
@@ -102,21 +81,6 @@ export const ChangeEmailModal = ({ open, onClose }: ChangeEmailModalProps) => {
             />
           )}
 
-          {step === 'code' && (
-            <>
-              <Alert severity="info">{i18n('Код подтверждения отправлен на {{email}}', { email })}</Alert>
-              <TextField
-                label={i18n('Код подтверждения')}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                fullWidth
-                autoFocus
-                disabled={loading}
-                inputProps={{ maxLength: 6 }}
-              />
-            </>
-          )}
-
           {step === 'success' && (
             <Alert severity="success">{i18n('Email успешно изменён на {{email}}', { email })}</Alert>
           )}
@@ -129,19 +93,8 @@ export const ChangeEmailModal = ({ open, onClose }: ChangeEmailModalProps) => {
             <Button onClick={handleClose} disabled={loading}>
               {i18n('Отмена')}
             </Button>
-            <Button onClick={handleSendCode} variant="contained" disabled={!email || loading}>
-              {loading ? <CircularProgress size={24} /> : i18n('Далее')}
-            </Button>
-          </>
-        )}
-
-        {step === 'code' && (
-          <>
-            <Button onClick={() => setStep('email')} disabled={loading}>
-              {i18n('Назад')}
-            </Button>
-            <Button onClick={handleConfirm} variant="contained" disabled={code.length !== 6 || loading}>
-              {loading ? <CircularProgress size={24} /> : i18n('Подтвердить')}
+            <Button onClick={handleConfirm} variant="contained" disabled={!email || loading}>
+              {loading ? <CircularProgress size={24} /> : i18n('Сохранить')}
             </Button>
           </>
         )}

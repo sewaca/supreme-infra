@@ -27,117 +27,42 @@ export const updateSettings = async (settings: {
   }
 };
 
-export const changeEmail = async (
-  newEmail: string,
-  confirmationCode: string,
-): Promise<{ success: boolean; error?: string }> => {
+export const changeEmail = async (newEmail: string): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
   if (!newEmail.includes('@')) {
     return { success: false, error: i18n('Неверный формат email') };
   }
 
-  if (confirmationCode.length !== 6) {
-    return { success: false, error: i18n('Код подтверждения должен содержать 6 цифр') };
-  }
-
   const userId = getUserId();
   try {
-    const res = await CoreClientInfo.changeEmailSettingsEmailPost({
+    await CoreClientInfo.changeEmailSettingsEmailPost({
       client: coreClientInfoClient,
       query: { user_id: userId },
-      body: { new_email: newEmail, confirmation_code: confirmationCode },
+      body: { new_email: newEmail },
     });
-
-    const data = res.data;
-    if (data && data.status === 'success') {
-      return { success: true };
-    }
-    return { success: false, error: data?.message ?? i18n('Не удалось изменить email. Попробуйте позже.') };
+    return { success: true };
   } catch {
     return { success: false, error: i18n('Не удалось изменить email. Попробуйте позже.') };
   }
 };
 
-export const sendEmailConfirmationCode = async (email: string): Promise<{ success: boolean; error?: string }> => {
-  'use server';
-
-  if (!email.includes('@')) {
-    return { success: false, error: i18n('Неверный формат email') };
-  }
-
-  const userId = getUserId();
-  try {
-    const res = await CoreClientInfo.changeEmailSettingsEmailPost({
-      client: coreClientInfoClient,
-      query: { user_id: userId },
-      body: { new_email: email },
-    });
-
-    const data = res.data;
-    if (data && data.status === '2fa_required') {
-      return { success: true };
-    }
-    return { success: false, error: data?.message ?? i18n('Не удалось отправить код подтверждения') };
-  } catch {
-    return { success: false, error: i18n('Не удалось отправить код подтверждения') };
-  }
-};
-
-export const changePassword = async (
-  currentPassword: string,
-  newPassword: string,
-  confirmationCode: string,
-): Promise<{ success: boolean; error?: string }> => {
+export const changePassword = async (newPassword: string): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
   if (newPassword.length < 6) {
     return { success: false, error: i18n('Новый пароль должен содержать минимум 6 символов') };
   }
 
-  if (confirmationCode.length !== 6) {
-    return { success: false, error: i18n('Код подтверждения должен содержать 6 цифр') };
-  }
-
   const userId = getUserId();
   try {
-    const res = await CoreClientInfo.changePasswordSettingsPasswordPost({
+    await CoreClientInfo.changePasswordSettingsPasswordPost({
       client: coreClientInfoClient,
       query: { user_id: userId },
-      body: {
-        current_password: currentPassword,
-        new_password: newPassword,
-        confirmation_code: confirmationCode,
-      },
+      body: { current_password: '', new_password: newPassword },
     });
-
-    const data = res.data;
-    if (data && data.status === 'success') {
-      return { success: true };
-    }
-    return { success: false, error: data?.message ?? i18n('Не удалось изменить пароль. Попробуйте позже.') };
+    return { success: true };
   } catch {
     return { success: false, error: i18n('Не удалось изменить пароль. Попробуйте позже.') };
-  }
-};
-
-export const sendPasswordConfirmationCode = async (): Promise<{ success: boolean; error?: string }> => {
-  'use server';
-
-  const userId = getUserId();
-  try {
-    const res = await CoreClientInfo.changePasswordSettingsPasswordPost({
-      client: coreClientInfoClient,
-      query: { user_id: userId },
-      body: { current_password: '', new_password: '' },
-    });
-
-    const data = res.data;
-    if (data && data.status === '2fa_required') {
-      return { success: true };
-    }
-    return { success: false, error: data?.message ?? i18n('Не удалось отправить код подтверждения') };
-  } catch {
-    return { success: false, error: i18n('Не удалось отправить код подтверждения') };
   }
 };

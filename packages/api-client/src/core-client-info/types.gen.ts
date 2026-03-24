@@ -246,6 +246,24 @@ export type StudentStatsResponse = {
 };
 
 /**
+ * SubjectInfo
+ */
+export type SubjectInfo = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Teacher
+     */
+    teacher: string;
+};
+
+/**
  * SubjectChoiceResponse
  */
 export type SubjectChoiceResponse = {
@@ -265,6 +283,10 @@ export type SubjectChoiceResponse = {
      * Is Active
      */
     is_active: boolean;
+    /**
+     * Subjects
+     */
+    subjects: Array<SubjectInfo>;
 };
 
 /**

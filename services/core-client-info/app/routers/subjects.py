@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.subject import SubjectChoice, UserSubjectPriority
-from app.schemas.subject import SavePrioritiesRequest, SubjectChoiceResponse, UserSubjectPriorityResponse
+from app.schemas.subject import SavePrioritiesRequest, SubjectChoiceResponse, SubjectInfo, UserSubjectPriorityResponse
 
 router = APIRouter(prefix="/subjects", tags=["subjects"])
 
@@ -16,7 +16,13 @@ async def get_choices(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(SubjectChoice).where(SubjectChoice.is_active))
     choices = result.scalars().all()
     return [
-        SubjectChoiceResponse(id=c.id, choice_id=c.choice_id, deadline_date=c.deadline_date, is_active=c.is_active)
+        SubjectChoiceResponse(
+            id=c.id,
+            choice_id=c.choice_id,
+            deadline_date=c.deadline_date,
+            is_active=c.is_active,
+            subjects=[SubjectInfo(**s) for s in (c.subjects or [])],
+        )
         for c in choices
     ]
 
