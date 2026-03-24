@@ -57,7 +57,9 @@ Prometheus metrics are exposed on port `9464` at `/metrics`.
 
 ## Test Users
 
-| Email                   | Password    | Role    |
-| ----------------------- | ----------- | ------- |
-| ivan.ivanov@example.com | password123 | student |
-| admin@example.com       | admin123    | admin   |
+| Email                   | Password                | Role      |
+| ----------------------- | ----------------------- | --------- |
+| ivan.ivanov@example.com | ivan.ivanov@example.com | student   |
+| admin@example.com       | admin@example.com       | admin     |
+| moder@example.com       | moder@example.com       | moderator |
+| user@example.com        | user@example.com        | student   |

@@ -108,7 +108,7 @@ export JWT_TOKEN=$(curl -s -X POST "$BASE_URL/auth/login" \
 ```bash
 curl -s -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "admin123"}' | jq .
+  -d '{"email": "admin@example.com", "password": "admin@example.com"}' | jq .
 ```
 
 ```json
@@ -248,10 +248,12 @@ The token returned by `/auth/login` has the following payload:
 
 ## Test Users Reference
 
-| ID                                     | Email                     | Password      | Role      |
-| -------------------------------------- | ------------------------- | ------------- | --------- |
-| `550e8400-e29b-41d4-a716-446655440000` | `ivan.ivanov@example.com` | `password123` | `student` |
-| `550e8400-e29b-41d4-a716-446655440001` | `admin@example.com`       | `admin123`    | `admin`   |
+| Email                     | Password                  | Role        |
+| ------------------------- | ------------------------- | ----------- |
+| `ivan.ivanov@example.com` | `ivan.ivanov@example.com` | `student`   |
+| `admin@example.com`       | `admin@example.com`       | `admin`     |
+| `moder@example.com`       | `moder@example.com`       | `moderator` |
+| `user@example.com`        | `user@example.com`        | `student`   |
 
 ---
 
