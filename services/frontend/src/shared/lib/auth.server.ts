@@ -1,5 +1,6 @@
 import type { UserInfo } from '@supreme-int/api-client/src/core-auth';
 import { RecipesApi, TOKEN_KEY } from '@supreme-int/api-client/src/index';
+import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
 import { cookies } from 'next/headers';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -20,7 +21,7 @@ function getCoreAuthUrl(): string {
   return `http://core-auth.${namespace}.svc.cluster.local/core-auth`;
 }
 
-export const rscRecipesApi = new RecipesApi(getBackendUrl());
+export const rscRecipesApi = new RecipesApi(getBackendUrl(), createServerFetch());
 
 export async function getAuthToken(): Promise<string | undefined> {
   const cookieStore = await cookies();

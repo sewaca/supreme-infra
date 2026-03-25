@@ -6,5 +6,5 @@
 - [x] core-auth
 - [?] core-recipes-bff
 - [ ] frontend
-- [ ] core-client-info
+- [o] core-client-info
 - [ ] core-applications
