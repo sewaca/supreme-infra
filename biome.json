@@ -11,7 +11,8 @@
       "**",
       "!packages/api-client/src/core-client-info",
       "!packages/api-client/src/core-applications",
-      "!packages/api-client/schemas"
+      "!packages/api-client/schemas",
+      "!__reports"
     ]
   },
   "formatter": {

@@ -7,17 +7,9 @@
     "src"
   ],
   "scripts": {},
-  "dependencies": {
-    "@supreme-int/nextjs-shared": "workspace:*",
-    "next": "catalog:",
-    "react": "catalog:",
-    "classnames": "catalog:",
-    "@mui/material": "catalog:",
-    "@mui/icons-material": "catalog:"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/node": "catalog:",
-    "@types/react": "catalog:"
+    "@types/node": "catalog:"
   },
   "author": "sewaca",
   "license": "ISC"

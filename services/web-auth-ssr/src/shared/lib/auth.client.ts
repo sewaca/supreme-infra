@@ -9,18 +9,6 @@ export type { UserRole };
 
 // ─── Token helpers ────────────────────────────────────────────────────────────
 
-export function getAuthToken(): string | undefined {
-  if (typeof document === 'undefined') return undefined;
-  const tokenCookie = document.cookie.split(';').find((c) => c.trim().startsWith(`${TOKEN_KEY}=`));
-  return tokenCookie?.split('=')[1];
-}
-
-function base64UrlDecode(str: string): string {
-  const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-  const padding = '='.repeat((4 - (base64.length % 4)) % 4);
-  return atob(base64 + padding);
-}
-
 export type DecodedToken = {
   sub: string;
   email: string;
@@ -29,22 +17,6 @@ export type DecodedToken = {
   iat: number;
   exp: number;
 };
-
-export function decodeToken(token: string): DecodedToken | null {
-  try {
-    const parts = token.split('.');
-    if (parts.length !== 3) return null;
-    return JSON.parse(base64UrlDecode(parts[1])) as DecodedToken;
-  } catch {
-    return null;
-  }
-}
-
-export function getUserRole(): UserRole | null {
-  const token = getAuthToken();
-  if (!token) return null;
-  return (decodeToken(token)?.role as UserRole) ?? null;
-}
 
 export function setAuthToken(token: string): void {
   if (typeof document === 'undefined') return;

@@ -12,7 +12,7 @@ function getCoreAuthUrl(): string {
   return `http://core-auth.${namespace}.svc.cluster.local/core-auth`;
 }
 
-export async function getAuthToken(): Promise<string | undefined> {
+async function getAuthToken(): Promise<string | undefined> {
   const cookieStore = await cookies();
   return cookieStore.get(TOKEN_KEY)?.value;
 }

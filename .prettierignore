@@ -7,6 +7,7 @@ dist
 build
 .next
 coverage
+__reports
 
 # Helm templates (contain Go templates)
 **/templates/**/*.yaml

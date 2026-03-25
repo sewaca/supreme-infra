@@ -13,9 +13,6 @@ export const backendApi = {
   deleteRecipe: clientRecipesApi.deleteRecipe.bind(clientRecipesApi),
 };
 
-// Re-export individual API instances
-export { clientRecipesApi as recipesApi };
-
 // Re-export types for backward compatibility
 export type {
   AuthResponse,

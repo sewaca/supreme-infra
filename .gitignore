@@ -10,9 +10,13 @@ dist
 build
 .next
 coverage
+__reports
 
 # Cache
 .cache
 .turbo
 .ruff_cache
 .venv
+
+# Local files
+.claude/settings.local.json

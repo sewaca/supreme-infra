@@ -21,10 +21,13 @@
     "generate:overrides": "tsx infra/generate-overrides/index.ts",
     "generate:router": "tsx infra/generate/generate-router/index.ts",
     "generate:service": "tsx infra/generate/generate-service/index.ts",
-    "generate": "tsx infra/generate/index.ts"
+    "generate": "tsx infra/generate/index.ts",
+
+    "check:deadcode": "tsx infra/checks/deadcode/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
+    "knip": "catalog:",
     "@inquirer/prompts": "catalog:",
     "@svgr/webpack": "catalog:",
     "@types/handlebars": "catalog:",

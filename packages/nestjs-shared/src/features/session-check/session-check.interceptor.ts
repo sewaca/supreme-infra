@@ -49,7 +49,7 @@ export class SessionCheckInterceptor implements NestInterceptor {
     }
 
     // authLevel === 'valid': require Bearer token + valid session
-    const authHeader = request.headers['authorization'];
+    const authHeader = request.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) {
       throw new UnauthorizedException('Authentication required');
     }
