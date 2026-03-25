@@ -22,6 +22,7 @@ env:
   BACKEND_SERVICE_NAMESPACE: "default"
   CORE_APPLICATIONS_URL: "http://core-applications.default.svc.cluster.local/core-applications"
   CORE_CLIENT_INFO_URL: "http://core-client-info.default.svc.cluster.local/core-client-info"
+  CORE_AUTH_URL: "http://core-auth.default.svc.cluster.local/core-auth"
 
 resources:
   limits:
