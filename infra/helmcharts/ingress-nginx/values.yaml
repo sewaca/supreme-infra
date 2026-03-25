@@ -6,6 +6,8 @@ ingress-nginx:
       use-http2: "true"
       http2-max-field-size: 16k
       http2-max-header-size: 32k
+      use-forwarded-headers: "true"
+      proxy-real-ip-cidr: 0.0.0.0/0
 ingress:
   enabled: true
   name: ingress-main
