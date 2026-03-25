@@ -4,6 +4,15 @@ export type KeysetDictionary = Record<Language, KeysetString>;
 
 export const dictionary: KeysetDictionary = {
   en: {
+    'profile.academic.university': 'University',
+    'profile.academic.faculty': 'Faculty',
+    'profile.academic.specialty': 'Specialty',
+    'profile.academic.course': 'Course',
+    'profile.academic.group': 'Group',
+    'profile.academic.education_form': 'Education Form',
+    'profile.academic.average_grade': 'Average Grade',
+    'profile.academic.student_card_number': 'Student Card Number',
+    'profile.academic.study_period': 'Study Period',
     'order.field.comment': 'Comment',
     'order.field.startDate': 'Start Date',
     'order.field.endDate': 'End Date',
@@ -16,6 +25,15 @@ export const dictionary: KeysetDictionary = {
     'order.field.qualification': 'Qualification',
   },
   ru: {
+    'profile.academic.university': 'Университет',
+    'profile.academic.faculty': 'Факультет',
+    'profile.academic.specialty': 'Направление',
+    'profile.academic.course': 'Курс',
+    'profile.academic.group': 'Группа',
+    'profile.academic.education_form': 'Форма обучения',
+    'profile.academic.average_grade': 'Средний балл',
+    'profile.academic.student_card_number': 'Номер студенческого',
+    'profile.academic.study_period': 'Годы обучения',
     'order.field.comment': 'Комментарий',
     'order.field.startDate': 'Дата начала действия',
     'order.field.endDate': 'Дата окончания действия',

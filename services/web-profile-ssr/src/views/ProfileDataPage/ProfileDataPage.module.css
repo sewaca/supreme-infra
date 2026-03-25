@@ -8,3 +8,19 @@
   display: block;
   overflow: hidden;
 }
+
+.avatarPlaceholder {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2b4878 0%, #1a2e4a 100%);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  user-select: none;
+}

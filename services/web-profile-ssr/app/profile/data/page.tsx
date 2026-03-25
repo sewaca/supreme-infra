@@ -22,7 +22,7 @@ export default async () => {
 
   return (
     <ProfileDataPage
-      avatar={user.avatar ?? 'https://placehold.co/600x1000'}
+      avatar={user.avatar ?? null}
       lastName={user.last_name}
       name={user.name}
       middleName={user.middle_name ?? undefined}

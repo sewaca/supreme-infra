@@ -7,7 +7,7 @@ import { MismatchDataButton } from '../DormitoryPage/components/MismatchDataButt
 import styles from './ProfileDataPage.module.css';
 
 type Props = {
-  avatar: string;
+  avatar: string | null;
   lastName: string;
   name: string;
   middleName?: string;
@@ -20,7 +20,14 @@ export const ProfileDataPage = ({ avatar, lastName, name, middleName, data }: Pr
       <DefaultNavbar center={<Typography variant="title1">{i18n('Личные данные')}</Typography>} />
       <Container>
         <Spacer size={3} />
-        <img src={avatar} className={styles.avatar} />
+        {avatar ? (
+          <img src={avatar} className={styles.avatar} />
+        ) : (
+          <div className={styles.avatarPlaceholder}>
+            {lastName[0]}
+            {name[0]}
+          </div>
+        )}
         <Spacer size={8} />
         <Typography variant="h2" textAlign="center" whiteSpace="pre-wrap" lineHeight={1.2}>
           {lastName} {'\n'}
@@ -34,7 +41,7 @@ export const ProfileDataPage = ({ avatar, lastName, name, middleName, data }: Pr
             {data.map((item) => (
               <div key={item.label}>
                 <Typography variant="caption" color="secondary" component="p">
-                  {item.label}
+                  {i18n(item.label)}
                 </Typography>
                 <Typography variant="body2" component="p">
                   {item.value}
