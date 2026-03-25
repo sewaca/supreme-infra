@@ -1,10 +1,10 @@
 Сервисы которые надо прокатить:
 
 - [x] auth-ssr
+- [x] core-auth
+- [x] core-recipes-bff
 - [x] web-documents-ssr
 - [x] web-profile-ssr
-- [x] core-auth
-- [?] core-recipes-bff
-- [ ] frontend
-- [o] core-client-info
-- [ ] core-applications
+- [x] frontend
+- [x] core-client-info
+- [x] core-applications
