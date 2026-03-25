@@ -17,6 +17,13 @@ export const components: Readonly<ThemeOptions['components']> = {
       filledInfo: { color: takeContrastText(palette.info) },
     },
   },
+  MuiAppBar: {
+    styleOverrides: {
+      colorTransparent: {
+        backgroundColor: 'transparent',
+      },
+    },
+  },
   MuiPaper: {
     styleOverrides: {
       root: ({ ownerState }) => {

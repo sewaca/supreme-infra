@@ -35,7 +35,14 @@ export const ProfilePage = ({ data }: Props) => {
       />
 
       <Spacer size={14} />
-      <img src={data.avatar} className={styles.avatar} />
+      {data.avatar ? (
+        <img src={data.avatar} alt="Фото" className={styles.avatar} />
+      ) : (
+        <div className={styles.avatarPlaceholder}>
+          {data.lastName[0]}
+          {data.name[0]}
+        </div>
+      )}
       <Spacer size={6} />
 
       <Typography variant="h2" textAlign="center">

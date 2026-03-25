@@ -34,7 +34,7 @@ export default async () => {
     name: user.name,
     lastName: user.last_name,
     middleName: user.middle_name ?? undefined,
-    avatar: user.avatar ?? 'https://placehold.co/600x1000',
+    avatar: user.avatar ?? null,
     scholarship: scholarshipApp
       ? {
           value: scholarshipApp.additional_fields?.amount

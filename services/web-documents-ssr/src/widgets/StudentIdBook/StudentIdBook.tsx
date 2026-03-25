@@ -11,6 +11,12 @@ interface Props {
   stats: StudentStatsResponse | null;
 }
 
+const EDUCATION_FORM_LABELS: Record<string, string> = {
+  full_time: 'Очная',
+  part_time: 'Заочная',
+  evening: 'Очно-заочная',
+};
+
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
   const day = String(d.getDate()).padStart(2, '0');
@@ -36,7 +42,10 @@ export const StudentIdBook = ({ user, stats }: Props) => {
     { label: 'Факультет', value: stats?.faculty },
     { label: 'Направление', value: stats?.direction ?? stats?.specialty },
     { label: 'Профиль', value: stats?.profile },
-    { label: 'Форма обучения', value: stats?.education_form },
+    {
+      label: 'Форма обучения',
+      value: stats?.education_form ? (EDUCATION_FORM_LABELS[stats.education_form] ?? stats.education_form) : undefined,
+    },
     { label: 'Квалификация', value: stats?.qualification },
   ].filter((f) => f.value) as { label: string; value: string }[];
 

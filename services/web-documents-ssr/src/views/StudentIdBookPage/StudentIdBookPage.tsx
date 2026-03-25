@@ -13,7 +13,7 @@ interface Props {
 export const StudentIdBookPage = ({ user, stats }: Props) => {
   return (
     <>
-      <DefaultNavbar center="Студенческий билет" backPath="/profile" />
+      <DefaultNavbar backPath="/profile" />
       <StudentIdBook user={user} stats={stats} />
     </>
   );

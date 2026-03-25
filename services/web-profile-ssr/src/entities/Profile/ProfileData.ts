@@ -8,7 +8,7 @@ export type ProfileData = {
   lastName: string;
   middleName?: string;
 
-  avatar: string;
+  avatar: string | null;
 
   scholarship?: UserBenefit;
   dormitory?: UserBenefit;
