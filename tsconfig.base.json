@@ -32,7 +32,7 @@
 
     "baseUrl": ".",
     "paths": {
-      "@supreme-int/*": ["packages/*/src"]
+      "@supreme-int/*": ["packages/*"]
     }
   },
   "exclude": ["**/node_modules"],
