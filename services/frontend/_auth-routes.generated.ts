@@ -9,7 +9,7 @@ export interface AuthRoute {
 }
 
 export const authRoutes: AuthRoute[] = [
-  { path: /^\/$/, method: 'GET', auth_level: 'none' },
+  { path: /^\/$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/frontend\/.*$/, method: 'GET', auth_level: 'none' },
   { path: /^\/proposed-recipes$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/recipes\/[^/]+$/, method: 'GET', auth_level: 'valid' },

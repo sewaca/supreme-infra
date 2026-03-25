@@ -81,17 +81,23 @@ function parseNewsFromHtml(html: string): NewsItem[] {
 
 export async function fetchUniversityNews(): Promise<NewsItem[]> {
   try {
+    console.time('fetchUniversityNews');
     const res = await fetch(`${BASE_URL}/bonchnews`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 36000 },
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; web-auth-ssr/1.0)' },
     });
+    console.timeEnd('fetchUniversityNews');
 
-    if (!res.ok) return FALLBACK_NEWS;
+    if (!res.ok) {
+      console.error(`[news] Failed to fetch news "${res.status} ${res.statusText}"`);
+      return FALLBACK_NEWS;
+    }
 
     const html = await res.text();
     const parsed = parseNewsFromHtml(html);
     return parsed.length >= 3 ? parsed : FALLBACK_NEWS;
-  } catch {
+  } catch (e) {
+    console.error('[news] Failed to fetch news', e);
     return FALLBACK_NEWS;
   }
 }

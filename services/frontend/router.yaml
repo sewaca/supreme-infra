@@ -7,7 +7,7 @@ type: next
 routes:
   - path: /
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /frontend/.*
     method: GET
     auth_level: none

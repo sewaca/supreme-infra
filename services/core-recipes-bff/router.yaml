@@ -10,13 +10,13 @@ routes:
     auth_level: none
   - path: /core-recipes-bff/recipes
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /core-recipes-bff/recipes/[^/]+
     method: DELETE
     auth_level: valid
   - path: /core-recipes-bff/recipes/[^/]+
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /core-recipes-bff/recipes/[^/]+
     method: PUT
     auth_level: valid
