@@ -38,6 +38,7 @@ async def get_sessions(current_user: dict = Depends(get_current_user), db: Async
             revoked_at=s.revoked_at,
             user_agent=s.user_agent,
             ip_address=s.ip_address,
+            location=s.location,
             is_current=(current_jti is not None and str(s.jti) == current_jti),
         )
         for s in sessions

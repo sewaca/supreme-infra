@@ -178,4 +178,6 @@ migrations:
 
     CREATE INDEX IF NOT EXISTS idx_user_session_user_id ON
     user_session(user_id);
+  003_add_session_location.sql: |
+    ALTER TABLE user_session ADD COLUMN IF NOT EXISTS location VARCHAR;
 skipMigrations: false

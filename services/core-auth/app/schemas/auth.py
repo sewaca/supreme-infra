@@ -38,6 +38,7 @@ class SessionInfo(BaseModel):
     revoked_at: datetime | None
     user_agent: str | None
     ip_address: str | None
+    location: str | None
     is_current: bool
 
     model_config = {"from_attributes": True}

@@ -36,45 +36,47 @@ export const SettingsPage = ({ initialSettings, sessions }: Props) => {
     <>
       <DefaultNavbar center={<Typography variant="title1">{i18n('Настройки')}</Typography>} />
 
-      <Container sx={{ paddingTop: 2 }}>
-        <Typography variant="h3">{i18n('Уведомления')}</Typography>
+      <Stack sx={{ paddingTop: 2, gap: 2 }}>
+        <Container>
+          <Typography variant="h3">{i18n('Уведомления')}</Typography>
 
-        <Row justifyContent="space-between">
-          <Typography variant="body2">{i18n('Уведомления о новом сообщении')}</Typography>
-          <Switch
-            checked={userSettings.isNewMessageNotificationsEnabled}
-            onChange={createOnSwitchChange('isNewMessageNotificationsEnabled')}
-          />
-        </Row>
+          <Row justifyContent="space-between">
+            <Typography variant="body2">{i18n('Уведомления о новом сообщении')}</Typography>
+            <Switch
+              checked={userSettings.isNewMessageNotificationsEnabled}
+              onChange={createOnSwitchChange('isNewMessageNotificationsEnabled')}
+            />
+          </Row>
 
-        <Row justifyContent="space-between">
-          <Typography variant="body2">{i18n('Отправлять уведомления об изменениях расписания')}</Typography>
-          <Switch
-            checked={userSettings.isScheduleChangeNotificationsEnabled}
-            onChange={createOnSwitchChange('isScheduleChangeNotificationsEnabled')}
-          />
-        </Row>
-      </Container>
+          <Row justifyContent="space-between">
+            <Typography variant="body2">{i18n('Отправлять уведомления об изменениях расписания')}</Typography>
+            <Switch
+              checked={userSettings.isScheduleChangeNotificationsEnabled}
+              onChange={createOnSwitchChange('isScheduleChangeNotificationsEnabled')}
+            />
+          </Row>
+        </Container>
 
-      <Container sx={{ paddingTop: 2 }}>
-        <Typography variant="h3">{i18n('Безопасность')}</Typography>
-        <Spacer size={4} />
-        <Stack direction="row" gap={2}>
-          <Button variant="contained" color="inherit" onClick={() => setIsEmailModalOpen(true)}>
-            {i18n('Сменить email')}
-          </Button>
-          <Button variant="contained" color="inherit" onClick={() => setIsPasswordModalOpen(true)}>
-            {i18n('Сменить пароль')}
-          </Button>
-        </Stack>
-      </Container>
+        <Container>
+          <Typography variant="h3">{i18n('Безопасность')}</Typography>
+          <Spacer size={4} />
+          <Stack direction="row" gap={2}>
+            <Button variant="contained" color="inherit" onClick={() => setIsEmailModalOpen(true)}>
+              {i18n('Сменить email')}
+            </Button>
+            <Button variant="contained" color="inherit" onClick={() => setIsPasswordModalOpen(true)}>
+              {i18n('Сменить пароль')}
+            </Button>
+          </Stack>
+        </Container>
+
+        <Container>
+          <SessionsSection sessions={sessions} />
+        </Container>
+      </Stack>
 
       <ChangeEmailModal open={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
       <ChangePasswordModal open={isPasswordModalOpen} onClose={() => setIsPasswordModalOpen(false)} />
-
-      <Container sx={{ paddingTop: 2 }}>
-        <SessionsSection sessions={sessions} />
-      </Container>
     </>
   );
 };

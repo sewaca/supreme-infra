@@ -1,0 +1,1 @@
+ALTER TABLE user_session ADD COLUMN IF NOT EXISTS location VARCHAR;

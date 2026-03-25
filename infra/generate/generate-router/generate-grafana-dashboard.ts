@@ -379,7 +379,7 @@ export function updateGrafanaDashboard(serviceName: string): void {
       } else if (title.includes('by pod')) {
         currentSection = 'bypod';
         byPodPanels.push(panel);
-      } else if (title.includes('node js') || title.includes('nodejs')) {
+      } else if (title.includes('node js') || title.includes('nodejs') || title.includes('python')) {
         currentSection = 'nodejs';
         nodejsPanels.push(panel);
       } else if (title.includes('route')) {

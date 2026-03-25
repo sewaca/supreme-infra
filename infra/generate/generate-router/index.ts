@@ -138,6 +138,18 @@ export async function generateRouterConfigs(): Promise<void> {
 
       const relativePath = path.relative(process.cwd(), outputPath);
       log(`Generated: ${relativePath}`, 'success');
+
+      // Обновляем Grafana дашборд для FastAPI сервиса
+      try {
+        log(`  Updating Grafana dashboard...`, 'info');
+        updateGrafanaDashboard(service.name);
+      } catch (dashboardError) {
+        log(
+          `  Warning: Failed to update Grafana dashboard: ${dashboardError instanceof Error ? dashboardError.message : dashboardError}`,
+          'error',
+        );
+      }
+
       successCount++;
     } catch (error) {
       log(`Error processing ${service.name}: ${error instanceof Error ? error.message : error}`, 'error');

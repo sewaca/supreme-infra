@@ -1,8 +1,10 @@
+import ipaddress
 import logging
 import uuid
 from datetime import UTC, datetime, timedelta
 
 import bcrypt
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,6 +18,29 @@ from app.schemas.auth import AuthResponse, LoginRequest, MessageResponse, Regist
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+async def _get_location(ip: str | None) -> str | None:
+    if not ip:
+        return None
+    try:
+        addr = ipaddress.ip_address(ip)
+        if addr.is_private or addr.is_loopback:
+            return None
+    except ValueError:
+        return None
+    try:
+        async with httpx.AsyncClient(timeout=2.0) as client:
+            r = await client.get(f"http://ipwho.is/{ip}?output=json&fields=country,city")
+            if r.status_code == 200:
+                data = r.json()
+                country = data.get("country")
+                city = data.get("city")
+                parts = [p for p in [country, city] if p]
+                return ", ".join(parts) if parts else None
+    except Exception:
+        pass
+    return None
 
 
 @router.post("/login", response_model=AuthResponse)
@@ -45,11 +70,13 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
     jti = uuid.uuid4()
     access_token = create_access_token(user.id, user.email, user.name, user.role, jti=jti)
 
+    ip = request.client.host if request.client else None
     session = UserSession(
         user_id=user.id,
         jti=jti,
         user_agent=request.headers.get("user-agent"),
-        ip_address=request.client.host if request.client else None,
+        ip_address=ip,
+        location=await _get_location(ip),
         expires_at=datetime.now(UTC) + timedelta(days=TOKEN_EXPIRE_DAYS),
     )
     db.add(session)
