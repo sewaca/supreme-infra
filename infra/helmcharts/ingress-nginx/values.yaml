@@ -26,6 +26,8 @@ ingress:
           method: GET
         - path: /core-applications/applications/notifications
           method: GET
+        - path: /core-applications/dormitory/applications
+          method: POST
         - path: /core-applications/dormitory/parent-agreement
           method: POST
         - path: /core-applications/orders

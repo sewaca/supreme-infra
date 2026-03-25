@@ -11,6 +11,9 @@ routes:
   - path: /core-applications/applications/notifications
     method: GET
     auth_level: valid
+  - path: /core-applications/dormitory/applications
+    method: POST
+    auth_level: none
   - path: /core-applications/dormitory/parent-agreement
     method: POST
     auth_level: valid

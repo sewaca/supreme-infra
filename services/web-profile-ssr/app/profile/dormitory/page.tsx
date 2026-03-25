@@ -4,7 +4,6 @@ import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { DormitoryEmptyPage } from 'services/web-profile-ssr/src/views/DormitoryEmptyPage/DormitoryEmptyPage';
 import { DormitoryPage } from 'services/web-profile-ssr/src/views/DormitoryPage/DormitoryPage';
-import { submitDormitoryApplication } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +16,7 @@ export default async ({ searchParams }: PageProps) => {
 
   // FIXME: test purposes
   if (params?.emptyState === 'true') {
-    return <DormitoryEmptyPage onSubmit={submitDormitoryApplication} />;
+    return <DormitoryEmptyPage />;
   }
 
   const userId = getUserId();
@@ -39,7 +38,7 @@ export default async ({ searchParams }: PageProps) => {
 
   const dormitoryApp = (appRes.data ?? []).find((a) => a.is_active);
   if (!dormitoryApp) {
-    return <DormitoryEmptyPage onSubmit={submitDormitoryApplication} />;
+    return <DormitoryEmptyPage />;
   }
 
   const fields = dormitoryApp.additional_fields ?? {};
