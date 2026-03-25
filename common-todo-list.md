@@ -11,16 +11,16 @@
 
 #### web-profile-ssr
 
-- [ ] /profile/gradebook
+- [x] /profile/gradebook
 - [x] /profile/data
-- [ ] /profile/student-id
+- [x] /profile/student-id
 - [x] /profile/orders?orderId=xxx&ordersType=xxx
-- [ ] /profile/scholarship
-- [ ] добавить флоу разлогина при клике на кнопку на страничке /profile
-- [ ] доработать страничку про общежития для тех, кто пока не живёт в общежитии – добавить возможность подать заявление
+- [x] /profile/scholarship
+- [x] добавить флоу разлогина при клике на кнопку на страничке /profile
+- [x] доработать страничку про общежития для тех, кто пока не живёт в общежитии – добавить возможность подать заявление
 - [x] services/web-profile-ssr/src/views/DormitoryPage/components/MismatchDataButton.tsx
 - [ ] придумать что сделать с хелп центром (пока ждём функционал сообщений)
-- [ ] Перевести сервис на реальные ручки
+- [x] Перевести сервис на реальные ручки
 
 #### core-client-info
 
@@ -28,4 +28,4 @@
 
 #### core-applications
 
-- [ ] сгенерировать grafana dashboard
+- [x] сгенерировать grafana dashboard

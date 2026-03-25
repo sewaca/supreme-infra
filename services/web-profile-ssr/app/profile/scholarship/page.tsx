@@ -2,11 +2,23 @@ import { CoreApplications, CoreClientInfo } from '@supreme-int/api-client/src/in
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import { coreApplicationsClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { ScholarshipEmptyPage } from 'services/web-profile-ssr/src/views/ScholarshipEmptyPage/ScholarshipEmptyPage';
 import { ScholarshipPage } from 'services/web-profile-ssr/src/views/ScholarshipPage/ScholarshipPage';
 
 export const dynamic = 'force-dynamic';
 
-export default async () => {
+type PageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async ({ searchParams }: PageProps) => {
+  const params = await searchParams;
+
+  // FIXME: test purposes
+  if (params?.emptyState === 'true') {
+    return <ScholarshipEmptyPage />;
+  }
+
   const userId = getUserId();
 
   const [userRes, appRes, notificationsRes] = await Promise.all([
@@ -32,7 +44,7 @@ export default async () => {
   }
 
   if (!scholarshipApp) {
-    return <div>Нет данных о стипендии</div>;
+    return <ScholarshipEmptyPage />;
   }
 
   const fields = scholarshipApp.additional_fields ?? {};

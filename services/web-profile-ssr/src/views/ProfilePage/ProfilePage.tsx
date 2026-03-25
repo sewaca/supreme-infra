@@ -1,4 +1,3 @@
-import { LogoutOutlined } from '@mui/icons-material';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
@@ -7,7 +6,7 @@ import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { IconButton, Paper, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import Coin from '@supreme-int/design-system/src/icons/Coin.png';
@@ -17,22 +16,14 @@ import { ProfileData } from '../../entities/Profile/ProfileData';
 import { ButtonCard } from '../../widgets/ButtonCard/ButtonCard';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { LinkRow } from '../../widgets/LinkRow/LinkRow';
+import { LogoutButton } from '../../widgets/LogoutButton/LogoutButton';
 import styles from './ProfilePage.module.css';
 
 type Props = { data: ProfileData };
 export const ProfilePage = ({ data }: Props) => {
   return (
     <Paper sx={{ minHeight: '100dvh', background: '#edeff2', display: 'flex', flexDirection: 'column' }} elevation={0}>
-      <DefaultNavbar
-        rightSlot={
-          // TODO: add logout action
-          // TODO: move logout button into another component
-          <IconButton color="inherit">
-            <LogoutOutlined />
-          </IconButton>
-        }
-        position="absolute"
-      />
+      <DefaultNavbar rightSlot={<LogoutButton />} position="absolute" />
 
       <Spacer size={14} />
       {data.avatar ? (

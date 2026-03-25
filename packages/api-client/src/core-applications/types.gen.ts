@@ -75,6 +75,30 @@ export type ApplicationResponse = {
 };
 
 /**
+ * DormitoryApplicationRequest
+ */
+export type DormitoryApplicationRequest = {
+    /**
+     * Year Of Study
+     */
+    year_of_study: number;
+    /**
+     * Reason
+     */
+    reason: string;
+};
+
+/**
+ * DormitoryApplicationResponse
+ */
+export type DormitoryApplicationResponse = {
+    /**
+     * Status
+     */
+    status: string;
+};
+
+/**
  * Body_upload_parent_agreement_dormitory_parent_agreement_post
  */
 export type BodyUploadParentAgreementDormitoryParentAgreementPost = {
@@ -797,3 +821,33 @@ export type UploadParentAgreementDormitoryParentAgreementPostResponses = {
      */
     200: unknown;
 };
+
+export type SubmitDormitoryApplicationDormitoryApplicationsPostData = {
+    body: DormitoryApplicationRequest;
+    path?: never;
+    query: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    url: '/dormitory/applications';
+};
+
+export type SubmitDormitoryApplicationDormitoryApplicationsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SubmitDormitoryApplicationDormitoryApplicationsPostError = SubmitDormitoryApplicationDormitoryApplicationsPostErrors[keyof SubmitDormitoryApplicationDormitoryApplicationsPostErrors];
+
+export type SubmitDormitoryApplicationDormitoryApplicationsPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: DormitoryApplicationResponse;
+};
+
+export type SubmitDormitoryApplicationDormitoryApplicationsPostResponse = SubmitDormitoryApplicationDormitoryApplicationsPostResponses[keyof SubmitDormitoryApplicationDormitoryApplicationsPostResponses];
