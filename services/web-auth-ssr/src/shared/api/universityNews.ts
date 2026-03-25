@@ -8,7 +8,7 @@ export interface NewsItem {
 const BASE_URL = 'https://www.sut.ru';
 
 // Fallback data used when fetch fails
-const FALLBACK_NEWS: NewsItem[] = [
+let FALLBACK_NEWS: NewsItem[] = [
   {
     title: 'СПбГУТ и ассоциация «Дрон-Безопасность» стали стратегическими партнерами',
     url: '/bonchnews/industry/25-03-2026-spbgut-i-associaciya-dron-bezopasnost-stali-strategicheskimi-partnerami',
@@ -83,7 +83,7 @@ export async function fetchUniversityNews(): Promise<NewsItem[]> {
   try {
     console.time('fetchUniversityNews');
     const res = await fetch(`${BASE_URL}/bonchnews`, {
-      next: { revalidate: 36000 },
+      next: { revalidate: 3600 },
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; web-auth-ssr/1.0)' },
     });
     console.timeEnd('fetchUniversityNews');
@@ -95,6 +95,11 @@ export async function fetchUniversityNews(): Promise<NewsItem[]> {
 
     const html = await res.text();
     const parsed = parseNewsFromHtml(html);
+
+    if (parsed?.length) {
+      FALLBACK_NEWS = [...parsed, ...FALLBACK_NEWS].slice(0, 3);
+    }
+
     return parsed.length >= 3 ? parsed : FALLBACK_NEWS;
   } catch (e) {
     console.error('[news] Failed to fetch news', e);
