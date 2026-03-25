@@ -15,7 +15,7 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
-export const metadata: Metadata = { title: 'Авторизация — Taste.IT' };
+export const metadata: Metadata = { title: 'Личный кабинет — СПбГУТ' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
