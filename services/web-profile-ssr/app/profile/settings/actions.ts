@@ -1,7 +1,10 @@
 'use server';
 
+import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { loggingFetch } from 'services/web-profile-ssr/src/shared/api/fetchWithLog';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
@@ -68,6 +71,39 @@ export const changePassword = async (newPassword: string): Promise<{ success: bo
   } catch {
     return { success: false, error: i18n('Не удалось изменить пароль. Попробуйте позже.') };
   }
+};
+
+export const logoutCurrentSession = async (): Promise<void> => {
+  'use server';
+
+  const token = await getServerAuthToken();
+
+  if (token) {
+    try {
+      const sessionsRes = await loggingFetch(`${environment.coreAuthUrl}/auth/sessions`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (sessionsRes.ok) {
+        const sessions: Array<{ id: string; is_current: boolean }> = await sessionsRes.json();
+        const currentSession = sessions.find((s) => s.is_current);
+        if (currentSession) {
+          await loggingFetch(`${environment.coreAuthUrl}/auth/sessions/${currentSession.id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        }
+      }
+    } catch {
+      // Ignore errors — proceed with logout regardless
+    }
+  }
+
+  const cookieStore = await cookies();
+  // biome-ignore lint/suspicious/noDocumentCookie: server-side cookie deletion via next/headers
+  cookieStore.delete(TOKEN_KEY);
+
+  redirect('/');
 };
 
 export const revokeSession = async (sessionId: string): Promise<{ success: boolean; error?: string }> => {
