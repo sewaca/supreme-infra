@@ -32,6 +32,7 @@
     "@opentelemetry/sdk-node": "catalog:",
     "@opentelemetry/semantic-conventions": "catalog:",
     "@supreme-int/api-client": "workspace:*",
+    "@supreme-int/authorization-lib": "workspace:*",
     "@supreme-int/design-system": "workspace:*",
     "@supreme-int/instrumentation": "workspace:*",
     "@supreme-int/nextjs-shared": "workspace:*",

@@ -6,6 +6,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@supreme-int/authorization-lib": "workspace:*",
     "@supreme-int/i18n": "workspace:*",
     "jose": "catalog:",
     "next": "catalog:",

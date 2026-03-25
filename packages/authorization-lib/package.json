@@ -1,0 +1,17 @@
+{
+  "name": "@supreme-int/authorization-lib",
+  "version": "1.0.0",
+  "scripts": {
+    "tsc": "tsc",
+    "unit": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "catalog:",
+    "@types/node": "catalog:",
+    "jose": "catalog:",
+    "typescript": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
+  }
+}

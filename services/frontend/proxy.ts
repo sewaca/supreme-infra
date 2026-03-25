@@ -1,7 +1,7 @@
-import { createJwtAuthMiddleware } from '@supreme-int/nextjs-shared/src/shared/jwt/createJwtAuthMiddleware';
-import { chain } from '@supreme-int/nextjs-shared/src/shared/middleware/chain';
+import { createRouteAuthMiddleware } from '@supreme-int/nextjs-shared/src/shared/middleware/create-route-auth-middleware';
+import { authRoutes } from './_auth-routes.generated';
 
-export const proxy = chain([createJwtAuthMiddleware({ publicRoutes: /^\/(login|register)/ })]);
+export const proxy = createRouteAuthMiddleware({ routes: authRoutes });
 
 export const config = {
   matcher: ['/((?!api|frontend/_next|favicon.ico).*)'],

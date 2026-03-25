@@ -7,6 +7,7 @@ const COOKIE_NAME = 'auth_token';
 
 type Props = { publicRoutes?: RegExp };
 
+/** @deprecated Use @supreme-int/authorization-lib/src/jwt/create-jwt-auth-middleware directly */
 export function createJwtAuthMiddleware({ publicRoutes }: Props): NextProxy {
   return async function middleware(request: NextRequest) {
     const redirectToLogin = () => {

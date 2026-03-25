@@ -1,0 +1,18 @@
+# AUTO-GENERATED from router.yaml — DO NOT EDIT
+# Run pnpm generate:router to regenerate
+
+import re
+from dataclasses import dataclass
+from typing import Literal, Optional
+
+AuthLevel = Literal['none', 'valid']
+
+
+@dataclass
+class AuthRoute:
+    path: re.Pattern
+    method: Optional[str]
+    auth_level: AuthLevel
+
+
+AUTH_ROUTES: list[AuthRoute] = []

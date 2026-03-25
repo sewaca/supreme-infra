@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@fastify/helmet": "catalog:",
+    "@supreme-int/authorization-lib": "workspace:*",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
@@ -17,6 +18,7 @@
     "@opentelemetry/api-logs": "catalog:",
     "@opentelemetry/sdk-logs": "catalog:",
     "passport-jwt": "catalog:",
+    "rxjs": "catalog:",
     "typeorm": "catalog:",
     "zod": "catalog:"
   },

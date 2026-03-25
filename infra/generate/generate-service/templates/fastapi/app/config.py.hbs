@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     python_env: str = "development"
     loki_endpoint: str = "http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs"
     jwt_secret: str = "local-development-secret"
+    core_auth_url: str = "http://core-auth.default.svc.cluster.local/core-auth"
     {{#if hasDatabase}}
     db_host: str = "localhost"
     db_port: int = 5432

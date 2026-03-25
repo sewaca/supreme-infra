@@ -23,6 +23,7 @@ env:
   DB_PORT: "5432"
   DB_NAME: core_client_info_db
   DB_USER: core_client_info_user
+  CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
 secrets: {}
 resources:
   limits:

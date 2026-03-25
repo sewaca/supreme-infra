@@ -1,8 +1,11 @@
 from contextlib import asynccontextmanager
 
+from _auth_routes_generated import AUTH_ROUTES
+from authorization_py.middleware import AuthMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config import settings
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.routers import (
@@ -38,6 +41,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+app.add_middleware(
+    AuthMiddleware,
+    routes=AUTH_ROUTES,
+    core_auth_url=settings.core_auth_url,
+    jwt_secret=settings.jwt_secret,
 )
 
 instrument_app(app)

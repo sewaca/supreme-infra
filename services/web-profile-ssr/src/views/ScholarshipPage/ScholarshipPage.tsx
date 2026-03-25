@@ -22,7 +22,7 @@ type Props = {
   notifications: Notification[];
 };
 
-export const ScholarshipPage = ({ studentName, amount, currency, order, notifications }: Props) => {
+export const ScholarshipPage = ({ amount, order, notifications }: Props) => {
   // const { startTour } = usePageTour({ page: 'scholarship' });
 
   return (

@@ -1,0 +1,19 @@
+[project]
+name = "authorization-py"
+version = "0.1.0"
+description = "Shared authorization utilities for FastAPI services"
+requires-python = ">=3.12"
+dependencies = [
+    "PyJWT>=2.9.0",
+    "httpx>=0.28.0",
+    "opentelemetry-api>=1.28.0",
+    "fastapi>=0.115.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["authorization_py*"]
