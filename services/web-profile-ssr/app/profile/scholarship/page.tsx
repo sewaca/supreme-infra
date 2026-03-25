@@ -7,18 +7,7 @@ import { ScholarshipPage } from 'services/web-profile-ssr/src/views/ScholarshipP
 
 export const dynamic = 'force-dynamic';
 
-type PageProps = {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-};
-
-export default async ({ searchParams }: PageProps) => {
-  const params = await searchParams;
-
-  // FIXME: test purposes
-  if (params?.emptyState === 'true') {
-    return <ScholarshipEmptyPage />;
-  }
-
+export default async () => {
   const userId = getUserId();
 
   const [userRes, appRes, notificationsRes] = await Promise.all([

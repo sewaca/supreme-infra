@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -333,13 +333,13 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Bad RPS ",
+      "title": "Bad RPS",
       "type": "timeseries"
     },
     {
@@ -438,7 +438,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) by (pod) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -449,7 +449,7 @@
             "uid": "P4169E866C3094E38"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) by (pod) or on() vector(0)",
           "hide": false,
           "instant": false,
           "legendFormat": "P95 {{pod}}",
@@ -462,7 +462,7 @@
             "uid": "P4169E866C3094E38"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) by (pod) or on() vector(0)",
           "hide": false,
           "instant": false,
           "legendFormat": "P99 {{pod}}",
@@ -556,13 +556,13 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "OR PRS by pod",
+      "title": "OR RPS by pod",
       "type": "timeseries"
     },
     {
@@ -648,7 +648,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -667,101 +667,8 @@
       },
       "id": 12,
       "panels": [],
-      "title": "Node JS",
+      "title": "Python Runtime",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "percentunit"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 51
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(nodejs_eventloop_utilization{service=\"web-profile-ssr\"}) by (pod) or on() vector(0)",
-          "legendFormat": "Event Loop Utilization {{pod}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Event Loop Utilization",
-      "type": "timeseries"
     },
     {
       "datasource": {
@@ -823,6 +730,99 @@
       "gridPos": {
         "h": 8,
         "w": 12,
+        "x": 0,
+        "y": 51
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "process_resident_memory_bytes{service=\"core-applications\"}",
+          "legendFormat": "RSS {{pod}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Memory (RSS)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
         "x": 12,
         "y": 59
       },
@@ -847,28 +847,17 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(v8js_memory_heap_used{service=\"web-profile-ssr\"}) by (pod) or on() vector(0)",
-          "legendFormat": "Heap Used {{pod}}",
+          "expr": "rate(process_cpu_seconds_total{service=\"core-applications\"}[1m])",
+          "legendFormat": "CPU {{pod}}",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(v8js_memory_heap_limit{service=\"web-profile-ssr\"}) by (pod) or on() vector(0)",
-          "legendFormat": "Heap Limit {{pod}}",
-          "range": true,
-          "refId": "B"
         }
       ],
-      "title": "Memory Usage",
+      "title": "CPU Usage",
       "type": "timeseries"
     },
     {
-      "id": 3904,
+      "id": 1512,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -879,8 +868,8 @@
       }
     },
     {
-      "id": 3905,
-      "title": "GET /api/undefined-url",
+      "id": 1513,
+      "title": "GET /core-applications/applications",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -890,8 +879,8 @@
       }
     },
     {
-      "id": 3906,
-      "title": "GET /api/undefined-url - Timings",
+      "id": 1514,
+      "title": "GET /core-applications/applications - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -910,7 +899,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/api/undefined-url\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/applications\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -921,7 +910,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/api/undefined-url\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/applications\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -932,7 +921,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/api/undefined-url\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/applications\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1011,8 +1000,8 @@
       }
     },
     {
-      "id": 3907,
-      "title": "GET /api/undefined-url - OK RPS",
+      "id": 1515,
+      "title": "GET /core-applications/applications - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1031,7 +1020,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/api/undefined-url\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/applications\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1102,8 +1091,8 @@
       }
     },
     {
-      "id": 3908,
-      "title": "GET /api/undefined-url - Bad RPS",
+      "id": 1516,
+      "title": "GET /core-applications/applications - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1122,7 +1111,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/api/undefined-url\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/applications\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -1197,8 +1186,8 @@
       }
     },
     {
-      "id": 3909,
-      "title": "GET /profile",
+      "id": 1517,
+      "title": "GET /core-applications/applications/notifications",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1208,8 +1197,8 @@
       }
     },
     {
-      "id": 3910,
-      "title": "GET /profile - Timings",
+      "id": 1518,
+      "title": "GET /core-applications/applications/notifications - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1228,7 +1217,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/applications/notifications\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1239,7 +1228,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/applications/notifications\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1250,7 +1239,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/applications/notifications\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1329,8 +1318,8 @@
       }
     },
     {
-      "id": 3911,
-      "title": "GET /profile - OK RPS",
+      "id": 1519,
+      "title": "GET /core-applications/applications/notifications - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1349,7 +1338,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/applications/notifications\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1420,8 +1409,8 @@
       }
     },
     {
-      "id": 3912,
-      "title": "GET /profile - Bad RPS",
+      "id": 1520,
+      "title": "GET /core-applications/applications/notifications - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1440,7 +1429,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/applications/notifications\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -1515,8 +1504,8 @@
       }
     },
     {
-      "id": 3913,
-      "title": "GET /profile/data",
+      "id": 1521,
+      "title": "POST /core-applications/dormitory/applications",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1526,8 +1515,8 @@
       }
     },
     {
-      "id": 3914,
-      "title": "GET /profile/data - Timings",
+      "id": 1522,
+      "title": "POST /core-applications/dormitory/applications - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1546,7 +1535,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/data\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/dormitory/applications\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1557,7 +1546,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/data\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/dormitory/applications\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1568,7 +1557,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/data\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/dormitory/applications\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1647,8 +1636,8 @@
       }
     },
     {
-      "id": 3915,
-      "title": "GET /profile/data - OK RPS",
+      "id": 1523,
+      "title": "POST /core-applications/dormitory/applications - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1667,7 +1656,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/data\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/dormitory/applications\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1738,8 +1727,8 @@
       }
     },
     {
-      "id": 3916,
-      "title": "GET /profile/data - Bad RPS",
+      "id": 1524,
+      "title": "POST /core-applications/dormitory/applications - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1758,7 +1747,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/data\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/dormitory/applications\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -1833,8 +1822,8 @@
       }
     },
     {
-      "id": 3917,
-      "title": "GET /profile/dormitory",
+      "id": 1525,
+      "title": "POST /core-applications/dormitory/parent-agreement",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1844,8 +1833,8 @@
       }
     },
     {
-      "id": 3918,
-      "title": "GET /profile/dormitory - Timings",
+      "id": 1526,
+      "title": "POST /core-applications/dormitory/parent-agreement - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1864,7 +1853,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/dormitory\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/dormitory/parent-agreement\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1875,7 +1864,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/dormitory\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/dormitory/parent-agreement\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1886,7 +1875,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/dormitory\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/dormitory/parent-agreement\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1965,8 +1954,8 @@
       }
     },
     {
-      "id": 3919,
-      "title": "GET /profile/dormitory - OK RPS",
+      "id": 1527,
+      "title": "POST /core-applications/dormitory/parent-agreement - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1985,7 +1974,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/dormitory\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/dormitory/parent-agreement\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -2056,8 +2045,8 @@
       }
     },
     {
-      "id": 3920,
-      "title": "GET /profile/dormitory - Bad RPS",
+      "id": 1528,
+      "title": "POST /core-applications/dormitory/parent-agreement - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2076,7 +2065,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/dormitory\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/dormitory/parent-agreement\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -2151,8 +2140,8 @@
       }
     },
     {
-      "id": 3921,
-      "title": "GET /profile/orders",
+      "id": 1529,
+      "title": "GET /core-applications/orders",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -2162,8 +2151,8 @@
       }
     },
     {
-      "id": 3922,
-      "title": "GET /profile/orders - Timings",
+      "id": 1530,
+      "title": "GET /core-applications/orders - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2182,7 +2171,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/orders\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -2193,7 +2182,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/orders\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -2204,7 +2193,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/orders\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -2283,8 +2272,8 @@
       }
     },
     {
-      "id": 3923,
-      "title": "GET /profile/orders - OK RPS",
+      "id": 1531,
+      "title": "GET /core-applications/orders - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2303,7 +2292,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/orders\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -2374,8 +2363,8 @@
       }
     },
     {
-      "id": 3924,
-      "title": "GET /profile/orders - Bad RPS",
+      "id": 1532,
+      "title": "GET /core-applications/orders - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2394,7 +2383,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/orders\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -2469,8 +2458,8 @@
       }
     },
     {
-      "id": 3925,
-      "title": "GET /profile/rating",
+      "id": 1533,
+      "title": "GET /core-applications/orders/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -2480,8 +2469,8 @@
       }
     },
     {
-      "id": 3926,
-      "title": "GET /profile/rating - Timings",
+      "id": 1534,
+      "title": "GET /core-applications/orders/:id - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2500,7 +2489,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/rating\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/:id\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -2511,7 +2500,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/rating\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/:id\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -2522,7 +2511,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/rating\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/:id\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -2601,8 +2590,8 @@
       }
     },
     {
-      "id": 3927,
-      "title": "GET /profile/rating - OK RPS",
+      "id": 1535,
+      "title": "GET /core-applications/orders/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2621,7 +2610,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/rating\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders/:id\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -2692,8 +2681,8 @@
       }
     },
     {
-      "id": 3928,
-      "title": "GET /profile/rating - Bad RPS",
+      "id": 1536,
+      "title": "GET /core-applications/orders/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2712,7 +2701,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/rating\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders/:id\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -2787,8 +2776,8 @@
       }
     },
     {
-      "id": 3929,
-      "title": "GET /profile/references",
+      "id": 1537,
+      "title": "GET /core-applications/orders/[^/]+/pdf",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -2798,8 +2787,8 @@
       }
     },
     {
-      "id": 3930,
-      "title": "GET /profile/references - Timings",
+      "id": 1538,
+      "title": "GET /core-applications/orders/:id/pdf - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2818,7 +2807,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/references\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/:id/pdf\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -2829,7 +2818,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/references\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/:id/pdf\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -2840,7 +2829,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/references\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/:id/pdf\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -2919,8 +2908,8 @@
       }
     },
     {
-      "id": 3931,
-      "title": "GET /profile/references - OK RPS",
+      "id": 1539,
+      "title": "GET /core-applications/orders/:id/pdf - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -2939,7 +2928,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/references\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders/:id/pdf\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -3010,8 +2999,8 @@
       }
     },
     {
-      "id": 3932,
-      "title": "GET /profile/references - Bad RPS",
+      "id": 1540,
+      "title": "GET /core-applications/orders/:id/pdf - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3030,7 +3019,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/references\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders/:id/pdf\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -3105,8 +3094,8 @@
       }
     },
     {
-      "id": 3933,
-      "title": "GET /profile/scholarship",
+      "id": 1541,
+      "title": "GET /core-applications/orders/counts",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -3116,8 +3105,8 @@
       }
     },
     {
-      "id": 3934,
-      "title": "GET /profile/scholarship - Timings",
+      "id": 1542,
+      "title": "GET /core-applications/orders/counts - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3136,7 +3125,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/scholarship\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/counts\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -3147,7 +3136,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/scholarship\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/counts\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -3158,7 +3147,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/scholarship\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/orders/counts\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -3237,8 +3226,8 @@
       }
     },
     {
-      "id": 3935,
-      "title": "GET /profile/scholarship - OK RPS",
+      "id": 1543,
+      "title": "GET /core-applications/orders/counts - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3257,7 +3246,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/scholarship\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders/counts\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -3328,8 +3317,8 @@
       }
     },
     {
-      "id": 3936,
-      "title": "GET /profile/scholarship - Bad RPS",
+      "id": 1544,
+      "title": "GET /core-applications/orders/counts - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3348,7 +3337,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/scholarship\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/orders/counts\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -3423,8 +3412,8 @@
       }
     },
     {
-      "id": 3937,
-      "title": "GET /profile/scolarship",
+      "id": 1545,
+      "title": "GET /core-applications/references",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -3434,8 +3423,8 @@
       }
     },
     {
-      "id": 3938,
-      "title": "GET /profile/scolarship - Timings",
+      "id": 1546,
+      "title": "GET /core-applications/references - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3454,7 +3443,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/scolarship\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -3465,7 +3454,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/scolarship\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -3476,7 +3465,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/scolarship\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -3555,8 +3544,8 @@
       }
     },
     {
-      "id": 3939,
-      "title": "GET /profile/scolarship - OK RPS",
+      "id": 1547,
+      "title": "GET /core-applications/references - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3575,7 +3564,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/scolarship\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -3646,8 +3635,8 @@
       }
     },
     {
-      "id": 3940,
-      "title": "GET /profile/scolarship - Bad RPS",
+      "id": 1548,
+      "title": "GET /core-applications/references - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3666,7 +3655,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/scolarship\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -3741,8 +3730,8 @@
       }
     },
     {
-      "id": 3941,
-      "title": "GET /profile/settings",
+      "id": 1549,
+      "title": "GET /core-applications/references/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -3752,8 +3741,8 @@
       }
     },
     {
-      "id": 3942,
-      "title": "GET /profile/settings - Timings",
+      "id": 1550,
+      "title": "GET /core-applications/references/:id - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3772,7 +3761,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/settings\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -3783,7 +3772,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/settings\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -3794,7 +3783,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/settings\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -3873,8 +3862,8 @@
       }
     },
     {
-      "id": 3943,
-      "title": "GET /profile/settings - OK RPS",
+      "id": 1551,
+      "title": "GET /core-applications/references/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3893,7 +3882,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/settings\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -3964,8 +3953,8 @@
       }
     },
     {
-      "id": 3944,
-      "title": "GET /profile/settings - Bad RPS",
+      "id": 1552,
+      "title": "GET /core-applications/references/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3984,7 +3973,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/settings\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -4059,8 +4048,8 @@
       }
     },
     {
-      "id": 3945,
-      "title": "GET /profile/subjects-ranking",
+      "id": 1553,
+      "title": "POST /core-applications/references/[^/]+/cancel",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -4070,8 +4059,8 @@
       }
     },
     {
-      "id": 3946,
-      "title": "GET /profile/subjects-ranking - Timings",
+      "id": 1554,
+      "title": "POST /core-applications/references/:id/cancel - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -4090,7 +4079,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/subjects-ranking\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/cancel\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -4101,7 +4090,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/subjects-ranking\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/cancel\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -4112,7 +4101,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route=\"/profile/subjects-ranking\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/cancel\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -4191,8 +4180,8 @@
       }
     },
     {
-      "id": 3947,
-      "title": "GET /profile/subjects-ranking - OK RPS",
+      "id": 1555,
+      "title": "POST /core-applications/references/:id/cancel - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -4211,7 +4200,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/subjects-ranking\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id/cancel\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -4282,8 +4271,8 @@
       }
     },
     {
-      "id": 3948,
-      "title": "GET /profile/subjects-ranking - Bad RPS",
+      "id": 1556,
+      "title": "POST /core-applications/references/:id/cancel - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -4302,7 +4291,961 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\",http_route=\"/profile/subjects-ranking\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id/cancel\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1557,
+      "title": "POST /core-applications/references/[^/]+/extend-storage",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 167
+      }
+    },
+    {
+      "id": 1558,
+      "title": "POST /core-applications/references/:id/extend-storage - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 168
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/extend-storage\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/extend-storage\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/extend-storage\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1559,
+      "title": "POST /core-applications/references/:id/extend-storage - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 168
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id/extend-storage\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1560,
+      "title": "POST /core-applications/references/:id/extend-storage - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 168
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id/extend-storage\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1561,
+      "title": "GET /core-applications/references/[^/]+/pdf",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 176
+      }
+    },
+    {
+      "id": 1562,
+      "title": "GET /core-applications/references/:id/pdf - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 177
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/pdf\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/pdf\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/:id/pdf\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1563,
+      "title": "GET /core-applications/references/:id/pdf - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 177
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id/pdf\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1564,
+      "title": "GET /core-applications/references/:id/pdf - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 177
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/:id/pdf\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1565,
+      "title": "POST /core-applications/references/order",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 185
+      }
+    },
+    {
+      "id": 1566,
+      "title": "POST /core-applications/references/order - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 186
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/order\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/order\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target=\"/core-applications/references/order\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1567,
+      "title": "POST /core-applications/references/order - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 186
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/order\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1568,
+      "title": "POST /core-applications/references/order - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 186
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\",http_target=\"/core-applications/references/order\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -4380,7 +5323,7 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["web-profile-ssr", "opentelemetry"],
+  "tags": ["core-applications", "opentelemetry", "fastapi", "python"],
   "templating": {
     "list": []
   },
@@ -4390,8 +5333,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "web-profile-ssr Service Metrics",
-  "uid": "web-profile-ssr-metrics",
+  "title": "core-applications Service Metrics",
+  "uid": "core-applications-metrics",
   "version": 2,
   "weekStart": ""
 }

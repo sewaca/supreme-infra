@@ -857,7 +857,7 @@
       "type": "timeseries"
     },
     {
-      "id": 1317,
+      "id": 1512,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -868,7 +868,7 @@
       }
     },
     {
-      "id": 1318,
+      "id": 1513,
       "title": "GET /core-client-info/profile/personal-data",
       "type": "row",
       "gridPos": {
@@ -879,7 +879,7 @@
       }
     },
     {
-      "id": 1319,
+      "id": 1514,
       "title": "GET /core-client-info/profile/personal-data - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1000,7 +1000,7 @@
       }
     },
     {
-      "id": 1320,
+      "id": 1515,
       "title": "GET /core-client-info/profile/personal-data - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 1321,
+      "id": 1516,
       "title": "GET /core-client-info/profile/personal-data - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1186,7 +1186,7 @@
       }
     },
     {
-      "id": 1322,
+      "id": 1517,
       "title": "GET /core-client-info/profile/user",
       "type": "row",
       "gridPos": {
@@ -1197,7 +1197,7 @@
       }
     },
     {
-      "id": 1323,
+      "id": 1518,
       "title": "GET /core-client-info/profile/user - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1318,7 +1318,7 @@
       }
     },
     {
-      "id": 1324,
+      "id": 1519,
       "title": "GET /core-client-info/profile/user - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 1325,
+      "id": 1520,
       "title": "GET /core-client-info/profile/user - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1504,7 +1504,7 @@
       }
     },
     {
-      "id": 1326,
+      "id": 1521,
       "title": "GET /core-client-info/rating/achievements",
       "type": "row",
       "gridPos": {
@@ -1515,7 +1515,7 @@
       }
     },
     {
-      "id": 1327,
+      "id": 1522,
       "title": "GET /core-client-info/rating/achievements - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1636,7 +1636,7 @@
       }
     },
     {
-      "id": 1328,
+      "id": 1523,
       "title": "GET /core-client-info/rating/achievements - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 1329,
+      "id": 1524,
       "title": "GET /core-client-info/rating/achievements - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1822,7 +1822,7 @@
       }
     },
     {
-      "id": 1330,
+      "id": 1525,
       "title": "GET /core-client-info/rating/grade-improvements",
       "type": "row",
       "gridPos": {
@@ -1833,7 +1833,7 @@
       }
     },
     {
-      "id": 1331,
+      "id": 1526,
       "title": "GET /core-client-info/rating/grade-improvements - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1954,7 +1954,7 @@
       }
     },
     {
-      "id": 1332,
+      "id": 1527,
       "title": "GET /core-client-info/rating/grade-improvements - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 1333,
+      "id": 1528,
       "title": "GET /core-client-info/rating/grade-improvements - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2140,7 +2140,7 @@
       }
     },
     {
-      "id": 1334,
+      "id": 1529,
       "title": "GET /core-client-info/rating/grades",
       "type": "row",
       "gridPos": {
@@ -2151,7 +2151,7 @@
       }
     },
     {
-      "id": 1335,
+      "id": 1530,
       "title": "GET /core-client-info/rating/grades - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2272,7 +2272,7 @@
       }
     },
     {
-      "id": 1336,
+      "id": 1531,
       "title": "GET /core-client-info/rating/grades - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 1337,
+      "id": 1532,
       "title": "GET /core-client-info/rating/grades - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2458,7 +2458,7 @@
       }
     },
     {
-      "id": 1338,
+      "id": 1533,
       "title": "GET /core-client-info/rating/level",
       "type": "row",
       "gridPos": {
@@ -2469,7 +2469,7 @@
       }
     },
     {
-      "id": 1339,
+      "id": 1534,
       "title": "GET /core-client-info/rating/level - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2590,7 +2590,7 @@
       }
     },
     {
-      "id": 1340,
+      "id": 1535,
       "title": "GET /core-client-info/rating/level - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 1341,
+      "id": 1536,
       "title": "GET /core-client-info/rating/level - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2776,7 +2776,7 @@
       }
     },
     {
-      "id": 1342,
+      "id": 1537,
       "title": "GET /core-client-info/rating/rankings",
       "type": "row",
       "gridPos": {
@@ -2787,7 +2787,7 @@
       }
     },
     {
-      "id": 1343,
+      "id": 1538,
       "title": "GET /core-client-info/rating/rankings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2908,7 +2908,7 @@
       }
     },
     {
-      "id": 1344,
+      "id": 1539,
       "title": "GET /core-client-info/rating/rankings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2999,7 +2999,7 @@
       }
     },
     {
-      "id": 1345,
+      "id": 1540,
       "title": "GET /core-client-info/rating/rankings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3094,7 +3094,7 @@
       }
     },
     {
-      "id": 1346,
+      "id": 1541,
       "title": "GET /core-client-info/rating/stats",
       "type": "row",
       "gridPos": {
@@ -3105,7 +3105,7 @@
       }
     },
     {
-      "id": 1347,
+      "id": 1542,
       "title": "GET /core-client-info/rating/stats - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3226,7 +3226,7 @@
       }
     },
     {
-      "id": 1348,
+      "id": 1543,
       "title": "GET /core-client-info/rating/stats - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3317,7 +3317,7 @@
       }
     },
     {
-      "id": 1349,
+      "id": 1544,
       "title": "GET /core-client-info/rating/stats - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3412,7 +3412,7 @@
       }
     },
     {
-      "id": 1350,
+      "id": 1545,
       "title": "GET /core-client-info/rating/streak",
       "type": "row",
       "gridPos": {
@@ -3423,7 +3423,7 @@
       }
     },
     {
-      "id": 1351,
+      "id": 1546,
       "title": "GET /core-client-info/rating/streak - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3544,7 +3544,7 @@
       }
     },
     {
-      "id": 1352,
+      "id": 1547,
       "title": "GET /core-client-info/rating/streak - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3635,7 +3635,7 @@
       }
     },
     {
-      "id": 1353,
+      "id": 1548,
       "title": "GET /core-client-info/rating/streak - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3730,7 +3730,7 @@
       }
     },
     {
-      "id": 1354,
+      "id": 1549,
       "title": "GET /core-client-info/settings",
       "type": "row",
       "gridPos": {
@@ -3741,7 +3741,7 @@
       }
     },
     {
-      "id": 1355,
+      "id": 1550,
       "title": "GET /core-client-info/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3862,7 +3862,7 @@
       }
     },
     {
-      "id": 1356,
+      "id": 1551,
       "title": "GET /core-client-info/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3953,7 +3953,7 @@
       }
     },
     {
-      "id": 1357,
+      "id": 1552,
       "title": "GET /core-client-info/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4048,7 +4048,7 @@
       }
     },
     {
-      "id": 1358,
+      "id": 1553,
       "title": "PUT /core-client-info/settings",
       "type": "row",
       "gridPos": {
@@ -4059,7 +4059,7 @@
       }
     },
     {
-      "id": 1359,
+      "id": 1554,
       "title": "PUT /core-client-info/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4180,7 +4180,7 @@
       }
     },
     {
-      "id": 1360,
+      "id": 1555,
       "title": "PUT /core-client-info/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4271,7 +4271,7 @@
       }
     },
     {
-      "id": 1361,
+      "id": 1556,
       "title": "PUT /core-client-info/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4366,7 +4366,7 @@
       }
     },
     {
-      "id": 1362,
+      "id": 1557,
       "title": "POST /core-client-info/settings/email",
       "type": "row",
       "gridPos": {
@@ -4377,7 +4377,7 @@
       }
     },
     {
-      "id": 1363,
+      "id": 1558,
       "title": "POST /core-client-info/settings/email - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4498,7 +4498,7 @@
       }
     },
     {
-      "id": 1364,
+      "id": 1559,
       "title": "POST /core-client-info/settings/email - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4589,7 +4589,7 @@
       }
     },
     {
-      "id": 1365,
+      "id": 1560,
       "title": "POST /core-client-info/settings/email - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4684,7 +4684,7 @@
       }
     },
     {
-      "id": 1366,
+      "id": 1561,
       "title": "POST /core-client-info/settings/password",
       "type": "row",
       "gridPos": {
@@ -4695,7 +4695,7 @@
       }
     },
     {
-      "id": 1367,
+      "id": 1562,
       "title": "POST /core-client-info/settings/password - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4816,7 +4816,7 @@
       }
     },
     {
-      "id": 1368,
+      "id": 1563,
       "title": "POST /core-client-info/settings/password - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4907,7 +4907,7 @@
       }
     },
     {
-      "id": 1369,
+      "id": 1564,
       "title": "POST /core-client-info/settings/password - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5002,7 +5002,7 @@
       }
     },
     {
-      "id": 1370,
+      "id": 1565,
       "title": "GET /core-client-info/subjects/choices",
       "type": "row",
       "gridPos": {
@@ -5013,7 +5013,7 @@
       }
     },
     {
-      "id": 1371,
+      "id": 1566,
       "title": "GET /core-client-info/subjects/choices - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5134,7 +5134,7 @@
       }
     },
     {
-      "id": 1372,
+      "id": 1567,
       "title": "GET /core-client-info/subjects/choices - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5225,7 +5225,7 @@
       }
     },
     {
-      "id": 1373,
+      "id": 1568,
       "title": "GET /core-client-info/subjects/choices - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5320,7 +5320,7 @@
       }
     },
     {
-      "id": 1374,
+      "id": 1569,
       "title": "POST /core-client-info/subjects/save-priorities",
       "type": "row",
       "gridPos": {
@@ -5331,7 +5331,7 @@
       }
     },
     {
-      "id": 1375,
+      "id": 1570,
       "title": "POST /core-client-info/subjects/save-priorities - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5452,7 +5452,7 @@
       }
     },
     {
-      "id": 1376,
+      "id": 1571,
       "title": "POST /core-client-info/subjects/save-priorities - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5543,7 +5543,7 @@
       }
     },
     {
-      "id": 1377,
+      "id": 1572,
       "title": "POST /core-client-info/subjects/save-priorities - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5638,7 +5638,7 @@
       }
     },
     {
-      "id": 1378,
+      "id": 1573,
       "title": "GET /core-client-info/subjects/user-priorities/[^/]+",
       "type": "row",
       "gridPos": {
@@ -5649,7 +5649,7 @@
       }
     },
     {
-      "id": 1379,
+      "id": 1574,
       "title": "GET /core-client-info/subjects/user-priorities/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5770,7 +5770,7 @@
       }
     },
     {
-      "id": 1380,
+      "id": 1575,
       "title": "GET /core-client-info/subjects/user-priorities/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5861,7 +5861,7 @@
       }
     },
     {
-      "id": 1381,
+      "id": 1576,
       "title": "GET /core-client-info/subjects/user-priorities/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {

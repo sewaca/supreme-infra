@@ -7,18 +7,7 @@ import { DormitoryPage } from 'services/web-profile-ssr/src/views/DormitoryPage/
 
 export const dynamic = 'force-dynamic';
 
-type PageProps = {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-};
-
-export default async ({ searchParams }: PageProps) => {
-  const params = await searchParams;
-
-  // FIXME: test purposes
-  if (params?.emptyState === 'true') {
-    return <DormitoryEmptyPage />;
-  }
-
+export default async () => {
   const userId = getUserId();
 
   const [appRes, notificationsRes, ordersRes] = await Promise.all([
