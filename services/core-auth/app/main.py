@@ -8,7 +8,10 @@ from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.routers import auth, status
 
-logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(name)s: %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+logging.getLogger("app").setLevel(logging.DEBUG)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("opentelemetry").setLevel(logging.WARNING)
 
 
 @asynccontextmanager
