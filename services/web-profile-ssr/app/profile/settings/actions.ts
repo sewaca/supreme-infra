@@ -3,6 +3,7 @@
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { loggingFetch } from 'services/web-profile-ssr/src/shared/api/fetchWithLog';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { environment } from 'services/web-profile-ssr/src/shared/lib/environment';
@@ -78,7 +79,7 @@ export const revokeSession = async (sessionId: string): Promise<{ success: boole
   }
 
   try {
-    const res = await fetch(`${environment.coreAuthUrl}/auth/sessions/${sessionId}`, {
+    const res = await loggingFetch(`${environment.coreAuthUrl}/auth/sessions/${sessionId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
     });

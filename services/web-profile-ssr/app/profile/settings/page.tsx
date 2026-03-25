@@ -1,5 +1,6 @@
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { loggingFetch } from 'services/web-profile-ssr/src/shared/api/fetchWithLog';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { environment } from 'services/web-profile-ssr/src/shared/lib/environment';
@@ -18,7 +19,7 @@ export default async () => {
       query: { user_id: userId },
     }),
     token
-      ? fetch(`${environment.coreAuthUrl}/auth/sessions`, {
+      ? loggingFetch(`${environment.coreAuthUrl}/auth/sessions`, {
           headers: { Authorization: `Bearer ${token}` },
         })
           .then((r) => (r.ok ? (r.json() as Promise<SessionInfo[]>) : []))
