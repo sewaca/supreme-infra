@@ -62,7 +62,6 @@ export function AuthForm({ mode }: AuthFormProps) {
       }}
     >
       <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: 420 }}>
-        {/* Header */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
             {isLogin ? 'Вход в личный кабинет' : 'Регистрация'}
@@ -72,14 +71,12 @@ export function AuthForm({ mode }: AuthFormProps) {
           </Typography>
         </Box>
 
-        {/* Error */}
         <Collapse in={!!error} unmountOnExit>
           <Alert severity="error" sx={{ mb: 2.5 }} onClose={() => setError('')}>
             {error}
           </Alert>
         </Collapse>
 
-        {/* Name field (register only) */}
         <Collapse in={!isLogin} unmountOnExit>
           <TextField
             fullWidth
@@ -92,7 +89,6 @@ export function AuthForm({ mode }: AuthFormProps) {
           />
         </Collapse>
 
-        {/* Email */}
         <TextField
           fullWidth
           label="Email"
@@ -104,7 +100,6 @@ export function AuthForm({ mode }: AuthFormProps) {
           sx={{ mb: 2 }}
         />
 
-        {/* Password */}
         <TextField
           fullWidth
           label="Пароль"

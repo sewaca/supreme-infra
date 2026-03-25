@@ -30,6 +30,7 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
+/** @deprecated will be deleted нахуй отсюда блять */
 export function ProfilePage({ user }: ProfilePageProps) {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -63,7 +64,6 @@ export function ProfilePage({ user }: ProfilePageProps) {
           borderColor: 'divider',
         }}
       >
-        {/* Header */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Личный кабинет
@@ -83,7 +83,6 @@ export function ProfilePage({ user }: ProfilePageProps) {
 
         <Divider sx={{ mb: 3 }} />
 
-        {/* Avatar + name */}
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
           <Avatar
             sx={{
@@ -103,7 +102,6 @@ export function ProfilePage({ user }: ProfilePageProps) {
           <Chip label={user.role ?? 'user'} size="small" sx={{ mt: 1, fontWeight: 500 }} />
         </Box>
 
-        {/* Info fields */}
         {[
           { icon: <PersonOutlineIcon fontSize="small" />, label: 'Имя', value: user.name },
           { icon: <EmailOutlinedIcon fontSize="small" />, label: 'Email', value: user.email },
@@ -141,7 +139,6 @@ export function ProfilePage({ user }: ProfilePageProps) {
           </Box>
         ))}
 
-        {/* Footer */}
         <Box sx={{ mt: 3, textAlign: 'center' }}>
           <Typography
             component="a"
