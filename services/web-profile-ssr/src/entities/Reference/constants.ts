@@ -5,4 +5,5 @@ export const REFERENCE_STATUS_LABELS: Record<string, string> = {
   in_progress: i18n('В работе'),
   pending: i18n('Готова к получению'),
   ready: i18n('Вручена'),
+  cancelled: i18n('Отменена'),
 };
