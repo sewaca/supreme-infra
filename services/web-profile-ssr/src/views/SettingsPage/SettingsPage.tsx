@@ -9,6 +9,7 @@ import { updateSettings } from 'services/web-profile-ssr/app/profile/settings/ac
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ChangeEmailModal } from './ChangeEmailModal';
 import { ChangePasswordModal } from './ChangePasswordModal';
+import { type SessionInfo, SessionsSection } from './SessionsSection';
 
 export type UserSettings = {
   isNewMessageNotificationsEnabled: boolean;
@@ -17,9 +18,10 @@ export type UserSettings = {
 
 type Props = {
   initialSettings: UserSettings;
+  sessions: SessionInfo[];
 };
 
-export const SettingsPage = ({ initialSettings }: Props) => {
+export const SettingsPage = ({ initialSettings, sessions }: Props) => {
   const [userSettings, setUserSettings] = useState<UserSettings>(initialSettings);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
@@ -69,6 +71,10 @@ export const SettingsPage = ({ initialSettings }: Props) => {
 
       <ChangeEmailModal open={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
       <ChangePasswordModal open={isPasswordModalOpen} onClose={() => setIsPasswordModalOpen(false)} />
+
+      <Container sx={{ paddingTop: 2 }}>
+        <SessionsSection sessions={sessions} />
+      </Container>
     </>
   );
 };

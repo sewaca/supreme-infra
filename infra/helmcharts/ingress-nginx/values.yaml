@@ -72,6 +72,12 @@ ingress:
           method: GET
         - path: /core-auth/auth/register
           method: POST
+        - path: /core-auth/auth/sessions
+          method: GET
+        - path: /core-auth/auth/sessions/[^/]+
+          method: DELETE
+        - path: /core-auth/auth/validate-session
+          method: POST
     - service: core-client-info
       port: 80
       type: fastapi

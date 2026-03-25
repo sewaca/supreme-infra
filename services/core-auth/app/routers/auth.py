@@ -1,12 +1,15 @@
 import logging
+import uuid
+from datetime import UTC, datetime, timedelta
 
 import bcrypt
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth import create_access_token, get_current_user
+from app.auth import TOKEN_EXPIRE_DAYS, create_access_token, get_current_user
 from app.database import get_db
+from app.models.session import UserSession
 from app.models.user import AuthUser
 from app.schemas.auth import AuthResponse, LoginRequest, MessageResponse, RegisterRequest, UserInfo
 
@@ -16,7 +19,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/login", response_model=AuthResponse)
-async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(AuthUser).where(AuthUser.email == body.email))
     user = result.scalar_one_or_none()
 
@@ -39,7 +42,18 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is disabled")
 
-    access_token = create_access_token(user.id, user.email, user.name, user.role)
+    jti = uuid.uuid4()
+    access_token = create_access_token(user.id, user.email, user.name, user.role, jti=jti)
+
+    session = UserSession(
+        user_id=user.id,
+        jti=jti,
+        user_agent=request.headers.get("user-agent"),
+        ip_address=request.client.host if request.client else None,
+        expires_at=datetime.now(UTC) + timedelta(days=TOKEN_EXPIRE_DAYS),
+    )
+    db.add(session)
+    await db.commit()
 
     return AuthResponse(
         access_token=access_token,

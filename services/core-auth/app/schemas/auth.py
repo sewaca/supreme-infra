@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -28,3 +29,27 @@ class AuthResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class SessionInfo(BaseModel):
+    id: UUID
+    created_at: datetime
+    expires_at: datetime
+    revoked_at: datetime | None
+    user_agent: str | None
+    ip_address: str | None
+    is_current: bool
+
+    model_config = {"from_attributes": True}
+
+
+class ValidateSessionRequest(BaseModel):
+    token: str
+
+
+class ValidateSessionResponse(BaseModel):
+    status: str  # "valid", "revoked", "expired", "invalid"
+    user_id: str | None = None
+    email: str | None = None
+    name: str | None = None
+    role: str | None = None

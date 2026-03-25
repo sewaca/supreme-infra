@@ -3,7 +3,9 @@
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
 import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { environment } from 'services/web-profile-ssr/src/shared/lib/environment';
 
 export const updateSettings = async (settings: {
   isNewMessageNotificationsEnabled?: boolean;
@@ -64,5 +66,28 @@ export const changePassword = async (newPassword: string): Promise<{ success: bo
     return { success: true };
   } catch {
     return { success: false, error: i18n('Не удалось изменить пароль. Попробуйте позже.') };
+  }
+};
+
+export const revokeSession = async (sessionId: string): Promise<{ success: boolean; error?: string }> => {
+  'use server';
+
+  const token = await getServerAuthToken();
+  if (!token) {
+    return { success: false, error: i18n('Не авторизован') };
+  }
+
+  try {
+    const res = await fetch(`${environment.coreAuthUrl}/auth/sessions/${sessionId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      return { success: false, error: i18n('Не удалось завершить сессию') };
+    }
+    return { success: true };
+  } catch {
+    return { success: false, error: i18n('Не удалось завершить сессию') };
   }
 };
