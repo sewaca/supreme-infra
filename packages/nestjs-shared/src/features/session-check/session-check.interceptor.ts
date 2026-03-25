@@ -42,6 +42,7 @@ export class SessionCheckInterceptor implements NestInterceptor {
     const authLevel = matched?.auth_level ?? 'none';
 
     if (authLevel === 'none') {
+      this.logger.log(`session check: skipped (auth_level=none) path='${request.path}' method='${request.method}'`);
       return next.handle();
     }
 

@@ -14,7 +14,9 @@ COPY services/core-applications/pyproject.toml services/core-applications/uv.loc
 
 RUN uv sync --frozen --no-dev
 
+COPY packages/authorization-py/authorization_py ./authorization_py
 COPY services/core-applications/app ./app
+COPY services/core-applications/_auth_routes_generated.py ./_auth_routes_generated.py
 COPY services/core-applications/alembic.ini ./alembic.ini
 COPY services/core-applications/alembic ./alembic
 

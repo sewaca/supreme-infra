@@ -14,7 +14,9 @@ COPY services/{{serviceName}}/pyproject.toml services/{{serviceName}}/uv.lock* .
 
 RUN uv sync --frozen --no-dev
 
-COPY services/{{serviceName}}/app ./app{{#if hasDatabase}}
+COPY packages/authorization-py/authorization_py ./authorization_py
+COPY services/{{serviceName}}/app ./app
+COPY services/{{serviceName}}/_auth_routes_generated.py ./_auth_routes_generated.py{{#if hasDatabase}}
 COPY services/{{serviceName}}/alembic.ini ./alembic.ini
 COPY services/{{serviceName}}/alembic ./alembic{{/if}}
 

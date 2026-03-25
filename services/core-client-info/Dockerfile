@@ -14,7 +14,9 @@ COPY services/core-client-info/pyproject.toml services/core-client-info/uv.lock*
 
 RUN uv sync --frozen --no-dev
 
+COPY packages/authorization-py/authorization_py ./authorization_py
 COPY services/core-client-info/app ./app
+COPY services/core-client-info/_auth_routes_generated.py ./_auth_routes_generated.py
 COPY services/core-client-info/alembic.ini ./alembic.ini
 COPY services/core-client-info/alembic ./alembic
 
