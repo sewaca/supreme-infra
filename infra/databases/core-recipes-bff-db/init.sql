@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS published_recipes (
   detailed_ingredients JSONB NOT NULL,
   steps JSONB NOT NULL,
   author VARCHAR(255) NOT NULL,
-  author_user_id INTEGER,
+  author_user_id UUID,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS proposed_recipes (
   detailed_ingredients JSONB NOT NULL,
   steps JSONB NOT NULL,
   author VARCHAR(255) NOT NULL,
-  author_user_id INTEGER,
+  author_user_id UUID,
   submitted_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS recipe_comments (
   id SERIAL PRIMARY KEY,
   recipe_id INTEGER NOT NULL,
   author VARCHAR(255) NOT NULL,
-  author_user_id INTEGER,
+  author_user_id UUID,
   content TEXT NOT NULL,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS recipe_comments (
 -- No foreign key constraint as users are in a separate database
 CREATE TABLE IF NOT EXISTS recipe_likes (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_id UUID NOT NULL,
   recipe_id INTEGER NOT NULL,
   liked_at TIMESTAMP NOT NULL DEFAULT NOW(),
   CONSTRAINT unique_user_recipe UNIQUE (user_id, recipe_id)

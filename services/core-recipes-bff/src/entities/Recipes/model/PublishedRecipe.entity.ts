@@ -51,8 +51,8 @@ export class PublishedRecipeEntity {
   @Column({ type: 'varchar', length: 255 })
   author!: string;
 
-  @Column({ name: 'author_user_id', type: 'integer', nullable: true })
-  authorUserId!: number | null;
+  @Column({ name: 'author_user_id', type: 'uuid', nullable: true })
+  authorUserId!: string | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

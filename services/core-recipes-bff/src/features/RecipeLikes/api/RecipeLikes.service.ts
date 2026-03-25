@@ -10,7 +10,7 @@ export class RecipeLikesService {
     private readonly recipeLikeRepository: Repository<RecipeLikeEntity>,
   ) {}
 
-  async toggleRecipeLike(userId: number, recipeId: number): Promise<{ liked: boolean; totalLikes: number }> {
+  async toggleRecipeLike(userId: string, recipeId: number): Promise<{ liked: boolean; totalLikes: number }> {
     const existingLike = await this.recipeLikeRepository.findOne({
       where: { userId, recipeId },
     });
@@ -31,14 +31,14 @@ export class RecipeLikesService {
     return await this.recipeLikeRepository.count({ where: { recipeId } });
   }
 
-  async isRecipeLikedByUser(userId: number, recipeId: number): Promise<boolean> {
+  async isRecipeLikedByUser(userId: string, recipeId: number): Promise<boolean> {
     const like = await this.recipeLikeRepository.findOne({
       where: { userId, recipeId },
     });
     return !!like;
   }
 
-  async getUserLikedRecipes(userId: number): Promise<number[]> {
+  async getUserLikedRecipes(userId: string): Promise<number[]> {
     const likes = await this.recipeLikeRepository.find({
       where: { userId },
       select: ['recipeId'],

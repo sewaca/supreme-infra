@@ -22,7 +22,7 @@ export class CommentsService {
     author: string,
     content: string,
     rating: number,
-    authorUserId?: number,
+    authorUserId?: string,
   ): Promise<RecipeCommentEntity> {
     const comment = this.recipeCommentRepository.create({
       recipeId,

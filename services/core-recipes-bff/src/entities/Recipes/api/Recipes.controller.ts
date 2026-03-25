@@ -46,7 +46,7 @@ export class RecipesController {
   @UseGuards(JwtAuthGuard)
   public async getRecipeById(
     @Param('id') id: string,
-    @Request() req: { user?: { id: number; role: string } },
+    @Request() req: { user?: { id: string; role: string } },
   ): Promise<RecipeDetailsDto & { isLiked?: boolean }> {
     const recipeId = Number.parseInt(id, 10);
 

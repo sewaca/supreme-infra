@@ -5,8 +5,8 @@ export class RecipeLikeEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'user_id', type: 'integer' })
-  userId!: number;
+  @Column({ name: 'user_id', type: 'uuid' })
+  userId!: string;
 
   @Column({ name: 'recipe_id', type: 'integer' })
   recipeId!: number;

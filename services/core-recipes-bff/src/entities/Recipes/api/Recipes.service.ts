@@ -64,7 +64,7 @@ export class RecipesService {
       steps: Array<{ stepNumber: number; instruction: string }>;
       author: string;
     },
-    authorUserId?: number,
+    authorUserId?: string,
   ): Promise<PublishedRecipeEntity> {
     const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
 
@@ -190,7 +190,7 @@ export class RecipesService {
       steps: Array<{ stepNumber: number; instruction: string }>;
       author: string;
     },
-    authorUserId?: number,
+    authorUserId?: string,
   ): Promise<number> {
     const instructions = recipeData.steps.map((step) => step.instruction).join('\n');
 

@@ -21,7 +21,7 @@ export class RecipeLikesController {
   @HttpCode(HttpStatus.OK)
   public async toggleRecipeLike(
     @Param('id') id: string,
-    @Request() req: { user: { id: number; email: string; name: string; role: string } },
+    @Request() req: { user: { id: string; email: string; name: string; role: string } },
   ): Promise<{ liked: boolean; totalLikes: number }> {
     const recipeId = Number.parseInt(id, 10);
 

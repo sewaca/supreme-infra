@@ -11,8 +11,8 @@ export class RecipeCommentEntity {
   @Column({ type: 'varchar', length: 255 })
   author!: string;
 
-  @Column({ name: 'author_user_id', type: 'integer', nullable: true })
-  authorUserId!: number | null;
+  @Column({ name: 'author_user_id', type: 'uuid', nullable: true })
+  authorUserId!: string | null;
 
   @Column({ type: 'text' })
   content!: string;
