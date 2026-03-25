@@ -31,18 +31,20 @@ export class SessionCheckInterceptor implements NestInterceptor {
 
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<unknown>> {
     const request = context.switchToHttp().getRequest<{
-      path: string;
+      url: string;
       method: string;
       headers: Record<string, string | undefined>;
     }>();
 
+    const requestPath = request.url?.split('?')[0] ?? '/';
+
     const matched = this.routes.find(
-      (r) => r.path.test(request.path) && (!r.method || r.method.toUpperCase() === request.method.toUpperCase()),
+      (r) => r.path.test(requestPath) && (!r.method || r.method.toUpperCase() === request.method.toUpperCase()),
     );
     const authLevel = matched?.auth_level ?? 'none';
 
     if (authLevel === 'none') {
-      this.logger.log(`session check: skipped (auth_level=none) path='${request.path}' method='${request.method}'`);
+      this.logger.log(`session check: skipped (auth_level=none) path='${requestPath}' method='${request.method}'`);
       return next.handle();
     }
 
@@ -59,7 +61,7 @@ export class SessionCheckInterceptor implements NestInterceptor {
     );
 
     const { status, durationMs } = await checkSession({ token, coreAuthUrl });
-    this.logger.log(`session check: status='${status}' elapsed=${durationMs.toFixed(1)}ms`);
+    this.logger.log(`session check: status='${status}' elapsed=${durationMs.toFixed(1)}ms path='${requestPath}'`);
 
     if (status === 'revoked') {
       throw new UnauthorizedException('Session has been revoked');
