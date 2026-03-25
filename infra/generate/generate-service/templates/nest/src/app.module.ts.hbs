@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import {
-  {{#if hasDatabase}}createDatabaseImports,{{/if}}
-  HealthModule,
-  LoggerModule,
-  SESSION_CHECK_ROUTES,
-  SessionCheckInterceptor,
-} from '@supreme-int/nestjs-shared';
+import { createDatabaseImports } from '@supreme-int/nestjs-shared/src/database';
+import { HealthModule } from '@supreme-int/nestjs-shared/src/health';
+import { LoggerModule } from '@supreme-int/nestjs-shared/src/logger';
+import { SESSION_CHECK_ROUTES, SessionCheckInterceptor } from '@supreme-int/nestjs-shared/src/features/session-check/session-check.interceptor';
 import { authRoutes } from '../_auth-routes.generated';
 
 @Module({
@@ -30,4 +27,3 @@ import { authRoutes } from '../_auth-routes.generated';
   ],
 })
 export class AppModule {}
-

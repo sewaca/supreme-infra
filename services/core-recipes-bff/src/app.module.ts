@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { createDatabaseImports } from '@supreme-int/nestjs-shared/src/database';
 import {
-  createDatabaseImports,
-  HealthModule,
-  LoggerModule,
   SESSION_CHECK_ROUTES,
   SessionCheckInterceptor,
-} from '@supreme-int/nestjs-shared';
+} from '@supreme-int/nestjs-shared/src/features/session-check/session-check.interceptor';
+import { HealthModule } from '@supreme-int/nestjs-shared/src/health';
+import { LoggerModule } from '@supreme-int/nestjs-shared/src/logger';
 import { authRoutes } from '../_auth-routes.generated';
 import { CommentsModule } from './entities/Comments/api/Comments.module';
 import { RecipeCommentEntity } from './entities/Comments/model/RecipeComment.entity';

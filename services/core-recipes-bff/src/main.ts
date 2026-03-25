@@ -1,5 +1,5 @@
 import './instrumentation';
-import { bootstrapNestApp } from '@supreme-int/nestjs-shared';
+import { bootstrapNestApp } from '@supreme-int/nestjs-shared/src/bootstrap';
 import { AppModule } from './app.module';
 import { loggerProvider } from './instrumentation';
 

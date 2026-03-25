@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtStrategy } from '@supreme-int/nestjs-shared';
+import { JwtStrategy } from '@supreme-int/nestjs-shared/src/features/jwt';
 import { RecipeLikeEntity } from '../model/RecipeLike.entity';
 import { RecipeLikesController } from './RecipeLikes.controller';
 import { RecipeLikesService } from './RecipeLikes.service';
