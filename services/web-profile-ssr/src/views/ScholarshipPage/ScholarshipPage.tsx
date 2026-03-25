@@ -1,12 +1,9 @@
 'use client';
 
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { IconButton } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
-import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { NotificationsStack } from '../../widgets/NotificationsStack/NotificationsStack';
@@ -26,18 +23,18 @@ type Props = {
 };
 
 export const ScholarshipPage = ({ studentName, amount, currency, order, notifications }: Props) => {
-  const { startTour } = usePageTour({ page: 'scholarship' });
+  // const { startTour } = usePageTour({ page: 'scholarship' });
 
   return (
     <>
       <DefaultNavbar
         position="absolute"
         center={<Typography variant="title1">{i18n('Стипендия')}</Typography>}
-        rightSlot={
-          <IconButton onClick={startTour} aria-label={i18n('Показать обучение')}>
-            <HelpOutlineIcon fontSize="small" color="inherit" />
-          </IconButton>
-        }
+        // rightSlot={
+        //   <IconButton onClick={startTour} aria-label={i18n('Показать обучение')}>
+        //     <HelpOutlineIcon fontSize="small" color="inherit" />
+        //   </IconButton>
+        // }
       />
       <Container sx={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', paddingBottom: 3 }}>
         <Spacer size={30} />
