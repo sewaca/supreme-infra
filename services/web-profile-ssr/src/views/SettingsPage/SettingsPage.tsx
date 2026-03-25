@@ -57,8 +57,6 @@ export const SettingsPage = ({ initialSettings, sessions }: Props) => {
           </Row>
         </Container>
 
-        <Spacer size={10} />
-
         <Container>
           <Typography variant="h3">{i18n('Безопасность')}</Typography>
           <Spacer size={4} />
@@ -70,9 +68,8 @@ export const SettingsPage = ({ initialSettings, sessions }: Props) => {
               {i18n('Сменить пароль')}
             </Button>
           </Stack>
+          <Spacer size={7} />
         </Container>
-
-        <Spacer size={10} />
 
         <Container>
           <SessionsSection sessions={sessions} />

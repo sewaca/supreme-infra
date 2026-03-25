@@ -70,9 +70,10 @@ function createTimingsPanel(
   serviceName: string,
   panelId: number,
   gridPos: { x: number; y: number },
+  routeLabelKey: 'http_route' | 'http_target' = 'http_route',
 ): GrafanaPanel {
   const normalizedRoute = normalizeRouteForMetrics(route.path);
-  const routeFilter = `http_route="${normalizedRoute}"`;
+  const routeFilter = `${routeLabelKey}="${normalizedRoute}"`;
   const methodFilter = `http_method="${route.method}"`;
 
   return {
@@ -159,9 +160,10 @@ function createOkRpsPanel(
   serviceName: string,
   panelId: number,
   gridPos: { x: number; y: number },
+  routeLabelKey: 'http_route' | 'http_target' = 'http_route',
 ): GrafanaPanel {
   const normalizedRoute = normalizeRouteForMetrics(route.path);
-  const routeFilter = `http_route="${normalizedRoute}"`;
+  const routeFilter = `${routeLabelKey}="${normalizedRoute}"`;
   const methodFilter = `http_method="${route.method}"`;
 
   return {
@@ -225,9 +227,10 @@ function createBadRpsPanel(
   serviceName: string,
   panelId: number,
   gridPos: { x: number; y: number },
+  routeLabelKey: 'http_route' | 'http_target' = 'http_route',
 ): GrafanaPanel {
   const normalizedRoute = normalizeRouteForMetrics(route.path);
-  const routeFilter = `http_route="${normalizedRoute}"`;
+  const routeFilter = `${routeLabelKey}="${normalizedRoute}"`;
   const methodFilter = `http_method="${route.method}"`;
 
   return {
@@ -309,6 +312,7 @@ export function generateRoutePanels(
   serviceName: string,
   startPanelId: number,
   startY: number,
+  routeLabelKey: 'http_route' | 'http_target' = 'http_route',
 ): { panels: GrafanaPanel[]; nextPanelId: number; nextY: number } {
   const panels: GrafanaPanel[] = [];
   let panelId = startPanelId;
@@ -328,9 +332,9 @@ export function generateRoutePanels(
   panels.push(createRowPanel(`${route.method} ${route.path}`, panelId++, y++));
 
   // Панели в одной строке: Timings | OK RPS | Bad RPS
-  panels.push(createTimingsPanel(route, serviceName, panelId++, { x: 0, y }));
-  panels.push(createOkRpsPanel(route, serviceName, panelId++, { x: 8, y }));
-  panels.push(createBadRpsPanel(route, serviceName, panelId++, { x: 16, y }));
+  panels.push(createTimingsPanel(route, serviceName, panelId++, { x: 0, y }, routeLabelKey));
+  panels.push(createOkRpsPanel(route, serviceName, panelId++, { x: 8, y }, routeLabelKey));
+  panels.push(createBadRpsPanel(route, serviceName, panelId++, { x: 16, y }, routeLabelKey));
 
   y += 8; // Высота панелей
 
@@ -429,6 +433,7 @@ export function updateGrafanaDashboard(serviceName: string): void {
   }
 
   // 4. Генерируем новые панели для роутов
+  const routeLabelKey = routerConfig.type === 'fastapi' ? 'http_target' : 'http_route';
   const routePanels: GrafanaPanel[] = [];
   let nextPanelId = Math.max(...dashboard.panels.map((p: GrafanaPanel) => p.id || 0)) + 1;
 
@@ -437,7 +442,7 @@ export function updateGrafanaDashboard(serviceName: string): void {
 
   // Генерируем панели для каждого роута
   for (const route of routerConfig.routes) {
-    const result = generateRoutePanels(route, serviceName, nextPanelId, currentY);
+    const result = generateRoutePanels(route, serviceName, nextPanelId, currentY, routeLabelKey);
     routePanels.push(...result.panels);
     nextPanelId = result.nextPanelId;
     currentY = result.nextY;

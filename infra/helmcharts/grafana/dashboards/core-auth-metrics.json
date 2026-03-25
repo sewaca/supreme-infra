@@ -857,7 +857,7 @@
       "type": "timeseries"
     },
     {
-      "id": 117,
+      "id": 192,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -868,7 +868,7 @@
       }
     },
     {
-      "id": 118,
+      "id": 193,
       "title": "POST /core-auth/auth/login",
       "type": "row",
       "gridPos": {
@@ -879,7 +879,7 @@
       }
     },
     {
-      "id": 119,
+      "id": 194,
       "title": "POST /core-auth/auth/login - Timings",
       "type": "timeseries",
       "datasource": {
@@ -899,7 +899,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/login\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/login\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -910,7 +910,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/login\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/login\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -921,7 +921,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/login\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/login\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1000,7 +1000,7 @@
       }
     },
     {
-      "id": 120,
+      "id": 195,
       "title": "POST /core-auth/auth/login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1020,7 +1020,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/login\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/login\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 121,
+      "id": 196,
       "title": "POST /core-auth/auth/login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1111,7 +1111,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/login\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/login\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -1186,7 +1186,7 @@
       }
     },
     {
-      "id": 122,
+      "id": 197,
       "title": "GET /core-auth/auth/me",
       "type": "row",
       "gridPos": {
@@ -1197,7 +1197,7 @@
       }
     },
     {
-      "id": 123,
+      "id": 198,
       "title": "GET /core-auth/auth/me - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1217,7 +1217,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/me\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/me\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1228,7 +1228,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/me\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/me\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1239,7 +1239,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/me\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/me\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1318,7 +1318,7 @@
       }
     },
     {
-      "id": 124,
+      "id": 199,
       "title": "GET /core-auth/auth/me - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1338,7 +1338,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/me\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/me\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 125,
+      "id": 200,
       "title": "GET /core-auth/auth/me - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1429,7 +1429,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/me\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/me\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -1504,7 +1504,7 @@
       }
     },
     {
-      "id": 126,
+      "id": 201,
       "title": "POST /core-auth/auth/register",
       "type": "row",
       "gridPos": {
@@ -1515,7 +1515,7 @@
       }
     },
     {
-      "id": 127,
+      "id": 202,
       "title": "POST /core-auth/auth/register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1535,7 +1535,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/register\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/register\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1546,7 +1546,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/register\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/register\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1557,7 +1557,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/register\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/register\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1636,7 +1636,7 @@
       }
     },
     {
-      "id": 128,
+      "id": 203,
       "title": "POST /core-auth/auth/register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1656,7 +1656,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/register\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/register\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 129,
+      "id": 204,
       "title": "POST /core-auth/auth/register - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1747,7 +1747,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/register\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/register\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -1822,7 +1822,7 @@
       }
     },
     {
-      "id": 130,
+      "id": 205,
       "title": "GET /core-auth/auth/sessions",
       "type": "row",
       "gridPos": {
@@ -1833,7 +1833,7 @@
       }
     },
     {
-      "id": 131,
+      "id": 206,
       "title": "GET /core-auth/auth/sessions - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1853,7 +1853,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/sessions\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/sessions\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1864,7 +1864,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/sessions\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/sessions\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1875,7 +1875,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/sessions\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/sessions\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1954,7 +1954,7 @@
       }
     },
     {
-      "id": 132,
+      "id": 207,
       "title": "GET /core-auth/auth/sessions - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1974,7 +1974,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/sessions\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/sessions\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 133,
+      "id": 208,
       "title": "GET /core-auth/auth/sessions - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2065,7 +2065,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/sessions\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/sessions\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -2140,7 +2140,7 @@
       }
     },
     {
-      "id": 134,
+      "id": 209,
       "title": "DELETE /core-auth/auth/sessions/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2151,7 +2151,7 @@
       }
     },
     {
-      "id": 135,
+      "id": 210,
       "title": "DELETE /core-auth/auth/sessions/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2171,7 +2171,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -2182,7 +2182,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -2193,7 +2193,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -2272,7 +2272,7 @@
       }
     },
     {
-      "id": 136,
+      "id": 211,
       "title": "DELETE /core-auth/auth/sessions/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2292,7 +2292,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 137,
+      "id": 212,
       "title": "DELETE /core-auth/auth/sessions/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2383,7 +2383,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/sessions/:id\",http_method=\"DELETE\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -2458,7 +2458,7 @@
       }
     },
     {
-      "id": 138,
+      "id": 213,
       "title": "POST /core-auth/auth/validate-session",
       "type": "row",
       "gridPos": {
@@ -2469,7 +2469,7 @@
       }
     },
     {
-      "id": 139,
+      "id": 214,
       "title": "POST /core-auth/auth/validate-session - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2489,7 +2489,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/validate-session\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/validate-session\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -2500,7 +2500,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/validate-session\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/validate-session\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -2511,7 +2511,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_route=\"/core-auth/auth/validate-session\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/validate-session\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -2590,7 +2590,7 @@
       }
     },
     {
-      "id": 140,
+      "id": 215,
       "title": "POST /core-auth/auth/validate-session - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2610,7 +2610,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/validate-session\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/validate-session\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 141,
+      "id": 216,
       "title": "POST /core-auth/auth/validate-session - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2701,7 +2701,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_route=\"/core-auth/auth/validate-session\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/validate-session\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
