@@ -85,7 +85,7 @@ function createTimingsPanel(
       {
         datasource: { type: 'prometheus', uid: 'VictoriaMetrics' },
         editorMode: 'code',
-        expr: `histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service="${serviceName}",${routeFilter},${methodFilter}}[5m])) by (le)) or on() vector(0)`,
+        expr: `histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service="${serviceName}",${routeFilter},${methodFilter}}[5m])) by (le)) or on() vector(0)`,
         legendFormat: 'P50',
         range: true,
         refId: 'A',
@@ -93,7 +93,7 @@ function createTimingsPanel(
       {
         datasource: { type: 'prometheus', uid: 'VictoriaMetrics' },
         editorMode: 'code',
-        expr: `histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service="${serviceName}",${routeFilter},${methodFilter}}[5m])) by (le)) or on() vector(0)`,
+        expr: `histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service="${serviceName}",${routeFilter},${methodFilter}}[5m])) by (le)) or on() vector(0)`,
         legendFormat: 'P95',
         range: true,
         refId: 'B',
@@ -101,7 +101,7 @@ function createTimingsPanel(
       {
         datasource: { type: 'prometheus', uid: 'VictoriaMetrics' },
         editorMode: 'code',
-        expr: `histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service="${serviceName}",${routeFilter},${methodFilter}}[5m])) by (le)) or on() vector(0)`,
+        expr: `histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service="${serviceName}",${routeFilter},${methodFilter}}[5m])) by (le)) or on() vector(0)`,
         legendFormat: 'P99',
         range: true,
         refId: 'C',
@@ -174,7 +174,7 @@ function createOkRpsPanel(
       {
         datasource: { type: 'prometheus', uid: 'VictoriaMetrics' },
         editorMode: 'code',
-        expr: `sum(rate(http_server_duration_count{service="${serviceName}",${routeFilter},${methodFilter},http_status_code=~"2..|3.."}[1m])) or on() vector(0)`,
+        expr: `sum(rate(http_server_duration_milliseconds_count{service="${serviceName}",${routeFilter},${methodFilter},http_status_code=~"2..|3.."}[1m])) or on() vector(0)`,
         legendFormat: 'OK (2xx/3xx)',
         range: true,
         refId: 'A',
@@ -240,7 +240,7 @@ function createBadRpsPanel(
       {
         datasource: { type: 'prometheus', uid: 'VictoriaMetrics' },
         editorMode: 'code',
-        expr: `sum(rate(http_server_duration_count{service="${serviceName}",${routeFilter},${methodFilter},http_status_code=~"[45].."}[1m])) or on() vector(0)`,
+        expr: `sum(rate(http_server_duration_milliseconds_count{service="${serviceName}",${routeFilter},${methodFilter},http_status_code=~"[45].."}[1m])) or on() vector(0)`,
         legendFormat: 'Errors (4xx/5xx)',
         range: true,
         refId: 'A',
