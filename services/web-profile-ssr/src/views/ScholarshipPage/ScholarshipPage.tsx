@@ -43,11 +43,7 @@ export const ScholarshipPage = ({ studentName, amount, currency, order, notifica
         <Spacer size={30} />
 
         <Typography variant="title2" component="p" textAlign="center" data-tour="scholarship-info">
-          {studentName}
-        </Typography>
-        <Spacer size={2} />
-        <Typography variant="body3" component="p" textAlign="center" color="secondary">
-          {i18n('Размер стипендии')}: {amount} {currency}/мес.
+          {amount} ₽/мес.
         </Typography>
 
         <Spacer size={6} />
