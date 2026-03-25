@@ -28,9 +28,9 @@ jobs:
       matrix:
         service-name:
           - frontend
-          - auth-ssr
           - web-documents-ssr
           - web-profile-ssr
+          - web-auth-ssr
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
