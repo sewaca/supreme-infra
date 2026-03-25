@@ -67,7 +67,6 @@ export const SessionsSection = ({ sessions }: Props) => {
             <TableCell>{i18n('Устройство')}</TableCell>
             <TableCell>{i18n('Вход')}</TableCell>
             <TableCell>{i18n('Истекает')}</TableCell>
-            <TableCell>{i18n('Откуда')}</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
@@ -80,7 +79,6 @@ export const SessionsSection = ({ sessions }: Props) => {
               </TableCell>
               <TableCell>{new Date(session.created_at).toLocaleString('ru')}</TableCell>
               <TableCell>{new Date(session.expires_at).toLocaleString('ru')}</TableCell>
-              <TableCell>{session.location ?? session.ip_address ?? '—'}</TableCell>
               <TableCell align="right">
                 {!session.is_current && (
                   <Button
