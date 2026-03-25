@@ -80,7 +80,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "VictoriaMetrics" },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.80, (rate(http_server_request_duration_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -88,7 +88,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "VictoriaMetrics" },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.95, (rate(http_server_request_duration_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -96,7 +96,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "VictoriaMetrics" },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.99, (rate(http_server_request_duration_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -149,8 +149,8 @@
         {
           "datasource": { "type": "prometheus", "uid": "VictoriaMetrics" },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"core-auth\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
-          "legendFormat": "{{http_status_code}}",
+          "expr": "sum(rate(http_server_request_duration_count{service=\"core-auth\", http_response_status_code=~\"2..|3..\"}[1m])) by (http_response_status_code) or on() vector(0)",
+          "legendFormat": "{{http_response_status_code}}",
           "range": true,
           "refId": "A"
         }
@@ -203,7 +203,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"core-auth\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_request_duration_count{service=\"core-auth\", http_response_status_code=~\"[45]..\"}[1m]))  by (http_response_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -265,7 +265,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.80, (rate(http_server_request_duration_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -273,7 +273,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.95, (rate(http_server_request_duration_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
           "hide": false,
           "instant": false,
           "legendFormat": "P95 {{pod}}",
@@ -283,7 +283,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "sum(histogram_quantile(0.99, (rate(http_server_request_duration_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
           "hide": false,
           "instant": false,
           "legendFormat": "P99 {{pod}}",
@@ -339,8 +339,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"core-auth\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
-          "legendFormat": "{{http_status_code}} from {{pod}}",
+          "expr": "sum(rate(http_server_request_duration_count{service=\"core-auth\", http_response_status_code=~\"2..|3..\"}[1m])) by (http_response_status_code, pod) or on() vector(0)",
+          "legendFormat": "{{http_response_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
         }
@@ -393,8 +393,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"core-auth\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
-          "legendFormat": "{{http_status_code}} by {{pod}}",
+          "expr": "sum(rate(http_server_request_duration_count{service=\"core-auth\", http_response_status_code=~\"[45]..\"}[1m])) by (http_response_status_code, pod) or on() vector(0)",
+          "legendFormat": "{{http_response_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
         }
