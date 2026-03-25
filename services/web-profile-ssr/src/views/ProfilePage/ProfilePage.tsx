@@ -22,7 +22,7 @@ import styles from './ProfilePage.module.css';
 type Props = { data: ProfileData };
 export const ProfilePage = ({ data }: Props) => {
   return (
-    <Paper sx={{ minHeight: '100dvh', background: '#edeff2' }} elevation={0}>
+    <Paper sx={{ minHeight: '100dvh', background: '#edeff2', display: 'flex', flexDirection: 'column' }} elevation={0}>
       <DefaultNavbar
         rightSlot={
           // TODO: add logout action
@@ -82,6 +82,7 @@ export const ProfilePage = ({ data }: Props) => {
           borderTopRightRadius: 24,
           background: 'var(--color-background-secondary)',
           overflow: 'hidden',
+          marginTop: 'auto',
         }}
       >
         <LinkRow
