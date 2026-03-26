@@ -83,7 +83,7 @@ export async function fetchUniversityNews(): Promise<NewsItem[]> {
   try {
     console.time('fetchUniversityNews');
     const res = await fetch(`${BASE_URL}/bonchnews`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 1800 },
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; web-auth-ssr/1.0)' },
     });
     console.timeEnd('fetchUniversityNews');
