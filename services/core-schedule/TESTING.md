@@ -60,13 +60,14 @@ Set environment variables:
 ```bash
 export BASE_URL="https://diploma.sewaca.ru/core-schedule"
 export SEMESTER_ID="a0000000-0000-0000-0000-000000000001"
+export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDEiLCJqdGkiOiI5NzdiYWFkZS0wNTVkLTQ4NzEtYjYxZi03NTgxOWZjMjhhZjgiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDg4NzAwLCJleHAiOjE3NzUwOTM1MDB9.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
 ### Group schedule (week 1)
 
 ```bash
 # Get schedule for group Б22/2, week of 23.03.2026 (Week 1)
-curl "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-23&date_to=2026-03-28" | jq .
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-23&date_to=2026-03-28" | jq .
 ```
 
 ```json
@@ -121,7 +122,7 @@ curl "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-23&date_to=2026-0
 
 ```bash
 # Week 2: Monday slot 3 is "Лабораторная работа" instead of "Практическое занятие"
-curl "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-30&date_to=2026-03-30" | jq '.[0].lessons[0].lesson_type'
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-30&date_to=2026-03-30" | jq '.[0].lessons[0].lesson_type'
 # Expected: "Лабораторная работа"
 ```
 
@@ -129,7 +130,7 @@ curl "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-30&date_to=2026-0
 
 ```bash
 # Get exams/credits for group Б22/2
-curl "$BASE_URL/groups/%D0%9122%2F2/exams" | jq .
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/exams" | jq .
 ```
 
 ```json
@@ -205,10 +206,10 @@ curl "$BASE_URL/groups/%D0%9122%2F2/exams" | jq .
 ### Group template (base two-week pattern)
 
 ```bash
-curl "$BASE_URL/groups/%D0%9122%2F2/template" | jq '.week_1 | length'
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/template" | jq '.week_1 | length'
 # Expected: 6 (Mon-Sat)
 
-curl "$BASE_URL/groups/%D0%9122%2F2/template" | jq '.week_2 | length'
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/template" | jq '.week_2 | length'
 # Expected: 6 (Mon-Sat)
 ```
 
@@ -216,7 +217,7 @@ curl "$BASE_URL/groups/%D0%9122%2F2/template" | jq '.week_2 | length'
 
 ```bash
 # Get schedule for Усков М.В. (Thursday lectures)
-curl "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92./schedule?date_from=2026-03-26&date_to=2026-03-26" | jq .
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92./schedule?date_from=2026-03-26&date_to=2026-03-26" | jq .
 ```
 
 ```json
@@ -259,14 +260,14 @@ curl "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92./schedul
 
 ```bash
 # Get exams for Усков М.В.
-curl "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92./exams" | jq '. | length'
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92./exams" | jq '. | length'
 # Expected: 2 (consultation + exam)
 ```
 
 ### Health check
 
 ```bash
-curl "$BASE_URL/status" | jq .
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/api/status" | jq .
 ```
 
 ```json
