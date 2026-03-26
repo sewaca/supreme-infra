@@ -164,6 +164,10 @@ ingress:
           method: DELETE
         - path: /core-schedule/admin/session-events/[^/]+
           method: PUT
+        - path: /core-schedule/admin/teachers
+          method: GET
+        - path: /core-schedule/admin/teachers/sync
+          method: POST
         - path: /core-schedule/admin/templates
           method: GET
         - path: /core-schedule/admin/templates

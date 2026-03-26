@@ -9,6 +9,7 @@ from app.database import get_db
 from app.dependencies import AdminUser
 from app.models.session_event import SessionEvent
 from app.schemas.session_event import SessionEventCreate, SessionEventResponse, SessionEventUpdate
+from app.services.schedule_resolver import _load_teacher_names, _resolve_teacher_name
 
 router = APIRouter(prefix="/admin/session-events", tags=["admin-session-events"])
 
@@ -22,7 +23,7 @@ def _time_str(t: dt_time) -> str:
     return t.strftime("%H:%M")
 
 
-def _to_response(e: SessionEvent) -> SessionEventResponse:
+def _to_response(e: SessionEvent, teacher_cache: dict[UUID, str]) -> SessionEventResponse:
     return SessionEventResponse(
         id=e.id,
         semester_id=e.semester_id,
@@ -32,7 +33,8 @@ def _to_response(e: SessionEvent) -> SessionEventResponse:
         end_time=_time_str(e.end_time),
         subject_name=e.subject_name,
         lesson_type=e.lesson_type,
-        teacher_name=e.teacher_name,
+        teacher_id=e.teacher_id,
+        teacher_name=_resolve_teacher_name(e.teacher_id, teacher_cache),
         group_name=e.group_name,
         classroom_name=e.classroom_name,
     )
@@ -51,8 +53,9 @@ async def list_session_events(
     if group_name:
         q = q.where(SessionEvent.group_name == group_name)
     q = q.order_by(SessionEvent.date, SessionEvent.start_time).offset(offset).limit(limit)
+    teacher_cache = await _load_teacher_names(db)
     result = await db.execute(q)
-    return [_to_response(e) for e in result.scalars().all()]
+    return [_to_response(e, teacher_cache) for e in result.scalars().all()]
 
 
 @router.post("", response_model=SessionEventResponse, status_code=201)
@@ -65,13 +68,14 @@ async def create_session_event(body: SessionEventCreate, _user: AdminUser, db: A
         end_time=_parse_time(body.end_time),
         subject_name=body.subject_name,
         lesson_type=body.lesson_type,
-        teacher_name=body.teacher_name,
+        teacher_id=body.teacher_id,
         group_name=body.group_name,
         classroom_name=body.classroom_name,
     )
     db.add(obj)
     await db.flush()
-    return _to_response(obj)
+    teacher_cache = await _load_teacher_names(db)
+    return _to_response(obj, teacher_cache)
 
 
 @router.put("/{event_id}", response_model=SessionEventResponse)
@@ -89,7 +93,8 @@ async def update_session_event(
     for field, value in data.items():
         setattr(obj, field, value)
     await db.flush()
-    return _to_response(obj)
+    teacher_cache = await _load_teacher_names(db)
+    return _to_response(obj, teacher_cache)
 
 
 @router.delete("/{event_id}")

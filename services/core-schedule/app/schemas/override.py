@@ -14,7 +14,7 @@ class OverrideCreate(BaseModel):
     action: str
     new_subject_name: str | None = None
     new_lesson_type: str | None = None
-    new_teacher_name: str | None = None
+    new_teacher_id: UUID | None = None
     new_classroom_name: str | None = None
     new_start_time: str | None = None
     new_end_time: str | None = None
@@ -28,7 +28,7 @@ class OverrideUpdate(BaseModel):
     action: str | None = None
     new_subject_name: str | None = None
     new_lesson_type: str | None = None
-    new_teacher_name: str | None = None
+    new_teacher_id: UUID | None = None
     new_classroom_name: str | None = None
     new_start_time: str | None = None
     new_end_time: str | None = None
@@ -44,6 +44,7 @@ class OverrideResponse(BaseModel):
     action: str
     new_subject_name: str | None
     new_lesson_type: str | None
+    new_teacher_id: UUID | None
     new_teacher_name: str | None
     new_classroom_name: str | None
     new_start_time: str | None

@@ -35,15 +35,25 @@ The service will be available at `https://diploma.sewaca.ru/core-schedule`
 The database is initialized with test data:
 
 - **Semester**: `a0000000-0000-0000-0000-000000000001` ("Весна 2026", 16.01–15.04.2026, anchor: 23.03.2026)
-- **Group**: `Б22/2`
+- **Group**: `ИКПИ-25`
 
 ### Classrooms:
 
 233, 235, 258, 374, 441, 460, 462, 700
 
-### Teachers:
+### Teachers (teacher_cache):
 
-Коробов С.А., Бондаренко И.Б., Михайлов В.Д., Усков М.В., Вивчарь Р.М., Гулькина Д.Н., Смирнов К.А., Белая Т.И., Леонов А.С.
+| UUID               | ФИО             |
+| ------------------ | --------------- |
+| `d0000000-...-001` | Коробов С.А.    |
+| `d0000000-...-002` | Бондаренко И.Б. |
+| `d0000000-...-003` | Михайлов В.Д.   |
+| `d0000000-...-004` | Усков М.В.      |
+| `d0000000-...-005` | Вивчарь Р.М.    |
+| `d0000000-...-006` | Гулькина Д.Н.   |
+| `d0000000-...-007` | Смирнов К.А.    |
+| `d0000000-...-008` | Белая Т.И.      |
+| `d0000000-...-009` | Леонов А.С.     |
 
 ### Session events:
 
@@ -60,14 +70,15 @@ Set environment variables:
 ```bash
 export BASE_URL="https://diploma.sewaca.ru/core-schedule"
 export SEMESTER_ID="a0000000-0000-0000-0000-000000000001"
-export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDEiLCJqdGkiOiI5NzdiYWFkZS0wNTVkLTQ4NzEtYjYxZi03NTgxOWZjMjhhZjgiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDg4NzAwLCJleHAiOjE3NzUwOTM1MDB9.2DgkOCi4yx6aOAjiXrUIiRVf9jNLPrH1uu32-A2106w"
+export USKOV_ID="d0000000-0000-0000-0000-000000000004"
+export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDEiLCJqdGkiOiI5NzdiYWFkZS0wNTVkLTQ4NzEtYjYxZi03NTgxOWZjMjhhZjgiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDg4NzAwLCJleHAiOjE3NzUwOTM1MDB9.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
 ### Group schedule (week 1)
 
 ```bash
-# Get schedule for group Б22/2, week of 23.03.2026 (Week 1)
-curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-23&date_to=2026-03-28" | jq .
+# Get schedule for group ИКПИ-25, week of 23.03.2026 (Week 1)
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%98%D0%9A%D0%9F%D0%98-25/schedule?date_from=2026-03-23&date_to=2026-03-28" | jq .
 ```
 
 ```json
@@ -83,33 +94,10 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/schedule?d
         "end_time": "14:35",
         "subject_name": "Математические методы и алгоритмы функционирования киберфизических систем",
         "lesson_type": "Практическое занятие",
+        "teacher_id": "d0000000-0000-0000-0000-000000000001",
         "teacher_name": "Коробов С.А.",
-        "group_name": "Б22/2",
+        "group_name": "ИКПИ-25",
         "classroom_name": "258",
-        "is_override": false,
-        "override_comment": null
-      },
-      {
-        "slot_number": 4,
-        "start_time": "14:45",
-        "end_time": "16:20",
-        "subject_name": "Проектирование и архитектура программных систем",
-        "lesson_type": "Практическое занятие",
-        "teacher_name": "Бондаренко И.Б.",
-        "group_name": "Б22/2",
-        "classroom_name": "233",
-        "is_override": false,
-        "override_comment": null
-      },
-      {
-        "slot_number": 5,
-        "start_time": "16:30",
-        "end_time": "18:05",
-        "subject_name": "Проектирование и архитектура программных систем",
-        "lesson_type": "Лабораторная работа",
-        "teacher_name": "Бондаренко И.Б.",
-        "group_name": "Б22/2",
-        "classroom_name": "233",
         "is_override": false,
         "override_comment": null
       }
@@ -122,15 +110,15 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/schedule?d
 
 ```bash
 # Week 2: Monday slot 3 is "Лабораторная работа" instead of "Практическое занятие"
-curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/schedule?date_from=2026-03-30&date_to=2026-03-30" | jq '.[0].lessons[0].lesson_type'
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%98%D0%9A%D0%9F%D0%98-25/schedule?date_from=2026-03-30&date_to=2026-03-30" | jq '.[0].lessons[0].lesson_type'
 # Expected: "Лабораторная работа"
 ```
 
 ### Group exams
 
 ```bash
-# Get exams/credits for group Б22/2
-curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/exams" | jq .
+# Get exams/credits for group ИКПИ-25
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%98%D0%9A%D0%9F%D0%98-25/exams" | jq .
 ```
 
 ```json
@@ -144,61 +132,10 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/exams" | j
     "end_time": "16:20",
     "subject_name": "Проектирование и архитектура программных систем",
     "lesson_type": "Зачёт",
+    "teacher_id": "d0000000-0000-0000-0000-000000000007",
     "teacher_name": "Смирнов К.А.",
-    "group_name": "Б22/2",
+    "group_name": "ИКПИ-25",
     "classroom_name": "233"
-  },
-  {
-    "id": "e0000000-0000-0000-0000-000000000002",
-    "semester_id": "a0000000-0000-0000-0000-000000000001",
-    "date": "2026-04-18",
-    "slot_number": 3,
-    "start_time": "13:00",
-    "end_time": "14:35",
-    "subject_name": "Процессы жизненного цикла программного обеспечения",
-    "lesson_type": "Зачёт",
-    "teacher_name": "Белая Т.И.",
-    "group_name": "Б22/2",
-    "classroom_name": "235"
-  },
-  {
-    "id": "e0000000-0000-0000-0000-000000000003",
-    "semester_id": "a0000000-0000-0000-0000-000000000001",
-    "date": "2026-04-21",
-    "slot_number": 2,
-    "start_time": "10:45",
-    "end_time": "12:20",
-    "subject_name": "Математические методы и алгоритмы функционирования киберфизических систем",
-    "lesson_type": "Зачёт",
-    "teacher_name": "Вивчарь Р.М.",
-    "group_name": "Б22/2",
-    "classroom_name": "235"
-  },
-  {
-    "id": "e0000000-0000-0000-0000-000000000004",
-    "semester_id": "a0000000-0000-0000-0000-000000000001",
-    "date": "2026-04-24",
-    "slot_number": null,
-    "start_time": "16:30",
-    "end_time": "17:15",
-    "subject_name": "Сетевое программное обеспечение",
-    "lesson_type": "Консультация",
-    "teacher_name": "Усков М.В.",
-    "group_name": "Б22/2",
-    "classroom_name": "462"
-  },
-  {
-    "id": "e0000000-0000-0000-0000-000000000005",
-    "semester_id": "a0000000-0000-0000-0000-000000000001",
-    "date": "2026-04-25",
-    "slot_number": null,
-    "start_time": "10:45",
-    "end_time": "14:35",
-    "subject_name": "Сетевое программное обеспечение",
-    "lesson_type": "Экзамен",
-    "teacher_name": "Усков М.В.",
-    "group_name": "Б22/2",
-    "classroom_name": "462"
   }
 ]
 ```
@@ -206,18 +143,15 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/exams" | j
 ### Group template (base two-week pattern)
 
 ```bash
-curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/template" | jq '.week_1 | length'
-# Expected: 6 (Mon-Sat)
-
-curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%9122%2F2/template" | jq '.week_2 | length'
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/groups/%D0%98%D0%9A%D0%9F%D0%98-25/template" | jq '.week_1 | length'
 # Expected: 6 (Mon-Sat)
 ```
 
-### Teacher schedule
+### Teacher schedule (by UUID)
 
 ```bash
 # Get schedule for Усков М.В. (Thursday lectures)
-curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92./schedule?date_from=2026-03-26&date_to=2026-03-26" | jq .
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/$USKOV_ID/schedule?date_from=2026-03-26&date_to=2026-03-26" | jq .
 ```
 
 ```json
@@ -233,20 +167,9 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0
         "end_time": "12:20",
         "subject_name": "Сетевое программное обеспечение",
         "lesson_type": "Лекция",
+        "teacher_id": "d0000000-0000-0000-0000-000000000004",
         "teacher_name": "Усков М.В.",
-        "group_name": "Б22/2",
-        "classroom_name": "441",
-        "is_override": false,
-        "override_comment": null
-      },
-      {
-        "slot_number": 3,
-        "start_time": "13:00",
-        "end_time": "14:35",
-        "subject_name": "Программное обеспечение инфокоммуникационных сетей и систем",
-        "lesson_type": "Лекция",
-        "teacher_name": "Усков М.В.",
-        "group_name": "Б22/2",
+        "group_name": "ИКПИ-25",
         "classroom_name": "441",
         "is_override": false,
         "override_comment": null
@@ -260,8 +183,17 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0
 
 ```bash
 # Get exams for Усков М.В.
-curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92./exams" | jq '. | length'
+curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/teachers/$USKOV_ID/exams" | jq '. | length'
 # Expected: 2 (consultation + exam)
+```
+
+### Sync teacher cache
+
+```bash
+# Upsert teachers into local cache
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  "$BASE_URL/admin/teachers/sync" \
+  -d '{"items": [{"id": "d0000000-0000-0000-0000-000000000004", "name": "Усков М.В."}]}' | jq .
 ```
 
 ### Health check
@@ -316,9 +248,8 @@ docker-compose -f infra/databases/core-schedule-db/docker-compose.yml up -d
 
 ### URL encoding for Cyrillic
 
-Group and teacher names contain Cyrillic characters. In curl, use URL-encoded forms:
+Group names contain Cyrillic characters. In curl, use URL-encoded forms:
 
-- `Б22/2` → `%D0%9122%2F2`
-- `Усков М.В.` → `%D0%A3%D1%81%D0%BA%D0%BE%D0%B2%20%D0%9C.%D0%92.`
+- `ИКПИ-25` → `%D0%98%D0%9A%D0%9F%D0%98-25`
 
-Or use `--data-urlencode` with query params.
+Teacher endpoints now use UUID, no encoding needed.

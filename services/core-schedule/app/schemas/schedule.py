@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -11,6 +12,7 @@ class LessonSlot(BaseModel):
     end_time: str
     subject_name: str
     lesson_type: str
+    teacher_id: UUID | None
     teacher_name: str | None
     group_name: str
     classroom_name: str | None

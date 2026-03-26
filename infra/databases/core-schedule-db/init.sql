@@ -3,6 +3,13 @@
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
+-- Teacher cache (mirrors User data from core-client-info)
+CREATE TABLE IF NOT EXISTS teacher_cache (
+    id UUID PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
 -- Classrooms (auditoriums)
 CREATE TABLE IF NOT EXISTS classroom (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -39,7 +46,7 @@ CREATE TABLE IF NOT EXISTS schedule_template (
     end_time TIME NOT NULL,
     subject_name VARCHAR NOT NULL,
     lesson_type VARCHAR NOT NULL,
-    teacher_name VARCHAR,
+    teacher_id UUID,
     group_name VARCHAR NOT NULL,
     classroom_name VARCHAR,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -51,7 +58,7 @@ CREATE TABLE IF NOT EXISTS schedule_template (
 );
 
 CREATE INDEX IF NOT EXISTS ix_schedule_template_semester_group ON schedule_template(semester_id, group_name);
-CREATE INDEX IF NOT EXISTS ix_schedule_template_semester_teacher ON schedule_template(semester_id, teacher_name);
+CREATE INDEX IF NOT EXISTS ix_schedule_template_semester_teacher ON schedule_template(semester_id, teacher_id);
 
 -- Schedule overrides (force-majeure changes on specific dates)
 CREATE TABLE IF NOT EXISTS schedule_override (
@@ -63,7 +70,7 @@ CREATE TABLE IF NOT EXISTS schedule_override (
     action VARCHAR NOT NULL,
     new_subject_name VARCHAR,
     new_lesson_type VARCHAR,
-    new_teacher_name VARCHAR,
+    new_teacher_id UUID,
     new_classroom_name VARCHAR,
     new_start_time TIME,
     new_end_time TIME,
@@ -85,7 +92,7 @@ CREATE TABLE IF NOT EXISTS session_event (
     end_time TIME NOT NULL,
     subject_name VARCHAR NOT NULL,
     lesson_type VARCHAR NOT NULL,
-    teacher_name VARCHAR,
+    teacher_id UUID,
     group_name VARCHAR NOT NULL,
     classroom_name VARCHAR,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -93,4 +100,4 @@ CREATE TABLE IF NOT EXISTS session_event (
 );
 
 CREATE INDEX IF NOT EXISTS ix_session_event_semester_group ON session_event(semester_id, group_name);
-CREATE INDEX IF NOT EXISTS ix_session_event_semester_teacher ON session_event(semester_id, teacher_name);
+CREATE INDEX IF NOT EXISTS ix_session_event_semester_teacher ON session_event(semester_id, teacher_id);

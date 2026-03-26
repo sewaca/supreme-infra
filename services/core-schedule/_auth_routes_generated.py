@@ -34,6 +34,8 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-schedule/admin/session-events$"), method="POST", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/admin/session-events/[^/]+$"), method="DELETE", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/admin/session-events/[^/]+$"), method="PUT", auth_level="valid"),
+    AuthRoute(path=re.compile(r"^/core-schedule/admin/teachers$"), method="GET", auth_level="valid"),
+    AuthRoute(path=re.compile(r"^/core-schedule/admin/teachers/sync$"), method="POST", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/admin/templates$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/admin/templates$"), method="POST", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/admin/templates/[^/]+$"), method="DELETE", auth_level="valid"),

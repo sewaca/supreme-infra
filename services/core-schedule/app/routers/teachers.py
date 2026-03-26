@@ -19,9 +19,9 @@ from app.services.schedule_resolver import (
 router = APIRouter(prefix="/teachers", tags=["teachers"])
 
 
-@router.get("/{teacher_name}/schedule", response_model=list[DaySchedule])
+@router.get("/{teacher_id}/schedule", response_model=list[DaySchedule])
 async def teacher_schedule(
-    teacher_name: str,
+    teacher_id: UUID,
     date_from: date = Query(...),
     date_to: date = Query(...),
     semester_id: UUID | None = Query(None),
@@ -30,28 +30,28 @@ async def teacher_schedule(
     semester = await get_semester_by_id(db, semester_id) if semester_id else await get_active_semester(db)
     if not semester:
         raise HTTPException(status_code=404, detail="Semester not found")
-    return await resolve_teacher_schedule(db, teacher_name, date_from, date_to, semester)
+    return await resolve_teacher_schedule(db, teacher_id, date_from, date_to, semester)
 
 
-@router.get("/{teacher_name}/exams", response_model=list[SessionEventResponse])
+@router.get("/{teacher_id}/exams", response_model=list[SessionEventResponse])
 async def teacher_exams(
-    teacher_name: str,
+    teacher_id: UUID,
     semester_id: UUID | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     semester = await get_semester_by_id(db, semester_id) if semester_id else await get_active_semester(db)
     if not semester:
         raise HTTPException(status_code=404, detail="Semester not found")
-    return await get_teacher_exams(db, teacher_name, semester)
+    return await get_teacher_exams(db, teacher_id, semester)
 
 
-@router.get("/{teacher_name}/template", response_model=TemplateResponse)
+@router.get("/{teacher_id}/template", response_model=TemplateResponse)
 async def teacher_template(
-    teacher_name: str,
+    teacher_id: UUID,
     semester_id: UUID | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     semester = await get_semester_by_id(db, semester_id) if semester_id else await get_active_semester(db)
     if not semester:
         raise HTTPException(status_code=404, detail="Semester not found")
-    return await get_teacher_template(db, teacher_name, semester)
+    return await get_teacher_template(db, teacher_id, semester)

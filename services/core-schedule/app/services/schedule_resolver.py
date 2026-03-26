@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,6 +8,7 @@ from app.models.schedule_override import ScheduleOverride
 from app.models.schedule_template import ScheduleTemplate
 from app.models.semester import Semester
 from app.models.session_event import SessionEvent
+from app.models.teacher_cache import TeacherCache
 from app.schemas.schedule import DaySchedule, LessonSlot
 from app.schemas.session_event import SessionEventResponse
 from app.schemas.template import DayTemplate, TemplateResponse, TemplateSlotResponse
@@ -24,7 +26,18 @@ def _time_str(t) -> str:
     return t.strftime("%H:%M") if t else ""
 
 
-def _slot_to_response(t: ScheduleTemplate) -> TemplateSlotResponse:
+async def _load_teacher_names(db: AsyncSession) -> dict[UUID, str]:
+    result = await db.execute(select(TeacherCache))
+    return {t.id: t.name for t in result.scalars().all()}
+
+
+def _resolve_teacher_name(teacher_id: UUID | None, cache: dict[UUID, str]) -> str | None:
+    if teacher_id is None:
+        return None
+    return cache.get(teacher_id)
+
+
+def _slot_to_response(t: ScheduleTemplate, teacher_cache: dict[UUID, str]) -> TemplateSlotResponse:
     return TemplateSlotResponse(
         id=t.id,
         semester_id=t.semester_id,
@@ -35,13 +48,14 @@ def _slot_to_response(t: ScheduleTemplate) -> TemplateSlotResponse:
         end_time=_time_str(t.end_time),
         subject_name=t.subject_name,
         lesson_type=t.lesson_type,
-        teacher_name=t.teacher_name,
+        teacher_id=t.teacher_id,
+        teacher_name=_resolve_teacher_name(t.teacher_id, teacher_cache),
         group_name=t.group_name,
         classroom_name=t.classroom_name,
     )
 
 
-def _session_to_response(e: SessionEvent) -> SessionEventResponse:
+def _session_to_response(e: SessionEvent, teacher_cache: dict[UUID, str]) -> SessionEventResponse:
     return SessionEventResponse(
         id=e.id,
         semester_id=e.semester_id,
@@ -51,7 +65,8 @@ def _session_to_response(e: SessionEvent) -> SessionEventResponse:
         end_time=_time_str(e.end_time),
         subject_name=e.subject_name,
         lesson_type=e.lesson_type,
-        teacher_name=e.teacher_name,
+        teacher_id=e.teacher_id,
+        teacher_name=_resolve_teacher_name(e.teacher_id, teacher_cache),
         group_name=e.group_name,
         classroom_name=e.classroom_name,
     )
@@ -70,6 +85,8 @@ async def get_semester_by_id(db: AsyncSession, semester_id) -> Semester | None:
 async def resolve_group_schedule(
     db: AsyncSession, group_name: str, date_from: date, date_to: date, semester: Semester
 ) -> list[DaySchedule]:
+    teacher_cache = await _load_teacher_names(db)
+
     templates = (
         (
             await db.execute(
@@ -113,18 +130,20 @@ async def resolve_group_schedule(
         .all()
     )
 
-    return _assemble_calendar(templates, overrides, session_events, date_from, date_to, semester)
+    return _assemble_calendar(templates, overrides, session_events, date_from, date_to, semester, teacher_cache)
 
 
 async def resolve_teacher_schedule(
-    db: AsyncSession, teacher_name: str, date_from: date, date_to: date, semester: Semester
+    db: AsyncSession, teacher_id: UUID, date_from: date, date_to: date, semester: Semester
 ) -> list[DaySchedule]:
+    teacher_cache = await _load_teacher_names(db)
+
     templates = (
         (
             await db.execute(
                 select(ScheduleTemplate).where(
                     ScheduleTemplate.semester_id == semester.id,
-                    ScheduleTemplate.teacher_name == teacher_name,
+                    ScheduleTemplate.teacher_id == teacher_id,
                 )
             )
         )
@@ -141,14 +160,14 @@ async def resolve_teacher_schedule(
 
     # For teacher view, we need overrides that either:
     # 1. Cancel a slot where the teacher was teaching (need to match via template)
-    # 2. Replace a slot with this teacher as new_teacher_name
+    # 2. Replace a slot with this teacher as new_teacher_id
     template_keys = {(t.week_number, t.day_of_week, t.slot_number, t.group_name) for t in templates}
     relevant_overrides = []
     for ov in all_overrides:
         wn = _week_number(ov.date, semester.cycle_anchor_date)
         dow = ov.date.weekday()
         key = (wn, dow, ov.slot_number, ov.group_name)
-        if key in template_keys or ov.new_teacher_name == teacher_name:
+        if key in template_keys or ov.new_teacher_id == teacher_id:
             relevant_overrides.append(ov)
 
     session_events = (
@@ -156,7 +175,7 @@ async def resolve_teacher_schedule(
             await db.execute(
                 select(SessionEvent).where(
                     SessionEvent.semester_id == semester.id,
-                    SessionEvent.teacher_name == teacher_name,
+                    SessionEvent.teacher_id == teacher_id,
                     SessionEvent.date >= date_from,
                     SessionEvent.date <= date_to,
                 )
@@ -166,7 +185,9 @@ async def resolve_teacher_schedule(
         .all()
     )
 
-    return _assemble_calendar(templates, relevant_overrides, session_events, date_from, date_to, semester)
+    return _assemble_calendar(
+        templates, relevant_overrides, session_events, date_from, date_to, semester, teacher_cache
+    )
 
 
 def _assemble_calendar(
@@ -176,6 +197,7 @@ def _assemble_calendar(
     date_from: date,
     date_to: date,
     semester: Semester,
+    teacher_cache: dict[UUID, str],
 ) -> list[DaySchedule]:
     # Index templates by (week_number, day_of_week)
     tmpl_by_day: dict[tuple[int, int], list[ScheduleTemplate]] = {}
@@ -211,6 +233,7 @@ def _assemble_calendar(
                 if ov.action == "cancel":
                     continue
                 if ov.action == "replace":
+                    effective_teacher_id = ov.new_teacher_id if ov.new_teacher_id is not None else t.teacher_id
                     lessons.append(
                         LessonSlot(
                             slot_number=t.slot_number,
@@ -218,7 +241,8 @@ def _assemble_calendar(
                             end_time=_time_str(ov.new_end_time or t.end_time),
                             subject_name=ov.new_subject_name or t.subject_name,
                             lesson_type=ov.new_lesson_type or t.lesson_type,
-                            teacher_name=ov.new_teacher_name if ov.new_teacher_name is not None else t.teacher_name,
+                            teacher_id=str(effective_teacher_id) if effective_teacher_id else None,
+                            teacher_name=_resolve_teacher_name(effective_teacher_id, teacher_cache),
                             group_name=t.group_name,
                             classroom_name=ov.new_classroom_name
                             if ov.new_classroom_name is not None
@@ -235,7 +259,8 @@ def _assemble_calendar(
                     end_time=_time_str(t.end_time),
                     subject_name=t.subject_name,
                     lesson_type=t.lesson_type,
-                    teacher_name=t.teacher_name,
+                    teacher_id=str(t.teacher_id) if t.teacher_id else None,
+                    teacher_name=_resolve_teacher_name(t.teacher_id, teacher_cache),
                     group_name=t.group_name,
                     classroom_name=t.classroom_name,
                 )
@@ -250,7 +275,8 @@ def _assemble_calendar(
                     end_time=_time_str(ev.end_time),
                     subject_name=ev.subject_name,
                     lesson_type=ev.lesson_type,
-                    teacher_name=ev.teacher_name,
+                    teacher_id=str(ev.teacher_id) if ev.teacher_id else None,
+                    teacher_name=_resolve_teacher_name(ev.teacher_id, teacher_cache),
                     group_name=ev.group_name,
                     classroom_name=ev.classroom_name,
                 )
@@ -274,6 +300,7 @@ def _assemble_calendar(
 
 
 async def get_group_template(db: AsyncSession, group_name: str, semester: Semester) -> TemplateResponse:
+    teacher_cache = await _load_teacher_names(db)
     templates = (
         (
             await db.execute(
@@ -289,17 +316,18 @@ async def get_group_template(db: AsyncSession, group_name: str, semester: Semest
         .all()
     )
 
-    return _build_template_response(templates, semester)
+    return _build_template_response(templates, semester, teacher_cache)
 
 
-async def get_teacher_template(db: AsyncSession, teacher_name: str, semester: Semester) -> TemplateResponse:
+async def get_teacher_template(db: AsyncSession, teacher_id: UUID, semester: Semester) -> TemplateResponse:
+    teacher_cache = await _load_teacher_names(db)
     templates = (
         (
             await db.execute(
                 select(ScheduleTemplate)
                 .where(
                     ScheduleTemplate.semester_id == semester.id,
-                    ScheduleTemplate.teacher_name == teacher_name,
+                    ScheduleTemplate.teacher_id == teacher_id,
                 )
                 .order_by(ScheduleTemplate.week_number, ScheduleTemplate.day_of_week, ScheduleTemplate.slot_number)
             )
@@ -308,15 +336,17 @@ async def get_teacher_template(db: AsyncSession, teacher_name: str, semester: Se
         .all()
     )
 
-    return _build_template_response(templates, semester)
+    return _build_template_response(templates, semester, teacher_cache)
 
 
-def _build_template_response(templates: list[ScheduleTemplate], semester: Semester) -> TemplateResponse:
+def _build_template_response(
+    templates: list[ScheduleTemplate], semester: Semester, teacher_cache: dict[UUID, str]
+) -> TemplateResponse:
     week_1_days: dict[int, list[TemplateSlotResponse]] = {}
     week_2_days: dict[int, list[TemplateSlotResponse]] = {}
 
     for t in templates:
-        resp = _slot_to_response(t)
+        resp = _slot_to_response(t, teacher_cache)
         target = week_1_days if t.week_number == 1 else week_2_days
         target.setdefault(t.day_of_week, []).append(resp)
 
@@ -334,6 +364,7 @@ def _build_template_response(templates: list[ScheduleTemplate], semester: Semest
 
 
 async def get_group_exams(db: AsyncSession, group_name: str, semester: Semester) -> list[SessionEventResponse]:
+    teacher_cache = await _load_teacher_names(db)
     events = (
         (
             await db.execute(
@@ -349,17 +380,18 @@ async def get_group_exams(db: AsyncSession, group_name: str, semester: Semester)
         .all()
     )
 
-    return [_session_to_response(e) for e in events]
+    return [_session_to_response(e, teacher_cache) for e in events]
 
 
-async def get_teacher_exams(db: AsyncSession, teacher_name: str, semester: Semester) -> list[SessionEventResponse]:
+async def get_teacher_exams(db: AsyncSession, teacher_id: UUID, semester: Semester) -> list[SessionEventResponse]:
+    teacher_cache = await _load_teacher_names(db)
     events = (
         (
             await db.execute(
                 select(SessionEvent)
                 .where(
                     SessionEvent.semester_id == semester.id,
-                    SessionEvent.teacher_name == teacher_name,
+                    SessionEvent.teacher_id == teacher_id,
                 )
                 .order_by(SessionEvent.date, SessionEvent.start_time)
             )
@@ -368,4 +400,4 @@ async def get_teacher_exams(db: AsyncSession, teacher_name: str, semester: Semes
         .all()
     )
 
-    return [_session_to_response(e) for e in events]
+    return [_session_to_response(e, teacher_cache) for e in events]

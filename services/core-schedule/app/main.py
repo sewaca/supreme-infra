@@ -13,6 +13,7 @@ from app.routers import (
     admin_overrides,
     admin_semesters,
     admin_session_events,
+    admin_teachers,
     admin_templates,
     groups,
     status,
@@ -60,6 +61,7 @@ app.include_router(groups.router)
 app.include_router(teachers.router)
 app.include_router(admin_classrooms.router)
 app.include_router(admin_semesters.router)
+app.include_router(admin_teachers.router)
 app.include_router(admin_templates.router)
 app.include_router(admin_overrides.router)
 app.include_router(admin_session_events.router)

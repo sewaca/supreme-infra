@@ -9,6 +9,7 @@ from app.database import get_db
 from app.dependencies import AdminUser
 from app.models.schedule_template import ScheduleTemplate
 from app.schemas.template import TemplateSlotBulkCreate, TemplateSlotCreate, TemplateSlotResponse, TemplateSlotUpdate
+from app.services.schedule_resolver import _load_teacher_names, _resolve_teacher_name
 
 router = APIRouter(prefix="/admin/templates", tags=["admin-templates"])
 
@@ -22,7 +23,7 @@ def _time_str(t: dt_time) -> str:
     return t.strftime("%H:%M")
 
 
-def _to_response(t: ScheduleTemplate) -> TemplateSlotResponse:
+def _to_response(t: ScheduleTemplate, teacher_cache: dict[UUID, str]) -> TemplateSlotResponse:
     return TemplateSlotResponse(
         id=t.id,
         semester_id=t.semester_id,
@@ -33,7 +34,8 @@ def _to_response(t: ScheduleTemplate) -> TemplateSlotResponse:
         end_time=_time_str(t.end_time),
         subject_name=t.subject_name,
         lesson_type=t.lesson_type,
-        teacher_name=t.teacher_name,
+        teacher_id=t.teacher_id,
+        teacher_name=_resolve_teacher_name(t.teacher_id, teacher_cache),
         group_name=t.group_name,
         classroom_name=t.classroom_name,
     )
@@ -59,8 +61,9 @@ async def list_templates(
         q = q.where(ScheduleTemplate.group_name == group_name)
     q = q.order_by(ScheduleTemplate.week_number, ScheduleTemplate.day_of_week, ScheduleTemplate.slot_number)
     q = q.offset(offset).limit(limit)
+    teacher_cache = await _load_teacher_names(db)
     result = await db.execute(q)
-    return [_to_response(t) for t in result.scalars().all()]
+    return [_to_response(t, teacher_cache) for t in result.scalars().all()]
 
 
 @router.post("", response_model=TemplateSlotResponse, status_code=201)
@@ -74,13 +77,14 @@ async def create_template(body: TemplateSlotCreate, _user: AdminUser, db: AsyncS
         end_time=_parse_time(body.end_time),
         subject_name=body.subject_name,
         lesson_type=body.lesson_type,
-        teacher_name=body.teacher_name,
+        teacher_id=body.teacher_id,
         group_name=body.group_name,
         classroom_name=body.classroom_name,
     )
     db.add(obj)
     await db.flush()
-    return _to_response(obj)
+    teacher_cache = await _load_teacher_names(db)
+    return _to_response(obj, teacher_cache)
 
 
 @router.post("/bulk", response_model=list[TemplateSlotResponse], status_code=201)
@@ -96,14 +100,15 @@ async def create_templates_bulk(body: TemplateSlotBulkCreate, _user: AdminUser, 
             end_time=_parse_time(item.end_time),
             subject_name=item.subject_name,
             lesson_type=item.lesson_type,
-            teacher_name=item.teacher_name,
+            teacher_id=item.teacher_id,
             group_name=item.group_name,
             classroom_name=item.classroom_name,
         )
         db.add(obj)
         results.append(obj)
     await db.flush()
-    return [_to_response(t) for t in results]
+    teacher_cache = await _load_teacher_names(db)
+    return [_to_response(t, teacher_cache) for t in results]
 
 
 @router.put("/{template_id}", response_model=TemplateSlotResponse)
@@ -121,7 +126,8 @@ async def update_template(
     for field, value in data.items():
         setattr(obj, field, value)
     await db.flush()
-    return _to_response(obj)
+    teacher_cache = await _load_teacher_names(db)
+    return _to_response(obj, teacher_cache)
 
 
 @router.delete("/{template_id}")

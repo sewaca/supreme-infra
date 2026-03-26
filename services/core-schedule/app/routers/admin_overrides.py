@@ -12,6 +12,7 @@ from app.database import get_db
 from app.dependencies import AdminUser
 from app.models.schedule_override import ScheduleOverride
 from app.schemas.override import OverrideCreate, OverrideResponse, OverrideUpdate
+from app.services.schedule_resolver import _load_teacher_names, _resolve_teacher_name
 
 router = APIRouter(prefix="/admin/overrides", tags=["admin-overrides"])
 
@@ -27,7 +28,7 @@ def _time_str(t: dt_time | None) -> str | None:
     return t.strftime("%H:%M") if t else None
 
 
-def _to_response(o: ScheduleOverride) -> OverrideResponse:
+def _to_response(o: ScheduleOverride, teacher_cache: dict[UUID, str]) -> OverrideResponse:
     return OverrideResponse(
         id=o.id,
         semester_id=o.semester_id,
@@ -37,7 +38,8 @@ def _to_response(o: ScheduleOverride) -> OverrideResponse:
         action=o.action,
         new_subject_name=o.new_subject_name,
         new_lesson_type=o.new_lesson_type,
-        new_teacher_name=o.new_teacher_name,
+        new_teacher_id=o.new_teacher_id,
+        new_teacher_name=_resolve_teacher_name(o.new_teacher_id, teacher_cache),
         new_classroom_name=o.new_classroom_name,
         new_start_time=_time_str(o.new_start_time),
         new_end_time=_time_str(o.new_end_time),
@@ -64,8 +66,9 @@ async def list_overrides(
     if group_name:
         q = q.where(ScheduleOverride.group_name == group_name)
     q = q.order_by(ScheduleOverride.date, ScheduleOverride.slot_number).offset(offset).limit(limit)
+    teacher_cache = await _load_teacher_names(db)
     result = await db.execute(q)
-    return [_to_response(o) for o in result.scalars().all()]
+    return [_to_response(o, teacher_cache) for o in result.scalars().all()]
 
 
 @router.post("", response_model=OverrideResponse, status_code=201)
@@ -78,7 +81,7 @@ async def create_override(body: OverrideCreate, _user: AdminUser, db: AsyncSessi
         action=body.action,
         new_subject_name=body.new_subject_name,
         new_lesson_type=body.new_lesson_type,
-        new_teacher_name=body.new_teacher_name,
+        new_teacher_id=body.new_teacher_id,
         new_classroom_name=body.new_classroom_name,
         new_start_time=_parse_time(body.new_start_time),
         new_end_time=_parse_time(body.new_end_time),
@@ -86,7 +89,8 @@ async def create_override(body: OverrideCreate, _user: AdminUser, db: AsyncSessi
     )
     db.add(obj)
     await db.flush()
-    return _to_response(obj)
+    teacher_cache = await _load_teacher_names(db)
+    return _to_response(obj, teacher_cache)
 
 
 @router.put("/{override_id}", response_model=OverrideResponse)
@@ -104,7 +108,8 @@ async def update_override(
     for field, value in data.items():
         setattr(obj, field, value)
     await db.flush()
-    return _to_response(obj)
+    teacher_cache = await _load_teacher_names(db)
+    return _to_response(obj, teacher_cache)
 
 
 @router.delete("/{override_id}")

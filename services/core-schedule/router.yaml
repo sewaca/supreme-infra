@@ -59,6 +59,12 @@ routes:
   - path: /core-schedule/admin/session-events/[^/]+
     method: PUT
     auth_level: valid
+  - path: /core-schedule/admin/teachers
+    method: GET
+    auth_level: valid
+  - path: /core-schedule/admin/teachers/sync
+    method: POST
+    auth_level: valid
   - path: /core-schedule/admin/templates
     method: GET
     auth_level: valid

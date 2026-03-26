@@ -12,7 +12,7 @@ class TemplateSlotCreate(BaseModel):
     end_time: str
     subject_name: str
     lesson_type: str
-    teacher_name: str | None = None
+    teacher_id: UUID | None = None
     group_name: str
     classroom_name: str | None = None
 
@@ -25,7 +25,7 @@ class TemplateSlotUpdate(BaseModel):
     end_time: str | None = None
     subject_name: str | None = None
     lesson_type: str | None = None
-    teacher_name: str | None = None
+    teacher_id: UUID | None = None
     group_name: str | None = None
     classroom_name: str | None = None
 
@@ -44,6 +44,7 @@ class TemplateSlotResponse(BaseModel):
     end_time: str
     subject_name: str
     lesson_type: str
+    teacher_id: UUID | None
     teacher_name: str | None
     group_name: str
     classroom_name: str | None

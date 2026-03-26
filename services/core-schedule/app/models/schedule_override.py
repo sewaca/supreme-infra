@@ -29,7 +29,7 @@ class ScheduleOverride(Base):
     action: Mapped[str] = mapped_column(String, nullable=False)
     new_subject_name: Mapped[str | None] = mapped_column(String, nullable=True)
     new_lesson_type: Mapped[str | None] = mapped_column(String, nullable=True)
-    new_teacher_name: Mapped[str | None] = mapped_column(String, nullable=True)
+    new_teacher_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     new_classroom_name: Mapped[str | None] = mapped_column(String, nullable=True)
     new_start_time: Mapped[time | None] = mapped_column(Time, nullable=True)
     new_end_time: Mapped[time | None] = mapped_column(Time, nullable=True)
