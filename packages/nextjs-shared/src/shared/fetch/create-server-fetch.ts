@@ -24,7 +24,10 @@ export function createServerFetch(): typeof fetch {
       const cookieStore = await cookies();
       const token = cookieStore.get(TOKEN_KEY)?.value;
 
-      const headers = new Headers(init?.headers);
+      // Preserve existing headers from the request (e.g. Content-Type set by hey-api client)
+      // When hey-api passes a Request object, init is undefined — we must copy headers from it
+      const existingHeaders = input instanceof Request ? input.headers : init?.headers;
+      const headers = new Headers(existingHeaders);
       if (token && !headers.has('authorization')) {
         headers.set('Authorization', `Bearer ${token}`);
       }
