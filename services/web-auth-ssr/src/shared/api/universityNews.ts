@@ -1,3 +1,5 @@
+import { parse } from 'node-html-parser';
+
 export interface NewsItem {
   title: string;
   url: string;
@@ -6,6 +8,21 @@ export interface NewsItem {
 }
 
 const BASE_URL = 'https://www.sut.ru';
+
+const CATEGORY_MAP: Record<string, string> = {
+  industry: 'Индустрия',
+  education: 'Образование',
+  science: 'Наука',
+  international: 'Международное',
+  sport: 'Спорт',
+  culture: 'Культура',
+  university: 'Университет',
+  students: 'Студентам',
+};
+
+// Date prefix pattern: "26 марта 2026 "
+const DATE_PREFIX_RE =
+  /^(\d{1,2}\s+(?:января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s+\d{4})\s+/i;
 
 // Fallback data used when fetch fails
 let FALLBACK_NEWS: NewsItem[] = [
@@ -48,39 +65,35 @@ let FALLBACK_NEWS: NewsItem[] = [
 ];
 
 function parseNewsFromHtml(html: string): NewsItem[] {
+  const root = parse(html);
   const items: NewsItem[] = [];
 
-  // Match news list items — the site uses <div class="views-row"> blocks
-  const rowRegex =
-    /<div[^>]*class="[^"]*views-row[^"]*"[^>]*>([\s\S]*?)<\/div>\s*(?=<div[^>]*class="[^"]*views-row|<\/div>\s*<\/div>)/g;
-  let match = rowRegex.exec(html);
+  // All links that point to individual news articles: /bonchnews/{category}/{slug}
+  const links = root.querySelectorAll('a[href^="/bonchnews/"]');
 
-  console.log('[test] matches=', match);
+  for (const link of links) {
+    if (items.length >= 6) break;
 
-  while (match && items.length < 6) {
-    console.log('[test] const block = ', match[1]);
-    const block = match[1];
+    const href = link.getAttribute('href') ?? '';
 
-    const titleMatch = /<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i.exec(block);
-    const dateMatch = /<span[^>]*class="[^"]*date[^"]*"[^>]*>([\s\S]*?)<\/span>/i.exec(block);
-    const catMatch = /<span[^>]*class="[^"]*category[^"]*"[^>]*>([\s\S]*?)<\/span>/i.exec(block);
+    // Only article links have 3 path segments: /bonchnews/{category}/{slug}
+    const parts = href.split('/').filter(Boolean);
+    if (parts.length !== 3) continue;
 
-    if (titleMatch) {
-      const href = titleMatch[1].startsWith('/') ? titleMatch[1] : `/${titleMatch[1]}`;
-      const title = titleMatch[2].replace(/<[^>]+>/g, '').trim();
-      const date = dateMatch ? dateMatch[1].replace(/<[^>]+>/g, '').trim() : '';
-      const category = catMatch ? catMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+    const categorySlug = parts[1];
+    const category = CATEGORY_MAP[categorySlug] ?? categorySlug;
 
-      console.log(
-        `[test] parsed row: \n    title="${title}"\n    url="${href}"\n    date="${date}"\n    category="${category}"`,
-      );
+    // Text content after stripping nested tags (images etc.)
+    const text = link.text.trim();
+    const dateMatch = DATE_PREFIX_RE.exec(text);
+    if (!dateMatch) continue;
 
-      if (title && title.length > 10) {
-        items.push({ title, url: href, date, category });
-      }
-    }
+    const date = dateMatch[1];
+    const title = text.slice(dateMatch[0].length).trim();
 
-    match = rowRegex.exec(html);
+    if (title.length < 10) continue;
+
+    items.push({ title, url: href, date, category });
   }
 
   return items;
@@ -88,25 +101,24 @@ function parseNewsFromHtml(html: string): NewsItem[] {
 
 export async function fetchUniversityNews(): Promise<NewsItem[]> {
   try {
-    console.time('[news] fetch news request');
     const res = await fetch(`${BASE_URL}/bonchnews`, {
       next: { revalidate: 1800 },
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; web-auth-ssr/1.0)' },
     });
-    console.timeEnd('[news] fetch news request');
-    console.log(`[news] fetch news ended with "${res.status} ${res.statusText}". ok="${res.ok}"`);
+
+    console.log(`[news] fetch ended with "${res.status} ${res.statusText}"`);
 
     if (!res.ok) {
       return FALLBACK_NEWS;
     }
 
     const html = await res.text();
-    console.log('[test] html=', html);
     const parsed = parseNewsFromHtml(html);
-    console.log('[test] parsed=', parsed);
 
-    if (parsed?.length) {
-      FALLBACK_NEWS = [...parsed, ...FALLBACK_NEWS].slice(0, 3);
+    console.log(`[news] parsed ${parsed.length} items`);
+
+    if (parsed.length) {
+      FALLBACK_NEWS = [...parsed, ...FALLBACK_NEWS].slice(0, 6);
     }
 
     return parsed.length >= 3 ? parsed : FALLBACK_NEWS;

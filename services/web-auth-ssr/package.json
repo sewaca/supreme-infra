@@ -42,6 +42,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "next": "catalog:",
+    "node-html-parser": "catalog:",
     "react-dom": "catalog:",
     "react-use": "catalog:",
     "react": "catalog:",
