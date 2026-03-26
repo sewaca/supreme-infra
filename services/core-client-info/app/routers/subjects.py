@@ -1,3 +1,4 @@
+import logging
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
@@ -8,6 +9,7 @@ from app.database import get_db
 from app.models.subject import SubjectChoice, UserSubjectPriority
 from app.schemas.subject import SavePrioritiesRequest, SubjectChoiceResponse, SubjectInfo, UserSubjectPriorityResponse
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/subjects", tags=["subjects"])
 
 
@@ -50,11 +52,15 @@ async def get_user_priorities(choice_id: str, user_id: UUID, db: AsyncSession = 
 
 @router.post("/save-priorities")
 async def save_priorities(user_id: UUID, body: SavePrioritiesRequest, db: AsyncSession = Depends(get_db)):
+    logger.info(
+        "save_priorities user_id=%s choice_id=%s priorities_count=%d", user_id, body.choice_id, len(body.priorities)
+    )
     choice_result = await db.execute(select(SubjectChoice).where(SubjectChoice.choice_id == body.choice_id))
     choice = choice_result.scalar_one_or_none()
     if choice is None:
         from fastapi import HTTPException
 
+        logger.warning("save_priorities: choice_id=%s not found", body.choice_id)
         raise HTTPException(status_code=404, detail="Subject choice not found")
 
     existing_result = await db.execute(
@@ -73,4 +79,10 @@ async def save_priorities(user_id: UUID, body: SavePrioritiesRequest, db: AsyncS
             )
 
     await db.flush()
+    logger.info(
+        "save_priorities: saved %d priorities for user_id=%s choice_id=%s",
+        len(body.priorities),
+        user_id,
+        body.choice_id,
+    )
     return {"status": "success"}

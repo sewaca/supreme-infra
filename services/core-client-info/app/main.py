@@ -1,8 +1,12 @@
+import logging
+import time
 from contextlib import asynccontextmanager
 
 from _auth_routes_generated import AUTH_ROUTES
 from authorization_py.middleware import AuthMiddleware
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exception_handlers import request_validation_exception_handler
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
@@ -15,6 +19,8 @@ from app.routers import (
     status,
     subjects,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -51,6 +57,36 @@ app.add_middleware(
 )
 
 instrument_app(app)
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = (time.perf_counter() - start) * 1000
+    query = f"?{request.url.query}" if request.url.query else ""
+    logger.info("%s %s%s → %d (%.0fms)", request.method, request.url.path, query, response.status_code, duration_ms)
+    return response
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    try:
+        body_bytes = await request.body()
+        body_str = body_bytes.decode("utf-8", errors="replace")
+    except Exception:
+        body_str = "<unreadable>"
+    query = f"?{request.url.query}" if request.url.query else ""
+    logger.error(
+        "422 Validation error | %s %s%s | body=%s | errors=%s",
+        request.method,
+        request.url.path,
+        query,
+        body_str[:2000],
+        exc.errors(),
+    )
+    return await request_validation_exception_handler(request, exc)
+
 
 app.include_router(status.router)
 app.include_router(profile.router)
