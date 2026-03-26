@@ -54,7 +54,6 @@ export const StudentIdBook = ({ user, stats }: Props) => {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        {/* ── Header ── */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <span className={styles.headerCrest}>🎓</span>
@@ -69,7 +68,6 @@ export const StudentIdBook = ({ user, stats }: Props) => {
           <div className={styles.headerBadge}>РФ</div>
         </div>
 
-        {/* ── Профиль ── */}
         <div className={styles.profile}>
           {user.avatar ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -85,7 +83,6 @@ export const StudentIdBook = ({ user, stats }: Props) => {
           </div>
         </div>
 
-        {/* ── Академические поля ── */}
         <div className={styles.fields}>
           {singleFields.map((f) => (
             <div key={f.label} className={styles.fieldRow}>
@@ -112,7 +109,6 @@ export const StudentIdBook = ({ user, stats }: Props) => {
           )}
         </div>
 
-        {/* ── Подвал ── */}
         <div className={styles.footer}>
           <div className={styles.footerText}>Действителен на период обучения</div>
           <div className={styles.footerYear}>{new Date().getFullYear()}</div>

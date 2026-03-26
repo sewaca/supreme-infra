@@ -9,14 +9,8 @@ export default async function Page() {
   const userId = getUserId();
 
   const [personalDataRes, statsRes] = await Promise.all([
-    CoreClientInfo.getPersonalDataProfilePersonalDataGet({
-      client: coreClientInfoClient,
-      query: { user_id: userId },
-    }),
-    CoreClientInfo.getStatsRatingStatsGet({
-      client: coreClientInfoClient,
-      query: { user_id: userId },
-    }),
+    CoreClientInfo.getPersonalDataProfilePersonalDataGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    CoreClientInfo.getStatsRatingStatsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
   ]);
 
   if (personalDataRes.error) console.error('[student-id] personal data error:', personalDataRes.error);

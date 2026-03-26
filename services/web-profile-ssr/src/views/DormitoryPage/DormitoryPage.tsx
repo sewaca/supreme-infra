@@ -3,11 +3,13 @@
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import { Box, Container, Divider, Paper, Typography } from '@mui/material';
+import { Box, Container, Divider, IconButton, Paper, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
+import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import { useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
@@ -33,6 +35,7 @@ type Props = {
 
 export const DormitoryPage = ({ address, name, roomNumber, contract, notifications }: Props) => {
   const router = useRouter();
+  const { startTour } = usePageTour({ page: 'dormitory' });
   const [contractLink, setContractLink] = useState('');
 
   useEffect(() => {
@@ -44,12 +47,21 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
 
   return (
     <>
-      <DefaultNavbar position="absolute" center={<Typography variant="title1">{i18n('Общежитие')}</Typography>} />
+      <DefaultNavbar
+        position="absolute"
+        center={<Typography variant="title1">{i18n('Общежитие')}</Typography>}
+        rightSlot={
+          <IconButton onClick={startTour} aria-label={i18n('Показать обучение')}>
+            <HelpOutlineIcon fontSize="small" color="inherit" />
+          </IconButton>
+        }
+      />
       <Container sx={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', paddingBottom: 3 }}>
         <Spacer size={30} />
 
         <Paper
           elevation={0}
+          data-tour="dormitory-hero"
           sx={{
             background: 'linear-gradient(135deg, #1a6651 0%, #0e3d31 100%)',
             borderRadius: 4,
@@ -117,6 +129,7 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
 
         <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
           <Box
+            data-tour="dormitory-contract"
             onClick={contractLink ? () => router.push(contractLink) : undefined}
             sx={{
               display: 'flex',
@@ -186,7 +199,9 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
 
         <Spacer size={16} />
 
-        <NotificationsStack notifications={notifications} />
+        <Box data-tour="dormitory-notifications">
+          <NotificationsStack notifications={notifications} />
+        </Box>
 
         <Suspense>
           <MismatchDataButton />

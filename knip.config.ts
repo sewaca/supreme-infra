@@ -10,7 +10,7 @@ const config: KnipConfig = {
     '**/*.spec.ts',
     '**/*.spec.tsx',
     'services/*-ssr/proxy.ts',
-    'e2e/*', // TODO: fixme?
+    'e2e/*',
   ],
   workspaces: {
     '.': {

@@ -2,6 +2,7 @@
 
 import type { DriveStep } from 'driver.js';
 import { useEffect } from 'react';
+import { getDormitoryTourSteps } from './configs/dormitory';
 import { getOrdersTourSteps } from './configs/orders';
 import { getRatingTourSteps } from './configs/rating';
 import { getReferencesTourSteps } from './configs/references';
@@ -9,7 +10,7 @@ import { getScholarshipTourSteps } from './configs/scholarship';
 import { getSubjectsRankingTourSteps } from './configs/subjects-ranking';
 import { useProductTour } from './useProductTour';
 
-export type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking' | 'scholarship';
+export type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking' | 'scholarship' | 'dormitory';
 
 type TourConfig = { key: string; steps: DriveStep[] };
 
@@ -30,6 +31,8 @@ const getTourConfig = (page: PageTourType, params?: Record<string, unknown>): To
       };
     case 'scholarship':
       return { key: 'scholarship-tour-completed', steps: getScholarshipTourSteps() };
+    case 'dormitory':
+      return { key: 'dormitory-tour-completed', steps: getDormitoryTourSteps() };
     default:
       throw new Error(`Unknown page tour type: ${page}`);
   }

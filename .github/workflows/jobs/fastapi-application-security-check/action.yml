@@ -22,7 +22,8 @@ runs:
       shell: bash
       working-directory: services/${{ inputs.service-name }}
     - name: Security check with pip-audit
-      run: uv run pip-audit
+      # CVE-2026-4539: no fix available for pygments 2.19.2 yet — ignore until patch is released
+      run: uv run pip-audit --ignore-vuln CVE-2026-4539
       shell: bash
       working-directory: services/${{ inputs.service-name }}
     - name: Security check with bandit

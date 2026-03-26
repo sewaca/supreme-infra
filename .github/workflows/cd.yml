@@ -19,7 +19,6 @@ on:
           - web-documents-ssr
           - web-profile-ssr
         default: "core-applications"
-      # TODO: remove after development (or comment me)
       skip-canary:
         description: "Skip canary deployment and go directly to production"
         required: false

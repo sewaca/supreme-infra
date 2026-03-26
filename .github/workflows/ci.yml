@@ -134,7 +134,7 @@ jobs:
         shell: bash
       - name: unit
         run: pnpm -r unit
-        # run: pnpm -r unit:coverage TODO: временно отключил проверку coverage
+        # run: pnpm -r unit:coverage # TODO: временно отключил проверку coverage
 
   test-e2e:
     if: false
