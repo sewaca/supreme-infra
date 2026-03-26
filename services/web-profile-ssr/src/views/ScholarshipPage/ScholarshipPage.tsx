@@ -31,7 +31,7 @@ type Props = {
 
 export const ScholarshipPage = ({ studentName, amount, currency, order, notifications }: Props) => {
   const router = useRouter();
-  const { startTour } = usePageTour({ page: 'scholarship' });
+  const { startTour } = usePageTour({ page: 'scholarship', autoStart: false });
   const [orderLink, setOrderLink] = useState('');
 
   useEffect(() => {

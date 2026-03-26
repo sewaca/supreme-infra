@@ -35,7 +35,7 @@ type Props = {
 
 export const DormitoryPage = ({ address, name, roomNumber, contract, notifications }: Props) => {
   const router = useRouter();
-  const { startTour } = usePageTour({ page: 'dormitory' });
+  const { startTour } = usePageTour({ page: 'dormitory', autoStart: false });
   const [contractLink, setContractLink] = useState('');
 
   useEffect(() => {
