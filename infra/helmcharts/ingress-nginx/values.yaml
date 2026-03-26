@@ -124,6 +124,68 @@ ingress:
           method: POST
         - path: /core-recipes-bff/recipes/proposed/all
           method: GET
+    - service: core-schedule
+      port: 80
+      type: fastapi
+      paths:
+        - path: /core-schedule/admin/classrooms
+          method: GET
+        - path: /core-schedule/admin/classrooms
+          method: POST
+        - path: /core-schedule/admin/classrooms/[^/]+
+          method: DELETE
+        - path: /core-schedule/admin/classrooms/[^/]+
+          method: GET
+        - path: /core-schedule/admin/classrooms/[^/]+
+          method: PUT
+        - path: /core-schedule/admin/overrides
+          method: GET
+        - path: /core-schedule/admin/overrides
+          method: POST
+        - path: /core-schedule/admin/overrides/[^/]+
+          method: DELETE
+        - path: /core-schedule/admin/overrides/[^/]+
+          method: PUT
+        - path: /core-schedule/admin/semesters
+          method: GET
+        - path: /core-schedule/admin/semesters
+          method: POST
+        - path: /core-schedule/admin/semesters/[^/]+
+          method: DELETE
+        - path: /core-schedule/admin/semesters/[^/]+
+          method: GET
+        - path: /core-schedule/admin/semesters/[^/]+
+          method: PUT
+        - path: /core-schedule/admin/session-events
+          method: GET
+        - path: /core-schedule/admin/session-events
+          method: POST
+        - path: /core-schedule/admin/session-events/[^/]+
+          method: DELETE
+        - path: /core-schedule/admin/session-events/[^/]+
+          method: PUT
+        - path: /core-schedule/admin/templates
+          method: GET
+        - path: /core-schedule/admin/templates
+          method: POST
+        - path: /core-schedule/admin/templates/[^/]+
+          method: DELETE
+        - path: /core-schedule/admin/templates/[^/]+
+          method: PUT
+        - path: /core-schedule/admin/templates/bulk
+          method: POST
+        - path: /core-schedule/groups/[^/]+/exams
+          method: GET
+        - path: /core-schedule/groups/[^/]+/schedule
+          method: GET
+        - path: /core-schedule/groups/[^/]+/template
+          method: GET
+        - path: /core-schedule/teachers/[^/]+/exams
+          method: GET
+        - path: /core-schedule/teachers/[^/]+/schedule
+          method: GET
+        - path: /core-schedule/teachers/[^/]+/template
+          method: GET
     - service: frontend
       port: 80
       type: next

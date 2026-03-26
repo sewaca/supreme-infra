@@ -13,6 +13,7 @@ on:
           - core-auth
           - core-client-info
           - core-recipes-bff
+          - core-schedule
           - frontend
           - web-auth-ssr
           - web-documents-ssr

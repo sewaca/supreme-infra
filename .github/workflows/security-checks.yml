@@ -49,6 +49,7 @@ jobs:
           - core-auth
           - core-client-info
           - core-applications
+          - core-schedule
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

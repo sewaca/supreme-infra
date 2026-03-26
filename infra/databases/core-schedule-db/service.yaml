@@ -1,0 +1,22 @@
+# Database configuration for core-schedule service
+# This file defines database-specific settings including resources
+
+database:
+  name: core_schedule_db
+  user: core_schedule_user
+  passwordSecret: CORE_SCHEDULE_DB_PASSWORD
+resources:
+  production:
+    limits:
+      cpu: 300m
+      memory: 300Mi
+    requests:
+      cpu: 100m
+      memory: 150Mi
+  development:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi

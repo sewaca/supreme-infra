@@ -11,6 +11,7 @@ on:
           - core-auth
           - core-client-info
           - core-applications
+          - core-schedule
         default: core-recipes-bff
       action:
         description: Deployment action
