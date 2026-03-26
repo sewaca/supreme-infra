@@ -7,7 +7,7 @@
     "pnpm": "10"
   },
   "scripts": {
-    "lint": "pnpm run lint:ts && pnpm run lint:python && pnpm run lint:deps",
+    "lint": "pnpm run lint:ts && pnpm run lint:deps",
     "lint:ts": "biome check --write",
     "lint:python": "ruff check .",
     "lint:deps": "tsx infra/checks/validate-deps/index.ts",

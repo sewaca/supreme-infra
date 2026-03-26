@@ -1,12 +1,11 @@
-// @ts-nocheck FIXME:
+// @ts-nocheck FIXME: suite skipped; types drifted from createJwtAuthMiddleware
 
 import { NextRequest } from 'next/server';
 import { describe, expect, it, vi } from 'vitest';
 import { createJwtAuthMiddleware } from './createJwtAuthMiddleware';
+import { verifyJwt } from './verifyJwt';
 
-vi.mock('../../../shared', () => ({ verifyJwt: vi.fn() }));
-
-const { verifyJwt } = await import('..');
+vi.mock('./verifyJwt', () => ({ verifyJwt: vi.fn() }));
 
 describe.skip('createJwtAuthMiddleware', () => {
   it('should allow access to public routes without token', async () => {

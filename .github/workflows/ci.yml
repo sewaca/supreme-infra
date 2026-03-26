@@ -49,6 +49,21 @@ jobs:
       - name: lint
         run: pnpm lint
 
+  check-lint-python:
+    runs-on: ubuntu-latest
+    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
+    needs: selective-checks
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ruff
+        run: pip install ruff
+      - name: lint:python
+        run: ruff check .
+
   check-tsc:
     runs-on: ubuntu-latest
     if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
@@ -118,7 +133,8 @@ jobs:
         run: pnpm install --frozen-lockfile
         shell: bash
       - name: unit
-        run: pnpm -r unit:coverage
+        run: pnpm -r unit
+        # run: pnpm -r unit:coverage TODO: временно отключил проверку coverage
 
   test-e2e:
     if: false

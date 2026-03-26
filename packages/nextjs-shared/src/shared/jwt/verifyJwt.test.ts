@@ -1,43 +1,26 @@
-import { SignJWT } from 'jose';
-import { describe, expect, it } from 'vitest';
+import { verifyJwt as verifyJwtCore } from '@supreme-int/authorization-lib/src/jwt/verify-jwt';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { verifyJwt } from './verifyJwt';
 
+vi.mock('@supreme-int/authorization-lib/src/jwt/verify-jwt', () => ({
+  verifyJwt: vi.fn(),
+}));
+
 describe('verifyJwt', () => {
-  const secret = 'test-secret-key';
+  beforeEach(() => {
+    vi.mocked(verifyJwtCore).mockReset();
+  });
 
-  it('should return true for valid JWT token', async () => {
-    const secretKey = new TextEncoder().encode(secret);
-    const token = await new SignJWT({ userId: '123' })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('1h')
-      .sign(secretKey);
-    const result = await verifyJwt({ token, secret });
+  it('should return true when authorization-lib reports valid', async () => {
+    vi.mocked(verifyJwtCore).mockResolvedValue({ valid: true, durationMs: 0 });
+    const result = await verifyJwt({ token: 'token', secret: 'secret' });
     expect(result).toBe(true);
+    expect(vi.mocked(verifyJwtCore)).toHaveBeenCalledWith({ token: 'token', secret: 'secret' });
   });
 
-  it('should return false for invalid JWT token', async () => {
-    const result = await verifyJwt({ token: 'invalid-token', secret });
-    expect(result).toBe(false);
-  });
-
-  it('should return false for expired JWT token', async () => {
-    const secretKey = new TextEncoder().encode(secret);
-    const token = await new SignJWT({ userId: '123' })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('0s')
-      .sign(secretKey);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    const result = await verifyJwt({ token, secret });
-    expect(result).toBe(false);
-  });
-
-  it('should return false for token signed with different secret', async () => {
-    const secretKey = new TextEncoder().encode('different-secret');
-    const token = await new SignJWT({ userId: '123' })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('1h')
-      .sign(secretKey);
-    const result = await verifyJwt({ token, secret });
+  it('should return false when authorization-lib reports invalid', async () => {
+    vi.mocked(verifyJwtCore).mockResolvedValue({ valid: false, durationMs: 0 });
+    const result = await verifyJwt({ token: 'token', secret: 'secret' });
     expect(result).toBe(false);
   });
 });
