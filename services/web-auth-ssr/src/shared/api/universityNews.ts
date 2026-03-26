@@ -56,6 +56,7 @@ function parseNewsFromHtml(html: string): NewsItem[] {
   let match = rowRegex.exec(html);
 
   while (match && items.length < 6) {
+    console.log('[test] const block = ', match[1]);
     const block = match[1];
 
     const titleMatch = /<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i.exec(block);
@@ -67,6 +68,10 @@ function parseNewsFromHtml(html: string): NewsItem[] {
       const title = titleMatch[2].replace(/<[^>]+>/g, '').trim();
       const date = dateMatch ? dateMatch[1].replace(/<[^>]+>/g, '').trim() : '';
       const category = catMatch ? catMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+
+      console.log(
+        `[test] parsed row: \n    title="${title}"\n    url="${href}"\n    date="${date}"\n    category="${category}"`,
+      );
 
       if (title && title.length > 10) {
         items.push({ title, url: href, date, category });
