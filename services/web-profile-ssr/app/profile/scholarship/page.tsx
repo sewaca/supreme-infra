@@ -57,7 +57,7 @@ export default async () => {
       currency={String(fields.currency ?? '₽')}
       order={{
         number: scholarshipApp.application_number,
-        id: scholarshipApp.id,
+        id: String(fields.order_id ?? scholarshipApp.id),
         startDate: formatDate(scholarshipApp.start_date) ?? '',
         endDate: formatDate(scholarshipApp.end_date),
       }}

@@ -4,9 +4,11 @@
 -- Insert user applications
 INSERT INTO user_application (id, user_id, application_type, application_number, additional_fields, start_date, end_date, is_active, notifications_count)
 VALUES
-    ('dddddddd-dddd-dddd-dddd-dddddddddddd', '550e8400-e29b-41d4-a716-446655440000', 'scholarship', 'СТ-2025-001', '{"amount": 5000.00, "currency": "RUB"}', '2025-09-01 00:00:00+00', '2026-06-30 00:00:00+00', TRUE, 1),
+    ('dddddddd-dddd-dddd-dddd-dddddddddddd', '550e8400-e29b-41d4-a716-446655440000', 'scholarship', '250/кс', '{"amount": 5000.00, "currency": "RUB", "order_id": "99999999-9999-9999-9999-999999999999"}', '2025-09-01 00:00:00+00', '2026-06-30 00:00:00+00', TRUE, 1),
     ('dddddddd-dddd-dddd-dddd-ddddddddddde', '550e8400-e29b-41d4-a716-446655440000', 'dormitory', 'ОБ-2022-042', '{"contractNumber": "ОБ-2022-042", "dormitoryName": "Общежитие №3", "address": "ул. Примерная, д. 10", "roomNumber": "305"}', '2022-09-01 00:00:00+00', '2026-06-30 00:00:00+00', TRUE, 2)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+    application_number = EXCLUDED.application_number,
+    additional_fields = EXCLUDED.additional_fields;
 
 -- Insert application notifications
 INSERT INTO application_notification (id, application_id, severity, message, action)
