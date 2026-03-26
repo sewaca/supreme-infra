@@ -868,7 +868,7 @@
       "type": "timeseries"
     },
     {
-      "id": 134,
+      "id": 147,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -879,7 +879,7 @@
       }
     },
     {
-      "id": 135,
+      "id": 148,
       "title": "GET /login",
       "type": "row",
       "gridPos": {
@@ -890,7 +890,7 @@
       }
     },
     {
-      "id": 136,
+      "id": 149,
       "title": "GET /login - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1011,7 +1011,7 @@
       }
     },
     {
-      "id": 137,
+      "id": 150,
       "title": "GET /login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 138,
+      "id": 151,
       "title": "GET /login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1197,7 +1197,7 @@
       }
     },
     {
-      "id": 139,
+      "id": 152,
       "title": "GET /profile-old",
       "type": "row",
       "gridPos": {
@@ -1208,7 +1208,7 @@
       }
     },
     {
-      "id": 140,
+      "id": 153,
       "title": "GET /profile-old - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1329,7 +1329,7 @@
       }
     },
     {
-      "id": 141,
+      "id": 154,
       "title": "GET /profile-old - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 142,
+      "id": 155,
       "title": "GET /profile-old - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1515,7 +1515,7 @@
       }
     },
     {
-      "id": 143,
+      "id": 156,
       "title": "GET /register",
       "type": "row",
       "gridPos": {
@@ -1526,7 +1526,7 @@
       }
     },
     {
-      "id": 144,
+      "id": 157,
       "title": "GET /register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1647,7 +1647,7 @@
       }
     },
     {
-      "id": 145,
+      "id": 158,
       "title": "GET /register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 146,
+      "id": 159,
       "title": "GET /register - Bad RPS",
       "type": "timeseries",
       "datasource": {

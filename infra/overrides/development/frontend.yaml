@@ -50,9 +50,9 @@ affinity: {}
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 90
