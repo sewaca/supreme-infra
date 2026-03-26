@@ -3,7 +3,7 @@
 import type {
   PersonalDataResponse,
   StudentStatsResponse,
-} from '@supreme-int/api-client/src/core-client-info/types.gen';
+} from '@supreme-int/api-client/src/generated/core-client-info/types.gen';
 import styles from './StudentIdBook.module.css';
 
 interface Props {

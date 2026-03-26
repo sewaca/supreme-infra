@@ -9,6 +9,7 @@ const config: KnipConfig = {
     '**/vitest.setup.tsx',
     '**/*.spec.ts',
     '**/*.spec.tsx',
+    'services/*-ssr/proxy.ts',
     'e2e/*', // TODO: fixme?
   ],
   workspaces: {

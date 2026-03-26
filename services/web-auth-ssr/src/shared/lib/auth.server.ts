@@ -1,4 +1,4 @@
-import type { UserInfo } from '@supreme-int/api-client/src/core-auth';
+import type { UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
 import { cookies } from 'next/headers';
 import { TOKEN_KEY } from './auth.client';
 

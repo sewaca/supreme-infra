@@ -1,5 +1,5 @@
-import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/core-auth';
 import { TOKEN_KEY, type UserRole } from '@supreme-int/api-client/src/core-auth-bff';
+import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
 
 // Client-side calls go through ingress at /core-auth
 const AUTH_URL = '/core-auth';

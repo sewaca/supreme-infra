@@ -100,7 +100,6 @@ export const logoutCurrentSession = async (): Promise<void> => {
   }
 
   const cookieStore = await cookies();
-  // biome-ignore lint/suspicious/noDocumentCookie: server-side cookie deletion via next/headers
   cookieStore.delete(TOKEN_KEY);
 
   redirect('/');

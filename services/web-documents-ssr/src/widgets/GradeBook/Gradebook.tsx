@@ -1,6 +1,6 @@
 'use client';
 
-import type { UserGradeResponse } from '@supreme-int/api-client/src/core-client-info/types.gen';
+import type { UserGradeResponse } from '@supreme-int/api-client/src/generated/core-client-info/types.gen';
 import { Fragment } from 'react';
 import styles from './Gradebook.module.css';
 

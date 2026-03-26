@@ -1,6 +1,9 @@
 'use server';
 
-import type { ReferenceOrderResponse, ReferenceType } from '@supreme-int/api-client/src/core-applications/types.gen';
+import type {
+  ReferenceOrderResponse,
+  ReferenceType,
+} from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { CoreApplications } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n';
 import { PICKUP_POINTS } from 'services/web-profile-ssr/src/entities/Reference/pickupPoints';

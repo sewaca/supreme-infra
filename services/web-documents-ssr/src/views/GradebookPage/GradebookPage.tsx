@@ -1,4 +1,4 @@
-import type { UserGradeResponse } from '@supreme-int/api-client/src/core-client-info/types.gen';
+import type { UserGradeResponse } from '@supreme-int/api-client/src/generated/core-client-info/types.gen';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { Gradebook } from '../../widgets/GradeBook/Gradebook';
 

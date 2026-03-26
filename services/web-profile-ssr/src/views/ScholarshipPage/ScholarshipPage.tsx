@@ -163,7 +163,7 @@ export const ScholarshipPage = ({ studentName, amount, currency, order, notifica
             </Box>
             <Box sx={{ flex: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                {i18n('Период действия')}
+                {i18n('Период выплат')}
               </Typography>
               <Typography variant="body2" sx={{ fontWeight: 500 }}>
                 {i18n(order.endDate ? '{{startDate}} — {{endDate}}' : 'с {{startDate}}', {

@@ -1,6 +1,9 @@
 'use server';
 
-import type { OrderDetailResponse, OrderResponse } from '@supreme-int/api-client/src/core-applications/types.gen';
+import type {
+  OrderDetailResponse,
+  OrderResponse,
+} from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { CoreApplications } from '@supreme-int/api-client/src/index';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';

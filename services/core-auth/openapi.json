@@ -8,9 +8,7 @@
   "paths": {
     "/status": {
       "get": {
-        "tags": [
-          "status"
-        ],
+        "tags": ["status"],
         "summary": "Get Status",
         "operationId": "get_status_status_get",
         "responses": {
@@ -27,9 +25,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Login",
         "operationId": "login_auth_login_post",
         "requestBody": {
@@ -68,9 +64,7 @@
     },
     "/auth/register": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Register",
         "operationId": "register_auth_register_post",
         "requestBody": {
@@ -109,9 +103,7 @@
     },
     "/auth/me": {
       "get": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Get Me",
         "operationId": "get_me_auth_me_get",
         "responses": {
@@ -135,9 +127,7 @@
     },
     "/auth/sessions": {
       "get": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": ["sessions"],
         "summary": "Get Sessions",
         "operationId": "get_sessions_auth_sessions_get",
         "responses": {
@@ -165,9 +155,7 @@
     },
     "/auth/sessions/{session_id}": {
       "delete": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": ["sessions"],
         "summary": "Revoke Session",
         "operationId": "revoke_session_auth_sessions__session_id__delete",
         "security": [
@@ -206,9 +194,7 @@
     },
     "/auth/validate-session": {
       "post": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": ["sessions"],
         "summary": "Validate Session",
         "operationId": "validate_session_auth_validate_session_post",
         "requestBody": {
@@ -259,10 +245,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "access_token",
-          "user"
-        ],
+        "required": ["access_token", "user"],
         "title": "AuthResponse"
       },
       "HTTPValidationError": {
@@ -290,10 +273,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "title": "LoginRequest"
       },
       "MessageResponse": {
@@ -304,9 +284,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "message"
-        ],
+        "required": ["message"],
         "title": "MessageResponse"
       },
       "RegisterRequest": {
@@ -325,11 +303,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "email",
-          "password",
-          "name"
-        ],
+        "required": ["email", "password", "name"],
         "title": "RegisterRequest"
       },
       "SessionInfo": {
@@ -433,12 +407,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "email",
-          "name",
-          "role"
-        ],
+        "required": ["id", "email", "name", "role"],
         "title": "UserInfo"
       },
       "ValidateSessionRequest": {
@@ -449,9 +418,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "token"
-        ],
+        "required": ["token"],
         "title": "ValidateSessionRequest"
       },
       "ValidateSessionResponse": {
@@ -506,9 +473,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "title": "ValidateSessionResponse"
       },
       "ValidationError": {
@@ -544,11 +509,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       }
     },

@@ -1,6 +1,6 @@
-import { client as coreApplicationsClient } from '@supreme-int/api-client/src/core-applications/client.gen';
-import { jsonBodySerializer } from '@supreme-int/api-client/src/core-client-info/client';
-import { client as coreClientInfoClient } from '@supreme-int/api-client/src/core-client-info/client.gen';
+import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
+import { jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-client-info/client';
+import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
 import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
 import { environment } from '../lib/environment';
 
