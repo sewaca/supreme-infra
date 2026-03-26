@@ -101,21 +101,26 @@ function parseNewsFromHtml(html: string): NewsItem[] {
 
 export async function fetchUniversityNews(): Promise<NewsItem[]> {
   try {
+    console.time('[news] fetch news request');
     const res = await fetch(`${BASE_URL}/bonchnews`, {
       next: { revalidate: 1800 },
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; web-auth-ssr/1.0)' },
     });
+    console.timeEnd('[news] fetch news request');
 
-    console.log(`[news] fetch ended with "${res.status} ${res.statusText}"`);
+    console.debug(`[news] fetch ended with "${res.status} ${res.statusText}"`);
 
     if (!res.ok) {
       return FALLBACK_NEWS;
     }
 
     const html = await res.text();
-    const parsed = parseNewsFromHtml(html);
 
-    console.log(`[news] parsed ${parsed.length} items`);
+    console.time('[news] parsing new from html');
+    const parsed = parseNewsFromHtml(html);
+    console.timeEnd('[news] parsing new from html');
+
+    console.debug(`[news] parsed ${parsed.length} items`);
 
     if (parsed.length) {
       FALLBACK_NEWS = [...parsed, ...FALLBACK_NEWS].slice(0, 6);
