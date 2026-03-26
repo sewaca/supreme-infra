@@ -44,4 +44,4 @@ services:
         enabled: true
         name: core_schedule_db
         user: core_schedule_user
-        passwordSecret: CORE_SCHEDULE_DB_PASSWORD
+        passwordSecret: DB_PASSWORD

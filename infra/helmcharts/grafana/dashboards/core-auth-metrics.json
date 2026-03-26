@@ -857,7 +857,7 @@
       "type": "timeseries"
     },
     {
-      "id": 717,
+      "id": 742,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -868,7 +868,7 @@
       }
     },
     {
-      "id": 718,
+      "id": 743,
       "title": "POST /core-auth/auth/login",
       "type": "row",
       "gridPos": {
@@ -879,7 +879,7 @@
       }
     },
     {
-      "id": 719,
+      "id": 744,
       "title": "POST /core-auth/auth/login - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1000,7 +1000,7 @@
       }
     },
     {
-      "id": 720,
+      "id": 745,
       "title": "POST /core-auth/auth/login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 721,
+      "id": 746,
       "title": "POST /core-auth/auth/login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1186,7 +1186,7 @@
       }
     },
     {
-      "id": 722,
+      "id": 747,
       "title": "GET /core-auth/auth/me",
       "type": "row",
       "gridPos": {
@@ -1197,7 +1197,7 @@
       }
     },
     {
-      "id": 723,
+      "id": 748,
       "title": "GET /core-auth/auth/me - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1318,7 +1318,7 @@
       }
     },
     {
-      "id": 724,
+      "id": 749,
       "title": "GET /core-auth/auth/me - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 725,
+      "id": 750,
       "title": "GET /core-auth/auth/me - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1504,7 +1504,7 @@
       }
     },
     {
-      "id": 726,
+      "id": 751,
       "title": "POST /core-auth/auth/register",
       "type": "row",
       "gridPos": {
@@ -1515,7 +1515,7 @@
       }
     },
     {
-      "id": 727,
+      "id": 752,
       "title": "POST /core-auth/auth/register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1636,7 +1636,7 @@
       }
     },
     {
-      "id": 728,
+      "id": 753,
       "title": "POST /core-auth/auth/register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 729,
+      "id": 754,
       "title": "POST /core-auth/auth/register - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1822,7 +1822,7 @@
       }
     },
     {
-      "id": 730,
+      "id": 755,
       "title": "GET /core-auth/auth/sessions",
       "type": "row",
       "gridPos": {
@@ -1833,7 +1833,7 @@
       }
     },
     {
-      "id": 731,
+      "id": 756,
       "title": "GET /core-auth/auth/sessions - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1954,7 +1954,7 @@
       }
     },
     {
-      "id": 732,
+      "id": 757,
       "title": "GET /core-auth/auth/sessions - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 733,
+      "id": 758,
       "title": "GET /core-auth/auth/sessions - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2140,7 +2140,7 @@
       }
     },
     {
-      "id": 734,
+      "id": 759,
       "title": "DELETE /core-auth/auth/sessions/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2151,7 +2151,7 @@
       }
     },
     {
-      "id": 735,
+      "id": 760,
       "title": "DELETE /core-auth/auth/sessions/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2272,7 +2272,7 @@
       }
     },
     {
-      "id": 736,
+      "id": 761,
       "title": "DELETE /core-auth/auth/sessions/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 737,
+      "id": 762,
       "title": "DELETE /core-auth/auth/sessions/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2458,7 +2458,7 @@
       }
     },
     {
-      "id": 738,
+      "id": 763,
       "title": "POST /core-auth/auth/validate-session",
       "type": "row",
       "gridPos": {
@@ -2469,7 +2469,7 @@
       }
     },
     {
-      "id": 739,
+      "id": 764,
       "title": "POST /core-auth/auth/validate-session - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2590,7 +2590,7 @@
       }
     },
     {
-      "id": 740,
+      "id": 765,
       "title": "POST /core-auth/auth/validate-session - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 741,
+      "id": 766,
       "title": "POST /core-auth/auth/validate-session - Bad RPS",
       "type": "timeseries",
       "datasource": {

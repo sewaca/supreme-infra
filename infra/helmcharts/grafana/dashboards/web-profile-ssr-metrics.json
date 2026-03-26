@@ -868,7 +868,7 @@
       "type": "timeseries"
     },
     {
-      "id": 4129,
+      "id": 4174,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -879,7 +879,7 @@
       }
     },
     {
-      "id": 4130,
+      "id": 4175,
       "title": "GET /api/undefined-url",
       "type": "row",
       "gridPos": {
@@ -890,7 +890,7 @@
       }
     },
     {
-      "id": 4131,
+      "id": 4176,
       "title": "GET /api/undefined-url - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1011,7 +1011,7 @@
       }
     },
     {
-      "id": 4132,
+      "id": 4177,
       "title": "GET /api/undefined-url - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 4133,
+      "id": 4178,
       "title": "GET /api/undefined-url - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1197,7 +1197,7 @@
       }
     },
     {
-      "id": 4134,
+      "id": 4179,
       "title": "GET /profile",
       "type": "row",
       "gridPos": {
@@ -1208,7 +1208,7 @@
       }
     },
     {
-      "id": 4135,
+      "id": 4180,
       "title": "GET /profile - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1329,7 +1329,7 @@
       }
     },
     {
-      "id": 4136,
+      "id": 4181,
       "title": "GET /profile - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 4137,
+      "id": 4182,
       "title": "GET /profile - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1515,7 +1515,7 @@
       }
     },
     {
-      "id": 4138,
+      "id": 4183,
       "title": "GET /profile/data",
       "type": "row",
       "gridPos": {
@@ -1526,7 +1526,7 @@
       }
     },
     {
-      "id": 4139,
+      "id": 4184,
       "title": "GET /profile/data - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1647,7 +1647,7 @@
       }
     },
     {
-      "id": 4140,
+      "id": 4185,
       "title": "GET /profile/data - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 4141,
+      "id": 4186,
       "title": "GET /profile/data - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1833,7 +1833,7 @@
       }
     },
     {
-      "id": 4142,
+      "id": 4187,
       "title": "GET /profile/dormitory",
       "type": "row",
       "gridPos": {
@@ -1844,7 +1844,7 @@
       }
     },
     {
-      "id": 4143,
+      "id": 4188,
       "title": "GET /profile/dormitory - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1965,7 +1965,7 @@
       }
     },
     {
-      "id": 4144,
+      "id": 4189,
       "title": "GET /profile/dormitory - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": 4145,
+      "id": 4190,
       "title": "GET /profile/dormitory - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2151,7 +2151,7 @@
       }
     },
     {
-      "id": 4146,
+      "id": 4191,
       "title": "GET /profile/orders",
       "type": "row",
       "gridPos": {
@@ -2162,7 +2162,7 @@
       }
     },
     {
-      "id": 4147,
+      "id": 4192,
       "title": "GET /profile/orders - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2283,7 +2283,7 @@
       }
     },
     {
-      "id": 4148,
+      "id": 4193,
       "title": "GET /profile/orders - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2374,7 +2374,7 @@
       }
     },
     {
-      "id": 4149,
+      "id": 4194,
       "title": "GET /profile/orders - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2469,7 +2469,7 @@
       }
     },
     {
-      "id": 4150,
+      "id": 4195,
       "title": "GET /profile/rating",
       "type": "row",
       "gridPos": {
@@ -2480,7 +2480,7 @@
       }
     },
     {
-      "id": 4151,
+      "id": 4196,
       "title": "GET /profile/rating - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2601,7 +2601,7 @@
       }
     },
     {
-      "id": 4152,
+      "id": 4197,
       "title": "GET /profile/rating - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2692,7 +2692,7 @@
       }
     },
     {
-      "id": 4153,
+      "id": 4198,
       "title": "GET /profile/rating - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2787,7 +2787,7 @@
       }
     },
     {
-      "id": 4154,
+      "id": 4199,
       "title": "GET /profile/references",
       "type": "row",
       "gridPos": {
@@ -2798,7 +2798,7 @@
       }
     },
     {
-      "id": 4155,
+      "id": 4200,
       "title": "GET /profile/references - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2919,7 +2919,7 @@
       }
     },
     {
-      "id": 4156,
+      "id": 4201,
       "title": "GET /profile/references - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3010,7 +3010,7 @@
       }
     },
     {
-      "id": 4157,
+      "id": 4202,
       "title": "GET /profile/references - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3105,7 +3105,7 @@
       }
     },
     {
-      "id": 4158,
+      "id": 4203,
       "title": "GET /profile/scholarship",
       "type": "row",
       "gridPos": {
@@ -3116,7 +3116,7 @@
       }
     },
     {
-      "id": 4159,
+      "id": 4204,
       "title": "GET /profile/scholarship - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3237,7 +3237,7 @@
       }
     },
     {
-      "id": 4160,
+      "id": 4205,
       "title": "GET /profile/scholarship - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3328,7 +3328,7 @@
       }
     },
     {
-      "id": 4161,
+      "id": 4206,
       "title": "GET /profile/scholarship - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3423,7 +3423,7 @@
       }
     },
     {
-      "id": 4162,
+      "id": 4207,
       "title": "GET /profile/scolarship",
       "type": "row",
       "gridPos": {
@@ -3434,7 +3434,7 @@
       }
     },
     {
-      "id": 4163,
+      "id": 4208,
       "title": "GET /profile/scolarship - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3555,7 +3555,7 @@
       }
     },
     {
-      "id": 4164,
+      "id": 4209,
       "title": "GET /profile/scolarship - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3646,7 +3646,7 @@
       }
     },
     {
-      "id": 4165,
+      "id": 4210,
       "title": "GET /profile/scolarship - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3741,7 +3741,7 @@
       }
     },
     {
-      "id": 4166,
+      "id": 4211,
       "title": "GET /profile/settings",
       "type": "row",
       "gridPos": {
@@ -3752,7 +3752,7 @@
       }
     },
     {
-      "id": 4167,
+      "id": 4212,
       "title": "GET /profile/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3873,7 +3873,7 @@
       }
     },
     {
-      "id": 4168,
+      "id": 4213,
       "title": "GET /profile/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3964,7 +3964,7 @@
       }
     },
     {
-      "id": 4169,
+      "id": 4214,
       "title": "GET /profile/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4059,7 +4059,7 @@
       }
     },
     {
-      "id": 4170,
+      "id": 4215,
       "title": "GET /profile/subjects-ranking",
       "type": "row",
       "gridPos": {
@@ -4070,7 +4070,7 @@
       }
     },
     {
-      "id": 4171,
+      "id": 4216,
       "title": "GET /profile/subjects-ranking - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4191,7 +4191,7 @@
       }
     },
     {
-      "id": 4172,
+      "id": 4217,
       "title": "GET /profile/subjects-ranking - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4282,7 +4282,7 @@
       }
     },
     {
-      "id": 4173,
+      "id": 4218,
       "title": "GET /profile/subjects-ranking - Bad RPS",
       "type": "timeseries",
       "datasource": {
