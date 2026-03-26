@@ -17,6 +17,7 @@ logger.addHandler(_handler)
 engine = create_async_engine(
     settings.database_url,
     connect_args={"statement_cache_size": 0},
+    pool_pre_ping=True,
 )
 
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
