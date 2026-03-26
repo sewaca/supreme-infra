@@ -55,6 +55,8 @@ function parseNewsFromHtml(html: string): NewsItem[] {
     /<div[^>]*class="[^"]*views-row[^"]*"[^>]*>([\s\S]*?)<\/div>\s*(?=<div[^>]*class="[^"]*views-row|<\/div>\s*<\/div>)/g;
   let match = rowRegex.exec(html);
 
+  console.log('[test] matches=', match);
+
   while (match && items.length < 6) {
     console.log('[test] const block = ', match[1]);
     const block = match[1];
@@ -92,14 +94,16 @@ export async function fetchUniversityNews(): Promise<NewsItem[]> {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; web-auth-ssr/1.0)' },
     });
     console.timeEnd('[news] fetch news request');
-    console.log(`[news] fetch news ended with "${res.status} ${res.statusText}"`);
+    console.log(`[news] fetch news ended with "${res.status} ${res.statusText}". ok="${res.ok}"`);
 
     if (!res.ok) {
       return FALLBACK_NEWS;
     }
 
     const html = await res.text();
+    console.log('[test] html=', html);
     const parsed = parseNewsFromHtml(html);
+    console.log('[test] parsed=', parsed);
 
     if (parsed?.length) {
       FALLBACK_NEWS = [...parsed, ...FALLBACK_NEWS].slice(0, 3);
