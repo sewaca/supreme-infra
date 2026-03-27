@@ -19,12 +19,12 @@
 - [x] добавить флоу разлогина при клике на кнопку на страничке /profile
 - [x] доработать страничку про общежития для тех, кто пока не живёт в общежитии – добавить возможность подать заявление
 - [x] services/web-profile-ssr/src/views/DormitoryPage/components/MismatchDataButton.tsx
-- [ ] придумать что сделать с хелп центром (пока ждём функционал сообщений)
 - [x] Перевести сервис на реальные ручки
+- [ ] придумать что сделать с хелп центром (пока ждём функционал сообщений)
 
 #### core-client-info
 
-- [ ] ...
+- [ ] добавить возможность подключить телегу через бота для уведомлений (потом)
 
 #### core-applications
 
@@ -36,8 +36,4 @@
 
 ### core-auth
 
-- [ ] сохранять локацию откуда пользователь вошел. прокидывать ее с фронтенда (пытаться определить на фронте)
-      пытаться определить по await fetch('https://api.ipregistry.co/?key=tryout')
-      .then(function (response) {return response.json();})
-      .then(function (payload) {console.log(payload.location.country.name + ', ' + payload.location.city);});
-      если не получилось то Intl.DateTimeFormat().resolvedOptions().timeZone
+- [x] сохранять локацию откуда пользователь вошел. прокидывать ее с фронтенда (пытаться определить на фронте)
