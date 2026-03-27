@@ -84,7 +84,7 @@ export const SessionsSection = ({ sessions }: Props) => {
                 </TableCell>
                 <TableCell align="right">
                   {session.is_current ? (
-                    <Typography variant="caption" color="primary" sx={{ fontWeight: 600 }}>
+                    <Typography variant="body2" color="primary" sx={{ fontWeight: 600 }}>
                       {i18n('Текущая')}
                     </Typography>
                   ) : (

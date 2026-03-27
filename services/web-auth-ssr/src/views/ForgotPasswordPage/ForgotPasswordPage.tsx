@@ -19,6 +19,7 @@ import {
   startForgotPasswordChallenge,
   verifyForgotPasswordChallenge,
 } from '../../../app/forgot-password/actions';
+import { removeAuthToken } from '../../shared/lib/auth.client';
 
 type Step = 'email' | 'challenge' | 'reset' | 'success';
 
@@ -90,6 +91,7 @@ export function ForgotPasswordPage() {
     try {
       const result = await resetForgotPassword(challengeId, newPassword);
       if (result.success) {
+        removeAuthToken();
         setStep('success');
       } else {
         setServerError(result.error ?? i18n('Произошла ошибка'));
