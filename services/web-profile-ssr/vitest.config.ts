@@ -10,7 +10,7 @@ export default mergeConfig(
     test: {
       environment: 'jsdom',
       globals: true,
-      setupFiles: ['./vitest.setup.tsx'],
+      setupFiles: ['@supreme-int/nextjs-shared/vitest.setup.tsx'],
       css: true,
     },
   }),
