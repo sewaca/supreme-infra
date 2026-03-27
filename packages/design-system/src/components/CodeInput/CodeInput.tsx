@@ -40,6 +40,7 @@ export const CodeInput = ({ value, onChange, disabled = false, error = false }: 
       e.preventDefault();
       if (digits[index] !== '') {
         setDigit(index, '');
+        focusSlot(index - 1);
       } else {
         focusSlot(index - 1);
       }
