@@ -5,13 +5,11 @@ import { Box, Chip, Divider, IconButton, Paper, Typography } from '@mui/material
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
-import { useState } from 'react';
-import { RatingData, RatingFilters as RatingFiltersType } from '../../entities/Rating/RatingData';
+import { RatingData } from '../../entities/Rating/RatingData';
 import { AchievementBadge } from '../../widgets/AchievementBadge/AchievementBadge';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { LevelProgress } from '../../widgets/LevelProgress/LevelProgress';
 import { RankingCard } from '../../widgets/RankingCard/RankingCard';
-import { RatingFilters } from '../../widgets/RatingFilters/RatingFilters';
 import { StreakCard } from '../../widgets/StreakCard/StreakCard';
 import styles from './RatingPage.module.css';
 
@@ -21,11 +19,6 @@ type Props = {
 
 export const RatingPage = ({ data }: Props) => {
   const { startTour } = usePageTour({ page: 'rating' });
-  const [filters, setFilters] = useState<RatingFiltersType>({
-    period: 'all_time',
-    educationForm: 'all',
-    specialty: 'all',
-  });
   const unlockedAchievements = data.achievements.filter((a) => a.unlocked);
   const lockedAchievements = data.achievements.filter((a) => !a.unlocked);
 
@@ -97,13 +90,6 @@ export const RatingPage = ({ data }: Props) => {
         </Box>
         <Box data-tour="streak-card">
           <StreakCard streak={data.streak} />
-        </Box>
-        <Spacer size={4} />
-        <Typography variant="h6" sx={{ fontWeight: 700, padding: '0 4px' }}>
-          Фильтры рейтинга
-        </Typography>
-        <Box data-tour="rating-filters">
-          <RatingFilters filters={filters} onChange={setFilters} />
         </Box>
         <Spacer size={4} />
         <Typography variant="h6" sx={{ fontWeight: 700, padding: '0 4px' }}>

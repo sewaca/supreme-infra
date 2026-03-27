@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const LevelProgress = ({ levelInfo }: Props) => {
-  const progress = levelInfo.nextLevelXP > 0 ? (levelInfo.currentXP / levelInfo.nextLevelXP) * 100 : 100;
+  const progress = levelInfo.nextLevelXP > 0 ? Math.min((levelInfo.currentXP / levelInfo.nextLevelXP) * 100, 100) : 100;
   const isMaxLevel = levelInfo.level === 'legend';
 
   return (

@@ -23,6 +23,9 @@ export const dictionary: KeysetDictionary = {
     'order.field.course': 'Course',
     'order.field.group': 'Group',
     'order.field.qualification': 'Qualification',
+    full_time: 'Full-time',
+    part_time: 'Part-time',
+    evening: 'Evening',
   },
   ru: {
     'profile.academic.university': 'Университет',
@@ -44,5 +47,8 @@ export const dictionary: KeysetDictionary = {
     'order.field.course': 'Курс',
     'order.field.group': 'Группа',
     'order.field.qualification': 'Квалификация',
+    full_time: 'Очная',
+    part_time: 'Заочная',
+    evening: 'Очно-заочная',
   },
 };

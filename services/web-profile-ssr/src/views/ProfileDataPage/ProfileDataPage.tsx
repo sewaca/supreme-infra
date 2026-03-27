@@ -44,7 +44,7 @@ export const ProfileDataPage = ({ avatar, lastName, name, middleName, data }: Pr
                   {i18n(item.label)}
                 </Typography>
                 <Typography variant="body2" component="p">
-                  {item.value}
+                  {i18n(item.value)}
                 </Typography>
               </div>
             ))}
