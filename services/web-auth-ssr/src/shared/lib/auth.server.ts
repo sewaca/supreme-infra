@@ -1,5 +1,5 @@
-import { CoreAuth } from '@supreme-int/api-client/src/index';
 import type { UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
+import { CoreAuth } from '@supreme-int/api-client/src/index';
 import { cookies } from 'next/headers';
 import { coreAuthClient } from '../api/clients';
 import { TOKEN_KEY } from './auth.client';

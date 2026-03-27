@@ -1,7 +1,7 @@
 import { TOKEN_KEY, type UserRole } from '@supreme-int/api-client/src/core-auth-bff';
-import { CoreAuth } from '@supreme-int/api-client/src/index';
-import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
+import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
+import { CoreAuth } from '@supreme-int/api-client/src/index';
 
 // Client-side calls go through ingress at /core-auth
 const coreAuthBrowserClient = createClient({ baseUrl: '/core-auth', ...jsonBodySerializer });
@@ -64,7 +64,11 @@ export async function login(data: {
   device?: string | null;
   ip_address?: string | null;
 }): Promise<AuthResponse> {
-  const { data: result, error, response } = await CoreAuth.loginAuthLoginPost({
+  const {
+    data: result,
+    error,
+    response,
+  } = await CoreAuth.loginAuthLoginPost({
     client: coreAuthBrowserClient,
     body: data,
   });
