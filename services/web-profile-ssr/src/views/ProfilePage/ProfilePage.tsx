@@ -81,21 +81,41 @@ export const ProfilePage = ({ data }: Props) => {
           icon={<FileCopyIcon fontSize="medium" color="action" />}
           title={i18n('Получить справку')}
         />
-        <LinkRow href="/documents/gradebook" icon={<ImportContactsIcon fontSize="medium" color="action" />} title={i18n('Зачётка')} />
-        <LinkRow href="/profile/settings" icon={<SettingsIcon fontSize="medium" color="action" />} title={i18n('Настройки')} />
+        <LinkRow
+          href="/documents/gradebook"
+          icon={<ImportContactsIcon fontSize="medium" color="action" />}
+          title={i18n('Зачётка')}
+        />
+        <LinkRow
+          href="/profile/settings"
+          icon={<SettingsIcon fontSize="medium" color="action" />}
+          title={i18n('Настройки')}
+        />
         <LinkRow
           href="/profile/subjects-ranking"
           icon={<AutoAwesomeMotionIcon fontSize="medium" color="action" />}
           title={i18n('Дисциплины по выбору')}
         />
-        <LinkRow href="/profile/rating" icon={<TrendingUpIcon fontSize="medium" color="action" />} title={i18n('Мой рейтинг')} />
-        <LinkRow href="/profile/data" icon={<PersonIcon fontSize="medium" color="action" />} title={i18n('Личные данные')} />
+        <LinkRow
+          href="/profile/rating"
+          icon={<TrendingUpIcon fontSize="medium" color="action" />}
+          title={i18n('Мой рейтинг')}
+        />
+        <LinkRow
+          href="/profile/data"
+          icon={<PersonIcon fontSize="medium" color="action" />}
+          title={i18n('Личные данные')}
+        />
         <LinkRow
           href="/documents/student-id-card"
           icon={<AssignmentIndIcon fontSize="medium" color="action" />}
           title={i18n('Электронный студенческий')}
         />
-        <LinkRow href="/profile/orders" icon={<AccountBalanceIcon fontSize="medium" color="action" />} title={i18n('Приказы')} />
+        <LinkRow
+          href="/profile/orders"
+          icon={<AccountBalanceIcon fontSize="medium" color="action" />}
+          title={i18n('Приказы')}
+        />
       </Paper>
     </Paper>
   );
