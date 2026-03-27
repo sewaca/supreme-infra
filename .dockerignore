@@ -6,3 +6,9 @@ node_modules
 coverage
 **/*.spec.*
 **/vitest.config*
+.ai
+.claude
+.cursor
+.github
+.vscode
+infra
