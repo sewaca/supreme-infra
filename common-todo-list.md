@@ -37,7 +37,10 @@
 ### core-auth
 
 - [ ] сохранять локацию откуда пользователь вошел. прокидывать ее с фронтенда (пытаться определить на фронте)
+
       пытаться определить по await fetch('https://api.ipregistry.co/?key=tryout')
       .then(function (response) {return response.json();})
       .then(function (payload) {console.log(payload.location.country.name + ', ' + payload.location.city);});
+      + оттуда же можно брать информацию про device и тоже пытаться определить на client-side 
+      
       если не получилось то Intl.DateTimeFormat().resolvedOptions().timeZone
