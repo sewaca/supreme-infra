@@ -82,7 +82,9 @@ export const SessionsSection = ({ sessions }: Props) => {
                 </TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>{session.location ?? '—'}</TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>{new Date(session.created_at).toLocaleString('ru')}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{session.expires_at ? new Date(session.expires_at).toLocaleString('ru') : '—'}</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                  {session.expires_at ? new Date(session.expires_at).toLocaleString('ru') : '—'}
+                </TableCell>
                 <TableCell align="right">
                   {!session.is_current && (
                     <Button
