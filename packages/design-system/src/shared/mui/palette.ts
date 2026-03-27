@@ -8,10 +8,10 @@ import type { PaletteOptions } from '@mui/material/styles';
  */
 export const palette: Readonly<PaletteOptions> = {
   primary: {
-    main: '#4ac2a8',
-    light: '#74d6c2',
-    dark: '#37948c',
-    contrastText: '#fffffffa',
+    main: '#1a237e',
+    light: '#534bae',
+    dark: '#0d1b4b',
+    contrastText: '#ffffff',
   },
   secondary: {
     main: '#777a85',
