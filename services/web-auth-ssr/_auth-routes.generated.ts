@@ -11,7 +11,6 @@ export interface AuthRoute {
 export const authRoutes: AuthRoute[] = [
   { path: /^\/forgot-password$/, method: 'GET', auth_level: 'none' },
   { path: /^\/login$/, method: 'GET', auth_level: 'none' },
-  { path: /^\/profile-old$/, method: 'GET', auth_level: 'none' },
   { path: /^\/register$/, method: 'GET', auth_level: 'none' },
   { path: /^\/web-auth-ssr\/.*$/, method: 'GET', auth_level: 'none' },
 ];

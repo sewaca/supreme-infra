@@ -242,8 +242,6 @@ ingress:
           method: GET
         - path: /login
           method: GET
-        - path: /profile-old
-          method: GET
         - path: /register
           method: GET
         - path: /web-auth-ssr/.*
