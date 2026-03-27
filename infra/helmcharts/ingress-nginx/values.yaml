@@ -188,6 +188,10 @@ ingress:
           method: PUT
         - path: /core-schedule/admin/templates/bulk
           method: POST
+        - path: /core-schedule/caldav/groups/[^/]+/calendar.ics
+          method: GET
+        - path: /core-schedule/caldav/teachers/[^/]+/calendar.ics
+          method: GET
         - path: /core-schedule/groups/[^/]+/exams
           method: GET
         - path: /core-schedule/groups/[^/]+/schedule

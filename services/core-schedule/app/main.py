@@ -15,6 +15,7 @@ from app.routers import (
     admin_session_events,
     admin_teachers,
     admin_templates,
+    caldav,
     groups,
     status,
     teachers,
@@ -57,6 +58,7 @@ app.add_middleware(
 instrument_app(app)
 
 app.include_router(status.router)
+app.include_router(caldav.router)
 app.include_router(groups.router)
 app.include_router(teachers.router)
 app.include_router(admin_classrooms.router)
