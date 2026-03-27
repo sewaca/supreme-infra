@@ -1,16 +1,14 @@
 'use server';
 
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { CoreAuth, CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { i18n } from '@supreme-int/i18n';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { loggingFetch } from 'services/web-profile-ssr/src/shared/api/fetchWithLog';
+import { coreAuthClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
 import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
-import { environment } from 'services/web-profile-ssr/src/shared/lib/environment';
 
 async function getAuthUserId(): Promise<string> {
   const token = await getServerAuthToken();
@@ -50,28 +48,16 @@ export const startChallenge = async (): Promise<{
 }> => {
   'use server';
 
-  const token = await getServerAuthToken();
-  if (!token) {
-    return { success: false, error: i18n('Не авторизован') };
-  }
-
   try {
-    // FIXME: use packages/api-client
-    const res = await loggingFetch(`${environment.coreAuthUrl}/auth/challenge`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}),
+    const { data, response } = await CoreAuth.startChallengeAuthChallengePost({
+      client: coreAuthClient,
     });
 
-    if (!res.ok) {
+    if (!response.ok || !data) {
       return { success: false, error: i18n('Не удалось начать проверку. Попробуйте позже.') };
     }
 
-    const data: { challenge_id: string; expiring_at: string } = await res.json();
-    return { success: true, challengeId: data.challenge_id, expiringAt: data.expiring_at };
+    return { success: true, challengeId: String(data.challenge_id), expiringAt: String(data.expiring_at) };
   } catch {
     return { success: false, error: i18n('Не удалось начать проверку. Попробуйте позже.') };
   }
@@ -83,42 +69,29 @@ export const verifyChallenge = async (
 ): Promise<{ success: boolean; error?: string; attemptsLeft?: number }> => {
   'use server';
 
-  const token = await getServerAuthToken();
-  if (!token) {
-    return { success: false, error: i18n('Не авторизован') };
-  }
-
   try {
-    // FIXME: use packages/api-client
-    const res = await loggingFetch(`${environment.coreAuthUrl}/auth/challenge/${challengeId}/verify`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ code }),
+    const { data, error, response } = await CoreAuth.verifyChallengeAuthChallengeChallengeIdVerifyPost({
+      client: coreAuthClient,
+      path: { challenge_id: challengeId },
+      body: { code },
     });
 
-    if (res.ok) {
+    if (response.ok && data) {
       return { success: true };
     }
 
-    const data: { detail?: string | { code?: string; attempts_left?: number } } = await res.json();
+    const detail = (error as { detail?: string | { code?: string; attempts_left?: number } } | undefined)?.detail;
 
-    if (typeof data.detail === 'object' && data.detail?.code === 'invalid_code') {
-      return {
-        success: false,
-        error: i18n('Неверный код'),
-        attemptsLeft: data.detail.attempts_left,
-      };
+    if (typeof detail === 'object' && detail?.code === 'invalid_code') {
+      return { success: false, error: i18n('Неверный код'), attemptsLeft: detail.attempts_left };
     }
-    if (data.detail === 'max_attempts_exceeded') {
+    if (detail === 'max_attempts_exceeded') {
       return { success: false, error: i18n('Превышено количество попыток. Начните заново.') };
     }
-    if (data.detail === 'expired') {
+    if (detail === 'expired') {
       return { success: false, error: i18n('Код истёк. Начните заново.') };
     }
-    if (data.detail === 'already_resolved') {
+    if (detail === 'already_resolved') {
       return { success: false, error: i18n('Код уже использован.') };
     }
 
@@ -139,26 +112,18 @@ export const applyEmailChange = async (
   }
 
   const userId = await getAuthUserId();
-  const token = await getServerAuthToken();
-  if (!token) {
-    return { success: false, error: i18n('Не авторизован') };
-  }
 
   try {
-    // FIXME: use packages/api-client
-    const res = await loggingFetch(`${environment.coreClientInfoUrl}/settings/email?user_id=${userId}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ new_email: newEmail, challenge_id: challengeId }),
+    const { response } = await CoreClientInfo.changeEmailSettingsEmailPost({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: { new_email: newEmail, challenge_id: challengeId },
     });
 
-    if (res.status === 409) {
+    if (response.status === 409) {
       return { success: false, error: i18n('Этот email уже занят') };
     }
-    if (!res.ok) {
+    if (!response.ok) {
       return { success: false, error: i18n('Не удалось изменить email. Попробуйте позже.') };
     }
 
@@ -179,23 +144,15 @@ export const applyPasswordChange = async (
   }
 
   const userId = await getAuthUserId();
-  const token = await getServerAuthToken();
-  if (!token) {
-    return { success: false, error: i18n('Не авторизован') };
-  }
 
   try {
-    // FIXME: use packages/api-client
-    const res = await loggingFetch(`${environment.coreClientInfoUrl}/settings/password?user_id=${userId}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ new_password: newPassword, challenge_id: challengeId }),
+    const { response } = await CoreClientInfo.changePasswordSettingsPasswordPost({
+      client: coreClientInfoClient,
+      query: { user_id: userId },
+      body: { new_password: newPassword, challenge_id: challengeId },
     });
 
-    if (!res.ok) {
+    if (!response.ok) {
       return { success: false, error: i18n('Не удалось изменить пароль. Попробуйте позже.') };
     }
 
@@ -208,28 +165,17 @@ export const applyPasswordChange = async (
 export const logoutCurrentSession = async (): Promise<void> => {
   'use server';
 
-  const token = await getServerAuthToken();
-
-  if (token) {
-    try {
-      // FIXME: use packages/api-client
-      const sessionsRes = await loggingFetch(`${environment.coreAuthUrl}/auth/sessions`, {
-        headers: { Authorization: `Bearer ${token}` },
+  try {
+    const { data: sessions } = await CoreAuth.getSessionsAuthSessionsGet({ client: coreAuthClient });
+    const currentSession = sessions?.find((s) => s.is_current);
+    if (currentSession) {
+      await CoreAuth.revokeSessionAuthSessionsSessionIdDelete({
+        client: coreAuthClient,
+        path: { session_id: currentSession.id },
       });
-
-      if (sessionsRes.ok) {
-        const sessions: Array<{ id: string; is_current: boolean }> = await sessionsRes.json();
-        const currentSession = sessions.find((s) => s.is_current);
-        if (currentSession) {
-          await loggingFetch(`${environment.coreAuthUrl}/auth/sessions/${currentSession.id}`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
-          });
-        }
-      }
-    } catch {
-      // Ignore errors — proceed with logout regardless
     }
+  } catch {
+    // Ignore errors — proceed with logout regardless
   }
 
   const cookieStore = await cookies();
@@ -241,19 +187,13 @@ export const logoutCurrentSession = async (): Promise<void> => {
 export const revokeSession = async (sessionId: string): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
-  const token = await getServerAuthToken();
-  if (!token) {
-    return { success: false, error: i18n('Не авторизован') };
-  }
-
   try {
-    // FIXME: use packages/api-client
-    const res = await loggingFetch(`${environment.coreAuthUrl}/auth/sessions/${sessionId}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
+    const { response } = await CoreAuth.revokeSessionAuthSessionsSessionIdDelete({
+      client: coreAuthClient,
+      path: { session_id: sessionId },
     });
 
-    if (!res.ok) {
+    if (!response.ok) {
       return { success: false, error: i18n('Не удалось завершить сессию') };
     }
     return { success: true };
