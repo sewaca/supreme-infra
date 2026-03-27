@@ -127,7 +127,7 @@ export const RatingPage = ({ data }: Props) => {
           )}
           {lockedAchievements.length > 0 && (
             <>
-              <Spacer size={3} />
+              <Spacer size={18} />
               <Typography variant="body2" sx={{ color: 'text.secondary', padding: '0 4px', marginBottom: 2 }}>
                 Ещё не получено
               </Typography>
