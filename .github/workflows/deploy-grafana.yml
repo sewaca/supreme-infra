@@ -177,7 +177,7 @@ jobs:
                 --namespace ${{ env.GRAFANA_NAMESPACE }} \
                 --dry-run=client -o yaml > "$TMPFILE"
 
-              if kubectl label --local -f "$TMPFILE" grafana_dashboard=1 -o yaml | kubectl apply -f -; then
+              if kubectl label --local -f "$TMPFILE" grafana_dashboard=1 -o yaml | kubectl apply --server-side -f -; then
                 rm -f "$TMPFILE"
                 echo "✓ Successfully created ConfigMap: $configmap_name"
                 return 0
