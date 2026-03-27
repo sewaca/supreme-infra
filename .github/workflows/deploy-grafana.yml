@@ -234,6 +234,44 @@ jobs:
             exit 1
           fi
 
+      - name: Delete stale dashboard ConfigMaps
+        run: |
+          # Собираем ожидаемые имена ConfigMap из текущих файлов дашбордов
+          expected_configmaps=()
+          for dashboard in ./infra/helmcharts/grafana/dashboards/*.json; do
+            if [ -f "$dashboard" ]; then
+              filename=$(basename "$dashboard" .json)
+              expected_configmaps+=("grafana-dashboards-${filename}")
+            fi
+          done
+
+          # Получаем все существующие ConfigMap с меткой grafana_dashboard=1
+          existing_configmaps=$(kubectl get configmap -n ${{ env.GRAFANA_NAMESPACE }} -l grafana_dashboard=1 -o jsonpath='{.items[*].metadata.name}' 2>/dev/null || echo "")
+
+          # Удаляем ConfigMap'ы, которых нет среди ожидаемых
+          deleted_count=0
+          for cm in $existing_configmaps; do
+            found=false
+            for expected in "${expected_configmaps[@]}"; do
+              if [ "$cm" = "$expected" ]; then
+                found=true
+                break
+              fi
+            done
+
+            if [ "$found" = false ]; then
+              echo "Deleting stale ConfigMap: $cm"
+              kubectl delete configmap "$cm" -n ${{ env.GRAFANA_NAMESPACE }}
+              deleted_count=$((deleted_count + 1))
+            fi
+          done
+
+          if [ $deleted_count -eq 0 ]; then
+            echo "✓ No stale ConfigMaps to delete"
+          else
+            echo "✓ Deleted $deleted_count stale ConfigMap(s)"
+          fi
+
       - name: Deploy Grafana with Helm
         run: |
           CHART_PATH="./infra/helmcharts/grafana"
