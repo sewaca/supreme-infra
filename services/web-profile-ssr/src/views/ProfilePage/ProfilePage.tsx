@@ -46,7 +46,7 @@ export const ProfilePage = ({ data }: Props) => {
         <ButtonCard
           icon={<img src={Coin.src} alt="Coin" />}
           title={i18n('Стипендия')}
-          subtitle={data.scholarship ? `${data.scholarship.value} ₽/м.` : i18n('Вы не получаете стипендию')}
+          subtitle={data.scholarship ? `${data.scholarship.value} ₽/мес.` : i18n('Вы не получаете стипендию')}
           status={data.scholarship ? 'success' : 'error'}
           notifications={data.scholarship?.notifications}
           href="/profile/scholarship"

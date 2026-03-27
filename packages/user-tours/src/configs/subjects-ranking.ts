@@ -4,7 +4,7 @@ import type { DriveStep } from 'driver.js';
 export const getSubjectsRankingTourSteps = (deadlineDate: string): DriveStep[] => [
   {
     popover: {
-      title: i18n('Сортировка дисциплин'),
+      title: i18n('Дисциплины по выбору'),
       description: i18n(
         'На этой странице можно отсортировать дисциплины по приоритету. Дисциплина, которую выбрало наибольшее число студентов, будет проводиться на курсе.',
       ),
