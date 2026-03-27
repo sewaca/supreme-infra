@@ -218,6 +218,24 @@ curl -s "$BASE_URL/auth/me" \
 }
 ```
 
+### Get 2fa status from database
+
+```sql
+SELECT id, user_id, code, attempts, start_at, expiring_at, resolved_at
+  FROM auth_challenge
+  WHERE resolved_at IS NULL --- if u need unresolved 2fa code
+  ORDER BY start_at DESC;
+```
+
+### Get user from database
+
+```sql
+SELECT id, email, name, role, is_active, created_at, updated_at, password_hash
+    FROM auth_user
+    WHERE email = 'new-account-sewaca@example.com'
+    ORDER BY created_at DESC;
+```
+
 ---
 
 ## JWT Payload Structure
