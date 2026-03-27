@@ -16,6 +16,20 @@ export type AuthResponse = {
 };
 
 /**
+ * CheckChallengeResponse
+ */
+export type CheckChallengeResponse = {
+    /**
+     * Is Valid
+     */
+    is_valid: boolean;
+    /**
+     * User Id
+     */
+    user_id?: string | null;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -37,6 +51,18 @@ export type LoginRequest = {
      * Password
      */
     password: string;
+    /**
+     * Location
+     */
+    location?: string | null;
+    /**
+     * Device
+     */
+    device?: string | null;
+    /**
+     * Ip Address
+     */
+    ip_address?: string | null;
 };
 
 /**
@@ -98,11 +124,49 @@ export type SessionInfo = {
     /**
      * Location
      */
-    location: string | null;
+    location?: string | null;
+    /**
+     * Device
+     */
+    device?: string | null;
     /**
      * Is Current
      */
     is_current: boolean;
+};
+
+/**
+ * StartChallengeResponse
+ */
+export type StartChallengeResponse = {
+    /**
+     * Challenge Id
+     */
+    challenge_id: string;
+    /**
+     * Expiring At
+     */
+    expiring_at: string;
+};
+
+/**
+ * UpdateEmailRequest
+ */
+export type UpdateEmailRequest = {
+    /**
+     * New Email
+     */
+    new_email: string;
+};
+
+/**
+ * UpdatePasswordRequest
+ */
+export type UpdatePasswordRequest = {
+    /**
+     * New Password
+     */
+    new_password: string;
 };
 
 /**
@@ -189,6 +253,26 @@ export type ValidationError = {
     ctx?: {
         [key: string]: unknown;
     };
+};
+
+/**
+ * VerifyChallengeRequest
+ */
+export type VerifyChallengeRequest = {
+    /**
+     * Code
+     */
+    code: string;
+};
+
+/**
+ * VerifyChallengeResponse
+ */
+export type VerifyChallengeResponse = {
+    /**
+     * Status
+     */
+    status: string;
 };
 
 export type GetStatusStatusGetData = {
@@ -343,3 +427,135 @@ export type ValidateSessionAuthValidateSessionPostResponses = {
 };
 
 export type ValidateSessionAuthValidateSessionPostResponse = ValidateSessionAuthValidateSessionPostResponses[keyof ValidateSessionAuthValidateSessionPostResponses];
+
+export type StartChallengeAuthChallengePostData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/challenge';
+};
+
+export type StartChallengeAuthChallengePostResponses = {
+    /**
+     * Successful Response
+     */
+    200: StartChallengeResponse;
+};
+
+export type StartChallengeAuthChallengePostResponse = StartChallengeAuthChallengePostResponses[keyof StartChallengeAuthChallengePostResponses];
+
+export type VerifyChallengeAuthChallengeChallengeIdVerifyPostData = {
+    body: VerifyChallengeRequest;
+    path: {
+        /**
+         * Challenge Id
+         */
+        challenge_id: string;
+    };
+    query?: never;
+    url: '/auth/challenge/{challenge_id}/verify';
+};
+
+export type VerifyChallengeAuthChallengeChallengeIdVerifyPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type VerifyChallengeAuthChallengeChallengeIdVerifyPostError = VerifyChallengeAuthChallengeChallengeIdVerifyPostErrors[keyof VerifyChallengeAuthChallengeChallengeIdVerifyPostErrors];
+
+export type VerifyChallengeAuthChallengeChallengeIdVerifyPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: VerifyChallengeResponse;
+};
+
+export type VerifyChallengeAuthChallengeChallengeIdVerifyPostResponse = VerifyChallengeAuthChallengeChallengeIdVerifyPostResponses[keyof VerifyChallengeAuthChallengeChallengeIdVerifyPostResponses];
+
+export type CheckChallengeAuthChallengeChallengeIdCheckGetData = {
+    body?: never;
+    path: {
+        /**
+         * Challenge Id
+         */
+        challenge_id: string;
+    };
+    query?: never;
+    url: '/auth/challenge/{challenge_id}/check';
+};
+
+export type CheckChallengeAuthChallengeChallengeIdCheckGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CheckChallengeAuthChallengeChallengeIdCheckGetError = CheckChallengeAuthChallengeChallengeIdCheckGetErrors[keyof CheckChallengeAuthChallengeChallengeIdCheckGetErrors];
+
+export type CheckChallengeAuthChallengeChallengeIdCheckGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CheckChallengeResponse;
+};
+
+export type CheckChallengeAuthChallengeChallengeIdCheckGetResponse = CheckChallengeAuthChallengeChallengeIdCheckGetResponses[keyof CheckChallengeAuthChallengeChallengeIdCheckGetResponses];
+
+export type UpdateUserEmailAuthInternalUsersUserIdEmailPatchData = {
+    body: UpdateEmailRequest;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/auth/internal/users/{user_id}/email';
+};
+
+export type UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateUserEmailAuthInternalUsersUserIdEmailPatchError = UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors[keyof UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors];
+
+export type UpdateUserEmailAuthInternalUsersUserIdEmailPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchData = {
+    body: UpdatePasswordRequest;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/auth/internal/users/{user_id}/password';
+};
+
+export type UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchError = UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors[keyof UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors];
+
+export type UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};

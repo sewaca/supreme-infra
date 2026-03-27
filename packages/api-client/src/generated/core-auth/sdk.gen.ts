@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetMeAuthMeGetData, GetMeAuthMeGetResponses, GetSessionsAuthSessionsGetData, GetSessionsAuthSessionsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, LoginAuthLoginPostData, LoginAuthLoginPostErrors, LoginAuthLoginPostResponses, RegisterAuthRegisterPostData, RegisterAuthRegisterPostErrors, RegisterAuthRegisterPostResponses, RevokeSessionAuthSessionsSessionIdDeleteData, RevokeSessionAuthSessionsSessionIdDeleteErrors, RevokeSessionAuthSessionsSessionIdDeleteResponses, ValidateSessionAuthValidateSessionPostData, ValidateSessionAuthValidateSessionPostErrors, ValidateSessionAuthValidateSessionPostResponses } from './types.gen';
+import type { CheckChallengeAuthChallengeChallengeIdCheckGetData, CheckChallengeAuthChallengeChallengeIdCheckGetErrors, CheckChallengeAuthChallengeChallengeIdCheckGetResponses, GetMeAuthMeGetData, GetMeAuthMeGetResponses, GetSessionsAuthSessionsGetData, GetSessionsAuthSessionsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, LoginAuthLoginPostData, LoginAuthLoginPostErrors, LoginAuthLoginPostResponses, RegisterAuthRegisterPostData, RegisterAuthRegisterPostErrors, RegisterAuthRegisterPostResponses, RevokeSessionAuthSessionsSessionIdDeleteData, RevokeSessionAuthSessionsSessionIdDeleteErrors, RevokeSessionAuthSessionsSessionIdDeleteResponses, StartChallengeAuthChallengePostData, StartChallengeAuthChallengePostResponses, UpdateUserEmailAuthInternalUsersUserIdEmailPatchData, UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors, UpdateUserEmailAuthInternalUsersUserIdEmailPatchResponses, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchData, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchResponses, ValidateSessionAuthValidateSessionPostData, ValidateSessionAuthValidateSessionPostErrors, ValidateSessionAuthValidateSessionPostResponses, VerifyChallengeAuthChallengeChallengeIdVerifyPostData, VerifyChallengeAuthChallengeChallengeIdVerifyPostErrors, VerifyChallengeAuthChallengeChallengeIdVerifyPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -79,6 +79,57 @@ export const revokeSessionAuthSessionsSessionIdDelete = <ThrowOnError extends bo
  */
 export const validateSessionAuthValidateSessionPost = <ThrowOnError extends boolean = false>(options: Options<ValidateSessionAuthValidateSessionPostData, ThrowOnError>) => (options.client ?? client).post<ValidateSessionAuthValidateSessionPostResponses, ValidateSessionAuthValidateSessionPostErrors, ThrowOnError>({
     url: '/auth/validate-session',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Start Challenge
+ */
+export const startChallengeAuthChallengePost = <ThrowOnError extends boolean = false>(options?: Options<StartChallengeAuthChallengePostData, ThrowOnError>) => (options?.client ?? client).post<StartChallengeAuthChallengePostResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/challenge',
+    ...options
+});
+
+/**
+ * Verify Challenge
+ */
+export const verifyChallengeAuthChallengeChallengeIdVerifyPost = <ThrowOnError extends boolean = false>(options: Options<VerifyChallengeAuthChallengeChallengeIdVerifyPostData, ThrowOnError>) => (options.client ?? client).post<VerifyChallengeAuthChallengeChallengeIdVerifyPostResponses, VerifyChallengeAuthChallengeChallengeIdVerifyPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/challenge/{challenge_id}/verify',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Check Challenge
+ */
+export const checkChallengeAuthChallengeChallengeIdCheckGet = <ThrowOnError extends boolean = false>(options: Options<CheckChallengeAuthChallengeChallengeIdCheckGetData, ThrowOnError>) => (options.client ?? client).get<CheckChallengeAuthChallengeChallengeIdCheckGetResponses, CheckChallengeAuthChallengeChallengeIdCheckGetErrors, ThrowOnError>({ url: '/auth/challenge/{challenge_id}/check', ...options });
+
+/**
+ * Update User Email
+ */
+export const updateUserEmailAuthInternalUsersUserIdEmailPatch = <ThrowOnError extends boolean = false>(options: Options<UpdateUserEmailAuthInternalUsersUserIdEmailPatchData, ThrowOnError>) => (options.client ?? client).patch<UpdateUserEmailAuthInternalUsersUserIdEmailPatchResponses, UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors, ThrowOnError>({
+    url: '/auth/internal/users/{user_id}/email',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update User Password
+ */
+export const updateUserPasswordAuthInternalUsersUserIdPasswordPatch = <ThrowOnError extends boolean = false>(options: Options<UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchData, ThrowOnError>) => (options.client ?? client).patch<UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchResponses, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors, ThrowOnError>({
+    url: '/auth/internal/users/{user_id}/password',
     ...options,
     headers: {
         'Content-Type': 'application/json',

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel
 
 
@@ -17,15 +19,13 @@ class UpdateSettingsRequest(BaseModel):
 
 class ChangeEmailRequest(BaseModel):
     new_email: str
-    confirmation_code: str | None = None
+    challenge_id: UUID
 
 
 class ChangePasswordRequest(BaseModel):
-    current_password: str
     new_password: str
-    confirmation_code: str | None = None
+    challenge_id: UUID
 
 
-class TwoFaResponse(BaseModel):
-    status: str
-    message: str | None = None
+class MessageResponse(BaseModel):
+    message: str

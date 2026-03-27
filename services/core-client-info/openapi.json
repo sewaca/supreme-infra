@@ -228,7 +228,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwoFaResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -279,7 +279,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwoFaResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -768,46 +768,30 @@
             "type": "string",
             "title": "New Email"
           },
-          "confirmation_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Confirmation Code"
+          "challenge_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Challenge Id"
           }
         },
         "type": "object",
-        "required": ["new_email"],
+        "required": ["new_email", "challenge_id"],
         "title": "ChangeEmailRequest"
       },
       "ChangePasswordRequest": {
         "properties": {
-          "current_password": {
-            "type": "string",
-            "title": "Current Password"
-          },
           "new_password": {
             "type": "string",
             "title": "New Password"
           },
-          "confirmation_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Confirmation Code"
+          "challenge_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Challenge Id"
           }
         },
         "type": "object",
-        "required": ["current_password", "new_password"],
+        "required": ["new_password", "challenge_id"],
         "title": "ChangePasswordRequest"
       },
       "GradeImprovementResponse": {
@@ -853,6 +837,17 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": ["message"],
+        "title": "MessageResponse"
       },
       "PersonalDataResponse": {
         "properties": {
@@ -1186,28 +1181,6 @@
         "type": "object",
         "required": ["id", "name", "teacher"],
         "title": "SubjectInfo"
-      },
-      "TwoFaResponse": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "message": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Message"
-          }
-        },
-        "type": "object",
-        "required": ["status"],
-        "title": "TwoFaResponse"
       },
       "UpdateSettingsRequest": {
         "properties": {

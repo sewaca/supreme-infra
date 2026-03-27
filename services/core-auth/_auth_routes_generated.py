@@ -16,6 +16,11 @@ class AuthRoute:
 
 
 AUTH_ROUTES: list[AuthRoute] = [
+    AuthRoute(path=re.compile(r"^/core-auth/auth/challenge$"), method="POST", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/challenge/[^/]+/check$"), method="GET", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/challenge/[^/]+/verify$"), method="POST", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/internal/users/[^/]+/email$"), method="PATCH", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/internal/users/[^/]+/password$"), method="PATCH", auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/login$"), method="POST", auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/me$"), method="GET", auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/register$"), method="POST", auth_level="none"),

@@ -54,6 +54,16 @@ ingress:
       port: 80
       type: fastapi
       paths:
+        - path: /core-auth/auth/challenge
+          method: POST
+        - path: /core-auth/auth/challenge/[^/]+/check
+          method: GET
+        - path: /core-auth/auth/challenge/[^/]+/verify
+          method: POST
+        - path: /core-auth/auth/internal/users/[^/]+/email
+          method: PATCH
+        - path: /core-auth/auth/internal/users/[^/]+/password
+          method: PATCH
         - path: /core-auth/auth/login
           method: POST
         - path: /core-auth/auth/me

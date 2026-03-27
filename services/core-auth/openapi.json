@@ -230,6 +230,225 @@
           }
         }
       }
+    },
+    "/auth/challenge": {
+      "post": {
+        "tags": ["challenge"],
+        "summary": "Start Challenge",
+        "operationId": "start_challenge_auth_challenge_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartChallengeResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/auth/challenge/{challenge_id}/verify": {
+      "post": {
+        "tags": ["challenge"],
+        "summary": "Verify Challenge",
+        "operationId": "verify_challenge_auth_challenge__challenge_id__verify_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "challenge_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Challenge Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyChallengeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyChallengeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/challenge/{challenge_id}/check": {
+      "get": {
+        "tags": ["challenge"],
+        "summary": "Check Challenge",
+        "operationId": "check_challenge_auth_challenge__challenge_id__check_get",
+        "parameters": [
+          {
+            "name": "challenge_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Challenge Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckChallengeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/internal/users/{user_id}/email": {
+      "patch": {
+        "tags": ["internal"],
+        "summary": "Update User Email",
+        "operationId": "update_user_email_auth_internal_users__user_id__email_patch",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/internal/users/{user_id}/password": {
+      "patch": {
+        "tags": ["internal"],
+        "summary": "Update User Password",
+        "operationId": "update_user_password_auth_internal_users__user_id__password_patch",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -247,6 +466,29 @@
         "type": "object",
         "required": ["access_token", "user"],
         "title": "AuthResponse"
+      },
+      "CheckChallengeResponse": {
+        "properties": {
+          "is_valid": {
+            "type": "boolean",
+            "title": "Is Valid"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          }
+        },
+        "type": "object",
+        "required": ["is_valid"],
+        "title": "CheckChallengeResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -270,6 +512,39 @@
           "password": {
             "type": "string",
             "title": "Password"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device"
+          },
+          "ip_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ip Address"
           }
         },
         "type": "object",
@@ -368,23 +643,64 @@
             ],
             "title": "Location"
           },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device"
+          },
           "is_current": {
             "type": "boolean",
             "title": "Is Current"
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "created_at",
-          "expires_at",
-          "revoked_at",
-          "user_agent",
-          "ip_address",
-          "location",
-          "is_current"
-        ],
+        "required": ["id", "created_at", "expires_at", "revoked_at", "user_agent", "ip_address", "is_current"],
         "title": "SessionInfo"
+      },
+      "StartChallengeResponse": {
+        "properties": {
+          "challenge_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Challenge Id"
+          },
+          "expiring_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expiring At"
+          }
+        },
+        "type": "object",
+        "required": ["challenge_id", "expiring_at"],
+        "title": "StartChallengeResponse"
+      },
+      "UpdateEmailRequest": {
+        "properties": {
+          "new_email": {
+            "type": "string",
+            "title": "New Email"
+          }
+        },
+        "type": "object",
+        "required": ["new_email"],
+        "title": "UpdateEmailRequest"
+      },
+      "UpdatePasswordRequest": {
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "title": "New Password"
+          }
+        },
+        "type": "object",
+        "required": ["new_password"],
+        "title": "UpdatePasswordRequest"
       },
       "UserInfo": {
         "properties": {
@@ -511,6 +827,28 @@
         "type": "object",
         "required": ["loc", "msg", "type"],
         "title": "ValidationError"
+      },
+      "VerifyChallengeRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          }
+        },
+        "type": "object",
+        "required": ["code"],
+        "title": "VerifyChallengeRequest"
+      },
+      "VerifyChallengeResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": ["status"],
+        "title": "VerifyChallengeResponse"
       }
     },
     "securitySchemes": {

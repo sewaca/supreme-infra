@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
-from app.routers import auth, sessions, status
+from app.routers import auth, challenge, internal, sessions, status
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logging.getLogger("app").setLevel(logging.DEBUG)
@@ -45,3 +45,5 @@ instrument_app(app)
 app.include_router(status.router)
 app.include_router(auth.router)
 app.include_router(sessions.router)
+app.include_router(challenge.router)
+app.include_router(internal.router)

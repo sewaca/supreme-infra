@@ -33,7 +33,94 @@ export const updateSettings = async (settings: {
   }
 };
 
-export const changeEmail = async (newEmail: string): Promise<{ success: boolean; error?: string }> => {
+export const startChallenge = async (): Promise<{
+  success: boolean;
+  challengeId?: string;
+  expiringAt?: string;
+  error?: string;
+}> => {
+  'use server';
+
+  const token = await getServerAuthToken();
+  if (!token) {
+    return { success: false, error: i18n('Не авторизован') };
+  }
+
+  try {
+    const res = await loggingFetch(`${environment.coreAuthUrl}/auth/challenge`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (!res.ok) {
+      return { success: false, error: i18n('Не удалось начать проверку. Попробуйте позже.') };
+    }
+
+    const data: { challenge_id: string; expiring_at: string } = await res.json();
+    return { success: true, challengeId: data.challenge_id, expiringAt: data.expiring_at };
+  } catch {
+    return { success: false, error: i18n('Не удалось начать проверку. Попробуйте позже.') };
+  }
+};
+
+export const verifyChallenge = async (
+  challengeId: string,
+  code: string,
+): Promise<{ success: boolean; error?: string; attemptsLeft?: number }> => {
+  'use server';
+
+  const token = await getServerAuthToken();
+  if (!token) {
+    return { success: false, error: i18n('Не авторизован') };
+  }
+
+  try {
+    const res = await loggingFetch(`${environment.coreAuthUrl}/auth/challenge/${challengeId}/verify`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    });
+
+    if (res.ok) {
+      return { success: true };
+    }
+
+    const data: { detail?: string | { code?: string; attempts_left?: number } } = await res.json();
+
+    if (typeof data.detail === 'object' && data.detail?.code === 'invalid_code') {
+      return {
+        success: false,
+        error: i18n('Неверный код'),
+        attemptsLeft: data.detail.attempts_left,
+      };
+    }
+    if (data.detail === 'max_attempts_exceeded') {
+      return { success: false, error: i18n('Превышено количество попыток. Начните заново.') };
+    }
+    if (data.detail === 'expired') {
+      return { success: false, error: i18n('Код истёк. Начните заново.') };
+    }
+    if (data.detail === 'already_resolved') {
+      return { success: false, error: i18n('Код уже использован.') };
+    }
+
+    return { success: false, error: i18n('Неверный код') };
+  } catch {
+    return { success: false, error: i18n('Ошибка проверки кода') };
+  }
+};
+
+export const applyEmailChange = async (
+  challengeId: string,
+  newEmail: string,
+): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
   if (!newEmail.includes('@')) {
@@ -41,19 +128,38 @@ export const changeEmail = async (newEmail: string): Promise<{ success: boolean;
   }
 
   const userId = getUserId();
+  const token = await getServerAuthToken();
+  if (!token) {
+    return { success: false, error: i18n('Не авторизован') };
+  }
+
   try {
-    await CoreClientInfo.changeEmailSettingsEmailPost({
-      client: coreClientInfoClient,
-      query: { user_id: userId },
-      body: { new_email: newEmail },
+    const res = await loggingFetch(`${environment.coreClientInfoUrl}/settings/email?user_id=${userId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ new_email: newEmail, challenge_id: challengeId }),
     });
+
+    if (res.status === 409) {
+      return { success: false, error: i18n('Этот email уже занят') };
+    }
+    if (!res.ok) {
+      return { success: false, error: i18n('Не удалось изменить email. Попробуйте позже.') };
+    }
+
     return { success: true };
   } catch {
     return { success: false, error: i18n('Не удалось изменить email. Попробуйте позже.') };
   }
 };
 
-export const changePassword = async (newPassword: string): Promise<{ success: boolean; error?: string }> => {
+export const applyPasswordChange = async (
+  challengeId: string,
+  newPassword: string,
+): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
   if (newPassword.length < 6) {
@@ -61,12 +167,25 @@ export const changePassword = async (newPassword: string): Promise<{ success: bo
   }
 
   const userId = getUserId();
+  const token = await getServerAuthToken();
+  if (!token) {
+    return { success: false, error: i18n('Не авторизован') };
+  }
+
   try {
-    await CoreClientInfo.changePasswordSettingsPasswordPost({
-      client: coreClientInfoClient,
-      query: { user_id: userId },
-      body: { current_password: '', new_password: newPassword },
+    const res = await loggingFetch(`${environment.coreClientInfoUrl}/settings/password?user_id=${userId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ new_password: newPassword, challenge_id: challengeId }),
     });
+
+    if (!res.ok) {
+      return { success: false, error: i18n('Не удалось изменить пароль. Попробуйте позже.') };
+    }
+
     return { success: true };
   } catch {
     return { success: false, error: i18n('Не удалось изменить пароль. Попробуйте позже.') };

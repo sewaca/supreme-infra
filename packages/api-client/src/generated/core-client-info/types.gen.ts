@@ -27,9 +27,9 @@ export type ChangeEmailRequest = {
      */
     new_email: string;
     /**
-     * Confirmation Code
+     * Challenge Id
      */
-    confirmation_code?: string | null;
+    challenge_id: string;
 };
 
 /**
@@ -37,17 +37,13 @@ export type ChangeEmailRequest = {
  */
 export type ChangePasswordRequest = {
     /**
-     * Current Password
-     */
-    current_password: string;
-    /**
      * New Password
      */
     new_password: string;
     /**
-     * Confirmation Code
+     * Challenge Id
      */
-    confirmation_code?: string | null;
+    challenge_id: string;
 };
 
 /**
@@ -84,6 +80,16 @@ export type HttpValidationError = {
      * Detail
      */
     detail?: Array<ValidationError>;
+};
+
+/**
+ * MessageResponse
+ */
+export type MessageResponse = {
+    /**
+     * Message
+     */
+    message: string;
 };
 
 /**
@@ -287,20 +293,6 @@ export type SubjectInfo = {
      * Teacher
      */
     teacher: string;
-};
-
-/**
- * TwoFaResponse
- */
-export type TwoFaResponse = {
-    /**
-     * Status
-     */
-    status: string;
-    /**
-     * Message
-     */
-    message?: string | null;
 };
 
 /**
@@ -644,7 +636,7 @@ export type ChangeEmailSettingsEmailPostResponses = {
     /**
      * Successful Response
      */
-    200: TwoFaResponse;
+    200: MessageResponse;
 };
 
 export type ChangeEmailSettingsEmailPostResponse = ChangeEmailSettingsEmailPostResponses[keyof ChangeEmailSettingsEmailPostResponses];
@@ -674,7 +666,7 @@ export type ChangePasswordSettingsPasswordPostResponses = {
     /**
      * Successful Response
      */
-    200: TwoFaResponse;
+    200: MessageResponse;
 };
 
 export type ChangePasswordSettingsPasswordPostResponse = ChangePasswordSettingsPasswordPostResponses[keyof ChangePasswordSettingsPasswordPostResponses];
