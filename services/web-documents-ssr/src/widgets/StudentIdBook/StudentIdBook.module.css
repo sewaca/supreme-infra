@@ -1,6 +1,5 @@
 .page {
   background: #edeff2;
-  /* min-height: 100vh; */
   min-height: 100dvh;
   padding: 64px 16px 32 16px;
   display: flex;

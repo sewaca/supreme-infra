@@ -42,7 +42,6 @@
     "postcss": "catalog:",
     "postcss-flexbugs-fixes": "catalog:",
     "postcss-preset-env": "catalog:",
-    "postcss-viewport-unit-fallback": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-use": "catalog:",

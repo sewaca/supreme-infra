@@ -216,9 +216,6 @@ catalogs:
     postcss-preset-env:
       specifier: 11.2.0
       version: 11.2.0
-    postcss-viewport-unit-fallback:
-      specifier: 1.0.1
-      version: 1.0.1
     prettier:
       specifier: 3.7.4
       version: 3.7.4
@@ -863,9 +860,6 @@ importers:
       postcss-preset-env:
         specifier: 'catalog:'
         version: 11.2.0(postcss@8.5.8)
-      postcss-viewport-unit-fallback:
-        specifier: 'catalog:'
-        version: 1.0.1
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -1023,9 +1017,6 @@ importers:
       postcss-preset-env:
         specifier: 'catalog:'
         version: 11.2.0(postcss@8.5.8)
-      postcss-viewport-unit-fallback:
-        specifier: 'catalog:'
-        version: 1.0.1
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -1165,9 +1156,6 @@ importers:
       postcss-preset-env:
         specifier: 'catalog:'
         version: 11.2.0(postcss@8.5.8)
-      postcss-viewport-unit-fallback:
-        specifier: 'catalog:'
-        version: 1.0.1
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -1325,9 +1313,6 @@ importers:
       postcss-preset-env:
         specifier: 'catalog:'
         version: 11.2.0(postcss@8.5.8)
-      postcss-viewport-unit-fallback:
-        specifier: 'catalog:'
-        version: 1.0.1
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -7849,10 +7834,6 @@ packages:
 
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
-
-  postcss-viewport-unit-fallback@1.0.1:
-    resolution: {integrity: sha512-J2UiqTXKHTCICBIV/Yqn3fFVd42yzwiG4ogVdr8WQ8kJ5f72bKLZO30sd3Xs0n4sIRj3qDgMbz4AMCG/OtyXgg==}
-    engines: {node: '>=12.0.0'}
 
   postcss@8.4.31:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
@@ -16560,8 +16541,6 @@ snapshots:
       util-deprecate: 1.0.2
 
   postcss-value-parser@4.2.0: {}
-
-  postcss-viewport-unit-fallback@1.0.1: {}
 
   postcss@8.4.31:
     dependencies:
