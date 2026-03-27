@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
-from app.routers import auth, caldav_tokens, challenge, internal, sessions, status
+from app.routers import auth, caldav_tokens, challenge, forgot_password, internal, sessions, status
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logging.getLogger("app").setLevel(logging.DEBUG)
@@ -47,4 +47,5 @@ app.include_router(auth.router)
 app.include_router(sessions.router)
 app.include_router(caldav_tokens.router)
 app.include_router(challenge.router)
+app.include_router(forgot_password.router)
 app.include_router(internal.router)

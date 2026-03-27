@@ -119,6 +119,21 @@ export function AuthForm({ mode }: AuthFormProps) {
           sx={{ mb: 3 }}
         />
 
+        {/* Forgot password */}
+        {isLogin && (
+          <Box sx={{ mb: 1, textAlign: 'right' }}>
+            <Link
+              component={NextLink}
+              href="/forgot-password"
+              underline="hover"
+              variant="body2"
+              sx={{ color: '#1a237e' }}
+            >
+              Забыли пароль?
+            </Link>
+          </Box>
+        )}
+
         {/* Submit */}
         <Button
           type="submit"

@@ -4,7 +4,7 @@ import { TOKEN_KEY } from './auth.client';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-function getCoreAuthUrl(): string {
+export function getCoreAuthUrl(): string {
   if (!isProd) {
     return 'http://localhost:8002/core-auth';
   }
