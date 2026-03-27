@@ -8,6 +8,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.models.caldav_token import CaldavToken
 from app.models.session import UserSession
 from app.models.user import AuthUser
 from app.schemas.challenge import UpdateEmailRequest, UpdatePasswordRequest
@@ -68,3 +69,13 @@ async def update_user_password(
         body.exclude_jti,
     )
     return {"message": "Password updated"}
+
+
+@router.get("/caldav-tokens/validate/{token}")
+async def validate_caldav_token(token: str, db: AsyncSession = Depends(get_db)):
+    """Called by core-schedule to validate a CalDAV token before serving an .ics feed."""
+    result = await db.execute(select(CaldavToken).where(CaldavToken.token == token, CaldavToken.revoked_at.is_(None)))
+    obj = result.scalar_one_or_none()
+    if not obj:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or revoked token")
+    return {"valid": True}

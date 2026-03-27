@@ -209,19 +209,39 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/api/status" | jq .
 }
 ```
 
-### CalDAV / iCal feed (no auth required)
+### CalDAV / iCal feed
 
-These endpoints are public — no `Authorization` header needed.
+CalDAV endpoints require a token in the URL. Token management requires a valid JWT session.
+
+#### 1. Create a token
 
 ```bash
-export GROUP_URL="$BASE_URL/caldav/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics"
-export TEACHER_URL="$BASE_URL/caldav/teachers/$USKOV_ID/calendar.ics"
+TOKEN_RESP=$(curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  "$BASE_URL/caldav/tokens" \
+  -d '{"device_name": "CalDav calendar"}')
+echo $TOKEN_RESP | jq .
 ```
 
-**Group feed:**
+```json
+{
+  "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "token": "abc123...",
+  "device_name": "CalDav calendar",
+  "created_at": "2026-03-27T21:00:00Z"
+}
+```
+
+Save the token value — it is shown only once:
 
 ```bash
-curl -s "$GROUP_URL" | head -20
+export CALDAV_TOKEN=$(echo $TOKEN_RESP | jq -r '.token')
+export CALDAV_TOKEN_ID=$(echo $TOKEN_RESP | jq -r '.id')
+```
+
+#### 2. Get group iCal feed
+
+```bash
+curl -s "$BASE_URL/caldav/$CALDAV_TOKEN/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics" | head -20
 ```
 
 ```
@@ -244,13 +264,13 @@ END:VEVENT
 ...
 ```
 
-**Teacher feed (Усков М.В.):**
+#### 3. Get teacher iCal feed (Усков М.В.)
 
 ```bash
-curl -s "$TEACHER_URL" | grep -E "^(SUMMARY|DTSTART|LOCATION)"
+curl -s "$BASE_URL/caldav/$CALDAV_TOKEN/teachers/$USKOV_ID/calendar.ics" | grep -E "^(SUMMARY|DTSTART|LOCATION)"
 ```
 
-Expected to contain Thursday lectures (slot 2, 10:45–12:20, ауд. 441):
+Expected (Thursday lecture, slot 2, 10:45–12:20, ауд. 441):
 
 ```
 DTSTART;TZID=Europe/Moscow:20260326T104500
@@ -258,28 +278,42 @@ SUMMARY:Сетевое программное обеспечение [Лекци
 LOCATION:441
 ```
 
-**Check Content-Type:**
+#### 4. List tokens
 
 ```bash
-curl -sI "$GROUP_URL" | grep -i content-type
-# Expected: content-type: text/calendar; charset=utf-8
+curl -s -H "Authorization: Bearer $TOKEN" "$BASE_URL/caldav/tokens" | jq .
 ```
 
-**Check that feed is non-empty when semester is active:**
+```json
+[
+  {
+    "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "device_name": "CalDav calendar",
+    "created_at": "2026-03-27T21:00:00Z",
+    "revoked_at": null
+  }
+]
+```
+
+#### 5. Revoke a token
 
 ```bash
-curl -s "$GROUP_URL" | grep -c "BEGIN:VEVENT"
-# Expected: > 0
+curl -s -X DELETE -H "Authorization: Bearer $TOKEN" "$BASE_URL/caldav/tokens/$CALDAV_TOKEN_ID"
+# Expected: 204 No Content
+
+# Feed now returns 401
+curl -s "$BASE_URL/caldav/$CALDAV_TOKEN/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics"
+# Expected: {"detail":"Invalid or revoked token"}
 ```
 
 #### Subscribe on iOS
 
-1. **Settings → Apps → Calendar → Accounts → Add Account → Other → Add Subscribed Calendar**
-2. Enter URL: `https://diploma.sewaca.ru/core-schedule/caldav/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics`
-3. Tap Next → Save
-4. Open Calendar app — events from the schedule should appear
+1. Create a token via `POST /caldav/tokens`
+2. **Settings → Apps → Calendar → Accounts → Add Account → Other → Add Subscribed Calendar**
+3. Enter URL: `https://diploma.sewaca.ru/core-schedule/caldav/{TOKEN}/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics`
+4. Tap Next → Save — events from the schedule appear in the Calendar app
 
-For teacher: replace the path with `/caldav/teachers/d0000000-0000-0000-0000-000000000004/calendar.ics`
+For teacher: `.../caldav/{TOKEN}/teachers/d0000000-0000-0000-0000-000000000004/calendar.ics`
 
 ## Troubleshooting
 

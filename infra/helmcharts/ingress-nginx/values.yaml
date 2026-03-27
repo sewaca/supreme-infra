@@ -54,12 +54,20 @@ ingress:
       port: 80
       type: fastapi
       paths:
+        - path: /core-auth/auth/caldav-tokens
+          method: GET
+        - path: /core-auth/auth/caldav-tokens
+          method: POST
+        - path: /core-auth/auth/caldav-tokens/[^/]+
+          method: DELETE
         - path: /core-auth/auth/challenge
           method: POST
         - path: /core-auth/auth/challenge/[^/]+/check
           method: GET
         - path: /core-auth/auth/challenge/[^/]+/verify
           method: POST
+        - path: /core-auth/auth/internal/caldav-tokens/validate/[^/]+
+          method: GET
         - path: /core-auth/auth/internal/users/[^/]+/email
           method: PATCH
         - path: /core-auth/auth/internal/users/[^/]+/password
@@ -188,9 +196,9 @@ ingress:
           method: PUT
         - path: /core-schedule/admin/templates/bulk
           method: POST
-        - path: /core-schedule/caldav/groups/[^/]+/calendar.ics
+        - path: /core-schedule/caldav/[^/]+/groups/[^/]+/calendar.ics
           method: GET
-        - path: /core-schedule/caldav/teachers/[^/]+/calendar.ics
+        - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
           method: GET
         - path: /core-schedule/groups/[^/]+/exams
           method: GET

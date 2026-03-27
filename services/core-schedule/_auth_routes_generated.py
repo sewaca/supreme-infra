@@ -41,8 +41,12 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-schedule/admin/templates/[^/]+$"), method="DELETE", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/admin/templates/[^/]+$"), method="PUT", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/admin/templates/bulk$"), method="POST", auth_level="valid"),
-    AuthRoute(path=re.compile(r"^/core-schedule/caldav/groups/[^/]+/calendar.ics$"), method="GET", auth_level="none"),
-    AuthRoute(path=re.compile(r"^/core-schedule/caldav/teachers/[^/]+/calendar.ics$"), method="GET", auth_level="none"),
+    AuthRoute(
+        path=re.compile(r"^/core-schedule/caldav/[^/]+/groups/[^/]+/calendar.ics$"), method="GET", auth_level="none"
+    ),
+    AuthRoute(
+        path=re.compile(r"^/core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics$"), method="GET", auth_level="none"
+    ),
     AuthRoute(path=re.compile(r"^/core-schedule/groups/[^/]+/exams$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/groups/[^/]+/schedule$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-schedule/groups/[^/]+/template$"), method="GET", auth_level="valid"),

@@ -80,10 +80,10 @@ routes:
   - path: /core-schedule/admin/templates/bulk
     method: POST
     auth_level: valid
-  - path: /core-schedule/caldav/groups/[^/]+/calendar.ics
+  - path: /core-schedule/caldav/[^/]+/groups/[^/]+/calendar.ics
     method: GET
     auth_level: none
-  - path: /core-schedule/caldav/teachers/[^/]+/calendar.ics
+  - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
     method: GET
     auth_level: none
   - path: /core-schedule/groups/[^/]+/exams
