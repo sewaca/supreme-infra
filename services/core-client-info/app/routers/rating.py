@@ -19,6 +19,32 @@ from app.schemas.rating import (
 
 router = APIRouter(prefix="/rating", tags=["rating"])
 
+# Must stay in sync with services/web-profile-ssr/src/entities/Rating/levelConfig.ts
+_LEVEL_ORDER = ["novice", "beginner", "intermediate", "advanced", "expert", "master", "legend"]
+_LEVEL_CONFIGS: dict[str, dict] = {
+    "novice": {"title": "Новичок", "min_xp": 0, "color": "#9E9E9E"},
+    "beginner": {"title": "Начинающий", "min_xp": 100, "color": "#8BC34A"},
+    "intermediate": {"title": "Продвинутый", "min_xp": 300, "color": "#2196F3"},
+    "advanced": {"title": "Опытный", "min_xp": 600, "color": "#9C27B0"},
+    "expert": {"title": "Эксперт", "min_xp": 1000, "color": "#FF9800"},
+    "master": {"title": "Мастер", "min_xp": 1500, "color": "#F44336"},
+    "legend": {"title": "Легенда", "min_xp": 2500, "color": "#D4AF37"},
+}
+
+
+def _enrich_level(level_key: str, current_xp: int) -> RatingLevelResponse:
+    cfg = _LEVEL_CONFIGS.get(level_key, _LEVEL_CONFIGS["novice"])
+    idx = _LEVEL_ORDER.index(level_key) if level_key in _LEVEL_ORDER else 0
+    next_key = _LEVEL_ORDER[idx + 1] if idx + 1 < len(_LEVEL_ORDER) else None
+    next_xp = _LEVEL_CONFIGS[next_key]["min_xp"] if next_key else cfg["min_xp"]
+    return RatingLevelResponse(
+        level=level_key,
+        current_xp=current_xp,
+        title=cfg["title"],
+        color=cfg["color"],
+        next_level_xp=next_xp,
+    )
+
 
 @router.get("/stats", response_model=StudentStatsResponse)
 async def get_stats(user_id: UUID, db: AsyncSession = Depends(get_db)):
@@ -45,8 +71,8 @@ async def get_level(user_id: UUID, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(RatingLevel).where(RatingLevel.user_id == user_id))
     level = result.scalar_one_or_none()
     if level is None:
-        return RatingLevelResponse(level="novice", current_xp=0)
-    return RatingLevelResponse(level=level.level, current_xp=level.current_xp)
+        return _enrich_level("novice", 0)
+    return _enrich_level(level.level, level.current_xp)
 
 
 @router.get("/rankings", response_model=list[RankingPositionResponse])

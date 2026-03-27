@@ -75,6 +75,9 @@ export default async () => {
   // Map level to local LevelInfo
   const levelKey = level.level as StudentLevel;
   const levelConfig = LEVEL_CONFIGS[levelKey] ?? LEVEL_CONFIGS.novice;
+  const levels = Object.keys(LEVEL_CONFIGS) as StudentLevel[];
+  const nextLevelKey = levels[levels.indexOf(levelKey) + 1] as StudentLevel | undefined;
+  const nextLevelXP = level.next_level_xp ?? (nextLevelKey ? LEVEL_CONFIGS[nextLevelKey].minXP : levelConfig.minXP);
 
   const ratingData: RatingData = {
     studentStats: {
@@ -89,7 +92,7 @@ export default async () => {
       level: levelKey,
       title: level.title ?? levelConfig.title,
       currentXP: level.current_xp,
-      nextLevelXP: level.next_level_xp ?? levelConfig.minXP,
+      nextLevelXP,
       color: level.color ?? levelConfig.color,
     },
     rankings: {
