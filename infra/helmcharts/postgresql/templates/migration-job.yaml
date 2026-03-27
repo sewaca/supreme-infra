@@ -117,12 +117,16 @@ spec:
               for file in $(ls *.sql | sort); do
                 echo "----------------------------------------"
                 echo "Applying migration: $file"
-                echo "----------------------------------------"
+                echo ""
                 
                 if psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$file" 2>&1; then
+                  echo ""
                   echo "✓ Successfully applied: $file"
+                  echo "----------------------------------------"
                 else
+                  echo ""
                   echo "✗ Failed to apply: $file"
+                  echo "----------------------------------------"
                   echo "Migration failed, aborting..."
                   exit 1
                 fi

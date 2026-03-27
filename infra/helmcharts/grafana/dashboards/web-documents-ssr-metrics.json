@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 305,
+      "id": 317,
       "panels": [
         {
-          "id": 303,
+          "id": 315,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 304,
+          "id": 316,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 306,
+      "id": 318,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 307,
+      "id": 319,
       "title": "GET /documents/gradebook",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 308,
+      "id": 320,
       "title": "GET /documents/gradebook - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 309,
+      "id": 321,
       "title": "GET /documents/gradebook - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 310,
+      "id": 322,
       "title": "GET /documents/gradebook - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 311,
+      "id": 323,
       "title": "GET /documents/student-id-card",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 312,
+      "id": 324,
       "title": "GET /documents/student-id-card - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 313,
+      "id": 325,
       "title": "GET /documents/student-id-card - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 314,
+      "id": 326,
       "title": "GET /documents/student-id-card - Bad RPS",
       "type": "timeseries",
       "datasource": {
