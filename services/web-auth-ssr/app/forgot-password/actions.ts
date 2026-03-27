@@ -13,6 +13,9 @@ export const startForgotPasswordChallenge = async (
       body: { email },
     });
 
+    if (response.status === 404) {
+      return { success: false, error: i18n('Пользователь с таким email не найден') };
+    }
     if (!response.ok || !data) {
       return { success: false, error: i18n('Не удалось начать сброс пароля. Попробуйте позже.') };
     }

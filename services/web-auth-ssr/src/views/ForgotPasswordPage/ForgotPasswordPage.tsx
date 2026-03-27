@@ -9,9 +9,10 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { CodeInput } from '@supreme-int/design-system/src/components/CodeInput/CodeInput';
+import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { PasswordInput } from '@supreme-int/design-system/src/components/PasswordInput/PasswordInput';
 import { i18n } from '@supreme-int/i18n';
-import NextLink from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {
   resetForgotPassword,
@@ -22,6 +23,7 @@ import {
 type Step = 'email' | 'challenge' | 'reset' | 'success';
 
 export function ForgotPasswordPage() {
+  const router = useRouter();
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
   const [challengeId, setChallengeId] = useState<string | null>(null);
@@ -107,33 +109,32 @@ export function ForgotPasswordPage() {
     setStep('email');
   };
 
+  const handleBack = () => {
+    if (step === 'email') {
+      router.push('/login');
+    } else {
+      handleRestart();
+    }
+  };
+
+  const navTitle =
+    step === 'success' ? i18n('Пароль изменён') : step === 'reset' ? i18n('Новый пароль') : i18n('Сброс пароля');
+
   return (
-    <Box
-      sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: { xs: 3, sm: 5 },
-        bgcolor: 'background.paper',
-        minHeight: '100vh',
-      }}
-    >
-      <Container maxWidth="xs">
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-            {step === 'success' ? i18n('Пароль изменён') : i18n('Сброс пароля')}
-          </Typography>
-          {step === 'email' && (
+    <Box sx={{ bgcolor: 'background.paper', minHeight: '100vh' }}>
+      <NavBar
+        onBack={step !== 'success' ? handleBack : undefined}
+        center={<Typography variant="title1">{navTitle}</Typography>}
+        onClose={() => router.push('/login')}
+      />
+
+      <Container maxWidth="xs" sx={{ pt: 4 }}>
+        {step === 'email' && (
+          <Stack spacing={2}>
             <Typography variant="body2" color="text.secondary">
               {i18n('Введите email вашего аккаунта, и мы отправим код для подтверждения')}
             </Typography>
-          )}
-        </Box>
 
-        {step === 'email' && (
-          <Stack spacing={2}>
             {serverError && <Alert severity="error">{serverError}</Alert>}
 
             <TextField
@@ -156,12 +157,6 @@ export function ForgotPasswordPage() {
             >
               {loading ? <CircularProgress size={24} /> : i18n('Продолжить')}
             </Button>
-
-            <Typography variant="body2" align="center" color="text.secondary">
-              <NextLink href="/login" style={{ color: '#1a237e', fontWeight: 600 }}>
-                {i18n('Вернуться ко входу')}
-              </NextLink>
-            </Typography>
           </Stack>
         )}
 
