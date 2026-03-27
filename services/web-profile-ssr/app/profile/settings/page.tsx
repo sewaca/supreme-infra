@@ -2,7 +2,7 @@ import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { loggingFetch } from 'services/web-profile-ssr/src/shared/api/fetchWithLog';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
-import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { environment } from 'services/web-profile-ssr/src/shared/lib/environment';
 import type { SessionInfo } from 'services/web-profile-ssr/src/views/SettingsPage/SessionsSection';
 import { SettingsPage } from 'services/web-profile-ssr/src/views/SettingsPage/SettingsPage';
@@ -10,7 +10,7 @@ import { SettingsPage } from 'services/web-profile-ssr/src/views/SettingsPage/Se
 export const dynamic = 'force-dynamic';
 
 export default async () => {
-  const userId = getUserId();
+  const userId = getMockedUserId();
   const token = await getServerAuthToken();
 
   const [settingsRes, sessions] = await Promise.all([

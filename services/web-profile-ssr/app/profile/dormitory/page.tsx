@@ -1,14 +1,14 @@
 import { CoreApplications } from '@supreme-int/api-client/src/index';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { DormitoryEmptyPage } from 'services/web-profile-ssr/src/views/DormitoryEmptyPage/DormitoryEmptyPage';
 import { DormitoryPage } from 'services/web-profile-ssr/src/views/DormitoryPage/DormitoryPage';
 
 export const dynamic = 'force-dynamic';
 
 export default async () => {
-  const userId = getUserId();
+  const userId = getMockedUserId();
 
   const [appRes, notificationsRes, ordersRes] = await Promise.all([
     CoreApplications.getApplicationsApplicationsGet({

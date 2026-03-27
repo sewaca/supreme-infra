@@ -1,13 +1,13 @@
 import { CoreApplications, CoreClientInfo } from '@supreme-int/api-client/src/index';
 import type { ProfileData } from 'services/web-profile-ssr/src/entities/Profile/ProfileData';
 import { coreApplicationsClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { ProfilePage } from 'services/web-profile-ssr/src/views/ProfilePage/ProfilePage';
 
 export const dynamic = 'force-dynamic';
 
 export default async () => {
-  const userId = getUserId();
+  const userId = getMockedUserId();
 
   const [userRes, applicationsRes] = await Promise.all([
     CoreClientInfo.getUserProfileUserGet({

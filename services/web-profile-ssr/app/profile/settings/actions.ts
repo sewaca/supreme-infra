@@ -7,9 +7,18 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { loggingFetch } from 'services/web-profile-ssr/src/shared/api/fetchWithLog';
+import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
-import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { environment } from 'services/web-profile-ssr/src/shared/lib/environment';
+
+async function getAuthUserId(): Promise<string> {
+  const token = await getServerAuthToken();
+  if (!token) throw new Error('No auth token');
+  const payload = decodeJwt(token);
+  if (!payload?.sub) throw new Error('Invalid token: missing sub');
+  return payload.sub;
+}
 
 export const updateSettings = async (settings: {
   isNewMessageNotificationsEnabled?: boolean;
@@ -17,7 +26,7 @@ export const updateSettings = async (settings: {
 }): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
-  const userId = getUserId();
+  const userId = getMockedUserId();
   try {
     await CoreClientInfo.updateSettingsSettingsPut({
       client: coreClientInfoClient,
@@ -127,7 +136,7 @@ export const applyEmailChange = async (
     return { success: false, error: i18n('Неверный формат email') };
   }
 
-  const userId = getUserId();
+  const userId = await getAuthUserId();
   const token = await getServerAuthToken();
   if (!token) {
     return { success: false, error: i18n('Не авторизован') };
@@ -166,7 +175,7 @@ export const applyPasswordChange = async (
     return { success: false, error: i18n('Новый пароль должен содержать минимум 6 символов') };
   }
 
-  const userId = getUserId();
+  const userId = await getAuthUserId();
   const token = await getServerAuthToken();
   if (!token) {
     return { success: false, error: i18n('Не авторизован') };

@@ -9,7 +9,7 @@ import type { Notification } from 'services/web-profile-ssr/src/entities/Notific
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { ORDER_TYPE } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export type OrderTypeCounts = Record<OrderType, number>;
 
@@ -59,7 +59,7 @@ function mapOrderDetailResponse(order: OrderDetailResponse): Order {
 }
 
 export async function getOrderTypeCounts(): Promise<OrderTypeCounts> {
-  const userId = getUserId();
+  const userId = getMockedUserId();
   const res = await CoreApplications.getOrdersCountsOrdersCountsGet({
     client: coreApplicationsClient,
     query: { user_id: userId },
@@ -76,7 +76,7 @@ export async function getOrderTypeCounts(): Promise<OrderTypeCounts> {
 }
 
 export async function getOrders(offset = 0, limit = 20, types?: OrderType[]): Promise<Order[]> {
-  const userId = getUserId();
+  const userId = getMockedUserId();
   const res = await CoreApplications.getOrdersOrdersGet({
     client: coreApplicationsClient,
     query: {
@@ -92,7 +92,7 @@ export async function getOrders(offset = 0, limit = 20, types?: OrderType[]): Pr
 }
 
 export async function getOrderById(id: string): Promise<Order | null> {
-  const userId = getUserId();
+  const userId = getMockedUserId();
   const res = await CoreApplications.getOrderOrdersOrderIdGet({
     client: coreApplicationsClient,
     path: { order_id: id },
