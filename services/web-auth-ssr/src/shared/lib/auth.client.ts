@@ -1,8 +1,10 @@
 import { TOKEN_KEY, type UserRole } from '@supreme-int/api-client/src/core-auth-bff';
+import { CoreAuth } from '@supreme-int/api-client/src/index';
+import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
 
 // Client-side calls go through ingress at /core-auth
-const AUTH_URL = '/core-auth';
+const coreAuthBrowserClient = createClient({ baseUrl: '/core-auth', ...jsonBodySerializer });
 
 export { TOKEN_KEY };
 export type { UserRole };
@@ -32,16 +34,6 @@ export function removeAuthToken(): void {
 
 // ─── API calls ────────────────────────────────────────────────────────────────
 
-async function callCoreAuth<T>(path: string, init?: RequestInit): Promise<T> {
-  // FIXME: use packages/api-client
-  const res = await fetch(`${AUTH_URL}${path}`, init);
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail ?? err.message ?? 'Request failed');
-  }
-  return res.json() as Promise<T>;
-}
-
 type ClientInfo = { location: string | null; device: string | null; ip: string | null };
 
 async function detectClientInfo(): Promise<ClientInfo> {
@@ -63,6 +55,8 @@ async function detectClientInfo(): Promise<ClientInfo> {
   return { location, device: null, ip: null };
 }
 
+export { detectClientInfo };
+
 export async function login(data: {
   email: string;
   password: string;
@@ -70,31 +64,48 @@ export async function login(data: {
   device?: string | null;
   ip_address?: string | null;
 }): Promise<AuthResponse> {
-  return callCoreAuth<AuthResponse>('/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+  const { data: result, error, response } = await CoreAuth.loginAuthLoginPost({
+    client: coreAuthBrowserClient,
+    body: data,
   });
+
+  if (!response.ok || !result) {
+    const detail = (error as { detail?: string } | undefined)?.detail;
+    throw new Error(detail ?? 'Request failed');
+  }
+
+  return result;
 }
 
 // Костыль для совместимости: core-auth register не возвращает токен,
 // поэтому после регистрации делаем auto-login.
 export async function register(data: { email: string; password: string; name: string }): Promise<AuthResponse> {
-  await callCoreAuth('/auth/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+  const { response, error } = await CoreAuth.registerAuthRegisterPost({
+    client: coreAuthBrowserClient,
+    body: data,
   });
+
+  if (!response.ok) {
+    const detail = (error as { detail?: string } | undefined)?.detail;
+    throw new Error(detail ?? 'Request failed');
+  }
+
   const { location, device, ip } = await detectClientInfo();
   return login({ email: data.email, password: data.password, location, device, ip_address: ip });
 }
 
-export { detectClientInfo };
-
 export async function getCurrentUser(token: string): Promise<UserInfo> {
-  return callCoreAuth<UserInfo>('/auth/me', {
+  const { data, error, response } = await CoreAuth.getMeAuthMeGet({
+    client: coreAuthBrowserClient,
     headers: { Authorization: `Bearer ${token}` },
   });
+
+  if (!response.ok || !data) {
+    const detail = (error as { detail?: string } | undefined)?.detail;
+    throw new Error(detail ?? 'Request failed');
+  }
+
+  return data;
 }
 
 export async function deleteUser(_id: string, _token: string): Promise<void> {

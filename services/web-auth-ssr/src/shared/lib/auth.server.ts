@@ -1,16 +1,10 @@
+import { CoreAuth } from '@supreme-int/api-client/src/index';
 import type { UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
 import { cookies } from 'next/headers';
+import { coreAuthClient } from '../api/clients';
 import { TOKEN_KEY } from './auth.client';
 
-const isProd = process.env.NODE_ENV === 'production';
-
-export function getCoreAuthUrl(): string {
-  if (!isProd) {
-    return 'http://localhost:8002/core-auth';
-  }
-  const namespace = process.env.BACKEND_SERVICE_NAMESPACE ?? process.env.POD_NAMESPACE;
-  return `http://core-auth.${namespace}.svc.cluster.local/core-auth`;
-}
+export { getCoreAuthUrl } from './environment';
 
 async function getAuthToken(): Promise<string | undefined> {
   const cookieStore = await cookies();
@@ -22,12 +16,11 @@ export async function getUser(): Promise<UserInfo | null> {
   if (!token) return null;
 
   try {
-    // FIXME: use packages/api-client
-    const res = await fetch(`${getCoreAuthUrl()}/auth/me`, {
+    const { data } = await CoreAuth.getMeAuthMeGet({
+      client: coreAuthClient,
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (!res.ok) return null;
-    return res.json() as Promise<UserInfo>;
+    return data ?? null;
   } catch {
     return null;
   }
