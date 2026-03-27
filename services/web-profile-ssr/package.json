@@ -41,7 +41,7 @@
     "@supreme-int/user-tours": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
-    "date-fns": "^4.1.0",
+    "date-fns": "catalog:",
     "driver.js": "catalog:",
     "next": "catalog:",
     "postcss": "catalog:",
