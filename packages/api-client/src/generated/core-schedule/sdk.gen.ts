@@ -2,603 +2,326 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type {
-  CreateClassroomAdminClassroomsPostData,
-  CreateClassroomAdminClassroomsPostErrors,
-  CreateClassroomAdminClassroomsPostResponses,
-  CreateOverrideAdminOverridesPostData,
-  CreateOverrideAdminOverridesPostErrors,
-  CreateOverrideAdminOverridesPostResponses,
-  CreateSemesterAdminSemestersPostData,
-  CreateSemesterAdminSemestersPostErrors,
-  CreateSemesterAdminSemestersPostResponses,
-  CreateSessionEventAdminSessionEventsPostData,
-  CreateSessionEventAdminSessionEventsPostErrors,
-  CreateSessionEventAdminSessionEventsPostResponses,
-  CreateTemplateAdminTemplatesPostData,
-  CreateTemplateAdminTemplatesPostErrors,
-  CreateTemplateAdminTemplatesPostResponses,
-  CreateTemplatesBulkAdminTemplatesBulkPostData,
-  CreateTemplatesBulkAdminTemplatesBulkPostErrors,
-  CreateTemplatesBulkAdminTemplatesBulkPostResponses,
-  DeleteClassroomAdminClassroomsClassroomIdDeleteData,
-  DeleteClassroomAdminClassroomsClassroomIdDeleteErrors,
-  DeleteClassroomAdminClassroomsClassroomIdDeleteResponses,
-  DeleteOverrideAdminOverridesOverrideIdDeleteData,
-  DeleteOverrideAdminOverridesOverrideIdDeleteErrors,
-  DeleteOverrideAdminOverridesOverrideIdDeleteResponses,
-  DeleteSemesterAdminSemestersSemesterIdDeleteData,
-  DeleteSemesterAdminSemestersSemesterIdDeleteErrors,
-  DeleteSemesterAdminSemestersSemesterIdDeleteResponses,
-  DeleteSessionEventAdminSessionEventsEventIdDeleteData,
-  DeleteSessionEventAdminSessionEventsEventIdDeleteErrors,
-  DeleteSessionEventAdminSessionEventsEventIdDeleteResponses,
-  DeleteTemplateAdminTemplatesTemplateIdDeleteData,
-  DeleteTemplateAdminTemplatesTemplateIdDeleteErrors,
-  DeleteTemplateAdminTemplatesTemplateIdDeleteResponses,
-  GetClassroomAdminClassroomsClassroomIdGetData,
-  GetClassroomAdminClassroomsClassroomIdGetErrors,
-  GetClassroomAdminClassroomsClassroomIdGetResponses,
-  GetSemesterAdminSemestersSemesterIdGetData,
-  GetSemesterAdminSemestersSemesterIdGetErrors,
-  GetSemesterAdminSemestersSemesterIdGetResponses,
-  GetStatusStatusGetData,
-  GetStatusStatusGetResponses,
-  GroupExamsGroupsGroupNameExamsGetData,
-  GroupExamsGroupsGroupNameExamsGetErrors,
-  GroupExamsGroupsGroupNameExamsGetResponses,
-  GroupScheduleGroupsGroupNameScheduleGetData,
-  GroupScheduleGroupsGroupNameScheduleGetErrors,
-  GroupScheduleGroupsGroupNameScheduleGetResponses,
-  GroupTemplateGroupsGroupNameTemplateGetData,
-  GroupTemplateGroupsGroupNameTemplateGetErrors,
-  GroupTemplateGroupsGroupNameTemplateGetResponses,
-  ListClassroomsAdminClassroomsGetData,
-  ListClassroomsAdminClassroomsGetErrors,
-  ListClassroomsAdminClassroomsGetResponses,
-  ListOverridesAdminOverridesGetData,
-  ListOverridesAdminOverridesGetErrors,
-  ListOverridesAdminOverridesGetResponses,
-  ListSemestersAdminSemestersGetData,
-  ListSemestersAdminSemestersGetErrors,
-  ListSemestersAdminSemestersGetResponses,
-  ListSessionEventsAdminSessionEventsGetData,
-  ListSessionEventsAdminSessionEventsGetErrors,
-  ListSessionEventsAdminSessionEventsGetResponses,
-  ListTemplatesAdminTemplatesGetData,
-  ListTemplatesAdminTemplatesGetErrors,
-  ListTemplatesAdminTemplatesGetResponses,
-  TeacherExamsTeachersTeacherNameExamsGetData,
-  TeacherExamsTeachersTeacherNameExamsGetErrors,
-  TeacherExamsTeachersTeacherNameExamsGetResponses,
-  TeacherScheduleTeachersTeacherNameScheduleGetData,
-  TeacherScheduleTeachersTeacherNameScheduleGetErrors,
-  TeacherScheduleTeachersTeacherNameScheduleGetResponses,
-  TeacherTemplateTeachersTeacherNameTemplateGetData,
-  TeacherTemplateTeachersTeacherNameTemplateGetErrors,
-  TeacherTemplateTeachersTeacherNameTemplateGetResponses,
-  UpdateClassroomAdminClassroomsClassroomIdPutData,
-  UpdateClassroomAdminClassroomsClassroomIdPutErrors,
-  UpdateClassroomAdminClassroomsClassroomIdPutResponses,
-  UpdateOverrideAdminOverridesOverrideIdPutData,
-  UpdateOverrideAdminOverridesOverrideIdPutErrors,
-  UpdateOverrideAdminOverridesOverrideIdPutResponses,
-  UpdateSemesterAdminSemestersSemesterIdPutData,
-  UpdateSemesterAdminSemestersSemesterIdPutErrors,
-  UpdateSemesterAdminSemestersSemesterIdPutResponses,
-  UpdateSessionEventAdminSessionEventsEventIdPutData,
-  UpdateSessionEventAdminSessionEventsEventIdPutErrors,
-  UpdateSessionEventAdminSessionEventsEventIdPutResponses,
-  UpdateTemplateAdminTemplatesTemplateIdPutData,
-  UpdateTemplateAdminTemplatesTemplateIdPutErrors,
-  UpdateTemplateAdminTemplatesTemplateIdPutResponses,
-} from './types.gen';
+import type { CreateClassroomAdminClassroomsPostData, CreateClassroomAdminClassroomsPostErrors, CreateClassroomAdminClassroomsPostResponses, CreateOverrideAdminOverridesPostData, CreateOverrideAdminOverridesPostErrors, CreateOverrideAdminOverridesPostResponses, CreateSemesterAdminSemestersPostData, CreateSemesterAdminSemestersPostErrors, CreateSemesterAdminSemestersPostResponses, CreateSessionEventAdminSessionEventsPostData, CreateSessionEventAdminSessionEventsPostErrors, CreateSessionEventAdminSessionEventsPostResponses, CreateTemplateAdminTemplatesPostData, CreateTemplateAdminTemplatesPostErrors, CreateTemplateAdminTemplatesPostResponses, CreateTemplatesBulkAdminTemplatesBulkPostData, CreateTemplatesBulkAdminTemplatesBulkPostErrors, CreateTemplatesBulkAdminTemplatesBulkPostResponses, DeleteClassroomAdminClassroomsClassroomIdDeleteData, DeleteClassroomAdminClassroomsClassroomIdDeleteErrors, DeleteClassroomAdminClassroomsClassroomIdDeleteResponses, DeleteOverrideAdminOverridesOverrideIdDeleteData, DeleteOverrideAdminOverridesOverrideIdDeleteErrors, DeleteOverrideAdminOverridesOverrideIdDeleteResponses, DeleteSemesterAdminSemestersSemesterIdDeleteData, DeleteSemesterAdminSemestersSemesterIdDeleteErrors, DeleteSemesterAdminSemestersSemesterIdDeleteResponses, DeleteSessionEventAdminSessionEventsEventIdDeleteData, DeleteSessionEventAdminSessionEventsEventIdDeleteErrors, DeleteSessionEventAdminSessionEventsEventIdDeleteResponses, DeleteTemplateAdminTemplatesTemplateIdDeleteData, DeleteTemplateAdminTemplatesTemplateIdDeleteErrors, DeleteTemplateAdminTemplatesTemplateIdDeleteResponses, GetClassroomAdminClassroomsClassroomIdGetData, GetClassroomAdminClassroomsClassroomIdGetErrors, GetClassroomAdminClassroomsClassroomIdGetResponses, GetSemesterAdminSemestersSemesterIdGetData, GetSemesterAdminSemestersSemesterIdGetErrors, GetSemesterAdminSemestersSemesterIdGetResponses, GetStatusApiStatusGetData, GetStatusApiStatusGetResponses, GroupExamsGroupsGroupNameExamsGetData, GroupExamsGroupsGroupNameExamsGetErrors, GroupExamsGroupsGroupNameExamsGetResponses, GroupScheduleGroupsGroupNameScheduleGetData, GroupScheduleGroupsGroupNameScheduleGetErrors, GroupScheduleGroupsGroupNameScheduleGetResponses, GroupTemplateGroupsGroupNameTemplateGetData, GroupTemplateGroupsGroupNameTemplateGetErrors, GroupTemplateGroupsGroupNameTemplateGetResponses, ListClassroomsAdminClassroomsGetData, ListClassroomsAdminClassroomsGetErrors, ListClassroomsAdminClassroomsGetResponses, ListOverridesAdminOverridesGetData, ListOverridesAdminOverridesGetErrors, ListOverridesAdminOverridesGetResponses, ListSemestersAdminSemestersGetData, ListSemestersAdminSemestersGetErrors, ListSemestersAdminSemestersGetResponses, ListSessionEventsAdminSessionEventsGetData, ListSessionEventsAdminSessionEventsGetErrors, ListSessionEventsAdminSessionEventsGetResponses, ListTeachersAdminTeachersGetData, ListTeachersAdminTeachersGetResponses, ListTemplatesAdminTemplatesGetData, ListTemplatesAdminTemplatesGetErrors, ListTemplatesAdminTemplatesGetResponses, SyncTeachersAdminTeachersSyncPostData, SyncTeachersAdminTeachersSyncPostErrors, SyncTeachersAdminTeachersSyncPostResponses, TeacherExamsTeachersTeacherIdExamsGetData, TeacherExamsTeachersTeacherIdExamsGetErrors, TeacherExamsTeachersTeacherIdExamsGetResponses, TeacherScheduleTeachersTeacherIdScheduleGetData, TeacherScheduleTeachersTeacherIdScheduleGetErrors, TeacherScheduleTeachersTeacherIdScheduleGetResponses, TeacherTemplateTeachersTeacherIdTemplateGetData, TeacherTemplateTeachersTeacherIdTemplateGetErrors, TeacherTemplateTeachersTeacherIdTemplateGetResponses, UpdateClassroomAdminClassroomsClassroomIdPutData, UpdateClassroomAdminClassroomsClassroomIdPutErrors, UpdateClassroomAdminClassroomsClassroomIdPutResponses, UpdateOverrideAdminOverridesOverrideIdPutData, UpdateOverrideAdminOverridesOverrideIdPutErrors, UpdateOverrideAdminOverridesOverrideIdPutResponses, UpdateSemesterAdminSemestersSemesterIdPutData, UpdateSemesterAdminSemestersSemesterIdPutErrors, UpdateSemesterAdminSemestersSemesterIdPutResponses, UpdateSessionEventAdminSessionEventsEventIdPutData, UpdateSessionEventAdminSessionEventsEventIdPutErrors, UpdateSessionEventAdminSessionEventsEventIdPutResponses, UpdateTemplateAdminTemplatesTemplateIdPutData, UpdateTemplateAdminTemplatesTemplateIdPutErrors, UpdateTemplateAdminTemplatesTemplateIdPutResponses } from './types.gen';
 
-export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<
-  TData,
-  ThrowOnError
-> & {
-  /**
-   * You can provide a client instance returned by `createClient()` instead of
-   * individual options. This might be also useful if you want to implement a
-   * custom client.
-   */
-  client?: Client;
-  /**
-   * You can pass arbitrary values through the `meta` object. This can be
-   * used to access values that aren't defined as part of the SDK function.
-   */
-  meta?: Record<string, unknown>;
+export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
+    /**
+     * You can provide a client instance returned by `createClient()` instead of
+     * individual options. This might be also useful if you want to implement a
+     * custom client.
+     */
+    client?: Client;
+    /**
+     * You can pass arbitrary values through the `meta` object. This can be
+     * used to access values that aren't defined as part of the SDK function.
+     */
+    meta?: Record<string, unknown>;
 };
 
 /**
  * Get Status
  */
-export const getStatusStatusGet = <ThrowOnError extends boolean = false>(
-  options?: Options<GetStatusStatusGetData, ThrowOnError>,
-) =>
-  (options?.client ?? client).get<GetStatusStatusGetResponses, unknown, ThrowOnError>({ url: '/status', ...options });
+export const getStatusApiStatusGet = <ThrowOnError extends boolean = false>(options?: Options<GetStatusApiStatusGetData, ThrowOnError>) => (options?.client ?? client).get<GetStatusApiStatusGetResponses, unknown, ThrowOnError>({ url: '/api/status', ...options });
 
 /**
  * Group Schedule
  */
-export const groupScheduleGroupsGroupNameScheduleGet = <ThrowOnError extends boolean = false>(
-  options: Options<GroupScheduleGroupsGroupNameScheduleGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    GroupScheduleGroupsGroupNameScheduleGetResponses,
-    GroupScheduleGroupsGroupNameScheduleGetErrors,
-    ThrowOnError
-  >({ url: '/groups/{group_name}/schedule', ...options });
+export const groupScheduleGroupsGroupNameScheduleGet = <ThrowOnError extends boolean = false>(options: Options<GroupScheduleGroupsGroupNameScheduleGetData, ThrowOnError>) => (options.client ?? client).get<GroupScheduleGroupsGroupNameScheduleGetResponses, GroupScheduleGroupsGroupNameScheduleGetErrors, ThrowOnError>({ url: '/groups/{group_name}/schedule', ...options });
 
 /**
  * Group Exams
  */
-export const groupExamsGroupsGroupNameExamsGet = <ThrowOnError extends boolean = false>(
-  options: Options<GroupExamsGroupsGroupNameExamsGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    GroupExamsGroupsGroupNameExamsGetResponses,
-    GroupExamsGroupsGroupNameExamsGetErrors,
-    ThrowOnError
-  >({ url: '/groups/{group_name}/exams', ...options });
+export const groupExamsGroupsGroupNameExamsGet = <ThrowOnError extends boolean = false>(options: Options<GroupExamsGroupsGroupNameExamsGetData, ThrowOnError>) => (options.client ?? client).get<GroupExamsGroupsGroupNameExamsGetResponses, GroupExamsGroupsGroupNameExamsGetErrors, ThrowOnError>({ url: '/groups/{group_name}/exams', ...options });
 
 /**
  * Group Template
  */
-export const groupTemplateGroupsGroupNameTemplateGet = <ThrowOnError extends boolean = false>(
-  options: Options<GroupTemplateGroupsGroupNameTemplateGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    GroupTemplateGroupsGroupNameTemplateGetResponses,
-    GroupTemplateGroupsGroupNameTemplateGetErrors,
-    ThrowOnError
-  >({ url: '/groups/{group_name}/template', ...options });
+export const groupTemplateGroupsGroupNameTemplateGet = <ThrowOnError extends boolean = false>(options: Options<GroupTemplateGroupsGroupNameTemplateGetData, ThrowOnError>) => (options.client ?? client).get<GroupTemplateGroupsGroupNameTemplateGetResponses, GroupTemplateGroupsGroupNameTemplateGetErrors, ThrowOnError>({ url: '/groups/{group_name}/template', ...options });
 
 /**
  * Teacher Schedule
  */
-export const teacherScheduleTeachersTeacherNameScheduleGet = <ThrowOnError extends boolean = false>(
-  options: Options<TeacherScheduleTeachersTeacherNameScheduleGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    TeacherScheduleTeachersTeacherNameScheduleGetResponses,
-    TeacherScheduleTeachersTeacherNameScheduleGetErrors,
-    ThrowOnError
-  >({ url: '/teachers/{teacher_name}/schedule', ...options });
+export const teacherScheduleTeachersTeacherIdScheduleGet = <ThrowOnError extends boolean = false>(options: Options<TeacherScheduleTeachersTeacherIdScheduleGetData, ThrowOnError>) => (options.client ?? client).get<TeacherScheduleTeachersTeacherIdScheduleGetResponses, TeacherScheduleTeachersTeacherIdScheduleGetErrors, ThrowOnError>({ url: '/teachers/{teacher_id}/schedule', ...options });
 
 /**
  * Teacher Exams
  */
-export const teacherExamsTeachersTeacherNameExamsGet = <ThrowOnError extends boolean = false>(
-  options: Options<TeacherExamsTeachersTeacherNameExamsGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    TeacherExamsTeachersTeacherNameExamsGetResponses,
-    TeacherExamsTeachersTeacherNameExamsGetErrors,
-    ThrowOnError
-  >({ url: '/teachers/{teacher_name}/exams', ...options });
+export const teacherExamsTeachersTeacherIdExamsGet = <ThrowOnError extends boolean = false>(options: Options<TeacherExamsTeachersTeacherIdExamsGetData, ThrowOnError>) => (options.client ?? client).get<TeacherExamsTeachersTeacherIdExamsGetResponses, TeacherExamsTeachersTeacherIdExamsGetErrors, ThrowOnError>({ url: '/teachers/{teacher_id}/exams', ...options });
 
 /**
  * Teacher Template
  */
-export const teacherTemplateTeachersTeacherNameTemplateGet = <ThrowOnError extends boolean = false>(
-  options: Options<TeacherTemplateTeachersTeacherNameTemplateGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    TeacherTemplateTeachersTeacherNameTemplateGetResponses,
-    TeacherTemplateTeachersTeacherNameTemplateGetErrors,
-    ThrowOnError
-  >({ url: '/teachers/{teacher_name}/template', ...options });
+export const teacherTemplateTeachersTeacherIdTemplateGet = <ThrowOnError extends boolean = false>(options: Options<TeacherTemplateTeachersTeacherIdTemplateGetData, ThrowOnError>) => (options.client ?? client).get<TeacherTemplateTeachersTeacherIdTemplateGetResponses, TeacherTemplateTeachersTeacherIdTemplateGetErrors, ThrowOnError>({ url: '/teachers/{teacher_id}/template', ...options });
 
 /**
  * List Classrooms
  */
-export const listClassroomsAdminClassroomsGet = <ThrowOnError extends boolean = false>(
-  options?: Options<ListClassroomsAdminClassroomsGetData, ThrowOnError>,
-) =>
-  (options?.client ?? client).get<
-    ListClassroomsAdminClassroomsGetResponses,
-    ListClassroomsAdminClassroomsGetErrors,
-    ThrowOnError
-  >({
+export const listClassroomsAdminClassroomsGet = <ThrowOnError extends boolean = false>(options?: Options<ListClassroomsAdminClassroomsGetData, ThrowOnError>) => (options?.client ?? client).get<ListClassroomsAdminClassroomsGetResponses, ListClassroomsAdminClassroomsGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/classrooms',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create Classroom
  */
-export const createClassroomAdminClassroomsPost = <ThrowOnError extends boolean = false>(
-  options: Options<CreateClassroomAdminClassroomsPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<
-    CreateClassroomAdminClassroomsPostResponses,
-    CreateClassroomAdminClassroomsPostErrors,
-    ThrowOnError
-  >({
+export const createClassroomAdminClassroomsPost = <ThrowOnError extends boolean = false>(options: Options<CreateClassroomAdminClassroomsPostData, ThrowOnError>) => (options.client ?? client).post<CreateClassroomAdminClassroomsPostResponses, CreateClassroomAdminClassroomsPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/classrooms',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete Classroom
  */
-export const deleteClassroomAdminClassroomsClassroomIdDelete = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteClassroomAdminClassroomsClassroomIdDeleteData, ThrowOnError>,
-) =>
-  (options.client ?? client).delete<
-    DeleteClassroomAdminClassroomsClassroomIdDeleteResponses,
-    DeleteClassroomAdminClassroomsClassroomIdDeleteErrors,
-    ThrowOnError
-  >({
+export const deleteClassroomAdminClassroomsClassroomIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteClassroomAdminClassroomsClassroomIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteClassroomAdminClassroomsClassroomIdDeleteResponses, DeleteClassroomAdminClassroomsClassroomIdDeleteErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/classrooms/{classroom_id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get Classroom
  */
-export const getClassroomAdminClassroomsClassroomIdGet = <ThrowOnError extends boolean = false>(
-  options: Options<GetClassroomAdminClassroomsClassroomIdGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    GetClassroomAdminClassroomsClassroomIdGetResponses,
-    GetClassroomAdminClassroomsClassroomIdGetErrors,
-    ThrowOnError
-  >({
+export const getClassroomAdminClassroomsClassroomIdGet = <ThrowOnError extends boolean = false>(options: Options<GetClassroomAdminClassroomsClassroomIdGetData, ThrowOnError>) => (options.client ?? client).get<GetClassroomAdminClassroomsClassroomIdGetResponses, GetClassroomAdminClassroomsClassroomIdGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/classrooms/{classroom_id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update Classroom
  */
-export const updateClassroomAdminClassroomsClassroomIdPut = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateClassroomAdminClassroomsClassroomIdPutData, ThrowOnError>,
-) =>
-  (options.client ?? client).put<
-    UpdateClassroomAdminClassroomsClassroomIdPutResponses,
-    UpdateClassroomAdminClassroomsClassroomIdPutErrors,
-    ThrowOnError
-  >({
+export const updateClassroomAdminClassroomsClassroomIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateClassroomAdminClassroomsClassroomIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateClassroomAdminClassroomsClassroomIdPutResponses, UpdateClassroomAdminClassroomsClassroomIdPutErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/classrooms/{classroom_id}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List Semesters
  */
-export const listSemestersAdminSemestersGet = <ThrowOnError extends boolean = false>(
-  options?: Options<ListSemestersAdminSemestersGetData, ThrowOnError>,
-) =>
-  (options?.client ?? client).get<
-    ListSemestersAdminSemestersGetResponses,
-    ListSemestersAdminSemestersGetErrors,
-    ThrowOnError
-  >({
+export const listSemestersAdminSemestersGet = <ThrowOnError extends boolean = false>(options?: Options<ListSemestersAdminSemestersGetData, ThrowOnError>) => (options?.client ?? client).get<ListSemestersAdminSemestersGetResponses, ListSemestersAdminSemestersGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/semesters',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create Semester
  */
-export const createSemesterAdminSemestersPost = <ThrowOnError extends boolean = false>(
-  options: Options<CreateSemesterAdminSemestersPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<
-    CreateSemesterAdminSemestersPostResponses,
-    CreateSemesterAdminSemestersPostErrors,
-    ThrowOnError
-  >({
+export const createSemesterAdminSemestersPost = <ThrowOnError extends boolean = false>(options: Options<CreateSemesterAdminSemestersPostData, ThrowOnError>) => (options.client ?? client).post<CreateSemesterAdminSemestersPostResponses, CreateSemesterAdminSemestersPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/semesters',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete Semester
  */
-export const deleteSemesterAdminSemestersSemesterIdDelete = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteSemesterAdminSemestersSemesterIdDeleteData, ThrowOnError>,
-) =>
-  (options.client ?? client).delete<
-    DeleteSemesterAdminSemestersSemesterIdDeleteResponses,
-    DeleteSemesterAdminSemestersSemesterIdDeleteErrors,
-    ThrowOnError
-  >({
+export const deleteSemesterAdminSemestersSemesterIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteSemesterAdminSemestersSemesterIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteSemesterAdminSemestersSemesterIdDeleteResponses, DeleteSemesterAdminSemestersSemesterIdDeleteErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/semesters/{semester_id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get Semester
  */
-export const getSemesterAdminSemestersSemesterIdGet = <ThrowOnError extends boolean = false>(
-  options: Options<GetSemesterAdminSemestersSemesterIdGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    GetSemesterAdminSemestersSemesterIdGetResponses,
-    GetSemesterAdminSemestersSemesterIdGetErrors,
-    ThrowOnError
-  >({
+export const getSemesterAdminSemestersSemesterIdGet = <ThrowOnError extends boolean = false>(options: Options<GetSemesterAdminSemestersSemesterIdGetData, ThrowOnError>) => (options.client ?? client).get<GetSemesterAdminSemestersSemesterIdGetResponses, GetSemesterAdminSemestersSemesterIdGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/semesters/{semester_id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update Semester
  */
-export const updateSemesterAdminSemestersSemesterIdPut = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateSemesterAdminSemestersSemesterIdPutData, ThrowOnError>,
-) =>
-  (options.client ?? client).put<
-    UpdateSemesterAdminSemestersSemesterIdPutResponses,
-    UpdateSemesterAdminSemestersSemesterIdPutErrors,
-    ThrowOnError
-  >({
+export const updateSemesterAdminSemestersSemesterIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateSemesterAdminSemestersSemesterIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateSemesterAdminSemestersSemesterIdPutResponses, UpdateSemesterAdminSemestersSemesterIdPutErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/semesters/{semester_id}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Teachers
+ */
+export const listTeachersAdminTeachersGet = <ThrowOnError extends boolean = false>(options?: Options<ListTeachersAdminTeachersGetData, ThrowOnError>) => (options?.client ?? client).get<ListTeachersAdminTeachersGetResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/teachers',
+    ...options
+});
+
+/**
+ * Sync Teachers
+ */
+export const syncTeachersAdminTeachersSyncPost = <ThrowOnError extends boolean = false>(options: Options<SyncTeachersAdminTeachersSyncPostData, ThrowOnError>) => (options.client ?? client).post<SyncTeachersAdminTeachersSyncPostResponses, SyncTeachersAdminTeachersSyncPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/teachers/sync',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List Templates
  */
-export const listTemplatesAdminTemplatesGet = <ThrowOnError extends boolean = false>(
-  options: Options<ListTemplatesAdminTemplatesGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    ListTemplatesAdminTemplatesGetResponses,
-    ListTemplatesAdminTemplatesGetErrors,
-    ThrowOnError
-  >({
+export const listTemplatesAdminTemplatesGet = <ThrowOnError extends boolean = false>(options: Options<ListTemplatesAdminTemplatesGetData, ThrowOnError>) => (options.client ?? client).get<ListTemplatesAdminTemplatesGetResponses, ListTemplatesAdminTemplatesGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/templates',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create Template
  */
-export const createTemplateAdminTemplatesPost = <ThrowOnError extends boolean = false>(
-  options: Options<CreateTemplateAdminTemplatesPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<
-    CreateTemplateAdminTemplatesPostResponses,
-    CreateTemplateAdminTemplatesPostErrors,
-    ThrowOnError
-  >({
+export const createTemplateAdminTemplatesPost = <ThrowOnError extends boolean = false>(options: Options<CreateTemplateAdminTemplatesPostData, ThrowOnError>) => (options.client ?? client).post<CreateTemplateAdminTemplatesPostResponses, CreateTemplateAdminTemplatesPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/templates',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Create Templates Bulk
  */
-export const createTemplatesBulkAdminTemplatesBulkPost = <ThrowOnError extends boolean = false>(
-  options: Options<CreateTemplatesBulkAdminTemplatesBulkPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<
-    CreateTemplatesBulkAdminTemplatesBulkPostResponses,
-    CreateTemplatesBulkAdminTemplatesBulkPostErrors,
-    ThrowOnError
-  >({
+export const createTemplatesBulkAdminTemplatesBulkPost = <ThrowOnError extends boolean = false>(options: Options<CreateTemplatesBulkAdminTemplatesBulkPostData, ThrowOnError>) => (options.client ?? client).post<CreateTemplatesBulkAdminTemplatesBulkPostResponses, CreateTemplatesBulkAdminTemplatesBulkPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/templates/bulk',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete Template
  */
-export const deleteTemplateAdminTemplatesTemplateIdDelete = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteTemplateAdminTemplatesTemplateIdDeleteData, ThrowOnError>,
-) =>
-  (options.client ?? client).delete<
-    DeleteTemplateAdminTemplatesTemplateIdDeleteResponses,
-    DeleteTemplateAdminTemplatesTemplateIdDeleteErrors,
-    ThrowOnError
-  >({
+export const deleteTemplateAdminTemplatesTemplateIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteTemplateAdminTemplatesTemplateIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteTemplateAdminTemplatesTemplateIdDeleteResponses, DeleteTemplateAdminTemplatesTemplateIdDeleteErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/templates/{template_id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update Template
  */
-export const updateTemplateAdminTemplatesTemplateIdPut = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateTemplateAdminTemplatesTemplateIdPutData, ThrowOnError>,
-) =>
-  (options.client ?? client).put<
-    UpdateTemplateAdminTemplatesTemplateIdPutResponses,
-    UpdateTemplateAdminTemplatesTemplateIdPutErrors,
-    ThrowOnError
-  >({
+export const updateTemplateAdminTemplatesTemplateIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateTemplateAdminTemplatesTemplateIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateTemplateAdminTemplatesTemplateIdPutResponses, UpdateTemplateAdminTemplatesTemplateIdPutErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/templates/{template_id}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List Overrides
  */
-export const listOverridesAdminOverridesGet = <ThrowOnError extends boolean = false>(
-  options: Options<ListOverridesAdminOverridesGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    ListOverridesAdminOverridesGetResponses,
-    ListOverridesAdminOverridesGetErrors,
-    ThrowOnError
-  >({
+export const listOverridesAdminOverridesGet = <ThrowOnError extends boolean = false>(options: Options<ListOverridesAdminOverridesGetData, ThrowOnError>) => (options.client ?? client).get<ListOverridesAdminOverridesGetResponses, ListOverridesAdminOverridesGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/overrides',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create Override
  */
-export const createOverrideAdminOverridesPost = <ThrowOnError extends boolean = false>(
-  options: Options<CreateOverrideAdminOverridesPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<
-    CreateOverrideAdminOverridesPostResponses,
-    CreateOverrideAdminOverridesPostErrors,
-    ThrowOnError
-  >({
+export const createOverrideAdminOverridesPost = <ThrowOnError extends boolean = false>(options: Options<CreateOverrideAdminOverridesPostData, ThrowOnError>) => (options.client ?? client).post<CreateOverrideAdminOverridesPostResponses, CreateOverrideAdminOverridesPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/overrides',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete Override
  */
-export const deleteOverrideAdminOverridesOverrideIdDelete = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteOverrideAdminOverridesOverrideIdDeleteData, ThrowOnError>,
-) =>
-  (options.client ?? client).delete<
-    DeleteOverrideAdminOverridesOverrideIdDeleteResponses,
-    DeleteOverrideAdminOverridesOverrideIdDeleteErrors,
-    ThrowOnError
-  >({
+export const deleteOverrideAdminOverridesOverrideIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteOverrideAdminOverridesOverrideIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteOverrideAdminOverridesOverrideIdDeleteResponses, DeleteOverrideAdminOverridesOverrideIdDeleteErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/overrides/{override_id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update Override
  */
-export const updateOverrideAdminOverridesOverrideIdPut = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateOverrideAdminOverridesOverrideIdPutData, ThrowOnError>,
-) =>
-  (options.client ?? client).put<
-    UpdateOverrideAdminOverridesOverrideIdPutResponses,
-    UpdateOverrideAdminOverridesOverrideIdPutErrors,
-    ThrowOnError
-  >({
+export const updateOverrideAdminOverridesOverrideIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateOverrideAdminOverridesOverrideIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateOverrideAdminOverridesOverrideIdPutResponses, UpdateOverrideAdminOverridesOverrideIdPutErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/overrides/{override_id}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List Session Events
  */
-export const listSessionEventsAdminSessionEventsGet = <ThrowOnError extends boolean = false>(
-  options: Options<ListSessionEventsAdminSessionEventsGetData, ThrowOnError>,
-) =>
-  (options.client ?? client).get<
-    ListSessionEventsAdminSessionEventsGetResponses,
-    ListSessionEventsAdminSessionEventsGetErrors,
-    ThrowOnError
-  >({
+export const listSessionEventsAdminSessionEventsGet = <ThrowOnError extends boolean = false>(options: Options<ListSessionEventsAdminSessionEventsGetData, ThrowOnError>) => (options.client ?? client).get<ListSessionEventsAdminSessionEventsGetResponses, ListSessionEventsAdminSessionEventsGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/session-events',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create Session Event
  */
-export const createSessionEventAdminSessionEventsPost = <ThrowOnError extends boolean = false>(
-  options: Options<CreateSessionEventAdminSessionEventsPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<
-    CreateSessionEventAdminSessionEventsPostResponses,
-    CreateSessionEventAdminSessionEventsPostErrors,
-    ThrowOnError
-  >({
+export const createSessionEventAdminSessionEventsPost = <ThrowOnError extends boolean = false>(options: Options<CreateSessionEventAdminSessionEventsPostData, ThrowOnError>) => (options.client ?? client).post<CreateSessionEventAdminSessionEventsPostResponses, CreateSessionEventAdminSessionEventsPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/session-events',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete Session Event
  */
-export const deleteSessionEventAdminSessionEventsEventIdDelete = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteSessionEventAdminSessionEventsEventIdDeleteData, ThrowOnError>,
-) =>
-  (options.client ?? client).delete<
-    DeleteSessionEventAdminSessionEventsEventIdDeleteResponses,
-    DeleteSessionEventAdminSessionEventsEventIdDeleteErrors,
-    ThrowOnError
-  >({
+export const deleteSessionEventAdminSessionEventsEventIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteSessionEventAdminSessionEventsEventIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteSessionEventAdminSessionEventsEventIdDeleteResponses, DeleteSessionEventAdminSessionEventsEventIdDeleteErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/session-events/{event_id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update Session Event
  */
-export const updateSessionEventAdminSessionEventsEventIdPut = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateSessionEventAdminSessionEventsEventIdPutData, ThrowOnError>,
-) =>
-  (options.client ?? client).put<
-    UpdateSessionEventAdminSessionEventsEventIdPutResponses,
-    UpdateSessionEventAdminSessionEventsEventIdPutErrors,
-    ThrowOnError
-  >({
+export const updateSessionEventAdminSessionEventsEventIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateSessionEventAdminSessionEventsEventIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateSessionEventAdminSessionEventsEventIdPutResponses, UpdateSessionEventAdminSessionEventsEventIdPutErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/session-events/{event_id}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

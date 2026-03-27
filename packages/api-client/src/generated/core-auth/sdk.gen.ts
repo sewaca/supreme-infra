@@ -2,82 +2,86 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type {
-  GetMeAuthMeGetData,
-  GetMeAuthMeGetResponses,
-  GetStatusStatusGetData,
-  GetStatusStatusGetResponses,
-  LoginAuthLoginPostData,
-  LoginAuthLoginPostErrors,
-  LoginAuthLoginPostResponses,
-  RegisterAuthRegisterPostData,
-  RegisterAuthRegisterPostErrors,
-  RegisterAuthRegisterPostResponses,
-} from './types.gen';
+import type { GetMeAuthMeGetData, GetMeAuthMeGetResponses, GetSessionsAuthSessionsGetData, GetSessionsAuthSessionsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, LoginAuthLoginPostData, LoginAuthLoginPostErrors, LoginAuthLoginPostResponses, RegisterAuthRegisterPostData, RegisterAuthRegisterPostErrors, RegisterAuthRegisterPostResponses, RevokeSessionAuthSessionsSessionIdDeleteData, RevokeSessionAuthSessionsSessionIdDeleteErrors, RevokeSessionAuthSessionsSessionIdDeleteResponses, ValidateSessionAuthValidateSessionPostData, ValidateSessionAuthValidateSessionPostErrors, ValidateSessionAuthValidateSessionPostResponses } from './types.gen';
 
-export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<
-  TData,
-  ThrowOnError
-> & {
-  /**
-   * You can provide a client instance returned by `createClient()` instead of
-   * individual options. This might be also useful if you want to implement a
-   * custom client.
-   */
-  client?: Client;
-  /**
-   * You can pass arbitrary values through the `meta` object. This can be
-   * used to access values that aren't defined as part of the SDK function.
-   */
-  meta?: Record<string, unknown>;
+export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
+    /**
+     * You can provide a client instance returned by `createClient()` instead of
+     * individual options. This might be also useful if you want to implement a
+     * custom client.
+     */
+    client?: Client;
+    /**
+     * You can pass arbitrary values through the `meta` object. This can be
+     * used to access values that aren't defined as part of the SDK function.
+     */
+    meta?: Record<string, unknown>;
 };
 
 /**
  * Get Status
  */
-export const getStatusStatusGet = <ThrowOnError extends boolean = false>(
-  options?: Options<GetStatusStatusGetData, ThrowOnError>,
-) =>
-  (options?.client ?? client).get<GetStatusStatusGetResponses, unknown, ThrowOnError>({ url: '/status', ...options });
+export const getStatusStatusGet = <ThrowOnError extends boolean = false>(options?: Options<GetStatusStatusGetData, ThrowOnError>) => (options?.client ?? client).get<GetStatusStatusGetResponses, unknown, ThrowOnError>({ url: '/status', ...options });
 
 /**
  * Login
  */
-export const loginAuthLoginPost = <ThrowOnError extends boolean = false>(
-  options: Options<LoginAuthLoginPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<LoginAuthLoginPostResponses, LoginAuthLoginPostErrors, ThrowOnError>({
+export const loginAuthLoginPost = <ThrowOnError extends boolean = false>(options: Options<LoginAuthLoginPostData, ThrowOnError>) => (options.client ?? client).post<LoginAuthLoginPostResponses, LoginAuthLoginPostErrors, ThrowOnError>({
     url: '/auth/login',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Register
  */
-export const registerAuthRegisterPost = <ThrowOnError extends boolean = false>(
-  options: Options<RegisterAuthRegisterPostData, ThrowOnError>,
-) =>
-  (options.client ?? client).post<RegisterAuthRegisterPostResponses, RegisterAuthRegisterPostErrors, ThrowOnError>({
+export const registerAuthRegisterPost = <ThrowOnError extends boolean = false>(options: Options<RegisterAuthRegisterPostData, ThrowOnError>) => (options.client ?? client).post<RegisterAuthRegisterPostResponses, RegisterAuthRegisterPostErrors, ThrowOnError>({
     url: '/auth/register',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Get Me
  */
-export const getMeAuthMeGet = <ThrowOnError extends boolean = false>(
-  options?: Options<GetMeAuthMeGetData, ThrowOnError>,
-) =>
-  (options?.client ?? client).get<GetMeAuthMeGetResponses, unknown, ThrowOnError>({
+export const getMeAuthMeGet = <ThrowOnError extends boolean = false>(options?: Options<GetMeAuthMeGetData, ThrowOnError>) => (options?.client ?? client).get<GetMeAuthMeGetResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/auth/me',
+    ...options
+});
+
+/**
+ * Get Sessions
+ */
+export const getSessionsAuthSessionsGet = <ThrowOnError extends boolean = false>(options?: Options<GetSessionsAuthSessionsGetData, ThrowOnError>) => (options?.client ?? client).get<GetSessionsAuthSessionsGetResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/sessions',
+    ...options
+});
+
+/**
+ * Revoke Session
+ */
+export const revokeSessionAuthSessionsSessionIdDelete = <ThrowOnError extends boolean = false>(options: Options<RevokeSessionAuthSessionsSessionIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<RevokeSessionAuthSessionsSessionIdDeleteResponses, RevokeSessionAuthSessionsSessionIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/sessions/{session_id}',
+    ...options
+});
+
+/**
+ * Validate Session
+ */
+export const validateSessionAuthValidateSessionPost = <ThrowOnError extends boolean = false>(options: Options<ValidateSessionAuthValidateSessionPostData, ThrowOnError>) => (options.client ?? client).post<ValidateSessionAuthValidateSessionPostResponses, ValidateSessionAuthValidateSessionPostErrors, ThrowOnError>({
+    url: '/auth/validate-session',
     ...options,
-  });
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

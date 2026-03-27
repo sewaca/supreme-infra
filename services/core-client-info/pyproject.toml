@@ -21,6 +21,7 @@ dependencies = [
     "asyncpg>=0.30.0",
     "alembic>=1.14.0",
     "PyJWT>=2.9.0",
+    "authorization-py",
 ]
 
 [tool.uv]
@@ -38,6 +39,9 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+authorization-py = { path = "../../packages/authorization-py" }
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"]

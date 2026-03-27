@@ -6,11 +6,11 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/status": {
+    "/api/status": {
       "get": {
         "tags": ["status"],
         "summary": "Get Status",
-        "operationId": "get_status_status_get",
+        "operationId": "get_status_api_status_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -222,19 +222,20 @@
         }
       }
     },
-    "/teachers/{teacher_name}/schedule": {
+    "/teachers/{teacher_id}/schedule": {
       "get": {
         "tags": ["teachers"],
         "summary": "Teacher Schedule",
-        "operationId": "teacher_schedule_teachers__teacher_name__schedule_get",
+        "operationId": "teacher_schedule_teachers__teacher_id__schedule_get",
         "parameters": [
           {
-            "name": "teacher_name",
+            "name": "teacher_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Teacher Name"
+              "format": "uuid",
+              "title": "Teacher Id"
             }
           },
           {
@@ -285,7 +286,7 @@
                   "items": {
                     "$ref": "#/components/schemas/DaySchedule"
                   },
-                  "title": "Response Teacher Schedule Teachers  Teacher Name  Schedule Get"
+                  "title": "Response Teacher Schedule Teachers  Teacher Id  Schedule Get"
                 }
               }
             }
@@ -303,19 +304,20 @@
         }
       }
     },
-    "/teachers/{teacher_name}/exams": {
+    "/teachers/{teacher_id}/exams": {
       "get": {
         "tags": ["teachers"],
         "summary": "Teacher Exams",
-        "operationId": "teacher_exams_teachers__teacher_name__exams_get",
+        "operationId": "teacher_exams_teachers__teacher_id__exams_get",
         "parameters": [
           {
-            "name": "teacher_name",
+            "name": "teacher_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Teacher Name"
+              "format": "uuid",
+              "title": "Teacher Id"
             }
           },
           {
@@ -346,7 +348,7 @@
                   "items": {
                     "$ref": "#/components/schemas/SessionEventResponse"
                   },
-                  "title": "Response Teacher Exams Teachers  Teacher Name  Exams Get"
+                  "title": "Response Teacher Exams Teachers  Teacher Id  Exams Get"
                 }
               }
             }
@@ -364,19 +366,20 @@
         }
       }
     },
-    "/teachers/{teacher_name}/template": {
+    "/teachers/{teacher_id}/template": {
       "get": {
         "tags": ["teachers"],
         "summary": "Teacher Template",
-        "operationId": "teacher_template_teachers__teacher_name__template_get",
+        "operationId": "teacher_template_teachers__teacher_id__template_get",
         "parameters": [
           {
-            "name": "teacher_name",
+            "name": "teacher_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Teacher Name"
+              "format": "uuid",
+              "title": "Teacher Id"
             }
           },
           {
@@ -913,6 +916,82 @@
             }
           }
         }
+      }
+    },
+    "/admin/teachers": {
+      "get": {
+        "tags": ["admin-teachers"],
+        "summary": "List Teachers",
+        "operationId": "list_teachers_admin_teachers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TeacherCacheResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Teachers Admin Teachers Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/admin/teachers/sync": {
+      "post": {
+        "tags": ["admin-teachers"],
+        "summary": "Sync Teachers",
+        "operationId": "sync_teachers_admin_teachers_sync_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeacherSyncRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TeacherCacheResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Sync Teachers Admin Teachers Sync Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/admin/templates": {
@@ -1920,6 +1999,18 @@
             "type": "string",
             "title": "Lesson Type"
           },
+          "teacher_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teacher Id"
+          },
           "teacher_name": {
             "anyOf": [
               {
@@ -1970,6 +2061,7 @@
           "end_time",
           "subject_name",
           "lesson_type",
+          "teacher_id",
           "teacher_name",
           "group_name",
           "classroom_name"
@@ -2022,16 +2114,17 @@
             ],
             "title": "New Lesson Type"
           },
-          "new_teacher_name": {
+          "new_teacher_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "New Teacher Name"
+            "title": "New Teacher Id"
           },
           "new_classroom_name": {
             "anyOf": [
@@ -2133,6 +2226,18 @@
             ],
             "title": "New Lesson Type"
           },
+          "new_teacher_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "New Teacher Id"
+          },
           "new_teacher_name": {
             "anyOf": [
               {
@@ -2199,6 +2304,7 @@
           "action",
           "new_subject_name",
           "new_lesson_type",
+          "new_teacher_id",
           "new_teacher_name",
           "new_classroom_name",
           "new_start_time",
@@ -2276,16 +2382,17 @@
             ],
             "title": "New Lesson Type"
           },
-          "new_teacher_name": {
+          "new_teacher_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "New Teacher Name"
+            "title": "New Teacher Id"
           },
           "new_classroom_name": {
             "anyOf": [
@@ -2504,16 +2611,17 @@
             "type": "string",
             "title": "Lesson Type"
           },
-          "teacher_name": {
+          "teacher_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Teacher Name"
+            "title": "Teacher Id"
           },
           "group_name": {
             "type": "string",
@@ -2579,6 +2687,18 @@
             "type": "string",
             "title": "Lesson Type"
           },
+          "teacher_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teacher Id"
+          },
           "teacher_name": {
             "anyOf": [
               {
@@ -2616,6 +2736,7 @@
           "end_time",
           "subject_name",
           "lesson_type",
+          "teacher_id",
           "teacher_name",
           "group_name",
           "classroom_name"
@@ -2691,16 +2812,17 @@
             ],
             "title": "Lesson Type"
           },
-          "teacher_name": {
+          "teacher_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Teacher Name"
+            "title": "Teacher Id"
           },
           "group_name": {
             "anyOf": [
@@ -2727,6 +2849,52 @@
         },
         "type": "object",
         "title": "SessionEventUpdate"
+      },
+      "TeacherCacheResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": ["id", "name"],
+        "title": "TeacherCacheResponse"
+      },
+      "TeacherSyncItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": ["id", "name"],
+        "title": "TeacherSyncItem"
+      },
+      "TeacherSyncRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TeacherSyncItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": ["items"],
+        "title": "TeacherSyncRequest"
       },
       "TemplateResponse": {
         "properties": {
@@ -2807,16 +2975,17 @@
             "type": "string",
             "title": "Lesson Type"
           },
-          "teacher_name": {
+          "teacher_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Teacher Name"
+            "title": "Teacher Id"
           },
           "group_name": {
             "type": "string",
@@ -2888,6 +3057,18 @@
             "type": "string",
             "title": "Lesson Type"
           },
+          "teacher_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teacher Id"
+          },
           "teacher_name": {
             "anyOf": [
               {
@@ -2926,6 +3107,7 @@
           "end_time",
           "subject_name",
           "lesson_type",
+          "teacher_id",
           "teacher_name",
           "group_name",
           "classroom_name"
@@ -3011,16 +3193,17 @@
             ],
             "title": "Lesson Type"
           },
-          "teacher_name": {
+          "teacher_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Teacher Name"
+            "title": "Teacher Id"
           },
           "group_name": {
             "anyOf": [

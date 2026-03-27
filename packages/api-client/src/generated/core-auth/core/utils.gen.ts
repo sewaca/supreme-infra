@@ -73,7 +73,9 @@ export const defaultPathSerializer = ({ path, url: _url }: PathSerializer) => {
         continue;
       }
 
-      const replaceValue = encodeURIComponent(style === 'label' ? `.${value as string}` : (value as string));
+      const replaceValue = encodeURIComponent(
+        style === 'label' ? `.${value as string}` : (value as string),
+      );
       url = url.replace(match, replaceValue);
     }
   }
@@ -118,7 +120,8 @@ export function getValidRequestBody(options: {
 
   if (isSerializedBody) {
     if ('serializedBody' in options) {
-      const hasSerializedBody = options.serializedBody !== undefined && options.serializedBody !== '';
+      const hasSerializedBody =
+        options.serializedBody !== undefined && options.serializedBody !== '';
 
       return hasSerializedBody ? options.serializedBody : null;
     }
