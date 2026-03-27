@@ -92,7 +92,9 @@ export default async () => {
       level: levelKey,
       title: level.title ?? levelConfig.title,
       currentXP: level.current_xp,
+      currentLevelMinXP: levelConfig.minXP,
       nextLevelXP,
+      nextLevelTitle: nextLevelKey ? LEVEL_CONFIGS[nextLevelKey].title : undefined,
       color: level.color ?? levelConfig.color,
     },
     rankings: {

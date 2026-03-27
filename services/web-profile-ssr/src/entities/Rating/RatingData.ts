@@ -27,7 +27,9 @@ export type LevelInfo = {
   level: StudentLevel;
   title: string;
   currentXP: number;
+  currentLevelMinXP: number;
   nextLevelXP: number;
+  nextLevelTitle?: string;
   color: string;
 };
 

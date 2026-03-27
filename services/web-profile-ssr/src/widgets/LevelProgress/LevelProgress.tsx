@@ -9,8 +9,11 @@ type Props = {
 };
 
 export const LevelProgress = ({ levelInfo }: Props) => {
-  const progress = levelInfo.nextLevelXP > 0 ? Math.min((levelInfo.currentXP / levelInfo.nextLevelXP) * 100, 100) : 100;
   const isMaxLevel = levelInfo.level === 'legend';
+  const range = levelInfo.nextLevelXP - levelInfo.currentLevelMinXP;
+  const earned = levelInfo.currentXP - levelInfo.currentLevelMinXP;
+  const progress = range > 0 ? Math.min((earned / range) * 100, 100) : 100;
+  const xpRemaining = levelInfo.nextLevelXP - levelInfo.currentXP;
 
   return (
     <Paper
@@ -27,27 +30,30 @@ export const LevelProgress = ({ levelInfo }: Props) => {
         </Typography>
       </Box>
       <Box className={styles.progressSection}>
-        <Box className={styles.xpInfo}>
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {levelInfo.currentXP} XP
-          </Typography>
-          {!isMaxLevel && (
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              / {levelInfo.nextLevelXP} XP
-            </Typography>
-          )}
-        </Box>
         {!isMaxLevel ? (
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: `${levelInfo.color}33`,
-              '& .MuiLinearProgress-bar': { backgroundColor: levelInfo.color },
-            }}
-          />
+          <>
+            <Box className={styles.xpInfo}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {earned} / {range} XP
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                до уровня «{levelInfo.nextLevelTitle}»
+              </Typography>
+            </Box>
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: `${levelInfo.color}33`,
+                '& .MuiLinearProgress-bar': { backgroundColor: levelInfo.color },
+              }}
+            />
+            <Typography variant="caption" sx={{ color: 'text.secondary', marginTop: 0.5 }}>
+              Ещё {xpRemaining} XP
+            </Typography>
+          </>
         ) : (
           <Typography
             variant="caption"

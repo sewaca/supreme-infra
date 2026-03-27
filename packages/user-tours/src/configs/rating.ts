@@ -16,7 +16,18 @@ export const getRatingTourSteps = (): DriveStep[] => [
     popover: {
       title: i18n('Уровень студента'),
       description: i18n(
-        'Зарабатывай опыт (XP) за высокие оценки, достижения и стрики. Повышай свой уровень от Новичка до Легенды!',
+        'Твой уровень растёт от Новичка до Легенды. Шкала показывает, сколько XP осталось до следующего звания.',
+      ),
+      side: 'bottom',
+      align: 'center',
+    },
+  },
+  {
+    element: '[data-tour="level-progress"]',
+    popover: {
+      title: i18n('Как начисляется XP?'),
+      description: i18n(
+        'XP складывается из трёх источников:\n\n• Средний балл × 200 — чем выше оценки, тем больше опыта\n• Каждое разблокированное достижение +50 XP\n• Каждый день серии без пропусков +10 XP',
       ),
       side: 'bottom',
       align: 'center',
@@ -27,15 +38,6 @@ export const getRatingTourSteps = (): DriveStep[] => [
     popover: {
       title: i18n('Серия без пропусков'),
       description: i18n('Поддерживай серию дней без пропусков! Чем длиннее серия, тем больше опыта ты получаешь.'),
-      side: 'bottom',
-      align: 'center',
-    },
-  },
-  {
-    element: '[data-tour="rating-filters"]',
-    popover: {
-      title: i18n('Фильтры рейтинга'),
-      description: i18n('Настрой отображение рейтинга: выбери период, форму обучения и специальность для сравнения.'),
       side: 'bottom',
       align: 'center',
     },
