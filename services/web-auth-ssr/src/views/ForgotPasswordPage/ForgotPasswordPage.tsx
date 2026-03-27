@@ -239,7 +239,7 @@ export function ForgotPasswordPage() {
         {step === 'success' && (
           <Stack spacing={3}>
             <Alert severity="success">{i18n('Пароль успешно изменён')}</Alert>
-            <Button variant="contained" fullWidth component={NextLink} href="/login">
+            <Button variant="contained" fullWidth onClick={() => router.push('/login')}>
               {i18n('Войти')}
             </Button>
           </Stack>
