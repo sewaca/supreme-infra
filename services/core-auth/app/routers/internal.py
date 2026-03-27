@@ -1,12 +1,14 @@
 import logging
 import uuid
+from datetime import UTC, datetime
 
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.models.session import UserSession
 from app.models.user import AuthUser
 from app.schemas.challenge import UpdateEmailRequest, UpdatePasswordRequest
 
@@ -50,7 +52,19 @@ async def update_user_password(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     user.password_hash = bcrypt.hashpw(body.new_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+    revoke_stmt = update(UserSession).where(UserSession.user_id == user_id).where(UserSession.revoked_at.is_(None))
+    if body.exclude_jti is not None:
+        revoke_stmt = revoke_stmt.where(UserSession.jti != body.exclude_jti)
+    revoke_stmt = revoke_stmt.values(revoked_at=datetime.now(UTC))
+    result_revoke = await db.execute(revoke_stmt)
+
     await db.commit()
 
-    logger.info("[internal] password updated: user=%s", user_id)
+    logger.info(
+        "[internal] password updated: user=%s revoked_sessions=%d (kept_jti=%s)",
+        user_id,
+        result_revoke.rowcount,
+        body.exclude_jti,
+    )
     return {"message": "Password updated"}

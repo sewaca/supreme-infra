@@ -1,7 +1,9 @@
 import logging
+from typing import Any
 from uuid import UUID
 
 import httpx
+from authorization_py.dependencies import get_current_user
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -124,19 +126,26 @@ async def change_email(user_id: UUID, body: ChangeEmailRequest, db: AsyncSession
 
 
 @router.post("/password", response_model=MessageResponse)
-async def change_password(user_id: UUID, body: ChangePasswordRequest, db: AsyncSession = Depends(get_db)):
+async def change_password(
+    user_id: UUID,
+    body: ChangePasswordRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: dict[str, Any] = Depends(get_current_user),
+):
     await _validate_challenge(body.challenge_id, user_id)
+
+    exclude_jti = current_user.get("jti")
 
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.patch(
                 f"{app_settings.core_auth_url}/auth/internal/users/{user_id}/password",
-                json={"new_password": body.new_password},
+                json={"new_password": body.new_password, "exclude_jti": exclude_jti},
             )
             resp.raise_for_status()
     except httpx.HTTPError as exc:
         logger.error("[settings] core-auth password update failed: %s", exc)
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Auth service unavailable") from exc
 
-    logger.info("[settings] password updated: user=%s", user_id)
+    logger.info("[settings] password updated: user=%s (kept_jti=%s)", user_id, exclude_jti)
     return MessageResponse(message="Password updated")

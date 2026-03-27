@@ -28,3 +28,4 @@ class UpdateEmailRequest(BaseModel):
 
 class UpdatePasswordRequest(BaseModel):
     new_password: str
+    exclude_jti: UUID | None = None
