@@ -1,17 +1,14 @@
 'use client';
 
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { PasswordInput } from '@supreme-int/design-system/src/components/PasswordInput/PasswordInput';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -28,7 +25,6 @@ export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '', name: '' });
   const clientInfoRef = useRef<Awaited<ReturnType<typeof detectClientInfo>> | null>(null);
 
@@ -112,30 +108,14 @@ export function AuthForm({ mode }: AuthFormProps) {
           sx={{ mb: 2 }}
         />
 
-        <TextField
+        <PasswordInput
           fullWidth
           label="Пароль"
-          type={showPassword ? 'text' : 'password'}
           autoComplete={isLogin ? 'current-password' : 'new-password'}
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           required
           inputProps={{ minLength: 6 }}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword((v) => !v)}
-                    edge="end"
-                    aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-                  >
-                    {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
           sx={{ mb: 3 }}
         />
 

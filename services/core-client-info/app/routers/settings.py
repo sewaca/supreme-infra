@@ -37,9 +37,13 @@ async def _validate_challenge(challenge_id: UUID, user_id: UUID) -> None:
 
     is_valid = data.get("is_valid")
     challenge_user_id = data.get("user_id")
-    logger.info("[challenge] is_valid=%s challenge_user_id=%r user_id=%r match=%s",
-                is_valid, challenge_user_id, str(user_id),
-                challenge_user_id is not None and UUID(challenge_user_id) == user_id)
+    logger.info(
+        "[challenge] is_valid=%s challenge_user_id=%r user_id=%r match=%s",
+        is_valid,
+        challenge_user_id,
+        str(user_id),
+        challenge_user_id is not None and UUID(challenge_user_id) == user_id,
+    )
 
     if not is_valid:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not resolved or expired")

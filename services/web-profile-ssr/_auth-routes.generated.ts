@@ -19,6 +19,8 @@ export const authRoutes: AuthRoute[] = [
   { path: /^\/profile\/scholarship$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/profile\/scolarship$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/profile\/settings$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/profile\/settings\/change-email$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/profile\/settings\/change-password$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/profile\/subjects-ranking$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/web-profile-ssr\/.*$/, method: 'GET', auth_level: 'none' },
 ];

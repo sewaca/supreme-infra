@@ -4,11 +4,10 @@ import { Button, Container, Stack, Switch, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 import { updateSettings } from 'services/web-profile-ssr/app/profile/settings/actions';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
-import { ChangeEmailModal } from './ChangeEmailModal';
-import { ChangePasswordModal } from './ChangePasswordModal';
 import { type SessionInfo, SessionsSection } from './SessionsSection';
 
 export type UserSettings = {
@@ -22,9 +21,8 @@ type Props = {
 };
 
 export const SettingsPage = ({ initialSettings, sessions }: Props) => {
+  const router = useRouter();
   const [userSettings, setUserSettings] = useState<UserSettings>(initialSettings);
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
-  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const createOnSwitchChange = (key: keyof UserSettings) => async (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.checked;
@@ -61,10 +59,14 @@ export const SettingsPage = ({ initialSettings, sessions }: Props) => {
           <Typography variant="h3">{i18n('Безопасность')}</Typography>
           <Spacer size={4} />
           <Stack direction="row" gap={2}>
-            <Button variant="contained" color="inherit" onClick={() => setIsEmailModalOpen(true)}>
+            <Button variant="contained" color="inherit" onClick={() => router.push('/profile/settings/change-email')}>
               {i18n('Сменить email')}
             </Button>
-            <Button variant="contained" color="inherit" onClick={() => setIsPasswordModalOpen(true)}>
+            <Button
+              variant="contained"
+              color="inherit"
+              onClick={() => router.push('/profile/settings/change-password')}
+            >
               {i18n('Сменить пароль')}
             </Button>
           </Stack>
@@ -75,9 +77,6 @@ export const SettingsPage = ({ initialSettings, sessions }: Props) => {
           <SessionsSection sessions={sessions} />
         </Container>
       </Stack>
-
-      <ChangeEmailModal open={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
-      <ChangePasswordModal open={isPasswordModalOpen} onClose={() => setIsPasswordModalOpen(false)} />
     </>
   );
 };

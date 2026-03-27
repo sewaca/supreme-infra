@@ -2,12 +2,12 @@
 
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { i18n } from '@supreme-int/i18n';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { loggingFetch } from 'services/web-profile-ssr/src/shared/api/fetchWithLog';
-import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
 import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { environment } from 'services/web-profile-ssr/src/shared/lib/environment';
