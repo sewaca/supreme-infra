@@ -772,6 +772,59 @@
           }
         }
       }
+    },
+    "/dormitory/applications": {
+      "post": {
+        "tags": [
+          "dormitory"
+        ],
+        "summary": "Submit Dormitory Application",
+        "operationId": "submit_dormitory_application_dormitory_applications_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DormitoryApplicationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DormitoryApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -938,6 +991,41 @@
           "reference_type"
         ],
         "title": "CreateReferenceRequest"
+      },
+      "DormitoryApplicationRequest": {
+        "properties": {
+          "year_of_study": {
+            "type": "integer",
+            "maximum": 6.0,
+            "minimum": 1.0,
+            "title": "Year Of Study"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "year_of_study",
+          "reason"
+        ],
+        "title": "DormitoryApplicationRequest"
+      },
+      "DormitoryApplicationResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "DormitoryApplicationResponse"
       },
       "HTTPValidationError": {
         "properties": {

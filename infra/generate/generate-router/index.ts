@@ -178,6 +178,17 @@ export async function generateRouterConfigs(): Promise<void> {
       generateAuthRoutesTs(servicePath, routerConfig.routes);
       log(`  Generated: src/_auth-routes.generated.ts`, 'success');
 
+      // Обновляем Grafana дашборд для NestJS сервиса
+      try {
+        log(`  Updating Grafana dashboard...`, 'info');
+        updateGrafanaDashboard(service.name);
+      } catch (dashboardError) {
+        log(
+          `  Warning: Failed to update Grafana dashboard: ${dashboardError instanceof Error ? dashboardError.message : dashboardError}`,
+          'error',
+        );
+      }
+
       successCount++;
     } catch (error) {
       log(`Error processing ${service.name}: ${error instanceof Error ? error.message : error}`, 'error');

@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -332,8 +332,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -437,8 +441,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -446,12 +454,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -459,12 +465,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-applications\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-applications\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -555,8 +559,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
@@ -647,8 +655,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -857,19 +869,208 @@
       "type": "timeseries"
     },
     {
-      "id": 2253,
-      "title": "Routes Metrics",
-      "type": "row",
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 67
-      }
+      },
+      "id": 2312,
+      "panels": [
+        {
+          "id": 2310,
+          "title": "Status Checks - OK RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"2..|3..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "{{http_status_code}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        },
+        {
+          "id": 2311,
+          "title": "Status Checks - Bad RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-applications\", http_status_code=~\"[45]..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        }
+      ],
+      "title": "Status Checks",
+      "type": "row"
     },
     {
-      "id": 2254,
-      "title": "GET /core-applications/applications",
+      "id": 2313,
+      "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -879,7 +1080,18 @@
       }
     },
     {
-      "id": 2255,
+      "id": 2314,
+      "title": "GET /core-applications/applications",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 69
+      }
+    },
+    {
+      "id": 2315,
       "title": "GET /core-applications/applications - Timings",
       "type": "timeseries",
       "datasource": {
@@ -890,7 +1102,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1000,7 +1212,7 @@
       }
     },
     {
-      "id": 2256,
+      "id": 2316,
       "title": "GET /core-applications/applications - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1011,7 +1223,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1091,7 +1303,7 @@
       }
     },
     {
-      "id": 2257,
+      "id": 2317,
       "title": "GET /core-applications/applications - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1102,7 +1314,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1186,18 +1398,18 @@
       }
     },
     {
-      "id": 2258,
+      "id": 2318,
       "title": "GET /core-applications/applications/notifications",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 78
       }
     },
     {
-      "id": 2259,
+      "id": 2319,
       "title": "GET /core-applications/applications/notifications - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1208,7 +1420,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1318,7 +1530,7 @@
       }
     },
     {
-      "id": 2260,
+      "id": 2320,
       "title": "GET /core-applications/applications/notifications - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1329,7 +1541,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1409,7 +1621,7 @@
       }
     },
     {
-      "id": 2261,
+      "id": 2321,
       "title": "GET /core-applications/applications/notifications - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1420,7 +1632,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1504,18 +1716,18 @@
       }
     },
     {
-      "id": 2262,
+      "id": 2322,
       "title": "POST /core-applications/dormitory/applications",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 86
+        "y": 87
       }
     },
     {
-      "id": 2263,
+      "id": 2323,
       "title": "POST /core-applications/dormitory/applications - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1526,7 +1738,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1636,7 +1848,7 @@
       }
     },
     {
-      "id": 2264,
+      "id": 2324,
       "title": "POST /core-applications/dormitory/applications - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1647,7 +1859,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1727,7 +1939,7 @@
       }
     },
     {
-      "id": 2265,
+      "id": 2325,
       "title": "POST /core-applications/dormitory/applications - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1738,7 +1950,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1822,18 +2034,18 @@
       }
     },
     {
-      "id": 2266,
+      "id": 2326,
       "title": "POST /core-applications/dormitory/parent-agreement",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 95
+        "y": 96
       }
     },
     {
-      "id": 2267,
+      "id": 2327,
       "title": "POST /core-applications/dormitory/parent-agreement - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1844,7 +2056,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -1954,7 +2166,7 @@
       }
     },
     {
-      "id": 2268,
+      "id": 2328,
       "title": "POST /core-applications/dormitory/parent-agreement - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1965,7 +2177,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2045,7 +2257,7 @@
       }
     },
     {
-      "id": 2269,
+      "id": 2329,
       "title": "POST /core-applications/dormitory/parent-agreement - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2056,7 +2268,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2140,18 +2352,18 @@
       }
     },
     {
-      "id": 2270,
+      "id": 2330,
       "title": "GET /core-applications/orders",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 104
+        "y": 105
       }
     },
     {
-      "id": 2271,
+      "id": 2331,
       "title": "GET /core-applications/orders - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2162,7 +2374,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2272,7 +2484,7 @@
       }
     },
     {
-      "id": 2272,
+      "id": 2332,
       "title": "GET /core-applications/orders - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2283,7 +2495,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2363,7 +2575,7 @@
       }
     },
     {
-      "id": 2273,
+      "id": 2333,
       "title": "GET /core-applications/orders - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2374,7 +2586,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2458,18 +2670,18 @@
       }
     },
     {
-      "id": 2274,
+      "id": 2334,
       "title": "GET /core-applications/orders/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 113
+        "y": 114
       }
     },
     {
-      "id": 2275,
+      "id": 2335,
       "title": "GET /core-applications/orders/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2480,7 +2692,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2590,7 +2802,7 @@
       }
     },
     {
-      "id": 2276,
+      "id": 2336,
       "title": "GET /core-applications/orders/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2601,7 +2813,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2681,7 +2893,7 @@
       }
     },
     {
-      "id": 2277,
+      "id": 2337,
       "title": "GET /core-applications/orders/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2692,7 +2904,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2776,18 +2988,18 @@
       }
     },
     {
-      "id": 2278,
+      "id": 2338,
       "title": "GET /core-applications/orders/[^/]+/pdf",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 122
+        "y": 123
       }
     },
     {
-      "id": 2279,
+      "id": 2339,
       "title": "GET /core-applications/orders/:id/pdf - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2798,7 +3010,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -2908,7 +3120,7 @@
       }
     },
     {
-      "id": 2280,
+      "id": 2340,
       "title": "GET /core-applications/orders/:id/pdf - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2919,7 +3131,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -2999,7 +3211,7 @@
       }
     },
     {
-      "id": 2281,
+      "id": 2341,
       "title": "GET /core-applications/orders/:id/pdf - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3010,7 +3222,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -3094,18 +3306,18 @@
       }
     },
     {
-      "id": 2282,
+      "id": 2342,
       "title": "GET /core-applications/orders/counts",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 131
+        "y": 132
       }
     },
     {
-      "id": 2283,
+      "id": 2343,
       "title": "GET /core-applications/orders/counts - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3116,7 +3328,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3226,7 +3438,7 @@
       }
     },
     {
-      "id": 2284,
+      "id": 2344,
       "title": "GET /core-applications/orders/counts - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3237,7 +3449,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3317,7 +3529,7 @@
       }
     },
     {
-      "id": 2285,
+      "id": 2345,
       "title": "GET /core-applications/orders/counts - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3328,7 +3540,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3412,18 +3624,18 @@
       }
     },
     {
-      "id": 2286,
+      "id": 2346,
       "title": "GET /core-applications/references",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 140
+        "y": 141
       }
     },
     {
-      "id": 2287,
+      "id": 2347,
       "title": "GET /core-applications/references - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3434,7 +3646,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3544,7 +3756,7 @@
       }
     },
     {
-      "id": 2288,
+      "id": 2348,
       "title": "GET /core-applications/references - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3555,7 +3767,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3635,7 +3847,7 @@
       }
     },
     {
-      "id": 2289,
+      "id": 2349,
       "title": "GET /core-applications/references - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3646,7 +3858,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3730,18 +3942,18 @@
       }
     },
     {
-      "id": 2290,
+      "id": 2350,
       "title": "GET /core-applications/references/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 149
+        "y": 150
       }
     },
     {
-      "id": 2291,
+      "id": 2351,
       "title": "GET /core-applications/references/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3752,7 +3964,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -3862,7 +4074,7 @@
       }
     },
     {
-      "id": 2292,
+      "id": 2352,
       "title": "GET /core-applications/references/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3873,7 +4085,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -3953,7 +4165,7 @@
       }
     },
     {
-      "id": 2293,
+      "id": 2353,
       "title": "GET /core-applications/references/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3964,7 +4176,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -4048,18 +4260,18 @@
       }
     },
     {
-      "id": 2294,
+      "id": 2354,
       "title": "POST /core-applications/references/[^/]+/cancel",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 158
+        "y": 159
       }
     },
     {
-      "id": 2295,
+      "id": 2355,
       "title": "POST /core-applications/references/:id/cancel - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4070,7 +4282,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4180,7 +4392,7 @@
       }
     },
     {
-      "id": 2296,
+      "id": 2356,
       "title": "POST /core-applications/references/:id/cancel - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4191,7 +4403,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4271,7 +4483,7 @@
       }
     },
     {
-      "id": 2297,
+      "id": 2357,
       "title": "POST /core-applications/references/:id/cancel - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4282,7 +4494,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4366,18 +4578,18 @@
       }
     },
     {
-      "id": 2298,
+      "id": 2358,
       "title": "POST /core-applications/references/[^/]+/extend-storage",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 167
+        "y": 168
       }
     },
     {
-      "id": 2299,
+      "id": 2359,
       "title": "POST /core-applications/references/:id/extend-storage - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4388,7 +4600,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 168
+        "y": 169
       },
       "targets": [
         {
@@ -4498,7 +4710,7 @@
       }
     },
     {
-      "id": 2300,
+      "id": 2360,
       "title": "POST /core-applications/references/:id/extend-storage - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4509,7 +4721,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 168
+        "y": 169
       },
       "targets": [
         {
@@ -4589,7 +4801,7 @@
       }
     },
     {
-      "id": 2301,
+      "id": 2361,
       "title": "POST /core-applications/references/:id/extend-storage - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4600,7 +4812,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 168
+        "y": 169
       },
       "targets": [
         {
@@ -4684,18 +4896,18 @@
       }
     },
     {
-      "id": 2302,
+      "id": 2362,
       "title": "GET /core-applications/references/[^/]+/pdf",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 176
+        "y": 177
       }
     },
     {
-      "id": 2303,
+      "id": 2363,
       "title": "GET /core-applications/references/:id/pdf - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4706,7 +4918,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 177
+        "y": 178
       },
       "targets": [
         {
@@ -4816,7 +5028,7 @@
       }
     },
     {
-      "id": 2304,
+      "id": 2364,
       "title": "GET /core-applications/references/:id/pdf - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4827,7 +5039,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 177
+        "y": 178
       },
       "targets": [
         {
@@ -4907,7 +5119,7 @@
       }
     },
     {
-      "id": 2305,
+      "id": 2365,
       "title": "GET /core-applications/references/:id/pdf - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4918,7 +5130,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 177
+        "y": 178
       },
       "targets": [
         {
@@ -5002,18 +5214,18 @@
       }
     },
     {
-      "id": 2306,
+      "id": 2366,
       "title": "POST /core-applications/references/order",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 185
+        "y": 186
       }
     },
     {
-      "id": 2307,
+      "id": 2367,
       "title": "POST /core-applications/references/order - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5024,7 +5236,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 186
+        "y": 187
       },
       "targets": [
         {
@@ -5134,7 +5346,7 @@
       }
     },
     {
-      "id": 2308,
+      "id": 2368,
       "title": "POST /core-applications/references/order - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5145,7 +5357,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 186
+        "y": 187
       },
       "targets": [
         {
@@ -5225,7 +5437,7 @@
       }
     },
     {
-      "id": 2309,
+      "id": 2369,
       "title": "POST /core-applications/references/order - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5236,7 +5448,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 186
+        "y": 187
       },
       "targets": [
         {

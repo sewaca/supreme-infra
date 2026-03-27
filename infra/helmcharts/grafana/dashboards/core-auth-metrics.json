@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-auth\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -332,8 +332,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -437,8 +441,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -446,12 +454,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -459,12 +465,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-auth\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -555,8 +559,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
@@ -647,8 +655,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -857,19 +869,208 @@
       "type": "timeseries"
     },
     {
-      "id": 917,
-      "title": "Routes Metrics",
-      "type": "row",
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 67
-      }
+      },
+      "id": 944,
+      "panels": [
+        {
+          "id": 942,
+          "title": "Status Checks - OK RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"2..|3..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "{{http_status_code}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        },
+        {
+          "id": 943,
+          "title": "Status Checks - Bad RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\", http_status_code=~\"[45]..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        }
+      ],
+      "title": "Status Checks",
+      "type": "row"
     },
     {
-      "id": 918,
-      "title": "POST /core-auth/auth/login",
+      "id": 945,
+      "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -879,7 +1080,18 @@
       }
     },
     {
-      "id": 919,
+      "id": 946,
+      "title": "POST /core-auth/auth/login",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 69
+      }
+    },
+    {
+      "id": 947,
       "title": "POST /core-auth/auth/login - Timings",
       "type": "timeseries",
       "datasource": {
@@ -890,7 +1102,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1000,7 +1212,7 @@
       }
     },
     {
-      "id": 920,
+      "id": 948,
       "title": "POST /core-auth/auth/login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1011,7 +1223,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1091,7 +1303,7 @@
       }
     },
     {
-      "id": 921,
+      "id": 949,
       "title": "POST /core-auth/auth/login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1102,7 +1314,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1186,18 +1398,18 @@
       }
     },
     {
-      "id": 922,
+      "id": 950,
       "title": "GET /core-auth/auth/me",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 78
       }
     },
     {
-      "id": 923,
+      "id": 951,
       "title": "GET /core-auth/auth/me - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1208,7 +1420,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1318,7 +1530,7 @@
       }
     },
     {
-      "id": 924,
+      "id": 952,
       "title": "GET /core-auth/auth/me - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1329,7 +1541,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1409,7 +1621,7 @@
       }
     },
     {
-      "id": 925,
+      "id": 953,
       "title": "GET /core-auth/auth/me - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1420,7 +1632,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1504,18 +1716,18 @@
       }
     },
     {
-      "id": 926,
+      "id": 954,
       "title": "POST /core-auth/auth/register",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 86
+        "y": 87
       }
     },
     {
-      "id": 927,
+      "id": 955,
       "title": "POST /core-auth/auth/register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1526,7 +1738,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1636,7 +1848,7 @@
       }
     },
     {
-      "id": 928,
+      "id": 956,
       "title": "POST /core-auth/auth/register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1647,7 +1859,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1727,7 +1939,7 @@
       }
     },
     {
-      "id": 929,
+      "id": 957,
       "title": "POST /core-auth/auth/register - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1738,7 +1950,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1822,18 +2034,18 @@
       }
     },
     {
-      "id": 930,
+      "id": 958,
       "title": "GET /core-auth/auth/sessions",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 95
+        "y": 96
       }
     },
     {
-      "id": 931,
+      "id": 959,
       "title": "GET /core-auth/auth/sessions - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1844,7 +2056,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -1954,7 +2166,7 @@
       }
     },
     {
-      "id": 932,
+      "id": 960,
       "title": "GET /core-auth/auth/sessions - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1965,7 +2177,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2045,7 +2257,7 @@
       }
     },
     {
-      "id": 933,
+      "id": 961,
       "title": "GET /core-auth/auth/sessions - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2056,7 +2268,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2140,18 +2352,18 @@
       }
     },
     {
-      "id": 934,
+      "id": 962,
       "title": "DELETE /core-auth/auth/sessions/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 104
+        "y": 105
       }
     },
     {
-      "id": 935,
+      "id": 963,
       "title": "DELETE /core-auth/auth/sessions/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2162,7 +2374,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2272,7 +2484,7 @@
       }
     },
     {
-      "id": 936,
+      "id": 964,
       "title": "DELETE /core-auth/auth/sessions/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2283,7 +2495,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2363,7 +2575,7 @@
       }
     },
     {
-      "id": 937,
+      "id": 965,
       "title": "DELETE /core-auth/auth/sessions/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2374,7 +2586,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2458,18 +2670,18 @@
       }
     },
     {
-      "id": 938,
+      "id": 966,
       "title": "POST /core-auth/auth/validate-session",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 113
+        "y": 114
       }
     },
     {
-      "id": 939,
+      "id": 967,
       "title": "POST /core-auth/auth/validate-session - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2480,7 +2692,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2590,7 +2802,7 @@
       }
     },
     {
-      "id": 940,
+      "id": 968,
       "title": "POST /core-auth/auth/validate-session - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2601,7 +2813,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2681,7 +2893,7 @@
       }
     },
     {
-      "id": 941,
+      "id": 969,
       "title": "POST /core-auth/auth/validate-session - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2692,7 +2904,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {

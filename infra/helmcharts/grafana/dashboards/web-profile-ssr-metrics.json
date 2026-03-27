@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"2..|3..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -332,8 +332,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"[45]..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -437,8 +441,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -446,12 +454,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -459,12 +465,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"web-profile-ssr\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-profile-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -555,8 +559,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"2..|3..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
@@ -647,8 +655,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"[45]..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -868,19 +880,208 @@
       "type": "timeseries"
     },
     {
-      "id": 4489,
-      "title": "Routes Metrics",
-      "type": "row",
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 67
-      }
+      },
+      "id": 4536,
+      "panels": [
+        {
+          "id": 4534,
+          "title": "Status Checks - OK RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"2..|3..\", http_route=~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "{{http_status_code}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        },
+        {
+          "id": 4535,
+          "title": "Status Checks - Bad RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_count{service=\"web-profile-ssr\", http_status_code=~\"[45]..\", http_route=~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        }
+      ],
+      "title": "Status Checks",
+      "type": "row"
     },
     {
-      "id": 4490,
-      "title": "GET /api/undefined-url",
+      "id": 4537,
+      "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -890,7 +1091,18 @@
       }
     },
     {
-      "id": 4491,
+      "id": 4538,
+      "title": "GET /api/undefined-url",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 69
+      }
+    },
+    {
+      "id": 4539,
       "title": "GET /api/undefined-url - Timings",
       "type": "timeseries",
       "datasource": {
@@ -901,7 +1113,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1011,7 +1223,7 @@
       }
     },
     {
-      "id": 4492,
+      "id": 4540,
       "title": "GET /api/undefined-url - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1022,7 +1234,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1102,7 +1314,7 @@
       }
     },
     {
-      "id": 4493,
+      "id": 4541,
       "title": "GET /api/undefined-url - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1113,7 +1325,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1197,18 +1409,18 @@
       }
     },
     {
-      "id": 4494,
+      "id": 4542,
       "title": "GET /profile",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 78
       }
     },
     {
-      "id": 4495,
+      "id": 4543,
       "title": "GET /profile - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1219,7 +1431,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1329,7 +1541,7 @@
       }
     },
     {
-      "id": 4496,
+      "id": 4544,
       "title": "GET /profile - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1340,7 +1552,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1420,7 +1632,7 @@
       }
     },
     {
-      "id": 4497,
+      "id": 4545,
       "title": "GET /profile - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1431,7 +1643,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1515,18 +1727,18 @@
       }
     },
     {
-      "id": 4498,
+      "id": 4546,
       "title": "GET /profile/data",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 86
+        "y": 87
       }
     },
     {
-      "id": 4499,
+      "id": 4547,
       "title": "GET /profile/data - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1537,7 +1749,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1647,7 +1859,7 @@
       }
     },
     {
-      "id": 4500,
+      "id": 4548,
       "title": "GET /profile/data - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1658,7 +1870,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1738,7 +1950,7 @@
       }
     },
     {
-      "id": 4501,
+      "id": 4549,
       "title": "GET /profile/data - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1749,7 +1961,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1833,18 +2045,18 @@
       }
     },
     {
-      "id": 4502,
+      "id": 4550,
       "title": "GET /profile/dormitory",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 95
+        "y": 96
       }
     },
     {
-      "id": 4503,
+      "id": 4551,
       "title": "GET /profile/dormitory - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1855,7 +2067,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -1965,7 +2177,7 @@
       }
     },
     {
-      "id": 4504,
+      "id": 4552,
       "title": "GET /profile/dormitory - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1976,7 +2188,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2056,7 +2268,7 @@
       }
     },
     {
-      "id": 4505,
+      "id": 4553,
       "title": "GET /profile/dormitory - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2067,7 +2279,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2151,18 +2363,18 @@
       }
     },
     {
-      "id": 4506,
+      "id": 4554,
       "title": "GET /profile/orders",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 104
+        "y": 105
       }
     },
     {
-      "id": 4507,
+      "id": 4555,
       "title": "GET /profile/orders - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2173,7 +2385,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2283,7 +2495,7 @@
       }
     },
     {
-      "id": 4508,
+      "id": 4556,
       "title": "GET /profile/orders - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2294,7 +2506,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2374,7 +2586,7 @@
       }
     },
     {
-      "id": 4509,
+      "id": 4557,
       "title": "GET /profile/orders - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2385,7 +2597,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2469,18 +2681,18 @@
       }
     },
     {
-      "id": 4510,
+      "id": 4558,
       "title": "GET /profile/rating",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 113
+        "y": 114
       }
     },
     {
-      "id": 4511,
+      "id": 4559,
       "title": "GET /profile/rating - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2491,7 +2703,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2601,7 +2813,7 @@
       }
     },
     {
-      "id": 4512,
+      "id": 4560,
       "title": "GET /profile/rating - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2612,7 +2824,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2692,7 +2904,7 @@
       }
     },
     {
-      "id": 4513,
+      "id": 4561,
       "title": "GET /profile/rating - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2703,7 +2915,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2787,18 +2999,18 @@
       }
     },
     {
-      "id": 4514,
+      "id": 4562,
       "title": "GET /profile/references",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 122
+        "y": 123
       }
     },
     {
-      "id": 4515,
+      "id": 4563,
       "title": "GET /profile/references - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2809,7 +3021,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -2919,7 +3131,7 @@
       }
     },
     {
-      "id": 4516,
+      "id": 4564,
       "title": "GET /profile/references - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2930,7 +3142,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -3010,7 +3222,7 @@
       }
     },
     {
-      "id": 4517,
+      "id": 4565,
       "title": "GET /profile/references - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3021,7 +3233,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -3105,18 +3317,18 @@
       }
     },
     {
-      "id": 4518,
+      "id": 4566,
       "title": "GET /profile/scholarship",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 131
+        "y": 132
       }
     },
     {
-      "id": 4519,
+      "id": 4567,
       "title": "GET /profile/scholarship - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3127,7 +3339,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3237,7 +3449,7 @@
       }
     },
     {
-      "id": 4520,
+      "id": 4568,
       "title": "GET /profile/scholarship - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3248,7 +3460,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3328,7 +3540,7 @@
       }
     },
     {
-      "id": 4521,
+      "id": 4569,
       "title": "GET /profile/scholarship - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3339,7 +3551,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3423,18 +3635,18 @@
       }
     },
     {
-      "id": 4522,
+      "id": 4570,
       "title": "GET /profile/scolarship",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 140
+        "y": 141
       }
     },
     {
-      "id": 4523,
+      "id": 4571,
       "title": "GET /profile/scolarship - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3445,7 +3657,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3555,7 +3767,7 @@
       }
     },
     {
-      "id": 4524,
+      "id": 4572,
       "title": "GET /profile/scolarship - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3566,7 +3778,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3646,7 +3858,7 @@
       }
     },
     {
-      "id": 4525,
+      "id": 4573,
       "title": "GET /profile/scolarship - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3657,7 +3869,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3741,18 +3953,18 @@
       }
     },
     {
-      "id": 4526,
+      "id": 4574,
       "title": "GET /profile/settings",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 149
+        "y": 150
       }
     },
     {
-      "id": 4527,
+      "id": 4575,
       "title": "GET /profile/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3763,7 +3975,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -3873,7 +4085,7 @@
       }
     },
     {
-      "id": 4528,
+      "id": 4576,
       "title": "GET /profile/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3884,7 +4096,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -3964,7 +4176,7 @@
       }
     },
     {
-      "id": 4529,
+      "id": 4577,
       "title": "GET /profile/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3975,7 +4187,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -4059,18 +4271,18 @@
       }
     },
     {
-      "id": 4530,
+      "id": 4578,
       "title": "GET /profile/subjects-ranking",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 158
+        "y": 159
       }
     },
     {
-      "id": 4531,
+      "id": 4579,
       "title": "GET /profile/subjects-ranking - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4081,7 +4293,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4191,7 +4403,7 @@
       }
     },
     {
-      "id": 4532,
+      "id": 4580,
       "title": "GET /profile/subjects-ranking - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4202,7 +4414,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4282,7 +4494,7 @@
       }
     },
     {
-      "id": 4533,
+      "id": 4581,
       "title": "GET /profile/subjects-ranking - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4293,7 +4505,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {

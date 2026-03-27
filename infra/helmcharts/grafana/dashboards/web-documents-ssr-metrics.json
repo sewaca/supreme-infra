@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"web-documents-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"web-documents-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"web-documents-ssr\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -332,8 +332,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -437,8 +441,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_bucket{service=\"web-documents-ssr\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -446,12 +454,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_bucket{service=\"web-documents-ssr\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -459,12 +465,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_bucket{service=\"web-documents-ssr\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!~\".*/(api/)?status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -555,8 +559,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
@@ -647,8 +655,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\", http_route!~\".*/(api/)?status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -868,19 +880,208 @@
       "type": "timeseries"
     },
     {
-      "id": 234,
-      "title": "Routes Metrics",
-      "type": "row",
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 67
-      }
+      },
+      "id": 245,
+      "panels": [
+        {
+          "id": 243,
+          "title": "Status Checks - OK RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\", http_route=~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "{{http_status_code}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        },
+        {
+          "id": 244,
+          "title": "Status Checks - Bad RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\", http_route=~\".*/(api/)?status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        }
+      ],
+      "title": "Status Checks",
+      "type": "row"
     },
     {
-      "id": 235,
-      "title": "GET /documents/gradebook",
+      "id": 246,
+      "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -890,7 +1091,18 @@
       }
     },
     {
-      "id": 236,
+      "id": 247,
+      "title": "GET /documents/gradebook",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 69
+      }
+    },
+    {
+      "id": 248,
       "title": "GET /documents/gradebook - Timings",
       "type": "timeseries",
       "datasource": {
@@ -901,7 +1113,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1011,7 +1223,7 @@
       }
     },
     {
-      "id": 237,
+      "id": 249,
       "title": "GET /documents/gradebook - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1022,7 +1234,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1102,7 +1314,7 @@
       }
     },
     {
-      "id": 238,
+      "id": 250,
       "title": "GET /documents/gradebook - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1113,7 +1325,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1197,18 +1409,18 @@
       }
     },
     {
-      "id": 239,
+      "id": 251,
       "title": "GET /documents/student-id-card",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 78
       }
     },
     {
-      "id": 240,
+      "id": 252,
       "title": "GET /documents/student-id-card - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1219,7 +1431,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1329,7 +1541,7 @@
       }
     },
     {
-      "id": 241,
+      "id": 253,
       "title": "GET /documents/student-id-card - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1340,7 +1552,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1420,7 +1632,7 @@
       }
     },
     {
-      "id": 242,
+      "id": 254,
       "title": "GET /documents/student-id-card - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1431,7 +1643,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {

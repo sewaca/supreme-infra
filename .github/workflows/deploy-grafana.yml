@@ -171,21 +171,24 @@ jobs:
             fi
             
             while [ $retry_count -lt $max_retries ]; do
-              if kubectl create configmap "$configmap_name" \
+              TMPFILE=$(mktemp)
+              kubectl create configmap "$configmap_name" \
                 --from-file="$dashboard" \
                 --namespace ${{ env.GRAFANA_NAMESPACE }} \
-                --dry-run=client -o yaml | \
-                kubectl label --local -f - grafana_dashboard=1 -o yaml | \
-                kubectl apply -f -; then
+                --dry-run=client -o yaml > "$TMPFILE"
+
+              if kubectl label --local -f "$TMPFILE" grafana_dashboard=1 -o yaml | kubectl apply -f -; then
+                rm -f "$TMPFILE"
                 echo "✓ Successfully created ConfigMap: $configmap_name"
                 return 0
               else
+                rm -f "$TMPFILE"
                 retry_count=$((retry_count + 1))
                 if [ $retry_count -lt $max_retries ]; then
                   echo "⚠ Failed to create ConfigMap: $configmap_name (attempt $retry_count/$max_retries)"
                   echo "Waiting 10 seconds before retry..."
                   sleep 10
-                  
+
                   # Обновляем kubeconfig перед повторной попыткой
                   echo "Refreshing kubeconfig..."
                   yc managed-kubernetes cluster get-credentials \

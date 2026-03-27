@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\"}[5m])))) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -332,8 +332,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"[45]..\"}[1m]))  by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -437,8 +441,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.80, (rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\"}[5m])))) by (pod) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -446,12 +454,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.95, (rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -459,12 +465,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P4169E866C3094E38"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(histogram_quantile(0.99, (rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\"}[5m])))) by (pod) or on() vector(0)",
-          "hide": false,
-          "instant": false,
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -555,8 +559,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"2..|3..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
@@ -647,8 +655,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"[45]..\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -857,19 +869,208 @@
       "type": "timeseries"
     },
     {
-      "id": 2357,
-      "title": "Routes Metrics",
-      "type": "row",
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 67
-      }
+      },
+      "id": 2424,
+      "panels": [
+        {
+          "id": 2422,
+          "title": "Status Checks - OK RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"2..|3..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "{{http_status_code}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        },
+        {
+          "id": 2423,
+          "title": "Status Checks - Bad RPS",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "VictoriaMetrics"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\", http_status_code=~\"[45]..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        }
+      ],
+      "title": "Status Checks",
+      "type": "row"
     },
     {
-      "id": 2358,
-      "title": "GET /core-client-info/profile/personal-data",
+      "id": 2425,
+      "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -879,7 +1080,18 @@
       }
     },
     {
-      "id": 2359,
+      "id": 2426,
+      "title": "GET /core-client-info/profile/personal-data",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 69
+      }
+    },
+    {
+      "id": 2427,
       "title": "GET /core-client-info/profile/personal-data - Timings",
       "type": "timeseries",
       "datasource": {
@@ -890,7 +1102,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1000,7 +1212,7 @@
       }
     },
     {
-      "id": 2360,
+      "id": 2428,
       "title": "GET /core-client-info/profile/personal-data - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1011,7 +1223,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1091,7 +1303,7 @@
       }
     },
     {
-      "id": 2361,
+      "id": 2429,
       "title": "GET /core-client-info/profile/personal-data - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1102,7 +1314,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 69
+        "y": 70
       },
       "targets": [
         {
@@ -1186,18 +1398,18 @@
       }
     },
     {
-      "id": 2362,
+      "id": 2430,
       "title": "GET /core-client-info/profile/user",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 78
       }
     },
     {
-      "id": 2363,
+      "id": 2431,
       "title": "GET /core-client-info/profile/user - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1208,7 +1420,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1318,7 +1530,7 @@
       }
     },
     {
-      "id": 2364,
+      "id": 2432,
       "title": "GET /core-client-info/profile/user - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1329,7 +1541,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1409,7 +1621,7 @@
       }
     },
     {
-      "id": 2365,
+      "id": 2433,
       "title": "GET /core-client-info/profile/user - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1420,7 +1632,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 78
+        "y": 79
       },
       "targets": [
         {
@@ -1504,18 +1716,18 @@
       }
     },
     {
-      "id": 2366,
+      "id": 2434,
       "title": "GET /core-client-info/rating/achievements",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 86
+        "y": 87
       }
     },
     {
-      "id": 2367,
+      "id": 2435,
       "title": "GET /core-client-info/rating/achievements - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1526,7 +1738,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1636,7 +1848,7 @@
       }
     },
     {
-      "id": 2368,
+      "id": 2436,
       "title": "GET /core-client-info/rating/achievements - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1647,7 +1859,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1727,7 +1939,7 @@
       }
     },
     {
-      "id": 2369,
+      "id": 2437,
       "title": "GET /core-client-info/rating/achievements - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1738,7 +1950,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 87
+        "y": 88
       },
       "targets": [
         {
@@ -1822,18 +2034,18 @@
       }
     },
     {
-      "id": 2370,
+      "id": 2438,
       "title": "GET /core-client-info/rating/grade-improvements",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 95
+        "y": 96
       }
     },
     {
-      "id": 2371,
+      "id": 2439,
       "title": "GET /core-client-info/rating/grade-improvements - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1844,7 +2056,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -1954,7 +2166,7 @@
       }
     },
     {
-      "id": 2372,
+      "id": 2440,
       "title": "GET /core-client-info/rating/grade-improvements - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1965,7 +2177,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2045,7 +2257,7 @@
       }
     },
     {
-      "id": 2373,
+      "id": 2441,
       "title": "GET /core-client-info/rating/grade-improvements - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2056,7 +2268,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 96
+        "y": 97
       },
       "targets": [
         {
@@ -2140,18 +2352,18 @@
       }
     },
     {
-      "id": 2374,
+      "id": 2442,
       "title": "GET /core-client-info/rating/grades",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 104
+        "y": 105
       }
     },
     {
-      "id": 2375,
+      "id": 2443,
       "title": "GET /core-client-info/rating/grades - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2162,7 +2374,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2272,7 +2484,7 @@
       }
     },
     {
-      "id": 2376,
+      "id": 2444,
       "title": "GET /core-client-info/rating/grades - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2283,7 +2495,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2363,7 +2575,7 @@
       }
     },
     {
-      "id": 2377,
+      "id": 2445,
       "title": "GET /core-client-info/rating/grades - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2374,7 +2586,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 105
+        "y": 106
       },
       "targets": [
         {
@@ -2458,18 +2670,18 @@
       }
     },
     {
-      "id": 2378,
+      "id": 2446,
       "title": "GET /core-client-info/rating/level",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 113
+        "y": 114
       }
     },
     {
-      "id": 2379,
+      "id": 2447,
       "title": "GET /core-client-info/rating/level - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2480,7 +2692,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2590,7 +2802,7 @@
       }
     },
     {
-      "id": 2380,
+      "id": 2448,
       "title": "GET /core-client-info/rating/level - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2601,7 +2813,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2681,7 +2893,7 @@
       }
     },
     {
-      "id": 2381,
+      "id": 2449,
       "title": "GET /core-client-info/rating/level - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2692,7 +2904,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 114
+        "y": 115
       },
       "targets": [
         {
@@ -2776,18 +2988,18 @@
       }
     },
     {
-      "id": 2382,
+      "id": 2450,
       "title": "GET /core-client-info/rating/rankings",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 122
+        "y": 123
       }
     },
     {
-      "id": 2383,
+      "id": 2451,
       "title": "GET /core-client-info/rating/rankings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2798,7 +3010,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -2908,7 +3120,7 @@
       }
     },
     {
-      "id": 2384,
+      "id": 2452,
       "title": "GET /core-client-info/rating/rankings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2919,7 +3131,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -2999,7 +3211,7 @@
       }
     },
     {
-      "id": 2385,
+      "id": 2453,
       "title": "GET /core-client-info/rating/rankings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3010,7 +3222,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 123
+        "y": 124
       },
       "targets": [
         {
@@ -3094,18 +3306,18 @@
       }
     },
     {
-      "id": 2386,
+      "id": 2454,
       "title": "GET /core-client-info/rating/stats",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 131
+        "y": 132
       }
     },
     {
-      "id": 2387,
+      "id": 2455,
       "title": "GET /core-client-info/rating/stats - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3116,7 +3328,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3226,7 +3438,7 @@
       }
     },
     {
-      "id": 2388,
+      "id": 2456,
       "title": "GET /core-client-info/rating/stats - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3237,7 +3449,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3317,7 +3529,7 @@
       }
     },
     {
-      "id": 2389,
+      "id": 2457,
       "title": "GET /core-client-info/rating/stats - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3328,7 +3540,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 132
+        "y": 133
       },
       "targets": [
         {
@@ -3412,18 +3624,18 @@
       }
     },
     {
-      "id": 2390,
+      "id": 2458,
       "title": "GET /core-client-info/rating/streak",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 140
+        "y": 141
       }
     },
     {
-      "id": 2391,
+      "id": 2459,
       "title": "GET /core-client-info/rating/streak - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3434,7 +3646,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3544,7 +3756,7 @@
       }
     },
     {
-      "id": 2392,
+      "id": 2460,
       "title": "GET /core-client-info/rating/streak - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3555,7 +3767,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3635,7 +3847,7 @@
       }
     },
     {
-      "id": 2393,
+      "id": 2461,
       "title": "GET /core-client-info/rating/streak - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3646,7 +3858,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 141
+        "y": 142
       },
       "targets": [
         {
@@ -3730,18 +3942,18 @@
       }
     },
     {
-      "id": 2394,
+      "id": 2462,
       "title": "GET /core-client-info/settings",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 149
+        "y": 150
       }
     },
     {
-      "id": 2395,
+      "id": 2463,
       "title": "GET /core-client-info/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3752,7 +3964,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -3862,7 +4074,7 @@
       }
     },
     {
-      "id": 2396,
+      "id": 2464,
       "title": "GET /core-client-info/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3873,7 +4085,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -3953,7 +4165,7 @@
       }
     },
     {
-      "id": 2397,
+      "id": 2465,
       "title": "GET /core-client-info/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3964,7 +4176,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 150
+        "y": 151
       },
       "targets": [
         {
@@ -4048,18 +4260,18 @@
       }
     },
     {
-      "id": 2398,
+      "id": 2466,
       "title": "PUT /core-client-info/settings",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 158
+        "y": 159
       }
     },
     {
-      "id": 2399,
+      "id": 2467,
       "title": "PUT /core-client-info/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4070,7 +4282,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4180,7 +4392,7 @@
       }
     },
     {
-      "id": 2400,
+      "id": 2468,
       "title": "PUT /core-client-info/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4191,7 +4403,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4271,7 +4483,7 @@
       }
     },
     {
-      "id": 2401,
+      "id": 2469,
       "title": "PUT /core-client-info/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4282,7 +4494,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 159
+        "y": 160
       },
       "targets": [
         {
@@ -4366,18 +4578,18 @@
       }
     },
     {
-      "id": 2402,
+      "id": 2470,
       "title": "POST /core-client-info/settings/email",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 167
+        "y": 168
       }
     },
     {
-      "id": 2403,
+      "id": 2471,
       "title": "POST /core-client-info/settings/email - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4388,7 +4600,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 168
+        "y": 169
       },
       "targets": [
         {
@@ -4498,7 +4710,7 @@
       }
     },
     {
-      "id": 2404,
+      "id": 2472,
       "title": "POST /core-client-info/settings/email - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4509,7 +4721,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 168
+        "y": 169
       },
       "targets": [
         {
@@ -4589,7 +4801,7 @@
       }
     },
     {
-      "id": 2405,
+      "id": 2473,
       "title": "POST /core-client-info/settings/email - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4600,7 +4812,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 168
+        "y": 169
       },
       "targets": [
         {
@@ -4684,18 +4896,18 @@
       }
     },
     {
-      "id": 2406,
+      "id": 2474,
       "title": "POST /core-client-info/settings/password",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 176
+        "y": 177
       }
     },
     {
-      "id": 2407,
+      "id": 2475,
       "title": "POST /core-client-info/settings/password - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4706,7 +4918,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 177
+        "y": 178
       },
       "targets": [
         {
@@ -4816,7 +5028,7 @@
       }
     },
     {
-      "id": 2408,
+      "id": 2476,
       "title": "POST /core-client-info/settings/password - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4827,7 +5039,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 177
+        "y": 178
       },
       "targets": [
         {
@@ -4907,7 +5119,7 @@
       }
     },
     {
-      "id": 2409,
+      "id": 2477,
       "title": "POST /core-client-info/settings/password - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4918,7 +5130,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 177
+        "y": 178
       },
       "targets": [
         {
@@ -5002,18 +5214,18 @@
       }
     },
     {
-      "id": 2410,
+      "id": 2478,
       "title": "GET /core-client-info/subjects/choices",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 185
+        "y": 186
       }
     },
     {
-      "id": 2411,
+      "id": 2479,
       "title": "GET /core-client-info/subjects/choices - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5024,7 +5236,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 186
+        "y": 187
       },
       "targets": [
         {
@@ -5134,7 +5346,7 @@
       }
     },
     {
-      "id": 2412,
+      "id": 2480,
       "title": "GET /core-client-info/subjects/choices - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5145,7 +5357,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 186
+        "y": 187
       },
       "targets": [
         {
@@ -5225,7 +5437,7 @@
       }
     },
     {
-      "id": 2413,
+      "id": 2481,
       "title": "GET /core-client-info/subjects/choices - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5236,7 +5448,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 186
+        "y": 187
       },
       "targets": [
         {
@@ -5320,18 +5532,18 @@
       }
     },
     {
-      "id": 2414,
+      "id": 2482,
       "title": "POST /core-client-info/subjects/save-priorities",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 194
+        "y": 195
       }
     },
     {
-      "id": 2415,
+      "id": 2483,
       "title": "POST /core-client-info/subjects/save-priorities - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5342,7 +5554,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 195
+        "y": 196
       },
       "targets": [
         {
@@ -5452,7 +5664,7 @@
       }
     },
     {
-      "id": 2416,
+      "id": 2484,
       "title": "POST /core-client-info/subjects/save-priorities - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5463,7 +5675,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 195
+        "y": 196
       },
       "targets": [
         {
@@ -5543,7 +5755,7 @@
       }
     },
     {
-      "id": 2417,
+      "id": 2485,
       "title": "POST /core-client-info/subjects/save-priorities - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5554,7 +5766,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 195
+        "y": 196
       },
       "targets": [
         {
@@ -5638,18 +5850,18 @@
       }
     },
     {
-      "id": 2418,
+      "id": 2486,
       "title": "GET /core-client-info/subjects/user-priorities/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 203
+        "y": 204
       }
     },
     {
-      "id": 2419,
+      "id": 2487,
       "title": "GET /core-client-info/subjects/user-priorities/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5660,7 +5872,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 204
+        "y": 205
       },
       "targets": [
         {
@@ -5770,7 +5982,7 @@
       }
     },
     {
-      "id": 2420,
+      "id": 2488,
       "title": "GET /core-client-info/subjects/user-priorities/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5781,7 +5993,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 204
+        "y": 205
       },
       "targets": [
         {
@@ -5861,7 +6073,7 @@
       }
     },
     {
-      "id": 2421,
+      "id": 2489,
       "title": "GET /core-client-info/subjects/user-priorities/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5872,7 +6084,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 204
+        "y": 205
       },
       "targets": [
         {

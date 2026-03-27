@@ -13,22 +13,29 @@ interface RouterConfig {
   routes: Route[];
 }
 
+interface GrafanaPanelTarget {
+  datasource?: { type: string; uid: string };
+  editorMode: string;
+  expr: string;
+  legendFormat: string;
+  range: boolean;
+  refId: string;
+  hide?: boolean;
+  instant?: boolean;
+}
+
 interface GrafanaPanel {
   id: number;
   title: string;
   type: string;
-  datasource: { type: string; uid: string };
+  datasource?: { type: string; uid: string };
   gridPos: { h: number; w: number; x: number; y: number };
-  targets: Array<{
-    datasource: { type: string; uid: string };
-    editorMode: string;
-    expr: string;
-    legendFormat: string;
-    range: boolean;
-    refId: string;
-  }>;
-  fieldConfig: Record<string, unknown>;
-  options: Record<string, unknown>;
+  targets?: GrafanaPanelTarget[];
+  fieldConfig?: Record<string, unknown>;
+  options?: Record<string, unknown>;
+  collapsed?: boolean;
+  panels?: GrafanaPanel[];
+  [key: string]: unknown;
 }
 
 /**
@@ -60,6 +67,228 @@ function normalizeRouteForMetrics(routePath: string): string {
   normalized = normalized.replace(/\/\.\+$/g, '/*');
 
   return normalized;
+}
+
+/**
+ * Возвращает фильтр исключения статус-чеков (liveness/readiness probes)
+ */
+function getStatusCheckExcludeFilter(routeLabelKey: 'http_route' | 'http_target'): string {
+  if (routeLabelKey === 'http_target') {
+    return `http_target!~".*/status$"`;
+  }
+  return `http_route!~".*/(api/)?status$"`;
+}
+
+/**
+ * Возвращает фильтр включения только статус-чеков
+ */
+function getStatusCheckIncludeFilter(routeLabelKey: 'http_route' | 'http_target'): string {
+  if (routeLabelKey === 'http_target') {
+    return `http_target=~".*/status$"`;
+  }
+  return `http_route=~".*/(api/)?status$"`;
+}
+
+/**
+ * Обновляет targets панели таймингов с корректной формулой histogram_quantile
+ */
+function updateTimingPanelTargets(
+  panel: GrafanaPanel,
+  serviceName: string,
+  metricName: string,
+  statusExcludeFilter: string,
+  byPod: boolean,
+): void {
+  const datasource = panel.targets?.[0]?.datasource ?? { type: 'prometheus', uid: 'VictoriaMetrics' };
+  const byClause = byPod ? 'le, pod' : 'le';
+  const percentiles = [
+    { p: '0.80', refId: 'A', legend: byPod ? 'P80 {{pod}}' : 'P80' },
+    { p: '0.95', refId: 'B', legend: byPod ? 'P95 {{pod}}' : 'P95' },
+    { p: '0.99', refId: 'C', legend: byPod ? 'P99 {{pod}}' : 'P99' },
+  ];
+
+  panel.targets = percentiles.map(({ p, refId, legend }) => ({
+    datasource,
+    editorMode: 'code',
+    expr: `histogram_quantile(${p}, sum(rate(${metricName}_bucket{service="${serviceName}",${statusExcludeFilter}}[5m])) by (${byClause})) or on() vector(0)`,
+    legendFormat: legend,
+    range: true,
+    refId,
+  }));
+}
+
+/**
+ * Обновляет targets панели RPS, добавляя фильтр исключения статус-чеков
+ */
+function updateRpsPanelTargets(
+  panel: GrafanaPanel,
+  serviceName: string,
+  metricName: string,
+  statusExcludeFilter: string,
+  type: 'or' | 'bad',
+  byPod: boolean,
+): void {
+  const datasource = panel.targets?.[0]?.datasource ?? { type: 'prometheus', uid: 'VictoriaMetrics' };
+  const statusFilter = type === 'or' ? `http_status_code=~"2..|3.."` : `http_status_code=~"[45].."`;
+  const byClause = byPod ? 'http_status_code, pod' : 'http_status_code';
+  let legendFormat: string;
+  if (byPod) {
+    legendFormat = type === 'or' ? '{{http_status_code}} from {{pod}}' : '{{http_status_code}} by {{pod}}';
+  } else {
+    legendFormat = type === 'or' ? '{{http_status_code}}' : '__auto';
+  }
+
+  panel.targets = [
+    {
+      datasource,
+      editorMode: 'code',
+      expr: `sum(rate(${metricName}_count{service="${serviceName}", ${statusFilter}, ${statusExcludeFilter}}[1m])) by (${byClause}) or on() vector(0)`,
+      legendFormat,
+      range: true,
+      refId: 'A',
+    },
+  ];
+}
+
+/**
+ * Обновляет панели в секциях Main и By POD:
+ * - исправляет формулу histogram_quantile в панелях таймингов
+ * - добавляет фильтр исключения статус-чеков в RPS панели
+ */
+function updateMainAndByPodPanels(
+  panels: GrafanaPanel[],
+  serviceName: string,
+  metricName: string,
+  statusExcludeFilter: string,
+): void {
+  for (const panel of panels) {
+    if (panel.type === 'row') continue;
+    const title = (panel.title ?? '').toLowerCase();
+
+    if (title.includes('timing')) {
+      const byPod = title.includes('pod');
+      updateTimingPanelTargets(panel, serviceName, metricName, statusExcludeFilter, byPod);
+    } else if (title.includes('or rps') || title.includes('or prs')) {
+      const byPod = title.includes('pod');
+      updateRpsPanelTargets(panel, serviceName, metricName, statusExcludeFilter, 'or', byPod);
+    } else if (title.includes('bad rps')) {
+      const byPod = title.includes('pod');
+      updateRpsPanelTargets(panel, serviceName, metricName, statusExcludeFilter, 'bad', byPod);
+    }
+  }
+}
+
+const rpsFieldConfigBase = {
+  defaults: {
+    color: { mode: 'palette-classic' },
+    custom: {
+      axisBorderShow: false,
+      axisCenteredZero: false,
+      axisColorMode: 'text',
+      axisLabel: '',
+      axisPlacement: 'auto',
+      barAlignment: 0,
+      drawStyle: 'line',
+      fillOpacity: 10,
+      gradientMode: 'none',
+      hideFrom: { legend: false, tooltip: false, viz: false },
+      insertNulls: false,
+      lineInterpolation: 'linear',
+      lineWidth: 1,
+      pointSize: 5,
+      scaleDistribution: { type: 'linear' },
+      showPoints: 'never',
+      spanNulls: false,
+      stacking: { group: 'A', mode: 'none' },
+      thresholdsStyle: { mode: 'off' },
+    },
+    mappings: [],
+    thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }] },
+    unit: 'reqps',
+  },
+  overrides: [],
+};
+
+const rpsOptions = {
+  legend: { calcs: [], displayMode: 'list', placement: 'bottom', showLegend: true },
+  tooltip: { mode: 'multi', sort: 'none' },
+};
+
+/**
+ * Создает свёрнутую (collapsed) панель строки "Status Checks" с RPS панелями
+ */
+function createStatusChecksRowPanel(
+  serviceName: string,
+  metricName: string,
+  statusIncludeFilter: string,
+  startPanelId: number,
+  startY: number,
+): { panel: GrafanaPanel; nextPanelId: number } {
+  let panelId = startPanelId;
+  const datasource = { type: 'prometheus', uid: 'VictoriaMetrics' };
+
+  const okRpsPanel: GrafanaPanel = {
+    id: panelId++,
+    title: 'Status Checks - OK RPS',
+    type: 'timeseries',
+    datasource,
+    gridPos: { h: 8, w: 12, x: 0, y: startY + 1 },
+    targets: [
+      {
+        datasource,
+        editorMode: 'code',
+        expr: `sum(rate(${metricName}_count{service="${serviceName}", http_status_code=~"2..|3..", ${statusIncludeFilter}}[1m])) by (http_status_code) or on() vector(0)`,
+        legendFormat: '{{http_status_code}}',
+        range: true,
+        refId: 'A',
+      },
+    ],
+    fieldConfig: rpsFieldConfigBase,
+    options: rpsOptions,
+  };
+
+  const badRpsPanel: GrafanaPanel = {
+    id: panelId++,
+    title: 'Status Checks - Bad RPS',
+    type: 'timeseries',
+    datasource,
+    gridPos: { h: 8, w: 12, x: 12, y: startY + 1 },
+    targets: [
+      {
+        datasource,
+        editorMode: 'code',
+        expr: `sum(rate(${metricName}_count{service="${serviceName}", http_status_code=~"[45]..", ${statusIncludeFilter}}[1m])) by (http_status_code) or on() vector(0)`,
+        legendFormat: '__auto',
+        range: true,
+        refId: 'A',
+      },
+    ],
+    fieldConfig: {
+      defaults: {
+        ...(rpsFieldConfigBase.defaults as Record<string, unknown>),
+        thresholds: {
+          mode: 'absolute',
+          steps: [
+            { color: 'green', value: null },
+            { color: 'red', value: 1 },
+          ],
+        },
+      },
+      overrides: [],
+    },
+    options: rpsOptions,
+  };
+
+  const rowPanel: GrafanaPanel = {
+    collapsed: true,
+    gridPos: { h: 1, w: 24, x: 0, y: startY },
+    id: panelId++,
+    panels: [okRpsPanel, badRpsPanel],
+    title: 'Status Checks',
+    type: 'row',
+  };
+
+  return { panel: rowPanel, nextPanelId: panelId };
 }
 
 /**
@@ -368,12 +597,17 @@ export function updateGrafanaDashboard(serviceName: string): void {
 
   const dashboard = JSON.parse(fs.readFileSync(dashboardPath, 'utf-8'));
 
+  const routeLabelKey = routerConfig.type === 'fastapi' ? 'http_target' : 'http_route';
+  const metricName = routeLabelKey === 'http_target' ? 'http_server_duration_milliseconds' : 'http_server_duration';
+  const statusExcludeFilter = getStatusCheckExcludeFilter(routeLabelKey);
+  const statusIncludeFilter = getStatusCheckIncludeFilter(routeLabelKey);
+
   // Группируем панели по секциям на основе row панелей
   const mainPanels: GrafanaPanel[] = [];
   const byPodPanels: GrafanaPanel[] = [];
   const nodejsPanels: GrafanaPanel[] = [];
 
-  let currentSection: 'main' | 'bypod' | 'nodejs' | 'routes' | 'other' = 'other';
+  let currentSection: 'main' | 'bypod' | 'nodejs' | 'routes' | 'status_checks' | 'other' = 'other';
 
   for (const panel of dashboard.panels) {
     const title = panel.title?.toLowerCase() || '';
@@ -391,7 +625,10 @@ export function updateGrafanaDashboard(serviceName: string): void {
         nodejsPanels.push(panel);
       } else if (title.includes('route')) {
         currentSection = 'routes';
-        // Пропускаем старые route панели
+        // Пропускаем старые route панели — будут пересозданы
+      } else if (title.includes('status check')) {
+        currentSection = 'status_checks';
+        // Пропускаем старые status checks панели — будут пересозданы
       } else {
         currentSection = 'other';
       }
@@ -404,9 +641,13 @@ export function updateGrafanaDashboard(serviceName: string): void {
       } else if (currentSection === 'nodejs') {
         nodejsPanels.push(panel);
       }
-      // Пропускаем панели из секции routes и other
+      // Пропускаем панели из секций routes, status_checks и other
     }
   }
+
+  // Обновляем PromQL в main и bypod панелях
+  updateMainAndByPodPanels(mainPanels, serviceName, metricName, statusExcludeFilter);
+  updateMainAndByPodPanels(byPodPanels, serviceName, metricName, statusExcludeFilter);
 
   // Пересчитываем позиции для всех панелей
   let currentY = 0;
@@ -435,10 +676,21 @@ export function updateGrafanaDashboard(serviceName: string): void {
     }
   }
 
-  // 4. Генерируем новые панели для роутов
-  const routeLabelKey = routerConfig.type === 'fastapi' ? 'http_target' : 'http_route';
-  const routePanels: GrafanaPanel[] = [];
+  // 4. Генерируем свёрнутую секцию Status Checks
   let nextPanelId = Math.max(...dashboard.panels.map((p: GrafanaPanel) => p.id || 0)) + 1;
+
+  const statusChecksResult = createStatusChecksRowPanel(
+    serviceName,
+    metricName,
+    statusIncludeFilter,
+    nextPanelId,
+    currentY,
+  );
+  nextPanelId = statusChecksResult.nextPanelId;
+  currentY += 1; // Collapsed row занимает 1 строку
+
+  // 5. Генерируем новые панели для роутов
+  const routePanels: GrafanaPanel[] = [];
 
   // Добавляем row для роутов
   routePanels.push(createRowPanel('Routes Metrics', nextPanelId++, currentY++));
@@ -451,8 +703,8 @@ export function updateGrafanaDashboard(serviceName: string): void {
     currentY = result.nextY;
   }
 
-  // Объединяем панели в правильном порядке: Main → By POD → Node JS → Routes
-  dashboard.panels = [...mainPanels, ...byPodPanels, ...nodejsPanels, ...routePanels];
+  // Объединяем панели в правильном порядке: Main → By POD → Node JS → Status Checks → Routes
+  dashboard.panels = [...mainPanels, ...byPodPanels, ...nodejsPanels, statusChecksResult.panel, ...routePanels];
 
   // Сохраняем обновленный дашборд
   fs.writeFileSync(dashboardPath, JSON.stringify(dashboard, null, 2), 'utf-8');
