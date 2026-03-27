@@ -30,6 +30,60 @@ export type CheckChallengeResponse = {
 };
 
 /**
+ * ForgotPasswordResetRequest
+ */
+export type ForgotPasswordResetRequest = {
+    /**
+     * New Password
+     */
+    new_password: string;
+};
+
+/**
+ * ForgotPasswordStartRequest
+ */
+export type ForgotPasswordStartRequest = {
+    /**
+     * Email
+     */
+    email: string;
+};
+
+/**
+ * ForgotPasswordStartResponse
+ */
+export type ForgotPasswordStartResponse = {
+    /**
+     * Challenge Id
+     */
+    challenge_id: string;
+    /**
+     * Expiring At
+     */
+    expiring_at: string;
+};
+
+/**
+ * ForgotPasswordVerifyRequest
+ */
+export type ForgotPasswordVerifyRequest = {
+    /**
+     * Code
+     */
+    code: string;
+};
+
+/**
+ * ForgotPasswordVerifyResponse
+ */
+export type ForgotPasswordVerifyResponse = {
+    /**
+     * Status
+     */
+    status: string;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -102,25 +156,29 @@ export type SessionInfo = {
      */
     id: string;
     /**
+     * Type
+     */
+    type?: 'session' | 'caldav';
+    /**
      * Created At
      */
     created_at: string;
     /**
      * Expires At
      */
-    expires_at: string;
+    expires_at?: string | null;
     /**
      * Revoked At
      */
-    revoked_at: string | null;
+    revoked_at?: string | null;
     /**
      * User Agent
      */
-    user_agent: string | null;
+    user_agent?: string | null;
     /**
      * Ip Address
      */
-    ip_address: string | null;
+    ip_address?: string | null;
     /**
      * Location
      */
@@ -132,7 +190,7 @@ export type SessionInfo = {
     /**
      * Is Current
      */
-    is_current: boolean;
+    is_current?: boolean;
 };
 
 /**
@@ -147,6 +205,60 @@ export type StartChallengeResponse = {
      * Expiring At
      */
     expiring_at: string;
+};
+
+/**
+ * TokenCreateRequest
+ */
+export type TokenCreateRequest = {
+    /**
+     * Device Name
+     */
+    device_name?: string;
+};
+
+/**
+ * TokenCreateResponse
+ */
+export type TokenCreateResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Token
+     */
+    token: string;
+    /**
+     * Device Name
+     */
+    device_name: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+};
+
+/**
+ * TokenListItem
+ */
+export type TokenListItem = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Device Name
+     */
+    device_name: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Revoked At
+     */
+    revoked_at: string | null;
 };
 
 /**
@@ -167,6 +279,10 @@ export type UpdatePasswordRequest = {
      * New Password
      */
     new_password: string;
+    /**
+     * Exclude Jti
+     */
+    exclude_jti?: string | null;
 };
 
 /**
@@ -428,6 +544,79 @@ export type ValidateSessionAuthValidateSessionPostResponses = {
 
 export type ValidateSessionAuthValidateSessionPostResponse = ValidateSessionAuthValidateSessionPostResponses[keyof ValidateSessionAuthValidateSessionPostResponses];
 
+export type ListCaldavTokensAuthCaldavTokensGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/caldav-tokens';
+};
+
+export type ListCaldavTokensAuthCaldavTokensGetResponses = {
+    /**
+     * Response List Caldav Tokens Auth Caldav Tokens Get
+     *
+     * Successful Response
+     */
+    200: Array<TokenListItem>;
+};
+
+export type ListCaldavTokensAuthCaldavTokensGetResponse = ListCaldavTokensAuthCaldavTokensGetResponses[keyof ListCaldavTokensAuthCaldavTokensGetResponses];
+
+export type CreateCaldavTokenAuthCaldavTokensPostData = {
+    body: TokenCreateRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/caldav-tokens';
+};
+
+export type CreateCaldavTokenAuthCaldavTokensPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateCaldavTokenAuthCaldavTokensPostError = CreateCaldavTokenAuthCaldavTokensPostErrors[keyof CreateCaldavTokenAuthCaldavTokensPostErrors];
+
+export type CreateCaldavTokenAuthCaldavTokensPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: TokenCreateResponse;
+};
+
+export type CreateCaldavTokenAuthCaldavTokensPostResponse = CreateCaldavTokenAuthCaldavTokensPostResponses[keyof CreateCaldavTokenAuthCaldavTokensPostResponses];
+
+export type RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Token Id
+         */
+        token_id: string;
+    };
+    query?: never;
+    url: '/auth/caldav-tokens/{token_id}';
+};
+
+export type RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteError = RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteErrors[keyof RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteErrors];
+
+export type RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteResponse = RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteResponses[keyof RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteResponses];
+
 export type StartChallengeAuthChallengePostData = {
     body?: never;
     path?: never;
@@ -504,6 +693,89 @@ export type CheckChallengeAuthChallengeChallengeIdCheckGetResponses = {
 
 export type CheckChallengeAuthChallengeChallengeIdCheckGetResponse = CheckChallengeAuthChallengeChallengeIdCheckGetResponses[keyof CheckChallengeAuthChallengeChallengeIdCheckGetResponses];
 
+export type StartForgotPasswordAuthForgotPasswordPostData = {
+    body: ForgotPasswordStartRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/forgot-password';
+};
+
+export type StartForgotPasswordAuthForgotPasswordPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StartForgotPasswordAuthForgotPasswordPostError = StartForgotPasswordAuthForgotPasswordPostErrors[keyof StartForgotPasswordAuthForgotPasswordPostErrors];
+
+export type StartForgotPasswordAuthForgotPasswordPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: ForgotPasswordStartResponse;
+};
+
+export type StartForgotPasswordAuthForgotPasswordPostResponse = StartForgotPasswordAuthForgotPasswordPostResponses[keyof StartForgotPasswordAuthForgotPasswordPostResponses];
+
+export type VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostData = {
+    body: ForgotPasswordVerifyRequest;
+    path: {
+        /**
+         * Challenge Id
+         */
+        challenge_id: string;
+    };
+    query?: never;
+    url: '/auth/forgot-password/{challenge_id}/verify';
+};
+
+export type VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostError = VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostErrors[keyof VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostErrors];
+
+export type VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: ForgotPasswordVerifyResponse;
+};
+
+export type VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostResponse = VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostResponses[keyof VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostResponses];
+
+export type ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostData = {
+    body: ForgotPasswordResetRequest;
+    path: {
+        /**
+         * Challenge Id
+         */
+        challenge_id: string;
+    };
+    query?: never;
+    url: '/auth/forgot-password/{challenge_id}/reset';
+};
+
+export type ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostError = ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostErrors[keyof ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostErrors];
+
+export type ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type UpdateUserEmailAuthInternalUsersUserIdEmailPatchData = {
     body: UpdateEmailRequest;
     path: {
@@ -554,6 +826,34 @@ export type UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors = {
 export type UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchError = UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors[keyof UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors];
 
 export type UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetData = {
+    body?: never;
+    path: {
+        /**
+         * Token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/auth/internal/caldav-tokens/validate/{token}';
+};
+
+export type ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetError = ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetErrors[keyof ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetErrors];
+
+export type ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetResponses = {
     /**
      * Successful Response
      */

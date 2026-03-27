@@ -66,6 +66,7 @@ export const changeEmailSettingsEmailPost = <ThrowOnError extends boolean = fals
  * Change Password
  */
 export const changePasswordSettingsPasswordPost = <ThrowOnError extends boolean = false>(options: Options<ChangePasswordSettingsPasswordPostData, ThrowOnError>) => (options.client ?? client).post<ChangePasswordSettingsPasswordPostResponses, ChangePasswordSettingsPasswordPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/settings/password',
     ...options,
     headers: {

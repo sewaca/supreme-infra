@@ -818,6 +818,70 @@ export type GetStatusApiStatusGetResponses = {
     200: unknown;
 };
 
+export type GroupCalendarCaldavTokenGroupsGroupNameCalendarIcsGetData = {
+    body?: never;
+    path: {
+        /**
+         * Token
+         */
+        token: string;
+        /**
+         * Group Name
+         */
+        group_name: string;
+    };
+    query?: never;
+    url: '/caldav/{token}/groups/{group_name}/calendar.ics';
+};
+
+export type GroupCalendarCaldavTokenGroupsGroupNameCalendarIcsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GroupCalendarCaldavTokenGroupsGroupNameCalendarIcsGetError = GroupCalendarCaldavTokenGroupsGroupNameCalendarIcsGetErrors[keyof GroupCalendarCaldavTokenGroupsGroupNameCalendarIcsGetErrors];
+
+export type GroupCalendarCaldavTokenGroupsGroupNameCalendarIcsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type TeacherCalendarCaldavTokenTeachersTeacherIdCalendarIcsGetData = {
+    body?: never;
+    path: {
+        /**
+         * Token
+         */
+        token: string;
+        /**
+         * Teacher Id
+         */
+        teacher_id: string;
+    };
+    query?: never;
+    url: '/caldav/{token}/teachers/{teacher_id}/calendar.ics';
+};
+
+export type TeacherCalendarCaldavTokenTeachersTeacherIdCalendarIcsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type TeacherCalendarCaldavTokenTeachersTeacherIdCalendarIcsGetError = TeacherCalendarCaldavTokenTeachersTeacherIdCalendarIcsGetErrors[keyof TeacherCalendarCaldavTokenTeachersTeacherIdCalendarIcsGetErrors];
+
+export type TeacherCalendarCaldavTokenTeachersTeacherIdCalendarIcsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type GroupScheduleGroupsGroupNameScheduleGetData = {
     body?: never;
     path: {

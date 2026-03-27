@@ -231,6 +231,115 @@
         }
       }
     },
+    "/auth/caldav-tokens": {
+      "get": {
+        "tags": ["caldav-tokens"],
+        "summary": "List Caldav Tokens",
+        "operationId": "list_caldav_tokens_auth_caldav_tokens_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TokenListItem"
+                  },
+                  "type": "array",
+                  "title": "Response List Caldav Tokens Auth Caldav Tokens Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["caldav-tokens"],
+        "summary": "Create Caldav Token",
+        "operationId": "create_caldav_token_auth_caldav_tokens_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenCreateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/auth/caldav-tokens/{token_id}": {
+      "delete": {
+        "tags": ["caldav-tokens"],
+        "summary": "Revoke Caldav Token",
+        "operationId": "revoke_caldav_token_auth_caldav_tokens__token_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Token Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/challenge": {
       "post": {
         "tags": ["challenge"],
@@ -352,6 +461,145 @@
         }
       }
     },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": ["forgot-password"],
+        "summary": "Start Forgot Password",
+        "operationId": "start_forgot_password_auth_forgot_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordStartResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password/{challenge_id}/verify": {
+      "post": {
+        "tags": ["forgot-password"],
+        "summary": "Verify Forgot Password",
+        "operationId": "verify_forgot_password_auth_forgot_password__challenge_id__verify_post",
+        "parameters": [
+          {
+            "name": "challenge_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Challenge Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordVerifyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordVerifyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password/{challenge_id}/reset": {
+      "post": {
+        "tags": ["forgot-password"],
+        "summary": "Reset Forgot Password",
+        "operationId": "reset_forgot_password_auth_forgot_password__challenge_id__reset_post",
+        "parameters": [
+          {
+            "name": "challenge_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Challenge Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordResetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/internal/users/{user_id}/email": {
       "patch": {
         "tags": ["internal"],
@@ -449,6 +697,45 @@
           }
         }
       }
+    },
+    "/auth/internal/caldav-tokens/validate/{token}": {
+      "get": {
+        "tags": ["internal"],
+        "summary": "Validate Caldav Token",
+        "description": "Called by core-schedule to validate a CalDAV token before serving an .ics feed.",
+        "operationId": "validate_caldav_token_auth_internal_caldav_tokens_validate__token__get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -489,6 +776,67 @@
         "type": "object",
         "required": ["is_valid"],
         "title": "CheckChallengeResponse"
+      },
+      "ForgotPasswordResetRequest": {
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "title": "New Password"
+          }
+        },
+        "type": "object",
+        "required": ["new_password"],
+        "title": "ForgotPasswordResetRequest"
+      },
+      "ForgotPasswordStartRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": ["email"],
+        "title": "ForgotPasswordStartRequest"
+      },
+      "ForgotPasswordStartResponse": {
+        "properties": {
+          "challenge_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Challenge Id"
+          },
+          "expiring_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expiring At"
+          }
+        },
+        "type": "object",
+        "required": ["challenge_id", "expiring_at"],
+        "title": "ForgotPasswordStartResponse"
+      },
+      "ForgotPasswordVerifyRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          }
+        },
+        "type": "object",
+        "required": ["code"],
+        "title": "ForgotPasswordVerifyRequest"
+      },
+      "ForgotPasswordVerifyResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": ["status"],
+        "title": "ForgotPasswordVerifyResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -588,14 +936,27 @@
             "format": "uuid",
             "title": "Id"
           },
+          "type": {
+            "type": "string",
+            "enum": ["session", "caldav"],
+            "title": "Type",
+            "default": "session"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
             "title": "Created At"
           },
           "expires_at": {
-            "type": "string",
-            "format": "date-time",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Expires At"
           },
           "revoked_at": {
@@ -656,11 +1017,12 @@
           },
           "is_current": {
             "type": "boolean",
-            "title": "Is Current"
+            "title": "Is Current",
+            "default": false
           }
         },
         "type": "object",
-        "required": ["id", "created_at", "expires_at", "revoked_at", "user_agent", "ip_address", "is_current"],
+        "required": ["id", "created_at"],
         "title": "SessionInfo"
       },
       "StartChallengeResponse": {
@@ -680,6 +1042,75 @@
         "required": ["challenge_id", "expiring_at"],
         "title": "StartChallengeResponse"
       },
+      "TokenCreateRequest": {
+        "properties": {
+          "device_name": {
+            "type": "string",
+            "title": "Device Name",
+            "default": "CalDav calendar"
+          }
+        },
+        "type": "object",
+        "title": "TokenCreateRequest"
+      },
+      "TokenCreateResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "token": {
+            "type": "string",
+            "title": "Token"
+          },
+          "device_name": {
+            "type": "string",
+            "title": "Device Name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": ["id", "token", "device_name", "created_at"],
+        "title": "TokenCreateResponse"
+      },
+      "TokenListItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "device_name": {
+            "type": "string",
+            "title": "Device Name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          }
+        },
+        "type": "object",
+        "required": ["id", "device_name", "created_at", "revoked_at"],
+        "title": "TokenListItem"
+      },
       "UpdateEmailRequest": {
         "properties": {
           "new_email": {
@@ -696,6 +1127,18 @@
           "new_password": {
             "type": "string",
             "title": "New Password"
+          },
+          "exclude_jti": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exclude Jti"
           }
         },
         "type": "object",

@@ -8,7 +8,9 @@
   "paths": {
     "/api/status": {
       "get": {
-        "tags": ["status"],
+        "tags": [
+          "status"
+        ],
         "summary": "Get Status",
         "operationId": "get_status_api_status_get",
         "responses": {
@@ -23,9 +25,100 @@
         }
       }
     },
+    "/caldav/{token}/groups/{group_name}/calendar.ics": {
+      "get": {
+        "tags": [
+          "caldav"
+        ],
+        "summary": "Group Calendar",
+        "operationId": "group_calendar_caldav__token__groups__group_name__calendar_ics_get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          },
+          {
+            "name": "group_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Group Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/caldav/{token}/teachers/{teacher_id}/calendar.ics": {
+      "get": {
+        "tags": [
+          "caldav"
+        ],
+        "summary": "Teacher Calendar",
+        "operationId": "teacher_calendar_caldav__token__teachers__teacher_id__calendar_ics_get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          },
+          {
+            "name": "teacher_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Teacher Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/groups/{group_name}/schedule": {
       "get": {
-        "tags": ["groups"],
+        "tags": [
+          "groups"
+        ],
         "summary": "Group Schedule",
         "operationId": "group_schedule_groups__group_name__schedule_get",
         "parameters": [
@@ -106,7 +199,9 @@
     },
     "/groups/{group_name}/exams": {
       "get": {
-        "tags": ["groups"],
+        "tags": [
+          "groups"
+        ],
         "summary": "Group Exams",
         "operationId": "group_exams_groups__group_name__exams_get",
         "parameters": [
@@ -167,7 +262,9 @@
     },
     "/groups/{group_name}/template": {
       "get": {
-        "tags": ["groups"],
+        "tags": [
+          "groups"
+        ],
         "summary": "Group Template",
         "operationId": "group_template_groups__group_name__template_get",
         "parameters": [
@@ -224,7 +321,9 @@
     },
     "/teachers/{teacher_id}/schedule": {
       "get": {
-        "tags": ["teachers"],
+        "tags": [
+          "teachers"
+        ],
         "summary": "Teacher Schedule",
         "operationId": "teacher_schedule_teachers__teacher_id__schedule_get",
         "parameters": [
@@ -306,7 +405,9 @@
     },
     "/teachers/{teacher_id}/exams": {
       "get": {
-        "tags": ["teachers"],
+        "tags": [
+          "teachers"
+        ],
         "summary": "Teacher Exams",
         "operationId": "teacher_exams_teachers__teacher_id__exams_get",
         "parameters": [
@@ -368,7 +469,9 @@
     },
     "/teachers/{teacher_id}/template": {
       "get": {
-        "tags": ["teachers"],
+        "tags": [
+          "teachers"
+        ],
         "summary": "Teacher Template",
         "operationId": "teacher_template_teachers__teacher_id__template_get",
         "parameters": [
@@ -426,7 +529,9 @@
     },
     "/admin/classrooms": {
       "get": {
-        "tags": ["admin-classrooms"],
+        "tags": [
+          "admin-classrooms"
+        ],
         "summary": "List Classrooms",
         "operationId": "list_classrooms_admin_classrooms_get",
         "security": [
@@ -487,7 +592,9 @@
         }
       },
       "post": {
-        "tags": ["admin-classrooms"],
+        "tags": [
+          "admin-classrooms"
+        ],
         "summary": "Create Classroom",
         "operationId": "create_classroom_admin_classrooms_post",
         "security": [
@@ -531,7 +638,9 @@
     },
     "/admin/classrooms/{classroom_id}": {
       "get": {
-        "tags": ["admin-classrooms"],
+        "tags": [
+          "admin-classrooms"
+        ],
         "summary": "Get Classroom",
         "operationId": "get_classroom_admin_classrooms__classroom_id__get",
         "security": [
@@ -575,7 +684,9 @@
         }
       },
       "put": {
-        "tags": ["admin-classrooms"],
+        "tags": [
+          "admin-classrooms"
+        ],
         "summary": "Update Classroom",
         "operationId": "update_classroom_admin_classrooms__classroom_id__put",
         "security": [
@@ -629,7 +740,9 @@
         }
       },
       "delete": {
-        "tags": ["admin-classrooms"],
+        "tags": [
+          "admin-classrooms"
+        ],
         "summary": "Delete Classroom",
         "operationId": "delete_classroom_admin_classrooms__classroom_id__delete",
         "security": [
@@ -673,7 +786,9 @@
     },
     "/admin/semesters": {
       "get": {
-        "tags": ["admin-semesters"],
+        "tags": [
+          "admin-semesters"
+        ],
         "summary": "List Semesters",
         "operationId": "list_semesters_admin_semesters_get",
         "security": [
@@ -734,7 +849,9 @@
         }
       },
       "post": {
-        "tags": ["admin-semesters"],
+        "tags": [
+          "admin-semesters"
+        ],
         "summary": "Create Semester",
         "operationId": "create_semester_admin_semesters_post",
         "security": [
@@ -778,7 +895,9 @@
     },
     "/admin/semesters/{semester_id}": {
       "get": {
-        "tags": ["admin-semesters"],
+        "tags": [
+          "admin-semesters"
+        ],
         "summary": "Get Semester",
         "operationId": "get_semester_admin_semesters__semester_id__get",
         "security": [
@@ -822,7 +941,9 @@
         }
       },
       "put": {
-        "tags": ["admin-semesters"],
+        "tags": [
+          "admin-semesters"
+        ],
         "summary": "Update Semester",
         "operationId": "update_semester_admin_semesters__semester_id__put",
         "security": [
@@ -876,7 +997,9 @@
         }
       },
       "delete": {
-        "tags": ["admin-semesters"],
+        "tags": [
+          "admin-semesters"
+        ],
         "summary": "Delete Semester",
         "operationId": "delete_semester_admin_semesters__semester_id__delete",
         "security": [
@@ -920,7 +1043,9 @@
     },
     "/admin/teachers": {
       "get": {
-        "tags": ["admin-teachers"],
+        "tags": [
+          "admin-teachers"
+        ],
         "summary": "List Teachers",
         "operationId": "list_teachers_admin_teachers_get",
         "responses": {
@@ -948,7 +1073,9 @@
     },
     "/admin/teachers/sync": {
       "post": {
-        "tags": ["admin-teachers"],
+        "tags": [
+          "admin-teachers"
+        ],
         "summary": "Sync Teachers",
         "operationId": "sync_teachers_admin_teachers_sync_post",
         "requestBody": {
@@ -996,7 +1123,9 @@
     },
     "/admin/templates": {
       "get": {
-        "tags": ["admin-templates"],
+        "tags": [
+          "admin-templates"
+        ],
         "summary": "List Templates",
         "operationId": "list_templates_admin_templates_get",
         "security": [
@@ -1115,7 +1244,9 @@
         }
       },
       "post": {
-        "tags": ["admin-templates"],
+        "tags": [
+          "admin-templates"
+        ],
         "summary": "Create Template",
         "operationId": "create_template_admin_templates_post",
         "security": [
@@ -1159,7 +1290,9 @@
     },
     "/admin/templates/bulk": {
       "post": {
-        "tags": ["admin-templates"],
+        "tags": [
+          "admin-templates"
+        ],
         "summary": "Create Templates Bulk",
         "operationId": "create_templates_bulk_admin_templates_bulk_post",
         "requestBody": {
@@ -1207,7 +1340,9 @@
     },
     "/admin/templates/{template_id}": {
       "put": {
-        "tags": ["admin-templates"],
+        "tags": [
+          "admin-templates"
+        ],
         "summary": "Update Template",
         "operationId": "update_template_admin_templates__template_id__put",
         "security": [
@@ -1261,7 +1396,9 @@
         }
       },
       "delete": {
-        "tags": ["admin-templates"],
+        "tags": [
+          "admin-templates"
+        ],
         "summary": "Delete Template",
         "operationId": "delete_template_admin_templates__template_id__delete",
         "security": [
@@ -1305,7 +1442,9 @@
     },
     "/admin/overrides": {
       "get": {
-        "tags": ["admin-overrides"],
+        "tags": [
+          "admin-overrides"
+        ],
         "summary": "List Overrides",
         "operationId": "list_overrides_admin_overrides_get",
         "security": [
@@ -1426,7 +1565,9 @@
         }
       },
       "post": {
-        "tags": ["admin-overrides"],
+        "tags": [
+          "admin-overrides"
+        ],
         "summary": "Create Override",
         "operationId": "create_override_admin_overrides_post",
         "security": [
@@ -1470,7 +1611,9 @@
     },
     "/admin/overrides/{override_id}": {
       "put": {
-        "tags": ["admin-overrides"],
+        "tags": [
+          "admin-overrides"
+        ],
         "summary": "Update Override",
         "operationId": "update_override_admin_overrides__override_id__put",
         "security": [
@@ -1524,7 +1667,9 @@
         }
       },
       "delete": {
-        "tags": ["admin-overrides"],
+        "tags": [
+          "admin-overrides"
+        ],
         "summary": "Delete Override",
         "operationId": "delete_override_admin_overrides__override_id__delete",
         "security": [
@@ -1568,7 +1713,9 @@
     },
     "/admin/session-events": {
       "get": {
-        "tags": ["admin-session-events"],
+        "tags": [
+          "admin-session-events"
+        ],
         "summary": "List Session Events",
         "operationId": "list_session_events_admin_session_events_get",
         "security": [
@@ -1655,7 +1802,9 @@
         }
       },
       "post": {
-        "tags": ["admin-session-events"],
+        "tags": [
+          "admin-session-events"
+        ],
         "summary": "Create Session Event",
         "operationId": "create_session_event_admin_session_events_post",
         "security": [
@@ -1699,7 +1848,9 @@
     },
     "/admin/session-events/{event_id}": {
       "put": {
-        "tags": ["admin-session-events"],
+        "tags": [
+          "admin-session-events"
+        ],
         "summary": "Update Session Event",
         "operationId": "update_session_event_admin_session_events__event_id__put",
         "security": [
@@ -1753,7 +1904,9 @@
         }
       },
       "delete": {
-        "tags": ["admin-session-events"],
+        "tags": [
+          "admin-session-events"
+        ],
         "summary": "Delete Session Event",
         "operationId": "delete_session_event_admin_session_events__event_id__delete",
         "security": [
@@ -1828,7 +1981,9 @@
           }
         },
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "title": "ClassroomCreate"
       },
       "ClassroomResponse": {
@@ -1866,7 +2021,12 @@
           }
         },
         "type": "object",
-        "required": ["id", "name", "building", "capacity"],
+        "required": [
+          "id",
+          "name",
+          "building",
+          "capacity"
+        ],
         "title": "ClassroomResponse"
       },
       "ClassroomUpdate": {
@@ -1932,7 +2092,12 @@
           }
         },
         "type": "object",
-        "required": ["date", "day_of_week", "day_name", "lessons"],
+        "required": [
+          "date",
+          "day_of_week",
+          "day_name",
+          "lessons"
+        ],
         "title": "DaySchedule"
       },
       "DayTemplate": {
@@ -1954,7 +2119,11 @@
           }
         },
         "type": "object",
-        "required": ["day_of_week", "day_name", "slots"],
+        "required": [
+          "day_of_week",
+          "day_name",
+          "slots"
+        ],
         "title": "DayTemplate"
       },
       "HTTPValidationError": {
@@ -2172,7 +2341,13 @@
           }
         },
         "type": "object",
-        "required": ["semester_id", "date", "slot_number", "group_name", "action"],
+        "required": [
+          "semester_id",
+          "date",
+          "slot_number",
+          "group_name",
+          "action"
+        ],
         "title": "OverrideCreate"
       },
       "OverrideResponse": {
@@ -2470,7 +2645,12 @@
           }
         },
         "type": "object",
-        "required": ["name", "start_date", "end_date", "cycle_anchor_date"],
+        "required": [
+          "name",
+          "start_date",
+          "end_date",
+          "cycle_anchor_date"
+        ],
         "title": "SemesterCreate"
       },
       "SemesterResponse": {
@@ -2505,7 +2685,14 @@
           }
         },
         "type": "object",
-        "required": ["id", "name", "start_date", "end_date", "cycle_anchor_date", "is_active"],
+        "required": [
+          "id",
+          "name",
+          "start_date",
+          "end_date",
+          "cycle_anchor_date",
+          "is_active"
+        ],
         "title": "SemesterResponse"
       },
       "SemesterUpdate": {
@@ -2640,7 +2827,15 @@
           }
         },
         "type": "object",
-        "required": ["semester_id", "date", "start_time", "end_time", "subject_name", "lesson_type", "group_name"],
+        "required": [
+          "semester_id",
+          "date",
+          "start_time",
+          "end_time",
+          "subject_name",
+          "lesson_type",
+          "group_name"
+        ],
         "title": "SessionEventCreate"
       },
       "SessionEventResponse": {
@@ -2863,7 +3058,10 @@
           }
         },
         "type": "object",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "title": "TeacherCacheResponse"
       },
       "TeacherSyncItem": {
@@ -2879,7 +3077,10 @@
           }
         },
         "type": "object",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "title": "TeacherSyncItem"
       },
       "TeacherSyncRequest": {
@@ -2893,7 +3094,9 @@
           }
         },
         "type": "object",
-        "required": ["items"],
+        "required": [
+          "items"
+        ],
         "title": "TeacherSyncRequest"
       },
       "TemplateResponse": {
@@ -2923,7 +3126,12 @@
           }
         },
         "type": "object",
-        "required": ["semester_id", "semester_name", "week_1", "week_2"],
+        "required": [
+          "semester_id",
+          "semester_name",
+          "week_1",
+          "week_2"
+        ],
         "title": "TemplateResponse"
       },
       "TemplateSlotBulkCreate": {
@@ -2937,7 +3145,9 @@
           }
         },
         "type": "object",
-        "required": ["items"],
+        "required": [
+          "items"
+        ],
         "title": "TemplateSlotBulkCreate"
       },
       "TemplateSlotCreate": {
@@ -3264,7 +3474,11 @@
           }
         },
         "type": "object",
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError"
       }
     },

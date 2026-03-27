@@ -23,6 +23,91 @@
         }
       }
     },
+    "/caldav/{token}/groups/{group_name}/calendar.ics": {
+      "get": {
+        "tags": ["caldav"],
+        "summary": "Group Calendar",
+        "operationId": "group_calendar_caldav__token__groups__group_name__calendar_ics_get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          },
+          {
+            "name": "group_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Group Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/caldav/{token}/teachers/{teacher_id}/calendar.ics": {
+      "get": {
+        "tags": ["caldav"],
+        "summary": "Teacher Calendar",
+        "operationId": "teacher_calendar_caldav__token__teachers__teacher_id__calendar_ics_get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          },
+          {
+            "name": "teacher_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Teacher Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/groups/{group_name}/schedule": {
       "get": {
         "tags": ["groups"],

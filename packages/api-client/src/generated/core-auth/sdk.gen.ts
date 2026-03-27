@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CheckChallengeAuthChallengeChallengeIdCheckGetData, CheckChallengeAuthChallengeChallengeIdCheckGetErrors, CheckChallengeAuthChallengeChallengeIdCheckGetResponses, GetMeAuthMeGetData, GetMeAuthMeGetResponses, GetSessionsAuthSessionsGetData, GetSessionsAuthSessionsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, LoginAuthLoginPostData, LoginAuthLoginPostErrors, LoginAuthLoginPostResponses, RegisterAuthRegisterPostData, RegisterAuthRegisterPostErrors, RegisterAuthRegisterPostResponses, RevokeSessionAuthSessionsSessionIdDeleteData, RevokeSessionAuthSessionsSessionIdDeleteErrors, RevokeSessionAuthSessionsSessionIdDeleteResponses, StartChallengeAuthChallengePostData, StartChallengeAuthChallengePostResponses, UpdateUserEmailAuthInternalUsersUserIdEmailPatchData, UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors, UpdateUserEmailAuthInternalUsersUserIdEmailPatchResponses, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchData, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchResponses, ValidateSessionAuthValidateSessionPostData, ValidateSessionAuthValidateSessionPostErrors, ValidateSessionAuthValidateSessionPostResponses, VerifyChallengeAuthChallengeChallengeIdVerifyPostData, VerifyChallengeAuthChallengeChallengeIdVerifyPostErrors, VerifyChallengeAuthChallengeChallengeIdVerifyPostResponses } from './types.gen';
+import type { CheckChallengeAuthChallengeChallengeIdCheckGetData, CheckChallengeAuthChallengeChallengeIdCheckGetErrors, CheckChallengeAuthChallengeChallengeIdCheckGetResponses, CreateCaldavTokenAuthCaldavTokensPostData, CreateCaldavTokenAuthCaldavTokensPostErrors, CreateCaldavTokenAuthCaldavTokensPostResponses, GetMeAuthMeGetData, GetMeAuthMeGetResponses, GetSessionsAuthSessionsGetData, GetSessionsAuthSessionsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, ListCaldavTokensAuthCaldavTokensGetData, ListCaldavTokensAuthCaldavTokensGetResponses, LoginAuthLoginPostData, LoginAuthLoginPostErrors, LoginAuthLoginPostResponses, RegisterAuthRegisterPostData, RegisterAuthRegisterPostErrors, RegisterAuthRegisterPostResponses, ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostData, ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostErrors, ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostResponses, RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteData, RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteErrors, RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteResponses, RevokeSessionAuthSessionsSessionIdDeleteData, RevokeSessionAuthSessionsSessionIdDeleteErrors, RevokeSessionAuthSessionsSessionIdDeleteResponses, StartChallengeAuthChallengePostData, StartChallengeAuthChallengePostResponses, StartForgotPasswordAuthForgotPasswordPostData, StartForgotPasswordAuthForgotPasswordPostErrors, StartForgotPasswordAuthForgotPasswordPostResponses, UpdateUserEmailAuthInternalUsersUserIdEmailPatchData, UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors, UpdateUserEmailAuthInternalUsersUserIdEmailPatchResponses, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchData, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchErrors, UpdateUserPasswordAuthInternalUsersUserIdPasswordPatchResponses, ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetData, ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetErrors, ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetResponses, ValidateSessionAuthValidateSessionPostData, ValidateSessionAuthValidateSessionPostErrors, ValidateSessionAuthValidateSessionPostResponses, VerifyChallengeAuthChallengeChallengeIdVerifyPostData, VerifyChallengeAuthChallengeChallengeIdVerifyPostErrors, VerifyChallengeAuthChallengeChallengeIdVerifyPostResponses, VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostData, VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostErrors, VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -87,6 +87,37 @@ export const validateSessionAuthValidateSessionPost = <ThrowOnError extends bool
 });
 
 /**
+ * List Caldav Tokens
+ */
+export const listCaldavTokensAuthCaldavTokensGet = <ThrowOnError extends boolean = false>(options?: Options<ListCaldavTokensAuthCaldavTokensGetData, ThrowOnError>) => (options?.client ?? client).get<ListCaldavTokensAuthCaldavTokensGetResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/caldav-tokens',
+    ...options
+});
+
+/**
+ * Create Caldav Token
+ */
+export const createCaldavTokenAuthCaldavTokensPost = <ThrowOnError extends boolean = false>(options: Options<CreateCaldavTokenAuthCaldavTokensPostData, ThrowOnError>) => (options.client ?? client).post<CreateCaldavTokenAuthCaldavTokensPostResponses, CreateCaldavTokenAuthCaldavTokensPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/caldav-tokens',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Revoke Caldav Token
+ */
+export const revokeCaldavTokenAuthCaldavTokensTokenIdDelete = <ThrowOnError extends boolean = false>(options: Options<RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteResponses, RevokeCaldavTokenAuthCaldavTokensTokenIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/caldav-tokens/{token_id}',
+    ...options
+});
+
+/**
  * Start Challenge
  */
 export const startChallengeAuthChallengePost = <ThrowOnError extends boolean = false>(options?: Options<StartChallengeAuthChallengePostData, ThrowOnError>) => (options?.client ?? client).post<StartChallengeAuthChallengePostResponses, unknown, ThrowOnError>({
@@ -114,6 +145,42 @@ export const verifyChallengeAuthChallengeChallengeIdVerifyPost = <ThrowOnError e
 export const checkChallengeAuthChallengeChallengeIdCheckGet = <ThrowOnError extends boolean = false>(options: Options<CheckChallengeAuthChallengeChallengeIdCheckGetData, ThrowOnError>) => (options.client ?? client).get<CheckChallengeAuthChallengeChallengeIdCheckGetResponses, CheckChallengeAuthChallengeChallengeIdCheckGetErrors, ThrowOnError>({ url: '/auth/challenge/{challenge_id}/check', ...options });
 
 /**
+ * Start Forgot Password
+ */
+export const startForgotPasswordAuthForgotPasswordPost = <ThrowOnError extends boolean = false>(options: Options<StartForgotPasswordAuthForgotPasswordPostData, ThrowOnError>) => (options.client ?? client).post<StartForgotPasswordAuthForgotPasswordPostResponses, StartForgotPasswordAuthForgotPasswordPostErrors, ThrowOnError>({
+    url: '/auth/forgot-password',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Verify Forgot Password
+ */
+export const verifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPost = <ThrowOnError extends boolean = false>(options: Options<VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostData, ThrowOnError>) => (options.client ?? client).post<VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostResponses, VerifyForgotPasswordAuthForgotPasswordChallengeIdVerifyPostErrors, ThrowOnError>({
+    url: '/auth/forgot-password/{challenge_id}/verify',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Reset Forgot Password
+ */
+export const resetForgotPasswordAuthForgotPasswordChallengeIdResetPost = <ThrowOnError extends boolean = false>(options: Options<ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostData, ThrowOnError>) => (options.client ?? client).post<ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostResponses, ResetForgotPasswordAuthForgotPasswordChallengeIdResetPostErrors, ThrowOnError>({
+    url: '/auth/forgot-password/{challenge_id}/reset',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Update User Email
  */
 export const updateUserEmailAuthInternalUsersUserIdEmailPatch = <ThrowOnError extends boolean = false>(options: Options<UpdateUserEmailAuthInternalUsersUserIdEmailPatchData, ThrowOnError>) => (options.client ?? client).patch<UpdateUserEmailAuthInternalUsersUserIdEmailPatchResponses, UpdateUserEmailAuthInternalUsersUserIdEmailPatchErrors, ThrowOnError>({
@@ -136,3 +203,10 @@ export const updateUserPasswordAuthInternalUsersUserIdPasswordPatch = <ThrowOnEr
         ...options.headers
     }
 });
+
+/**
+ * Validate Caldav Token
+ *
+ * Called by core-schedule to validate a CalDAV token before serving an .ics feed.
+ */
+export const validateCaldavTokenAuthInternalCaldavTokensValidateTokenGet = <ThrowOnError extends boolean = false>(options: Options<ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetData, ThrowOnError>) => (options.client ?? client).get<ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetResponses, ValidateCaldavTokenAuthInternalCaldavTokensValidateTokenGetErrors, ThrowOnError>({ url: '/auth/internal/caldav-tokens/validate/{token}', ...options });
