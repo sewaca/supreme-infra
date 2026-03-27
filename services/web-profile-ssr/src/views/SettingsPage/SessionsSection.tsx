@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -75,10 +75,9 @@ export const SessionsSection = ({ sessions }: Props) => {
           </TableHead>
           <TableBody>
             {sessions.map((session) => (
-              <TableRow key={session.id}>
+              <TableRow key={session.id} sx={{ backgroundColor: session.is_current ? '#e8eaf6' : undefined }}>
                 <TableCell>
                   {session.device ?? parseUserAgent(session.user_agent)}
-                  {session.is_current && <Chip label={i18n('Текущая')} size="small" color="primary" sx={{ ml: 1 }} />}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>{session.location ?? '—'}</TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>{new Date(session.created_at).toLocaleString('ru')}</TableCell>
@@ -86,7 +85,11 @@ export const SessionsSection = ({ sessions }: Props) => {
                   {session.expires_at ? new Date(session.expires_at).toLocaleString('ru') : '—'}
                 </TableCell>
                 <TableCell align="right">
-                  {!session.is_current && (
+                  {session.is_current ? (
+                    <Typography variant="caption" color="primary" sx={{ fontWeight: 600 }}>
+                      {i18n('Текущая')}
+                    </Typography>
+                  ) : (
                     <Button
                       size="small"
                       color="error"

@@ -1,6 +1,8 @@
 'use client';
 
 import { Button, Container, Stack, Switch, Typography } from '@mui/material';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
@@ -59,12 +61,18 @@ export const SettingsPage = ({ initialSettings, sessions }: Props) => {
           <Typography variant="h3">{i18n('Безопасность')}</Typography>
           <Spacer size={4} />
           <Stack direction="row" gap={2}>
-            <Button variant="contained" color="inherit" onClick={() => router.push('/profile/settings/change-email')}>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<EmailOutlinedIcon />}
+              onClick={() => router.push('/profile/settings/change-email')}
+            >
               {i18n('Сменить email')}
             </Button>
             <Button
-              variant="contained"
-              color="inherit"
+              variant="outlined"
+              color="primary"
+              startIcon={<LockOutlinedIcon />}
               onClick={() => router.push('/profile/settings/change-password')}
             >
               {i18n('Сменить пароль')}
