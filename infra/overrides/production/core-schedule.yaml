@@ -23,6 +23,7 @@ env:
   DB_PORT: "5432"
   DB_NAME: core_schedule_db
   DB_USER: core_schedule_user
+  CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
 secrets: {}
 resources:
   limits:

@@ -5,6 +5,9 @@
 service: web-auth-ssr
 type: next
 routes:
+  - path: /forgot-password
+    method: GET
+    auth_level: none
   - path: /login
     method: GET
     auth_level: none

@@ -66,6 +66,12 @@ ingress:
           method: GET
         - path: /core-auth/auth/challenge/[^/]+/verify
           method: POST
+        - path: /core-auth/auth/forgot-password
+          method: POST
+        - path: /core-auth/auth/forgot-password/[^/]+/reset
+          method: POST
+        - path: /core-auth/auth/forgot-password/[^/]+/verify
+          method: POST
         - path: /core-auth/auth/internal/caldav-tokens/validate/[^/]+
           method: GET
         - path: /core-auth/auth/internal/users/[^/]+/email
@@ -230,6 +236,8 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /forgot-password
+          method: GET
         - path: /login
           method: GET
         - path: /profile-old

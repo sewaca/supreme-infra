@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 513,
+      "id": 549,
       "panels": [
         {
-          "id": 511,
+          "id": 547,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 512,
+          "id": 548,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 514,
+      "id": 550,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,8 +1091,8 @@
       }
     },
     {
-      "id": 515,
-      "title": "GET /login",
+      "id": 551,
+      "title": "GET /forgot-password",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1102,8 +1102,8 @@
       }
     },
     {
-      "id": 516,
-      "title": "GET /login - Timings",
+      "id": 552,
+      "title": "GET /forgot-password - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1114,6 +1114,324 @@
         "w": 8,
         "x": 0,
         "y": 70
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-auth-ssr\",http_route=\"/forgot-password\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-auth-ssr\",http_route=\"/forgot-password\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-auth-ssr\",http_route=\"/forgot-password\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 553,
+      "title": "GET /forgot-password - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 70
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-auth-ssr\",http_route=\"/forgot-password\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 554,
+      "title": "GET /forgot-password - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 70
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-auth-ssr\",http_route=\"/forgot-password\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 555,
+      "title": "GET /login",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 78
+      }
+    },
+    {
+      "id": 556,
+      "title": "GET /login - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 79
       },
       "targets": [
         {
@@ -1223,7 +1541,7 @@
       }
     },
     {
-      "id": 517,
+      "id": 557,
       "title": "GET /login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1234,7 +1552,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 70
+        "y": 79
       },
       "targets": [
         {
@@ -1314,7 +1632,7 @@
       }
     },
     {
-      "id": 518,
+      "id": 558,
       "title": "GET /login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1325,7 +1643,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 70
+        "y": 79
       },
       "targets": [
         {
@@ -1409,18 +1727,18 @@
       }
     },
     {
-      "id": 519,
+      "id": 559,
       "title": "GET /profile-old",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 87
       }
     },
     {
-      "id": 520,
+      "id": 560,
       "title": "GET /profile-old - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1431,7 +1749,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1541,7 +1859,7 @@
       }
     },
     {
-      "id": 521,
+      "id": 561,
       "title": "GET /profile-old - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1552,7 +1870,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1632,7 +1950,7 @@
       }
     },
     {
-      "id": 522,
+      "id": 562,
       "title": "GET /profile-old - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1643,7 +1961,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1727,18 +2045,18 @@
       }
     },
     {
-      "id": 523,
+      "id": 563,
       "title": "GET /register",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 96
       }
     },
     {
-      "id": 524,
+      "id": 564,
       "title": "GET /register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1749,7 +2067,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 88
+        "y": 97
       },
       "targets": [
         {
@@ -1859,7 +2177,7 @@
       }
     },
     {
-      "id": 525,
+      "id": 565,
       "title": "GET /register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1870,7 +2188,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 88
+        "y": 97
       },
       "targets": [
         {
@@ -1950,7 +2268,7 @@
       }
     },
     {
-      "id": 526,
+      "id": 566,
       "title": "GET /register - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1961,7 +2279,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 88
+        "y": 97
       },
       "targets": [
         {

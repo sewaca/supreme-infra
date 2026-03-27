@@ -22,6 +22,7 @@ env:
   DB_PORT: "5432"
   DB_NAME: "core_schedule_db"
   DB_USER: "core_schedule_user"
+  CORE_AUTH_URL: "http://core-auth.default.svc.cluster.local/core-auth"
   # DB_PASSWORD is passed from GitHub Secrets during deployment
 
 livenessProbe:

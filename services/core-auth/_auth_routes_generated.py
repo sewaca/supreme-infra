@@ -22,6 +22,9 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-auth/auth/challenge$"), method="POST", auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/challenge/[^/]+/check$"), method="GET", auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/challenge/[^/]+/verify$"), method="POST", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/forgot-password$"), method="POST", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/forgot-password/[^/]+/reset$"), method="POST", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/forgot-password/[^/]+/verify$"), method="POST", auth_level="none"),
     AuthRoute(
         path=re.compile(r"^/core-auth/auth/internal/caldav-tokens/validate/[^/]+$"), method="GET", auth_level="none"
     ),
