@@ -45,7 +45,7 @@ export default async () => {
       : undefined,
     dormitory: dormitoryApp
       ? {
-          value: (dormitoryApp.additional_fields?.address as string) ?? dormitoryApp.application_number,
+          value: (dormitoryApp.additional_fields?.dormitoryName as string) ?? dormitoryApp.application_number,
           notifications: dormitoryApp.notifications_count || undefined,
         }
       : undefined,
