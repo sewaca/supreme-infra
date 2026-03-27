@@ -78,42 +78,42 @@ export const ProfilePage = ({ data }: Props) => {
       >
         <LinkRow
           href="/profile/references"
-          icon={<FileCopyIcon fontSize="medium" color="primary" />}
+          icon={<FileCopyIcon fontSize="medium" color="inherit" />}
           title={i18n('Получить справку')}
         />
         <LinkRow
           href="/documents/gradebook"
-          icon={<ImportContactsIcon fontSize="medium" color="primary" />}
+          icon={<ImportContactsIcon fontSize="medium" color="inherit" />}
           title={i18n('Зачётка')}
         />
         <LinkRow
           href="/profile/settings"
-          icon={<SettingsIcon fontSize="medium" color="primary" />}
+          icon={<SettingsIcon fontSize="medium" color="inherit" />}
           title={i18n('Настройки')}
         />
         <LinkRow
           href="/profile/subjects-ranking"
-          icon={<AutoAwesomeMotionIcon fontSize="medium" color="primary" />}
+          icon={<AutoAwesomeMotionIcon fontSize="medium" color="inherit" />}
           title={i18n('Дисциплины по выбору')}
         />
         <LinkRow
           href="/profile/rating"
-          icon={<TrendingUpIcon fontSize="medium" color="primary" />}
+          icon={<TrendingUpIcon fontSize="medium" color="inherit" />}
           title={i18n('Мой рейтинг')}
         />
         <LinkRow
           href="/profile/data"
-          icon={<PersonIcon fontSize="medium" color="primary" />}
+          icon={<PersonIcon fontSize="medium" color="inherit" />}
           title={i18n('Личные данные')}
         />
         <LinkRow
           href="/documents/student-id-card"
-          icon={<AssignmentIndIcon fontSize="medium" color="primary" />}
+          icon={<AssignmentIndIcon fontSize="medium" color="inherit" />}
           title={i18n('Электронный студенческий')}
         />
         <LinkRow
           href="/profile/orders"
-          icon={<AccountBalanceIcon fontSize="medium" color="primary" />}
+          icon={<AccountBalanceIcon fontSize="medium" color="inherit" />}
           title={i18n('Приказы')}
         />
       </Paper>

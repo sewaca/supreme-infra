@@ -29,3 +29,7 @@
 #### core-applications
 
 - [x] сгенерировать grafana dashboard
+
+### core-scheduler
+
+- [ ] endpoint для caldav календаря
