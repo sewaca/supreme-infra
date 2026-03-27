@@ -209,6 +209,78 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/api/status" | jq .
 }
 ```
 
+### CalDAV / iCal feed (no auth required)
+
+These endpoints are public — no `Authorization` header needed.
+
+```bash
+export GROUP_URL="$BASE_URL/caldav/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics"
+export TEACHER_URL="$BASE_URL/caldav/teachers/$USKOV_ID/calendar.ics"
+```
+
+**Group feed:**
+
+```bash
+curl -s "$GROUP_URL" | head -20
+```
+
+```
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Supreme Infra//core-schedule//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Расписание ИКПИ-25
+X-WR-TIMEZONE:Europe/Moscow
+BEGIN:VEVENT
+UID:2026-03-23-3-ИКПИ-25@core-schedule
+DTSTART;TZID=Europe/Moscow:20260323T130000
+DTEND;TZID=Europe/Moscow:20260323T143500
+SUMMARY:Математические методы и алгоритмы функционирования киберфизических систем [Практическое занятие]
+DESCRIPTION:Преподаватель: Коробов С.А.\nАудитория: 258
+LOCATION:258
+STATUS:CONFIRMED
+END:VEVENT
+...
+```
+
+**Teacher feed (Усков М.В.):**
+
+```bash
+curl -s "$TEACHER_URL" | grep -E "^(SUMMARY|DTSTART|LOCATION)"
+```
+
+Expected to contain Thursday lectures (slot 2, 10:45–12:20, ауд. 441):
+
+```
+DTSTART;TZID=Europe/Moscow:20260326T104500
+SUMMARY:Сетевое программное обеспечение [Лекция]
+LOCATION:441
+```
+
+**Check Content-Type:**
+
+```bash
+curl -sI "$GROUP_URL" | grep -i content-type
+# Expected: content-type: text/calendar; charset=utf-8
+```
+
+**Check that feed is non-empty when semester is active:**
+
+```bash
+curl -s "$GROUP_URL" | grep -c "BEGIN:VEVENT"
+# Expected: > 0
+```
+
+#### Subscribe on iOS
+
+1. **Settings → Apps → Calendar → Accounts → Add Account → Other → Add Subscribed Calendar**
+2. Enter URL: `https://diploma.sewaca.ru/core-schedule/caldav/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics`
+3. Tap Next → Save
+4. Open Calendar app — events from the schedule should appear
+
+For teacher: replace the path with `/caldav/teachers/d0000000-0000-0000-0000-000000000004/calendar.ics`
+
 ## Troubleshooting
 
 ### Database Connection Issues

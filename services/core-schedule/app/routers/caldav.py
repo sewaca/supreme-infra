@@ -40,7 +40,7 @@ async def group_calendar(
     return Response(
         content=ical.encode("utf-8"),
         media_type="text/calendar; charset=utf-8",
-        headers={"Content-Disposition": f'attachment; filename="{group_name}.ics"'},
+        headers={"Content-Disposition": 'attachment; filename="calendar.ics"'},
     )
 
 
@@ -70,5 +70,5 @@ async def teacher_calendar(
     return Response(
         content=ical.encode("utf-8"),
         media_type="text/calendar; charset=utf-8",
-        headers={"Content-Disposition": f'attachment; filename="{teacher_id}.ics"'},
+        headers={"Content-Disposition": 'attachment; filename="calendar.ics"'},
     )
