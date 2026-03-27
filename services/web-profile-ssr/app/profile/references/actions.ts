@@ -6,6 +6,7 @@ import type {
 } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { CoreApplications } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n';
+import { format, parseISO } from 'date-fns';
 import { PICKUP_POINTS } from 'services/web-profile-ssr/src/entities/Reference/pickupPoints';
 import type { OrderedReference, ReferenceStatus } from 'services/web-profile-ssr/src/entities/Reference/Reference';
 import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
@@ -55,7 +56,13 @@ function mapReference(ref: ReferenceOrderResponse): OrderedReference {
     type: ref.reference_type as OrderedReference['type'],
     typeLabel: resolveTypeLabel(ref.reference_type, ref.type_label),
     status: ref.status as ReferenceStatus,
-    orderDate: ref.order_date,
+    orderDate: (() => {
+      try {
+        return format(parseISO(ref.order_date), 'dd.MM.yyyy HH:mm:ss');
+      } catch {
+        return ref.order_date;
+      }
+    })(),
     pickupPoint,
     virtualOnly: ref.virtual_only,
     storageUntil: ref.storage_until ?? undefined,
