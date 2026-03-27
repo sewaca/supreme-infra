@@ -41,7 +41,7 @@ async function callCoreAuth<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-type ClientInfo = { location: string | null; device: string | null };
+type ClientInfo = { location: string | null; device: string | null; ip: string | null };
 
 async function detectClientInfo(): Promise<ClientInfo> {
   try {
@@ -52,13 +52,14 @@ async function detectClientInfo(): Promise<ClientInfo> {
     const locationParts = [country, city].filter(Boolean);
     const location = locationParts.length > 0 ? locationParts.join(', ') : null;
     const device = (payload?.user_agent?.device?.name as string | undefined) ?? null;
-    return { location, device };
+    const ip = (payload?.ip as string | undefined) ?? null;
+    return { location, device, ip };
   } catch {}
   let location: string | null = null;
   try {
     location = Intl.DateTimeFormat().resolvedOptions().timeZone?.split('/')?.join(', ');
   } catch {}
-  return { location, device: null };
+  return { location, device: null, ip: null };
 }
 
 export async function login(data: {
@@ -66,6 +67,7 @@ export async function login(data: {
   password: string;
   location?: string | null;
   device?: string | null;
+  ip_address?: string | null;
 }): Promise<AuthResponse> {
   return callCoreAuth<AuthResponse>('/auth/login', {
     method: 'POST',
@@ -82,8 +84,8 @@ export async function register(data: { email: string; password: string; name: st
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  const { location, device } = await detectClientInfo();
-  return login({ email: data.email, password: data.password, location, device });
+  const { location, device, ip } = await detectClientInfo();
+  return login({ email: data.email, password: data.password, location, device, ip_address: ip });
 }
 
 export { detectClientInfo };

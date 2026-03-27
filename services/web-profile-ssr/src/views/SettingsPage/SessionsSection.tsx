@@ -26,7 +26,7 @@ function parseUserAgent(ua: string | null): string {
   if (!ua) return i18n('Неизвестное устройство');
 
   let browser = '';
-  if (/YaBrowser\//.test(ua)) browser = 'Яндекс';
+  if (/YaBrowser\//.test(ua)) browser = 'Yandex Browser';
   else if (/Edg\//.test(ua)) browser = 'Edge';
   else if (/OPR\//.test(ua)) browser = 'Opera';
   else if (/Chrome\//.test(ua)) browser = 'Chrome';

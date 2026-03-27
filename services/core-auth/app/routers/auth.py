@@ -70,7 +70,8 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
     jti = uuid.uuid4()
     access_token = create_access_token(user.id, user.email, user.name, user.role, jti=jti)
 
-    ip = request.headers.get("x-real-ip") or (request.client.host if request.client else None)
+    header_ip = request.headers.get("x-real-ip") or (request.client.host if request.client else None)
+    ip = body.ip_address or header_ip
     session = UserSession(
         user_id=user.id,
         jti=jti,

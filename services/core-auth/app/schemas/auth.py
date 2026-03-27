@@ -9,6 +9,7 @@ class LoginRequest(BaseModel):
     password: str
     location: str | None = None
     device: str | None = None
+    ip_address: str | None = None
 
 
 class RegisterRequest(BaseModel):
@@ -40,8 +41,8 @@ class SessionInfo(BaseModel):
     revoked_at: datetime | None
     user_agent: str | None
     ip_address: str | None
-    location: str | None
-    device: str | None
+    location: str | None = None
+    device: str | None = None
     is_current: bool
 
     model_config = {"from_attributes": True}

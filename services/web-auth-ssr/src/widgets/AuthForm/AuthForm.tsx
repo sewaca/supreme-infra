@@ -45,11 +45,11 @@ export function AuthForm({ mode }: AuthFormProps) {
     setError('');
     setIsLoading(true);
     try {
-      const { location, device } = isLogin
+      const { location, device, ip } = isLogin
         ? (clientInfoRef.current ?? (await detectClientInfo()))
-        : { location: null, device: null };
+        : { location: null, device: null, ip: null };
       const response = isLogin
-        ? await backendApi.login({ ...formData, location, device })
+        ? await backendApi.login({ ...formData, location, device, ip_address: ip })
         : await backendApi.register(formData);
       setAuthToken(response.access_token);
       router.push('/profile-old');

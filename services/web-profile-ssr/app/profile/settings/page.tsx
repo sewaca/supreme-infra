@@ -22,8 +22,24 @@ export default async () => {
       ? loggingFetch(`${environment.coreAuthUrl}/auth/sessions`, {
           headers: { Authorization: `Bearer ${token}` },
         })
-          .then((r) => (r.ok ? (r.json() as Promise<SessionInfo[]>) : []))
-          .catch(() => [] as SessionInfo[])
+          .then(async (r) => {
+            console.log('[settings/sessions] status:', r.status, r.statusText);
+            const text = await r.text();
+            console.log('[settings/sessions] raw body:', text);
+            if (!r.ok) return [] as SessionInfo[];
+            try {
+              const data = JSON.parse(text) as SessionInfo[];
+              console.log('[settings/sessions] parsed sessions count:', data.length);
+              return data;
+            } catch (e) {
+              console.error('[settings/sessions] JSON parse error:', e);
+              return [] as SessionInfo[];
+            }
+          })
+          .catch((e) => {
+            console.error('[settings/sessions] fetch error:', e);
+            return [] as SessionInfo[];
+          })
       : ([] as SessionInfo[]),
   ]);
 
