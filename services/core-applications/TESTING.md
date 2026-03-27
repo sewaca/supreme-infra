@@ -88,12 +88,12 @@ curl "$BASE_URL/applications?user_id=$USER_ID" | jq .
   {
     "id": "dddddddd-dddd-dddd-dddd-ddddddddddde",
     "type": "dormitory",
-    "number": "ОБ-2022-042",
+    "number": "10601ЖК23219",
     "additional_fields": {
-      "contractNumber": "ОБ-2022-042",
-      "dormitoryName": "Общежитие №3",
-      "address": "ул. Примерная, д. 10",
-      "roomNumber": "305"
+      "contractNumber": "10601ЖК23219",
+      "dormitoryName": "Рыбацкое",
+      "address": "Санкт-Петербург, ул. Караваевская, 34",
+      "roomNumber": "51б (8)"
     },
     "start_date": "2022-09-01T00:00:00+00:00",
     "end_date": "2026-06-30T00:00:00+00:00",
