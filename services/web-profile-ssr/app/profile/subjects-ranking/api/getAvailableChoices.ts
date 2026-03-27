@@ -3,7 +3,7 @@ import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/cl
 
 type SubjectInfo = { id: string; name: string; teacher: string };
 
-export type ChoiceGroup = {
+type ChoiceGroup = {
   id: string;
   subjects: SubjectInfo[];
   deadlineDate: string;

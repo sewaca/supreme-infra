@@ -7,7 +7,7 @@ export const REFERENCE_STATUS = {
 
 export type ReferenceStatus = (typeof REFERENCE_STATUS)[keyof typeof REFERENCE_STATUS];
 
-export const REFERENCE_TYPE = {
+const REFERENCE_TYPE = {
   RZD: 'rdzd',
   WORKPLACE: 'workplace',
   PARENTS_WORKPLACE: 'parents_workplace',
@@ -15,7 +15,7 @@ export const REFERENCE_TYPE = {
   SCHOLARSHIP: 'scholarship',
 } as const;
 
-export type ReferenceType = (typeof REFERENCE_TYPE)[keyof typeof REFERENCE_TYPE] | 'custom';
+type ReferenceType = (typeof REFERENCE_TYPE)[keyof typeof REFERENCE_TYPE] | 'custom';
 
 export type PickupPoint = {
   id: string;

@@ -4,7 +4,7 @@ type DeeplinkAction = (deeplink: string, params: Record<string, string>) => void
 type DeeplinkActionAsync = (deeplink: string, params: Record<string, string>) => Promise<boolean>;
 type DeeplinkConfig = Record<string, { action: DeeplinkAction } | { action: DeeplinkActionAsync }>;
 
-export const deeplinkConfig: DeeplinkConfig = {
+const deeplinkConfig: DeeplinkConfig = {
   'deeplink://dormitory/parent_agreement/upload_file': {
     action: (_deeplink, params) => {
       return new Promise((resolve, reject) => {

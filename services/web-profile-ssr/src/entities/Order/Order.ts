@@ -9,7 +9,7 @@ export const ORDER_TYPE = {
 
 export type OrderType = (typeof ORDER_TYPE)[keyof typeof ORDER_TYPE];
 
-export type OrderAction = {
+type OrderAction = {
   title: string;
   action: string;
 };

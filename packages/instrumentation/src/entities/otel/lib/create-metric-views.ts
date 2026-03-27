@@ -7,7 +7,7 @@ import { InstrumentType, View } from '@opentelemetry/sdk-metrics';
  *
  * @see https://github.com/open-telemetry/opentelemetry-js/issues/3862
  */
-export function createHttpServerMetricViews(): View[] {
+function createHttpServerMetricViews(): View[] {
   console.log('[METRIC VIEWS] Creating HTTP server metric views...');
 
   const views = [

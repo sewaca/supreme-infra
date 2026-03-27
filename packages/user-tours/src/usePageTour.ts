@@ -10,7 +10,7 @@ import { getScholarshipTourSteps } from './configs/scholarship';
 import { getSubjectsRankingTourSteps } from './configs/subjects-ranking';
 import { useProductTour } from './useProductTour';
 
-export type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking' | 'scholarship' | 'dormitory';
+type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking' | 'scholarship' | 'dormitory';
 
 type TourConfig = { key: string; steps: DriveStep[] };
 

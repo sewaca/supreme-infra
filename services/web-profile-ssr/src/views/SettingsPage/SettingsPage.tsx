@@ -12,7 +12,7 @@ import { updateSettings } from 'services/web-profile-ssr/app/profile/settings/ac
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { type SessionInfo, SessionsSection } from './SessionsSection';
 
-export type UserSettings = {
+type UserSettings = {
   isNewMessageNotificationsEnabled: boolean;
   isScheduleChangeNotificationsEnabled: boolean;
 };

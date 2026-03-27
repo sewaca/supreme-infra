@@ -39,17 +39,7 @@ export type RankingPosition = {
   percentile: number;
 };
 
-export type StudyPeriod = 'all_time' | 'last_session';
-export type EducationForm = 'all' | 'budget' | 'contract';
-export type SpecialtyFilter = 'all' | 'my_specialty';
-
-export type RatingFilters = {
-  period: StudyPeriod;
-  educationForm: EducationForm;
-  specialty: SpecialtyFilter;
-};
-
-export type StudentStats = {
+type StudentStats = {
   course: number;
   faculty: string;
   specialty: string;

@@ -1,4 +1,4 @@
-import { TOKEN_KEY, type UserRole } from '@supreme-int/api-client/src/core-auth-bff';
+import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
 import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
 import { CoreAuth } from '@supreme-int/api-client/src/index';
@@ -6,19 +6,7 @@ import { CoreAuth } from '@supreme-int/api-client/src/index';
 // Client-side calls go through ingress at /core-auth
 const coreAuthBrowserClient = createClient({ baseUrl: '/core-auth', ...jsonBodySerializer });
 
-export { TOKEN_KEY };
-export type { UserRole };
-
 // ─── Token helpers ────────────────────────────────────────────────────────────
-
-export type DecodedToken = {
-  sub: string;
-  email: string;
-  name: string;
-  role: string;
-  iat: number;
-  exp: number;
-};
 
 export function setAuthToken(token: string): void {
   if (typeof document === 'undefined') return;

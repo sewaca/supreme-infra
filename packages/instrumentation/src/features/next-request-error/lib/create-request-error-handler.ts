@@ -6,7 +6,7 @@ import { handleRequestError } from './handle-request-error';
 /**
  * Конфигурация для создания обработчика ошибок запросов
  */
-export interface CreateRequestErrorHandlerConfig {
+interface CreateRequestErrorHandlerConfig {
   logger: Logger;
   errorCounter: Counter;
   serviceName: string;
