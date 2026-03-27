@@ -38,9 +38,8 @@ async def start_forgot_password(
     user = result.scalar_one_or_none()
 
     if user is None:
-        # Return fake response to prevent user enumeration
         logger.info("[forgot-password] email not found: %s", body.email)
-        return ForgotPasswordStartResponse(challenge_id=uuid.uuid4(), expiring_at=expiring_at)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user_not_found")
 
     code = _generate_code()
     challenge = AuthChallenge(
