@@ -48,7 +48,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         ? await backendApi.login({ ...formData, location, device, ip_address: ip })
         : await backendApi.register(formData);
       setAuthToken(response.access_token);
-      router.push('/profile-old');
+      router.push('/profile');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {

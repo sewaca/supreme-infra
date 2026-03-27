@@ -11,6 +11,7 @@ export interface AuthRoute {
 export const authRoutes: AuthRoute[] = [
   { path: /^\/$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/frontend\/.*$/, method: 'GET', auth_level: 'none' },
+  { path: /^\/profile-old$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/proposed-recipes$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/recipes\/[^/]+$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/submit-recipe$/, method: 'GET', auth_level: 'valid' },

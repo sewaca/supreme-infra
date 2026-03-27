@@ -13,7 +13,7 @@ routes:
     auth_level: none
   - path: /profile-old
     method: GET
-    auth_level: valid
+    auth_level: none
   - path: /register
     method: GET
     auth_level: none

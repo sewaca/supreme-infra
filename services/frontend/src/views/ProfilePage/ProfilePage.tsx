@@ -12,9 +12,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { User } from '@supreme-int/api-client/src/core-auth-bff/auth-api.types';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import type { User } from '../../shared/api/backendApi.types';
 import { removeAuthToken } from '../../shared/lib/auth.client';
 
 interface ProfilePageProps {

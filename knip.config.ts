@@ -11,6 +11,7 @@ const config: KnipConfig = {
     '**/*.spec.tsx',
     'services/*-ssr/proxy.ts',
     'e2e/*',
+    'packages/api-client/src/generated/**',
   ],
   workspaces: {
     '.': {

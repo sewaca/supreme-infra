@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 2240,
+      "id": 2260,
       "panels": [
         {
-          "id": 2238,
+          "id": 2258,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 2239,
+          "id": 2259,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 2241,
+      "id": 2261,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 2242,
+      "id": 2262,
       "title": "GET /",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 2243,
+      "id": 2263,
       "title": "GET / - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 2244,
+      "id": 2264,
       "title": "GET / - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 2245,
+      "id": 2265,
       "title": "GET / - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,8 +1409,8 @@
       }
     },
     {
-      "id": 2246,
-      "title": "GET /proposed-recipes",
+      "id": 2266,
+      "title": "GET /profile-old",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1420,8 +1420,8 @@
       }
     },
     {
-      "id": 2247,
-      "title": "GET /proposed-recipes - Timings",
+      "id": 2267,
+      "title": "GET /profile-old - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1432,6 +1432,324 @@
         "w": 8,
         "x": 0,
         "y": 79
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"frontend\",http_route=\"/profile-old\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"frontend\",http_route=\"/profile-old\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"frontend\",http_route=\"/profile-old\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 2268,
+      "title": "GET /profile-old - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 79
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_count{service=\"frontend\",http_route=\"/profile-old\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 2269,
+      "title": "GET /profile-old - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 79
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_count{service=\"frontend\",http_route=\"/profile-old\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 2270,
+      "title": "GET /proposed-recipes",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 87
+      }
+    },
+    {
+      "id": 2271,
+      "title": "GET /proposed-recipes - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 88
       },
       "targets": [
         {
@@ -1541,7 +1859,7 @@
       }
     },
     {
-      "id": 2248,
+      "id": 2272,
       "title": "GET /proposed-recipes - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1552,7 +1870,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1632,7 +1950,7 @@
       }
     },
     {
-      "id": 2249,
+      "id": 2273,
       "title": "GET /proposed-recipes - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1643,7 +1961,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1727,18 +2045,18 @@
       }
     },
     {
-      "id": 2250,
+      "id": 2274,
       "title": "GET /recipes/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 96
       }
     },
     {
-      "id": 2251,
+      "id": 2275,
       "title": "GET /recipes/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1749,7 +2067,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 88
+        "y": 97
       },
       "targets": [
         {
@@ -1859,7 +2177,7 @@
       }
     },
     {
-      "id": 2252,
+      "id": 2276,
       "title": "GET /recipes/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1870,7 +2188,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 88
+        "y": 97
       },
       "targets": [
         {
@@ -1950,7 +2268,7 @@
       }
     },
     {
-      "id": 2253,
+      "id": 2277,
       "title": "GET /recipes/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1961,7 +2279,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 88
+        "y": 97
       },
       "targets": [
         {
@@ -2045,18 +2363,18 @@
       }
     },
     {
-      "id": 2254,
+      "id": 2278,
       "title": "GET /submit-recipe",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 105
       }
     },
     {
-      "id": 2255,
+      "id": 2279,
       "title": "GET /submit-recipe - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2067,7 +2385,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 97
+        "y": 106
       },
       "targets": [
         {
@@ -2177,7 +2495,7 @@
       }
     },
     {
-      "id": 2256,
+      "id": 2280,
       "title": "GET /submit-recipe - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2188,7 +2506,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 97
+        "y": 106
       },
       "targets": [
         {
@@ -2268,7 +2586,7 @@
       }
     },
     {
-      "id": 2257,
+      "id": 2281,
       "title": "GET /submit-recipe - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2279,7 +2597,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 97
+        "y": 106
       },
       "targets": [
         {

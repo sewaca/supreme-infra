@@ -33,7 +33,7 @@ process.stdout.write('Running Knip analysis (this may take a while)...\n');
 
 let raw = '';
 try {
-  raw = execSync('pnpm knip --reporter json', {
+  raw = execSync('pnpm knip --production --reporter json', {
     cwd: ROOT,
     encoding: 'utf-8',
     maxBuffer: 50 * 1024 * 1024,
@@ -137,7 +137,7 @@ function renderSymbolSection(type: string, entries: IssueEntry[]): string {
   const byFile: Record<string, Array<{ name: string; line?: number }>> = {};
   for (const { file, name, line } of entries) {
     if (!byFile[file]) {
-      continue;
+      byFile[file] = [];
     }
 
     byFile[file].push({ name, line });

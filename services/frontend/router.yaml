@@ -11,6 +11,9 @@ routes:
   - path: /frontend/.*
     method: GET
     auth_level: none
+  - path: /profile-old
+    method: GET
+    auth_level: valid
   - path: /proposed-recipes
     method: GET
     auth_level: valid

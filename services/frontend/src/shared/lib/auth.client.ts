@@ -52,3 +52,9 @@ export function getUserRole(): UserRole | null {
   const decoded = decodeToken(token);
   return decoded?.role ?? null;
 }
+
+export function removeAuthToken(): void {
+  if (typeof document === 'undefined') return;
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks universal browser support
+  document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
+}

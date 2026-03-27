@@ -226,6 +226,8 @@ ingress:
           method: GET
         - path: /frontend/.*
           method: GET
+        - path: /profile-old
+          method: GET
         - path: /proposed-recipes
           method: GET
         - path: /recipes/[^/]+

@@ -876,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 3088,
+      "id": 3224,
       "panels": [
         {
-          "id": 3086,
+          "id": 3222,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -970,7 +970,7 @@
           }
         },
         {
-          "id": 3087,
+          "id": 3223,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1069,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 3089,
+      "id": 3225,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1080,7 +1080,7 @@
       }
     },
     {
-      "id": 3090,
+      "id": 3226,
       "title": "GET /core-schedule/admin/classrooms",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 3091,
+      "id": 3227,
       "title": "GET /core-schedule/admin/classrooms - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1212,7 +1212,7 @@
       }
     },
     {
-      "id": 3092,
+      "id": 3228,
       "title": "GET /core-schedule/admin/classrooms - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1303,7 +1303,7 @@
       }
     },
     {
-      "id": 3093,
+      "id": 3229,
       "title": "GET /core-schedule/admin/classrooms - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1398,7 +1398,7 @@
       }
     },
     {
-      "id": 3094,
+      "id": 3230,
       "title": "POST /core-schedule/admin/classrooms",
       "type": "row",
       "gridPos": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 3095,
+      "id": 3231,
       "title": "POST /core-schedule/admin/classrooms - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1530,7 +1530,7 @@
       }
     },
     {
-      "id": 3096,
+      "id": 3232,
       "title": "POST /core-schedule/admin/classrooms - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1621,7 +1621,7 @@
       }
     },
     {
-      "id": 3097,
+      "id": 3233,
       "title": "POST /core-schedule/admin/classrooms - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1716,7 +1716,7 @@
       }
     },
     {
-      "id": 3098,
+      "id": 3234,
       "title": "DELETE /core-schedule/admin/classrooms/[^/]+",
       "type": "row",
       "gridPos": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 3099,
+      "id": 3235,
       "title": "DELETE /core-schedule/admin/classrooms/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1848,7 +1848,7 @@
       }
     },
     {
-      "id": 3100,
+      "id": 3236,
       "title": "DELETE /core-schedule/admin/classrooms/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1939,7 +1939,7 @@
       }
     },
     {
-      "id": 3101,
+      "id": 3237,
       "title": "DELETE /core-schedule/admin/classrooms/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2034,7 +2034,7 @@
       }
     },
     {
-      "id": 3102,
+      "id": 3238,
       "title": "GET /core-schedule/admin/classrooms/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 3103,
+      "id": 3239,
       "title": "GET /core-schedule/admin/classrooms/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2166,7 +2166,7 @@
       }
     },
     {
-      "id": 3104,
+      "id": 3240,
       "title": "GET /core-schedule/admin/classrooms/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2257,7 +2257,7 @@
       }
     },
     {
-      "id": 3105,
+      "id": 3241,
       "title": "GET /core-schedule/admin/classrooms/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2352,7 +2352,7 @@
       }
     },
     {
-      "id": 3106,
+      "id": 3242,
       "title": "PUT /core-schedule/admin/classrooms/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 3107,
+      "id": 3243,
       "title": "PUT /core-schedule/admin/classrooms/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2484,7 +2484,7 @@
       }
     },
     {
-      "id": 3108,
+      "id": 3244,
       "title": "PUT /core-schedule/admin/classrooms/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2575,7 +2575,7 @@
       }
     },
     {
-      "id": 3109,
+      "id": 3245,
       "title": "PUT /core-schedule/admin/classrooms/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2670,7 +2670,7 @@
       }
     },
     {
-      "id": 3110,
+      "id": 3246,
       "title": "GET /core-schedule/admin/overrides",
       "type": "row",
       "gridPos": {
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 3111,
+      "id": 3247,
       "title": "GET /core-schedule/admin/overrides - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2802,7 +2802,7 @@
       }
     },
     {
-      "id": 3112,
+      "id": 3248,
       "title": "GET /core-schedule/admin/overrides - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2893,7 +2893,7 @@
       }
     },
     {
-      "id": 3113,
+      "id": 3249,
       "title": "GET /core-schedule/admin/overrides - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2988,7 +2988,7 @@
       }
     },
     {
-      "id": 3114,
+      "id": 3250,
       "title": "POST /core-schedule/admin/overrides",
       "type": "row",
       "gridPos": {
@@ -2999,7 +2999,7 @@
       }
     },
     {
-      "id": 3115,
+      "id": 3251,
       "title": "POST /core-schedule/admin/overrides - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3120,7 +3120,7 @@
       }
     },
     {
-      "id": 3116,
+      "id": 3252,
       "title": "POST /core-schedule/admin/overrides - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3211,7 +3211,7 @@
       }
     },
     {
-      "id": 3117,
+      "id": 3253,
       "title": "POST /core-schedule/admin/overrides - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3306,7 +3306,7 @@
       }
     },
     {
-      "id": 3118,
+      "id": 3254,
       "title": "DELETE /core-schedule/admin/overrides/[^/]+",
       "type": "row",
       "gridPos": {
@@ -3317,7 +3317,7 @@
       }
     },
     {
-      "id": 3119,
+      "id": 3255,
       "title": "DELETE /core-schedule/admin/overrides/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3438,7 +3438,7 @@
       }
     },
     {
-      "id": 3120,
+      "id": 3256,
       "title": "DELETE /core-schedule/admin/overrides/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3529,7 +3529,7 @@
       }
     },
     {
-      "id": 3121,
+      "id": 3257,
       "title": "DELETE /core-schedule/admin/overrides/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3624,7 +3624,7 @@
       }
     },
     {
-      "id": 3122,
+      "id": 3258,
       "title": "PUT /core-schedule/admin/overrides/[^/]+",
       "type": "row",
       "gridPos": {
@@ -3635,7 +3635,7 @@
       }
     },
     {
-      "id": 3123,
+      "id": 3259,
       "title": "PUT /core-schedule/admin/overrides/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3756,7 +3756,7 @@
       }
     },
     {
-      "id": 3124,
+      "id": 3260,
       "title": "PUT /core-schedule/admin/overrides/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3847,7 +3847,7 @@
       }
     },
     {
-      "id": 3125,
+      "id": 3261,
       "title": "PUT /core-schedule/admin/overrides/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3942,7 +3942,7 @@
       }
     },
     {
-      "id": 3126,
+      "id": 3262,
       "title": "GET /core-schedule/admin/semesters",
       "type": "row",
       "gridPos": {
@@ -3953,7 +3953,7 @@
       }
     },
     {
-      "id": 3127,
+      "id": 3263,
       "title": "GET /core-schedule/admin/semesters - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4074,7 +4074,7 @@
       }
     },
     {
-      "id": 3128,
+      "id": 3264,
       "title": "GET /core-schedule/admin/semesters - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4165,7 +4165,7 @@
       }
     },
     {
-      "id": 3129,
+      "id": 3265,
       "title": "GET /core-schedule/admin/semesters - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4260,7 +4260,7 @@
       }
     },
     {
-      "id": 3130,
+      "id": 3266,
       "title": "POST /core-schedule/admin/semesters",
       "type": "row",
       "gridPos": {
@@ -4271,7 +4271,7 @@
       }
     },
     {
-      "id": 3131,
+      "id": 3267,
       "title": "POST /core-schedule/admin/semesters - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4392,7 +4392,7 @@
       }
     },
     {
-      "id": 3132,
+      "id": 3268,
       "title": "POST /core-schedule/admin/semesters - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4483,7 +4483,7 @@
       }
     },
     {
-      "id": 3133,
+      "id": 3269,
       "title": "POST /core-schedule/admin/semesters - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4578,7 +4578,7 @@
       }
     },
     {
-      "id": 3134,
+      "id": 3270,
       "title": "DELETE /core-schedule/admin/semesters/[^/]+",
       "type": "row",
       "gridPos": {
@@ -4589,7 +4589,7 @@
       }
     },
     {
-      "id": 3135,
+      "id": 3271,
       "title": "DELETE /core-schedule/admin/semesters/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4710,7 +4710,7 @@
       }
     },
     {
-      "id": 3136,
+      "id": 3272,
       "title": "DELETE /core-schedule/admin/semesters/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4801,7 +4801,7 @@
       }
     },
     {
-      "id": 3137,
+      "id": 3273,
       "title": "DELETE /core-schedule/admin/semesters/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4896,7 +4896,7 @@
       }
     },
     {
-      "id": 3138,
+      "id": 3274,
       "title": "GET /core-schedule/admin/semesters/[^/]+",
       "type": "row",
       "gridPos": {
@@ -4907,7 +4907,7 @@
       }
     },
     {
-      "id": 3139,
+      "id": 3275,
       "title": "GET /core-schedule/admin/semesters/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5028,7 +5028,7 @@
       }
     },
     {
-      "id": 3140,
+      "id": 3276,
       "title": "GET /core-schedule/admin/semesters/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5119,7 +5119,7 @@
       }
     },
     {
-      "id": 3141,
+      "id": 3277,
       "title": "GET /core-schedule/admin/semesters/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5214,7 +5214,7 @@
       }
     },
     {
-      "id": 3142,
+      "id": 3278,
       "title": "PUT /core-schedule/admin/semesters/[^/]+",
       "type": "row",
       "gridPos": {
@@ -5225,7 +5225,7 @@
       }
     },
     {
-      "id": 3143,
+      "id": 3279,
       "title": "PUT /core-schedule/admin/semesters/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5346,7 +5346,7 @@
       }
     },
     {
-      "id": 3144,
+      "id": 3280,
       "title": "PUT /core-schedule/admin/semesters/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5437,7 +5437,7 @@
       }
     },
     {
-      "id": 3145,
+      "id": 3281,
       "title": "PUT /core-schedule/admin/semesters/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5532,7 +5532,7 @@
       }
     },
     {
-      "id": 3146,
+      "id": 3282,
       "title": "GET /core-schedule/admin/session-events",
       "type": "row",
       "gridPos": {
@@ -5543,7 +5543,7 @@
       }
     },
     {
-      "id": 3147,
+      "id": 3283,
       "title": "GET /core-schedule/admin/session-events - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5664,7 +5664,7 @@
       }
     },
     {
-      "id": 3148,
+      "id": 3284,
       "title": "GET /core-schedule/admin/session-events - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5755,7 +5755,7 @@
       }
     },
     {
-      "id": 3149,
+      "id": 3285,
       "title": "GET /core-schedule/admin/session-events - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5850,7 +5850,7 @@
       }
     },
     {
-      "id": 3150,
+      "id": 3286,
       "title": "POST /core-schedule/admin/session-events",
       "type": "row",
       "gridPos": {
@@ -5861,7 +5861,7 @@
       }
     },
     {
-      "id": 3151,
+      "id": 3287,
       "title": "POST /core-schedule/admin/session-events - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5982,7 +5982,7 @@
       }
     },
     {
-      "id": 3152,
+      "id": 3288,
       "title": "POST /core-schedule/admin/session-events - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6073,7 +6073,7 @@
       }
     },
     {
-      "id": 3153,
+      "id": 3289,
       "title": "POST /core-schedule/admin/session-events - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6168,7 +6168,7 @@
       }
     },
     {
-      "id": 3154,
+      "id": 3290,
       "title": "DELETE /core-schedule/admin/session-events/[^/]+",
       "type": "row",
       "gridPos": {
@@ -6179,7 +6179,7 @@
       }
     },
     {
-      "id": 3155,
+      "id": 3291,
       "title": "DELETE /core-schedule/admin/session-events/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -6300,7 +6300,7 @@
       }
     },
     {
-      "id": 3156,
+      "id": 3292,
       "title": "DELETE /core-schedule/admin/session-events/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6391,7 +6391,7 @@
       }
     },
     {
-      "id": 3157,
+      "id": 3293,
       "title": "DELETE /core-schedule/admin/session-events/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6486,7 +6486,7 @@
       }
     },
     {
-      "id": 3158,
+      "id": 3294,
       "title": "PUT /core-schedule/admin/session-events/[^/]+",
       "type": "row",
       "gridPos": {
@@ -6497,7 +6497,7 @@
       }
     },
     {
-      "id": 3159,
+      "id": 3295,
       "title": "PUT /core-schedule/admin/session-events/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -6618,7 +6618,7 @@
       }
     },
     {
-      "id": 3160,
+      "id": 3296,
       "title": "PUT /core-schedule/admin/session-events/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6709,7 +6709,7 @@
       }
     },
     {
-      "id": 3161,
+      "id": 3297,
       "title": "PUT /core-schedule/admin/session-events/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6804,7 +6804,7 @@
       }
     },
     {
-      "id": 3162,
+      "id": 3298,
       "title": "GET /core-schedule/admin/teachers",
       "type": "row",
       "gridPos": {
@@ -6815,7 +6815,7 @@
       }
     },
     {
-      "id": 3163,
+      "id": 3299,
       "title": "GET /core-schedule/admin/teachers - Timings",
       "type": "timeseries",
       "datasource": {
@@ -6936,7 +6936,7 @@
       }
     },
     {
-      "id": 3164,
+      "id": 3300,
       "title": "GET /core-schedule/admin/teachers - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -7027,7 +7027,7 @@
       }
     },
     {
-      "id": 3165,
+      "id": 3301,
       "title": "GET /core-schedule/admin/teachers - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -7122,7 +7122,7 @@
       }
     },
     {
-      "id": 3166,
+      "id": 3302,
       "title": "POST /core-schedule/admin/teachers/sync",
       "type": "row",
       "gridPos": {
@@ -7133,7 +7133,7 @@
       }
     },
     {
-      "id": 3167,
+      "id": 3303,
       "title": "POST /core-schedule/admin/teachers/sync - Timings",
       "type": "timeseries",
       "datasource": {
@@ -7254,7 +7254,7 @@
       }
     },
     {
-      "id": 3168,
+      "id": 3304,
       "title": "POST /core-schedule/admin/teachers/sync - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -7345,7 +7345,7 @@
       }
     },
     {
-      "id": 3169,
+      "id": 3305,
       "title": "POST /core-schedule/admin/teachers/sync - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -7440,7 +7440,7 @@
       }
     },
     {
-      "id": 3170,
+      "id": 3306,
       "title": "GET /core-schedule/admin/templates",
       "type": "row",
       "gridPos": {
@@ -7451,7 +7451,7 @@
       }
     },
     {
-      "id": 3171,
+      "id": 3307,
       "title": "GET /core-schedule/admin/templates - Timings",
       "type": "timeseries",
       "datasource": {
@@ -7572,7 +7572,7 @@
       }
     },
     {
-      "id": 3172,
+      "id": 3308,
       "title": "GET /core-schedule/admin/templates - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -7663,7 +7663,7 @@
       }
     },
     {
-      "id": 3173,
+      "id": 3309,
       "title": "GET /core-schedule/admin/templates - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -7758,7 +7758,7 @@
       }
     },
     {
-      "id": 3174,
+      "id": 3310,
       "title": "POST /core-schedule/admin/templates",
       "type": "row",
       "gridPos": {
@@ -7769,7 +7769,7 @@
       }
     },
     {
-      "id": 3175,
+      "id": 3311,
       "title": "POST /core-schedule/admin/templates - Timings",
       "type": "timeseries",
       "datasource": {
@@ -7890,7 +7890,7 @@
       }
     },
     {
-      "id": 3176,
+      "id": 3312,
       "title": "POST /core-schedule/admin/templates - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -7981,7 +7981,7 @@
       }
     },
     {
-      "id": 3177,
+      "id": 3313,
       "title": "POST /core-schedule/admin/templates - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -8076,7 +8076,7 @@
       }
     },
     {
-      "id": 3178,
+      "id": 3314,
       "title": "DELETE /core-schedule/admin/templates/[^/]+",
       "type": "row",
       "gridPos": {
@@ -8087,7 +8087,7 @@
       }
     },
     {
-      "id": 3179,
+      "id": 3315,
       "title": "DELETE /core-schedule/admin/templates/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -8208,7 +8208,7 @@
       }
     },
     {
-      "id": 3180,
+      "id": 3316,
       "title": "DELETE /core-schedule/admin/templates/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -8299,7 +8299,7 @@
       }
     },
     {
-      "id": 3181,
+      "id": 3317,
       "title": "DELETE /core-schedule/admin/templates/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -8394,7 +8394,7 @@
       }
     },
     {
-      "id": 3182,
+      "id": 3318,
       "title": "PUT /core-schedule/admin/templates/[^/]+",
       "type": "row",
       "gridPos": {
@@ -8405,7 +8405,7 @@
       }
     },
     {
-      "id": 3183,
+      "id": 3319,
       "title": "PUT /core-schedule/admin/templates/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -8526,7 +8526,7 @@
       }
     },
     {
-      "id": 3184,
+      "id": 3320,
       "title": "PUT /core-schedule/admin/templates/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -8617,7 +8617,7 @@
       }
     },
     {
-      "id": 3185,
+      "id": 3321,
       "title": "PUT /core-schedule/admin/templates/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -8712,7 +8712,7 @@
       }
     },
     {
-      "id": 3186,
+      "id": 3322,
       "title": "POST /core-schedule/admin/templates/bulk",
       "type": "row",
       "gridPos": {
@@ -8723,7 +8723,7 @@
       }
     },
     {
-      "id": 3187,
+      "id": 3323,
       "title": "POST /core-schedule/admin/templates/bulk - Timings",
       "type": "timeseries",
       "datasource": {
@@ -8844,7 +8844,7 @@
       }
     },
     {
-      "id": 3188,
+      "id": 3324,
       "title": "POST /core-schedule/admin/templates/bulk - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -8935,7 +8935,7 @@
       }
     },
     {
-      "id": 3189,
+      "id": 3325,
       "title": "POST /core-schedule/admin/templates/bulk - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -9030,7 +9030,7 @@
       }
     },
     {
-      "id": 3190,
+      "id": 3326,
       "title": "GET /core-schedule/caldav/[^/]+/groups/[^/]+/calendar.ics",
       "type": "row",
       "gridPos": {
@@ -9041,7 +9041,7 @@
       }
     },
     {
-      "id": 3191,
+      "id": 3327,
       "title": "GET /core-schedule/caldav/:id/groups/:id/calendar.ics - Timings",
       "type": "timeseries",
       "datasource": {
@@ -9162,7 +9162,7 @@
       }
     },
     {
-      "id": 3192,
+      "id": 3328,
       "title": "GET /core-schedule/caldav/:id/groups/:id/calendar.ics - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -9253,7 +9253,7 @@
       }
     },
     {
-      "id": 3193,
+      "id": 3329,
       "title": "GET /core-schedule/caldav/:id/groups/:id/calendar.ics - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -9348,7 +9348,7 @@
       }
     },
     {
-      "id": 3194,
+      "id": 3330,
       "title": "GET /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics",
       "type": "row",
       "gridPos": {
@@ -9359,7 +9359,7 @@
       }
     },
     {
-      "id": 3195,
+      "id": 3331,
       "title": "GET /core-schedule/caldav/:id/teachers/:id/calendar.ics - Timings",
       "type": "timeseries",
       "datasource": {
@@ -9480,7 +9480,7 @@
       }
     },
     {
-      "id": 3196,
+      "id": 3332,
       "title": "GET /core-schedule/caldav/:id/teachers/:id/calendar.ics - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -9571,7 +9571,7 @@
       }
     },
     {
-      "id": 3197,
+      "id": 3333,
       "title": "GET /core-schedule/caldav/:id/teachers/:id/calendar.ics - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -9666,7 +9666,7 @@
       }
     },
     {
-      "id": 3198,
+      "id": 3334,
       "title": "GET /core-schedule/groups/[^/]+/exams",
       "type": "row",
       "gridPos": {
@@ -9677,7 +9677,7 @@
       }
     },
     {
-      "id": 3199,
+      "id": 3335,
       "title": "GET /core-schedule/groups/:id/exams - Timings",
       "type": "timeseries",
       "datasource": {
@@ -9798,7 +9798,7 @@
       }
     },
     {
-      "id": 3200,
+      "id": 3336,
       "title": "GET /core-schedule/groups/:id/exams - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -9889,7 +9889,7 @@
       }
     },
     {
-      "id": 3201,
+      "id": 3337,
       "title": "GET /core-schedule/groups/:id/exams - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -9984,7 +9984,7 @@
       }
     },
     {
-      "id": 3202,
+      "id": 3338,
       "title": "GET /core-schedule/groups/[^/]+/schedule",
       "type": "row",
       "gridPos": {
@@ -9995,7 +9995,7 @@
       }
     },
     {
-      "id": 3203,
+      "id": 3339,
       "title": "GET /core-schedule/groups/:id/schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -10116,7 +10116,7 @@
       }
     },
     {
-      "id": 3204,
+      "id": 3340,
       "title": "GET /core-schedule/groups/:id/schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -10207,7 +10207,7 @@
       }
     },
     {
-      "id": 3205,
+      "id": 3341,
       "title": "GET /core-schedule/groups/:id/schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -10302,7 +10302,7 @@
       }
     },
     {
-      "id": 3206,
+      "id": 3342,
       "title": "GET /core-schedule/groups/[^/]+/template",
       "type": "row",
       "gridPos": {
@@ -10313,7 +10313,7 @@
       }
     },
     {
-      "id": 3207,
+      "id": 3343,
       "title": "GET /core-schedule/groups/:id/template - Timings",
       "type": "timeseries",
       "datasource": {
@@ -10434,7 +10434,7 @@
       }
     },
     {
-      "id": 3208,
+      "id": 3344,
       "title": "GET /core-schedule/groups/:id/template - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -10525,7 +10525,7 @@
       }
     },
     {
-      "id": 3209,
+      "id": 3345,
       "title": "GET /core-schedule/groups/:id/template - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -10620,7 +10620,7 @@
       }
     },
     {
-      "id": 3210,
+      "id": 3346,
       "title": "GET /core-schedule/teachers/[^/]+/exams",
       "type": "row",
       "gridPos": {
@@ -10631,7 +10631,7 @@
       }
     },
     {
-      "id": 3211,
+      "id": 3347,
       "title": "GET /core-schedule/teachers/:id/exams - Timings",
       "type": "timeseries",
       "datasource": {
@@ -10752,7 +10752,7 @@
       }
     },
     {
-      "id": 3212,
+      "id": 3348,
       "title": "GET /core-schedule/teachers/:id/exams - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -10843,7 +10843,7 @@
       }
     },
     {
-      "id": 3213,
+      "id": 3349,
       "title": "GET /core-schedule/teachers/:id/exams - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -10938,7 +10938,7 @@
       }
     },
     {
-      "id": 3214,
+      "id": 3350,
       "title": "GET /core-schedule/teachers/[^/]+/schedule",
       "type": "row",
       "gridPos": {
@@ -10949,7 +10949,7 @@
       }
     },
     {
-      "id": 3215,
+      "id": 3351,
       "title": "GET /core-schedule/teachers/:id/schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -11070,7 +11070,7 @@
       }
     },
     {
-      "id": 3216,
+      "id": 3352,
       "title": "GET /core-schedule/teachers/:id/schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -11161,7 +11161,7 @@
       }
     },
     {
-      "id": 3217,
+      "id": 3353,
       "title": "GET /core-schedule/teachers/:id/schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -11256,7 +11256,7 @@
       }
     },
     {
-      "id": 3218,
+      "id": 3354,
       "title": "GET /core-schedule/teachers/[^/]+/template",
       "type": "row",
       "gridPos": {
@@ -11267,7 +11267,7 @@
       }
     },
     {
-      "id": 3219,
+      "id": 3355,
       "title": "GET /core-schedule/teachers/:id/template - Timings",
       "type": "timeseries",
       "datasource": {
@@ -11388,7 +11388,7 @@
       }
     },
     {
-      "id": 3220,
+      "id": 3356,
       "title": "GET /core-schedule/teachers/:id/template - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -11479,7 +11479,7 @@
       }
     },
     {
-      "id": 3221,
+      "id": 3357,
       "title": "GET /core-schedule/teachers/:id/template - Bad RPS",
       "type": "timeseries",
       "datasource": {
