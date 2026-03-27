@@ -1,4 +1,4 @@
-# Промпт: фронтенд-интеграция CalDAV-токенов (core-schedule)
+# Промпт: фронтенд-интеграция CalDAV-токенов
 
 ## Контекст
 
@@ -12,18 +12,22 @@ GET /core-schedule/caldav/{token}/groups/{group_name}/calendar.ics
 GET /core-schedule/caldav/{token}/teachers/{teacher_id}/calendar.ics
 ```
 
-Токен — непрозрачная строка (urlsafe base64, 43 символа), хранится в таблице `caldav_token`
-в БД сервиса. Управление токенами через API:
+Токен — непрозрачная строка (urlsafe base64, 43 символа). **Хранится в `core-auth`**, в таблице
+`caldav_token`. Управление токенами — через `core-auth` API:
 
-| Метод    | Путь                  | Auth | Описание                                              |
-| -------- | --------------------- | ---- | ----------------------------------------------------- |
-| `POST`   | `/caldav/tokens`      | JWT  | Создать токен. Возвращает значение токена (один раз!) |
-| `GET`    | `/caldav/tokens`      | JWT  | Список токенов текущего пользователя (без значения)   |
-| `DELETE` | `/caldav/tokens/{id}` | JWT  | Отозвать токен (owner-check, 403 если чужой)          |
+| Метод    | Сервис      | Путь                       | Auth | Описание                                              |
+| -------- | ----------- | -------------------------- | ---- | ----------------------------------------------------- |
+| `POST`   | `core-auth` | `/auth/caldav-tokens`      | JWT  | Создать токен. Возвращает значение токена (один раз!) |
+| `GET`    | `core-auth` | `/auth/caldav-tokens`      | JWT  | Список токенов текущего пользователя (без значения)   |
+| `DELETE` | `core-auth` | `/auth/caldav-tokens/{id}` | JWT  | Отозвать токен (owner-check, 403 если чужой)          |
+
+Токены также возвращаются в **общем списке сессий** `GET /auth/sessions` с полем `"type": "caldav"`.
+Оттуда их тоже можно отозвать через `DELETE /auth/sessions/{id}` — этот эндпоинт обрабатывает
+оба типа (обычные сессии и caldav-токены).
 
 ### Схема ответов
 
-**POST /caldav/tokens** — тело запроса:
+**POST /auth/caldav-tokens** — тело запроса:
 
 ```json
 { "device_name": "CalDav calendar" }
@@ -36,26 +40,50 @@ GET /core-schedule/caldav/{token}/teachers/{teacher_id}/calendar.ics
   "id": "uuid",
   "token": "abc123...",
   "device_name": "CalDav calendar",
-  "created_at": "2026-03-27T21:00:00Z"
+  "created_at": "2026-03-28T10:00:00Z"
 }
 ```
 
-> ⚠️ `token` возвращается **только при создании** — сохранить сразу.
+> ⚠️ `token` возвращается **только при создании** — нужно сразу показать URL пользователю.
 
-**GET /caldav/tokens** — ответ:
+**GET /auth/caldav-tokens** — ответ:
 
 ```json
 [
   {
     "id": "uuid",
     "device_name": "CalDav calendar",
-    "created_at": "2026-03-27T21:00:00Z",
+    "created_at": "2026-03-28T10:00:00Z",
     "revoked_at": null
   }
 ]
 ```
 
-**DELETE /caldav/tokens/{id}** — `204 No Content`.
+**DELETE /auth/caldav-tokens/{id}** — `204 No Content`.
+
+**GET /auth/sessions** — включает caldav-токены с `"type": "caldav"`:
+
+```json
+[
+  {
+    "id": "uuid",
+    "type": "session",
+    "device": "Chrome on macOS",
+    "created_at": "...",
+    "expires_at": "...",
+    "is_current": true
+  },
+  {
+    "id": "uuid",
+    "type": "caldav",
+    "device": "CalDav calendar",
+    "created_at": "2026-03-28T10:00:00Z",
+    "expires_at": null,
+    "revoked_at": null,
+    "is_current": false
+  }
+]
+```
 
 ---
 
@@ -75,7 +103,7 @@ GET /core-schedule/caldav/{token}/teachers/{teacher_id}/calendar.ics
 
 Раздел содержит:
 
-1. **Список активных токенов** — загружается при открытии страницы через `GET /caldav/tokens`.
+1. **Список активных токенов** — загружается при открытии страницы через `GET /auth/caldav-tokens`.
    Показывать только неотозванные (`revoked_at === null`).
    Каждая строка: название устройства + дата создания + кнопка **Отозвать**.
 
@@ -91,7 +119,7 @@ GET /core-schedule/caldav/{token}/teachers/{teacher_id}/calendar.ics
 
 Шаг 2 — **создание токена**:
 
-- `POST /caldav/tokens` с `device_name = "CalDav calendar"`
+- `POST /auth/caldav-tokens` с `device_name = "CalDav calendar"`
 - Показать сгенерированный URL для подписки:
   ```
   https://diploma.sewaca.ru/core-schedule/caldav/{token}/groups/{group_name}/calendar.ics
@@ -109,9 +137,13 @@ GET /core-schedule/caldav/{token}/teachers/{teacher_id}/calendar.ics
 
 При нажатии **Отозвать**:
 
-- `DELETE /caldav/tokens/{id}`
+- `DELETE /auth/caldav-tokens/{id}`
 - Убрать строку из списка
 - Показать toast: "Доступ к календарю отозван"
+
+> Если на странице уже есть секция «Активные сессии» и она использует `GET /auth/sessions`,
+> caldav-токены появятся там автоматически с `type = "caldav"`. Можно объединить отображение
+> или держать раздел "Синхронизация с календарём" отдельным — на твоё усмотрение.
 
 ---
 
@@ -151,10 +183,12 @@ GET /core-schedule/caldav/{token}/teachers/{teacher_id}/calendar.ics
 
 ## Технические детали для реализации
 
-- Все запросы к `core-schedule` идут через общий API-клиент (`@supreme-int/api-client`).
-  Нужно добавить методы для CalDAV-токенов (или использовать прямой fetch если клиент не обновлён).
-- `token` из ответа `POST /caldav/tokens` нигде не сохранять в state после закрытия модалки —
+- Запросы на управление токенами идут в `core-auth` (`/auth/caldav-tokens`), а не в `core-schedule`.
+- Фид по-прежнему отдаёт `core-schedule` (`/core-schedule/caldav/{token}/...`).
+- Используй `@supreme-int/api-client` для вызовов `core-auth`. Если методы для `caldav-tokens`
+  ещё не сгенерированы — добавь их или используй прямой fetch.
+- `token` из ответа `POST /auth/caldav-tokens` нигде не сохранять в state после закрытия модалки —
   пользователь уже скопировал URL.
-- При ошибке `403` на отзыве (чужой токен) — показать "Нет доступа".
+- При ошибке `403` на отзыве — показать "Нет доступа".
 - При ошибке `409` (уже отозван) — убрать строку из списка без toast.
 - `device_name` пока фиксированный `"CalDav calendar"` — не показывать поле в UI.

@@ -72,6 +72,7 @@ export BASE_URL="https://diploma.sewaca.ru/core-schedule"
 export SEMESTER_ID="a0000000-0000-0000-0000-000000000001"
 export USKOV_ID="d0000000-0000-0000-0000-000000000004"
 export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDEiLCJqdGkiOiI5NzdiYWFkZS0wNTVkLTQ4NzEtYjYxZi03NTgxOWZjMjhhZjgiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDg4NzAwLCJleHAiOjE3NzUwOTM1MDB9.2DgkOCi4yx6aOAjiXrUIiRVf9jNLPrH1uu32-A2106w"
+export AUTH_URL="https://diploma.sewaca.ru/core-auth"
 ```
 
 ### Group schedule (week 1)
@@ -211,13 +212,18 @@ curl -H "Authorization: Bearer $TOKEN" "$BASE_URL/api/status" | jq .
 
 ### CalDAV / iCal feed
 
-CalDAV endpoints require a token in the URL. Token management requires a valid JWT session.
+Tokens are managed via **core-auth** (`https://diploma.sewaca.ru/core-auth`). The feed itself
+is served by this service. Set an extra variable:
 
-#### 1. Create a token
+```bash
+export AUTH_URL="https://diploma.sewaca.ru/core-auth"
+```
+
+#### 1. Create a token (core-auth)
 
 ```bash
 TOKEN_RESP=$(curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  "$BASE_URL/caldav/tokens" \
+  "$AUTH_URL/auth/caldav-tokens" \
   -d '{"device_name": "CalDav calendar"}')
 echo $TOKEN_RESP | jq .
 ```
@@ -227,7 +233,7 @@ echo $TOKEN_RESP | jq .
   "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "token": "abc123...",
   "device_name": "CalDav calendar",
-  "created_at": "2026-03-27T21:00:00Z"
+  "created_at": "2026-03-28T10:00:00Z"
 }
 ```
 
@@ -238,7 +244,7 @@ export CALDAV_TOKEN=$(echo $TOKEN_RESP | jq -r '.token')
 export CALDAV_TOKEN_ID=$(echo $TOKEN_RESP | jq -r '.id')
 ```
 
-#### 2. Get group iCal feed
+#### 2. Get group iCal feed (core-schedule)
 
 ```bash
 curl -s "$BASE_URL/caldav/$CALDAV_TOKEN/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics" | head -20
@@ -278,10 +284,10 @@ SUMMARY:Сетевое программное обеспечение [Лекци
 LOCATION:441
 ```
 
-#### 4. List tokens
+#### 4. List tokens (core-auth)
 
 ```bash
-curl -s -H "Authorization: Bearer $TOKEN" "$BASE_URL/caldav/tokens" | jq .
+curl -s -H "Authorization: Bearer $TOKEN" "$AUTH_URL/auth/caldav-tokens" | jq .
 ```
 
 ```json
@@ -289,16 +295,27 @@ curl -s -H "Authorization: Bearer $TOKEN" "$BASE_URL/caldav/tokens" | jq .
   {
     "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "device_name": "CalDav calendar",
-    "created_at": "2026-03-27T21:00:00Z",
+    "created_at": "2026-03-28T10:00:00Z",
     "revoked_at": null
   }
 ]
 ```
 
-#### 5. Revoke a token
+Tokens also appear in the sessions list with `"type": "caldav"`:
 
 ```bash
-curl -s -X DELETE -H "Authorization: Bearer $TOKEN" "$BASE_URL/caldav/tokens/$CALDAV_TOKEN_ID"
+curl -s -H "Authorization: Bearer $TOKEN" "$AUTH_URL/auth/sessions" | jq '[.[] | select(.type == "caldav")]'
+```
+
+#### 5. Revoke a token (core-auth)
+
+```bash
+# Via dedicated endpoint
+curl -s -X DELETE -H "Authorization: Bearer $TOKEN" "$AUTH_URL/auth/caldav-tokens/$CALDAV_TOKEN_ID"
+# Expected: 204 No Content
+
+# Or via unified sessions endpoint
+curl -s -X DELETE -H "Authorization: Bearer $TOKEN" "$AUTH_URL/auth/sessions/$CALDAV_TOKEN_ID"
 # Expected: 204 No Content
 
 # Feed now returns 401
@@ -308,7 +325,7 @@ curl -s "$BASE_URL/caldav/$CALDAV_TOKEN/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calen
 
 #### Subscribe on iOS
 
-1. Create a token via `POST /caldav/tokens`
+1. Create a token via `POST /auth/caldav-tokens` in core-auth
 2. **Settings → Apps → Calendar → Accounts → Add Account → Other → Add Subscribed Calendar**
 3. Enter URL: `https://diploma.sewaca.ru/core-schedule/caldav/{TOKEN}/groups/%D0%98%D0%9A%D0%9F%D0%98-25/calendar.ics`
 4. Tap Next → Save — events from the schedule appear in the Calendar app

@@ -49,7 +49,9 @@ async def get_sessions(
     ]
 
     caldav_result = await db.execute(
-        select(CaldavToken).where(CaldavToken.user_id == user_id).order_by(CaldavToken.created_at.desc())
+        select(CaldavToken)
+        .where(CaldavToken.user_id == user_id, CaldavToken.revoked_at.is_(None))
+        .order_by(CaldavToken.created_at.desc())
     )
     caldav_sessions = [
         SessionInfo(
