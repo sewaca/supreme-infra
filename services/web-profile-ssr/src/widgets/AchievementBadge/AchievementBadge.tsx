@@ -15,7 +15,7 @@ export const AchievementBadge = ({ achievement }: Props) => {
   const showBadge = achievement.unlocked && achievement.timesEarned && achievement.timesEarned > 1;
 
   return (
-    <Tooltip title={achievement.description} arrow placement="top">
+    <Tooltip title={achievement.description} arrow placement="top" enterTouchDelay={0} leaveTouchDelay={3000}>
       <Badge
         badgeContent={showBadge ? `×${achievement.timesEarned}` : null}
         color="success"
