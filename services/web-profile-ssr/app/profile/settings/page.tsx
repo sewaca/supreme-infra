@@ -19,7 +19,8 @@ export default async () => {
       query: { user_id: userId },
     }),
     token
-      ? loggingFetch(`${environment.coreAuthUrl}/auth/sessions`, {
+      ? // FIXME: use packages/api-client
+        loggingFetch(`${environment.coreAuthUrl}/auth/sessions`, {
           headers: { Authorization: `Bearer ${token}` },
         })
           .then(async (r) => {

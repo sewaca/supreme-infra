@@ -56,6 +56,7 @@ export const startChallenge = async (): Promise<{
   }
 
   try {
+    // FIXME: use packages/api-client
     const res = await loggingFetch(`${environment.coreAuthUrl}/auth/challenge`, {
       method: 'POST',
       headers: {
@@ -88,6 +89,7 @@ export const verifyChallenge = async (
   }
 
   try {
+    // FIXME: use packages/api-client
     const res = await loggingFetch(`${environment.coreAuthUrl}/auth/challenge/${challengeId}/verify`, {
       method: 'POST',
       headers: {
@@ -143,6 +145,7 @@ export const applyEmailChange = async (
   }
 
   try {
+    // FIXME: use packages/api-client
     const res = await loggingFetch(`${environment.coreClientInfoUrl}/settings/email?user_id=${userId}`, {
       method: 'POST',
       headers: {
@@ -182,6 +185,7 @@ export const applyPasswordChange = async (
   }
 
   try {
+    // FIXME: use packages/api-client
     const res = await loggingFetch(`${environment.coreClientInfoUrl}/settings/password?user_id=${userId}`, {
       method: 'POST',
       headers: {
@@ -208,6 +212,7 @@ export const logoutCurrentSession = async (): Promise<void> => {
 
   if (token) {
     try {
+      // FIXME: use packages/api-client
       const sessionsRes = await loggingFetch(`${environment.coreAuthUrl}/auth/sessions`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -242,6 +247,7 @@ export const revokeSession = async (sessionId: string): Promise<{ success: boole
   }
 
   try {
+    // FIXME: use packages/api-client
     const res = await loggingFetch(`${environment.coreAuthUrl}/auth/sessions/${sessionId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },

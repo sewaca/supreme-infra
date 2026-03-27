@@ -33,6 +33,7 @@ export function removeAuthToken(): void {
 // ─── API calls ────────────────────────────────────────────────────────────────
 
 async function callCoreAuth<T>(path: string, init?: RequestInit): Promise<T> {
+  // FIXME: use packages/api-client
   const res = await fetch(`${AUTH_URL}${path}`, init);
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));

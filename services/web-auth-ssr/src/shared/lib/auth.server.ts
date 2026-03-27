@@ -22,6 +22,7 @@ export async function getUser(): Promise<UserInfo | null> {
   if (!token) return null;
 
   try {
+    // FIXME: use packages/api-client
     const res = await fetch(`${getCoreAuthUrl()}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
