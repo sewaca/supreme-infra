@@ -1,354 +1,317 @@
-# Monitoring Setup Guide
+# Мониторинг
 
-Руководство по развертыванию системы мониторинга с Victoria Metrics и Grafana.
+Система мониторинга основана на трёх компонентах: OpenTelemetry (инструментация), Victoria Metrics (хранение метрик), Grafana (визуализация). Логи отдельно уходят в Loki.
 
 ## Архитектура
 
 ```
-┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
-│   Backend   │────▶│ Victoria Metrics │────▶│   Grafana   │
-│  (port 9464)│     │   (scraping)     │     │ (dashboards)│
-└─────────────┘     └──────────────────┘     └─────────────┘
-                            │
-                            ▼
-                    ┌──────────────┐
-                    │  Persistent  │
-                    │   Storage    │
-                    │   (30 days)  │
-                    └──────────────┘
+Сервис (порт 9464 /metrics)
+        │
+        ▼
+Victoria Metrics ──scrape──▶ хранение 30d (20Gi)
+        │
+        ▼
+   Grafana (dashboards, alerts)
+
+Сервис ──OTLP──▶ Loki Gateway ──▶ Loki ──▶ Grafana
 ```
 
-## Компоненты
+Victoria Metrics работает в режиме **single-server**, namespace `monitoring`. Scrape по аннотации `prometheus.io/scrape: "true"` на подах в namespace `default`.
 
-1. **OpenTelemetry** - инструментация backend сервиса
-2. **Victoria Metrics** - сбор и хранение метрик
-3. **Grafana** - визуализация и алерты
+---
 
-## Шаг 1: Развертывание Victoria Metrics
+## Инструментация сервисов
 
-### 1.1 Добавить Helm репозиторий
+Пакет: `packages/instrumentation` — единый для всех типов сервисов.
+
+### Next.js
+
+Файл `instrumentation.nodejs.ts` в корне сервиса:
+
+```ts
+process.env.OTEL_SEMCONV_STABILITY_OPT_IN = "http/dup";
+// Должно быть ДО любых импортов — иначе HTTP instrumentation
+// инициализируется без новых semantic conventions и http.route не пишется в метрики
+
+import { createNextInstrumentationConfig } from "@supreme-int/instrumentation/...";
+import { createMetricViews } from "@supreme-int/instrumentation/...";
+```
+
+`OTEL_SEMCONV_STABILITY_OPT_IN=http/dup` заставляет `@opentelemetry/instrumentation-http` эмитировать оба набора атрибутов (старые + новые). Без этого метрика `http.server.duration` не содержит `http.route`.
+
+**Что записывается:**
+
+- Кастомная метрика `http.server.duration` (unit: `ms`) — histogram с атрибутами `http.route`, `http.method`, `http.status_code`
+- Нормализация роута в `requestHook`: числа → `:id`, UUID → `:uuid`, `/_next/*` → `/_next/*`
+
+**Views** (`createMetricViews`): добавляют `http.route` к авто-инструментированным метрикам `http.server.duration` и `http.server.request.duration` от `@opentelemetry/instrumentation-http`.
+
+### NestJS
+
+Файл `src/instrumentation.ts`:
+
+```ts
+import { createNestInstrumentationConfig } from "@supreme-int/instrumentation/...";
+```
+
+`requestHook` читает `req.routeOptions.url` (Fastify) и пишет его в `http.route` на спане. Также настроен `@opentelemetry/instrumentation-fastify`.
+
+### FastAPI (Python)
+
+Пакет `authorization-py` / `instrumentation.py`. Использует `opentelemetry-instrumentation-fastapi`.
+
+**Важное отличие от Node.js:** Python Prometheus exporter добавляет суффикс `_milliseconds` к unit `ms`, поэтому метрика называется `http_server_duration_milliseconds` (а не `http_server_duration`). Лейбл пути — `http_target` (а не `http_route`).
+
+### Сравнение по типам сервисов
+
+|               | Next.js / NestJS       | FastAPI                             |
+| ------------- | ---------------------- | ----------------------------------- |
+| Метрика       | `http_server_duration` | `http_server_duration_milliseconds` |
+| Лейбл пути    | `http_route`           | `http_target`                       |
+| Значение пути | нормализованный route  | реальный URL target                 |
+
+### Экспорт метрик
+
+Каждый сервис слушает порт `9464`, endpoint `/metrics` — стандартный Prometheus exposition format.
+
+Переменные окружения (проставляются через Helm overrides):
+
+```
+LOKI_ENDPOINT=http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
+```
+
+Prometheus port/endpoint захардкожены в `packages/instrumentation/src/shared/config/constants.ts`.
+
+---
+
+## Victoria Metrics
+
+**Конфиг:** `infra/helmcharts/victoria-metrics/values.yaml`
+
+- `retentionPeriod: 30d`
+- Storage: `20Gi`
+- Scrape interval: `15s`, timeout `10s`
+- ClusterIP, порт `8428`
+
+**Service discovery:** Kubernetes pod SD, namespace `default`. Условие скрейпа — аннотация `prometheus.io/scrape: "true"` и наличие порта с именем `metrics`.
+
+Лейблы, добавляемые при scrape через `relabel_configs`:
+
+- `service` ← `app.kubernetes.io/name` (имя сервиса)
+- `pod` ← имя пода
+- `namespace`, `container`, `node`
+
+Все запросы в Grafana используют datasource `VictoriaMetrics` (UID: `VictoriaMetrics`).
+
+---
+
+## Grafana
+
+**Конфиг:** `infra/helmcharts/grafana/values.yaml`
+
+- LoadBalancer на порт 80 (targetPort 3000)
+- Persistence: `5Gi`
+- Refresh: `10s` (в дашбордах)
+
+**Datasources (настроены автоматически при деплое):**
+
+- `VictoriaMetrics` — `http://victoria-metrics-victoria-metrics-single-server.monitoring.svc.cluster.local:8428`, default, httpMethod POST
+- `Loki` — `http://loki.monitoring.svc.cluster.local:3100`, derived field TraceID → VictoriaMetrics
+
+**Загрузка дашбордов:** через Grafana sidecar. Дашборды живут в ConfigMap с лейблом `grafana_dashboard=1`, sidecar ищет такие ConfigMap во всех namespace.
+
+---
+
+## Grafana дашборды
+
+### Расположение и структура
+
+Каждый сервис имеет свой дашборд: `infra/helmcharts/grafana/dashboards/{serviceName}-metrics.json`.
+
+**Дашборды не редактируются вручную** — они генерируются командой:
 
 ```bash
-helm repo add vm https://victoriametrics.github.io/helm-charts/
-helm repo update
+pnpm run generate:router
 ```
 
-### 1.2 Обновить зависимости
+Генератор: `infra/generate/generate-router/generate-grafana-dashboard.ts`
 
-```bash
-cd infra/helmcharts/victoria-metrics
-helm dependency update
-```
+### Секции дашборда
 
-### 1.3 Установить Victoria Metrics
+Каждый дашборд состоит из фиксированных секций:
 
-```bash
-helm install victoria-metrics ./infra/helmcharts/victoria-metrics \
-  --namespace monitoring \
-  --create-namespace
-```
+| Секция                          | Содержимое                                                      |
+| ------------------------------- | --------------------------------------------------------------- |
+| **Main**                        | Общие Timings (P80/P95/P99), OR RPS, Bad RPS — без статус-чеков |
+| **By POD**                      | Те же метрики с разбивкой по поду                               |
+| **Node JS / Python Runtime**    | Event Loop / Heap / CPU / Memory                                |
+| **Status Checks** _(collapsed)_ | OR RPS и Bad RPS только для liveness/readiness probe запросов   |
+| **Routes Metrics**              | Для каждого роута из router.yaml: Timings + OK RPS + Bad RPS    |
 
-### 1.4 Проверить установку
+Секции Main, By POD и Node JS/Python Runtime **сохраняются при регенерации** как есть (генератор их не трогает, только обновляет PromQL). Секции Status Checks и Routes Metrics **полностью пересоздаются** при каждой регенерации.
 
-```bash
-# Проверить pods
-kubectl get pods -n monitoring
+### PromQL — ключевые паттерны
 
-# Проверить что Victoria Metrics работает
-kubectl port-forward -n monitoring svc/victoria-metrics-victoria-metrics-single-server 8428:8428
-
-# Открыть в браузере
-open http://localhost:8428
-```
-
-## Шаг 2: Развертывание Grafana
-
-### 2.1 Добавить Helm репозиторий
-
-```bash
-helm repo add grafana https://grafana.github.io/helm-charts
-helm repo update
-```
-
-### 2.2 Обновить зависимости
-
-```bash
-cd infra/helmcharts/grafana
-helm dependency update
-```
-
-### 2.3 Создать ConfigMap с дашбордами
-
-```bash
-kubectl create configmap grafana-dashboards \
-  --from-file=./infra/helmcharts/grafana/dashboards/ \
-  --namespace monitoring
-```
-
-### 2.4 Установить Grafana
-
-```bash
-helm install grafana ./infra/helmcharts/grafana \
-  --namespace monitoring
-```
-
-### 2.5 Получить External IP LoadBalancer
-
-```bash
-kubectl get svc -n monitoring grafana
-
-# Дождаться пока появится EXTERNAL-IP
-# Grafana будет доступна по http://<EXTERNAL-IP>
-```
-
-### 2.6 Войти в Grafana
-
-- **URL**: `http://<EXTERNAL-IP>`
-- **Username**: `admin`
-- **Password**: `admin`
-
-**Важно**: Измените пароль после первого входа!
-
-## Шаг 3: Развертывание Backend с метриками
-
-### 3.1 Собрать Docker образ
-
-```bash
-cd services/backend
-docker build -t <your-registry>/backend:latest .
-docker push <your-registry>/backend:latest
-```
-
-### 3.2 Установить backend
-
-```bash
-helm install backend ./infra/helmcharts/backend-service \
-  -f services/backend/service.yaml \
-  --set image.repository=<your-registry>/backend \
-  --set image.tag=latest \
-  --namespace default
-```
-
-### 3.3 Проверить что метрики собираются
-
-```bash
-# Port-forward к backend
-kubectl port-forward svc/backend 9464:9464
-
-# Проверить метрики
-curl http://localhost:9464/metrics
-```
-
-### 3.4 Проверить что Victoria Metrics видит backend
-
-```bash
-# Port-forward к Victoria Metrics
-kubectl port-forward -n monitoring svc/victoria-metrics-victoria-metrics-single-server 8428:8428
-
-# Проверить targets
-open http://localhost:8428/targets
-
-# Должен быть target с job="backend"
-```
-
-## Шаг 4: Проверка дашбордов в Grafana
-
-1. Открыть Grafana: `http://<EXTERNAL-IP>`
-2. Войти (admin/admin)
-3. Перейти в Dashboards → Browse
-4. Открыть "Backend Service Metrics"
-5. Проверить что данные отображаются
-
-## Метрики
-
-### HTTP метрики
-
-- **http_server_duration_count** - количество запросов
-- **http_server_duration_sum** - суммарное время запросов
-- **http_server_duration_bucket** - histogram buckets для latency
-
-### Node.js метрики
-
-- **nodejs_eventloop_utilization** - загрузка event loop
-- **v8js_memory_heap_used** - использование памяти
-- **v8js_gc_duration** - время garbage collection
-
-### Примеры запросов
+**Корректная формула для перцентилей:**
 
 ```promql
-# OK RPS
-rate(http_server_duration_count{service="backend", http_status_code=~"2.."}[1m])
-
-# Bad RPS
-rate(http_server_duration_count{service="backend", http_status_code=~"[45].."}[1m])
-
-# P95 Latency
-histogram_quantile(0.95, rate(http_server_duration_bucket{service="backend"}[5m]))
-
-# Error Rate
-rate(http_server_duration_count{service="backend", http_status_code=~"5.."}[1m])
-/
-rate(http_server_duration_count{service="backend"}[1m])
+histogram_quantile(0.95,
+  sum(rate(http_server_duration_bucket{service="web-auth-ssr",http_route!="/api/status"}[5m]))
+  by (le)
+)
 ```
 
-## Настройка алертов
+> ⚠️ Неверный вариант: `sum(histogram_quantile(0.95, rate(...)))` — суммирует готовые перцентили, что математически некорректно и даёт завышенные значения.
 
-### В Grafana
-
-1. Перейти в Alerting → Alert rules
-2. Создать новый alert rule
-3. Выбрать datasource: VictoriaMetrics
-4. Настроить условие, например:
-
-**High Error Rate:**
+**By-pod вариант** — добавить `pod` в `by`:
 
 ```promql
-rate(http_server_duration_count{service="backend", http_status_code=~"5.."}[5m])
-/
-rate(http_server_duration_count{service="backend"}[5m]) > 0.05
+histogram_quantile(0.95,
+  sum(rate(http_server_duration_bucket{service="..."}[5m]))
+  by (le, pod)
+)
 ```
 
-**High Latency:**
+**OR RPS (без статус-чеков):**
 
 ```promql
-histogram_quantile(0.95, rate(http_server_duration_bucket{service="backend"}[5m])) > 1000
+sum(rate(http_server_duration_count{
+  service="web-auth-ssr",
+  http_status_code=~"2..|3..",
+  http_route!="/api/status"
+}[1m])) by (http_status_code)
 ```
 
-**Service Down:**
+**Для FastAPI** — то же самое, но `http_server_duration_milliseconds` и `http_target`:
 
 ```promql
-absent(up{service="backend"}) == 1
+histogram_quantile(0.95,
+  sum(rate(http_server_duration_milliseconds_bucket{
+    service="core-auth",
+    http_target!="/core-auth/status"
+  }[5m]))
+  by (le)
+)
 ```
 
-## Обновление
+### Фильтрация статус-чеков
 
-### Обновить Victoria Metrics
+K8s liveness/readiness probes стреляют каждые 20 секунд и загрязняют общие RPS-метрики. В секции Main и By POD они исключены через точный фильтр по пути. Путь берётся из `infra/overrides/production/{serviceName}.yaml` → `livenessProbe.httpGet.path`.
+
+Конкретные пути по сервисам:
+
+| Сервис                                               | Путь статус-чека               | Лейбл         |
+| ---------------------------------------------------- | ------------------------------ | ------------- |
+| Next.js сервисы                                      | `/api/status`                  | `http_route`  |
+| `core-recipes-bff`                                   | `/core-recipes-bff/api/status` | `http_route`  |
+| `core-auth`, `core-applications`, `core-client-info` | `/{service}/status`            | `http_target` |
+| `core-schedule`                                      | `/core-schedule/api/status`    | `http_target` |
+
+Используется точное равенство (`!=`), не regex — чтобы не задеть реальные endpoint'ы с `status` в пути.
+
+### Генератор дашбордов
+
+`generate-grafana-dashboard.ts` вызывается для каждого сервиса в `generate-router/index.ts`:
+
+1. Читает `services/{name}/router.yaml` → получает тип сервиса и список роутов
+2. Читает `infra/overrides/production/{name}.yaml` → получает точный путь статус-чека
+3. Группирует существующие панели дашборда по секциям (main/bypod/nodejs — сохраняет; routes/status_checks — выбрасывает)
+4. Обновляет PromQL в main/bypod панелях: фиксирует формулу histogram_quantile + добавляет фильтр исключения статус-чека
+5. Генерирует collapsed row **Status Checks** (2 панели: OK RPS + Bad RPS только для probe-трафика)
+6. Генерирует row **Routes Metrics** с 3 панелями на каждый роут (Timings + OK RPS + Bad RPS)
+7. Сохраняет JSON
+
+Статические пути (`/.*`, `/_next/`, `/__nextjs`, `/static/`) в роутах — пропускаются.
+
+---
+
+## Деплой Grafana (CI/CD)
+
+**Workflow:** `.github/workflows/deploy-grafana.yml` — ручной (`workflow_dispatch`).
+
+Шаги:
+
+1. Создаёт/обновляет namespace `monitoring`
+2. Для каждого JSON-дашборда создаёт отдельный ConfigMap `grafana-dashboards-{name}` с лейблом `grafana_dashboard=1`
+3. Деплоит Grafana через Helm: `helm upgrade grafana ./infra/helmcharts/grafana --namespace monitoring --install`
+
+**Создание ConfigMap (с retry × 3):**
 
 ```bash
-helm upgrade victoria-metrics ./infra/helmcharts/victoria-metrics \
-  --namespace monitoring
+# Разбито на два шага через tmpfile — избегаем buffer overflow при 3-way pipe
+# для больших дашбордов (core-schedule: ~285KB)
+kubectl create configmap "$name" --from-file="$dashboard" \
+  --namespace monitoring --dry-run=client -o yaml > "$TMPFILE"
+kubectl label --local -f "$TMPFILE" grafana_dashboard=1 -o yaml | kubectl apply -f -
 ```
 
-### Обновить Grafana
+При неудаче — пауза 10s, обновление kubeconfig через `yc managed-kubernetes cluster get-credentials`.
 
-```bash
-# Обновить дашборды
-kubectl create configmap grafana-dashboards \
-  --from-file=./infra/helmcharts/grafana/dashboards/ \
-  --namespace monitoring \
-  --dry-run=client -o yaml | kubectl apply -f -
+---
 
-# Обновить Grafana
-helm upgrade grafana ./infra/helmcharts/grafana \
-  --namespace monitoring
+## Шаблоны для новых сервисов
 
-# Перезапустить pods
-kubectl rollout restart deployment -n monitoring grafana
-```
+При генерации нового сервиса (`pnpm run generate:service`) создаётся начальный дашборд из шаблона:
 
-### Обновить Backend
+| Тип     | Шаблон                                                                                |
+| ------- | ------------------------------------------------------------------------------------- |
+| Next.js | `infra/generate/generate-service/templates/common/next/grafana-dashboard.json.hbs`    |
+| NestJS  | `infra/generate/generate-service/templates/common/nest/grafana-dashboard.json.hbs`    |
+| FastAPI | `infra/generate/generate-service/templates/common/fastapi/grafana-dashboard.json.hbs` |
 
-```bash
-# Собрать новый образ
-docker build -t <your-registry>/backend:v2 .
-docker push <your-registry>/backend:v2
+Шаблоны содержат правильные PromQL-формулы. После создания сервиса нужно запустить `pnpm run generate:router` — он обновит Routes Metrics секцию по реальным роутам.
 
-# Обновить deployment
-helm upgrade backend ./infra/helmcharts/backend-service \
-  -f services/backend/service.yaml \
-  --set image.tag=v2 \
-  --namespace default
-```
+---
 
 ## Troubleshooting
 
-### Victoria Metrics не собирает метрики
-
-1. Проверить что backend pod имеет annotations:
+### Метрики не появляются в Victoria Metrics
 
 ```bash
-kubectl get pod -l app=backend -o yaml | grep -A 3 annotations
-```
+# Проверить что pod имеет аннотацию и порт metrics
+kubectl get pod -l app.kubernetes.io/name=<service> -o yaml | grep -A5 annotations
+kubectl get pod -l app.kubernetes.io/name=<service> -o yaml | grep -A3 ports
 
-2. Проверить targets в Victoria Metrics:
-
-```bash
+# Проверить targets
 kubectl port-forward -n monitoring svc/victoria-metrics-victoria-metrics-single-server 8428:8428
 open http://localhost:8428/targets
 ```
 
-3. Проверить логи Victoria Metrics:
+### Grafana не загружает дашборд
 
 ```bash
-kubectl logs -n monitoring -l app.kubernetes.io/name=victoria-metrics-single
+# Проверить что ConfigMap есть с правильным лейблом
+kubectl get configmap -n monitoring -l grafana_dashboard=1
+
+# Проверить логи sidecar
+kubectl logs -n monitoring deployment/grafana -c grafana-sc-dashboard
 ```
 
-### Grafana не показывает данные
+### Метрики есть, но http.route пустой (Next.js)
 
-1. Проверить datasource:
-   - Grafana → Configuration → Data sources
-   - Проверить URL: `http://victoria-metrics-victoria-metrics-single-server.monitoring.svc.cluster.local:8428`
-   - Нажать "Test" - должно быть "Data source is working"
+Убедиться что в `instrumentation.nodejs.ts`:
 
-2. Проверить что метрики есть в Victoria Metrics:
+1. `process.env.OTEL_SEMCONV_STABILITY_OPT_IN = 'http/dup'` стоит **до** любых import
+2. Передаётся `serviceName` в `createNextInstrumentationConfig(serviceName)`
+3. `createMetricViews()` передаётся в SDK
+
+### Тайминги в Main панели выглядят аномально высокими
+
+Скорее всего старый дашборд со старой формулой `sum(histogram_quantile(...))`. Запустить регенерацию:
 
 ```bash
-curl 'http://localhost:8428/api/v1/query?query=up{service="backend"}'
+pnpm run generate:router
 ```
 
-### Backend не экспортирует метрики
+Затем задеплоить Grafana через workflow `deploy-grafana`.
 
-1. Проверить что порт 9464 открыт:
+### Статус-чеки всё ещё видны в основных панелях
 
-```bash
-kubectl port-forward svc/backend 9464:9464
-curl http://localhost:9464/metrics
+Проверить что в дашборде есть фильтр исключения. В Victoria Metrics:
+
+```promql
+# Посмотреть все значения http_route для сервиса
+count by (http_route) (http_server_duration_count{service="web-auth-ssr"})
 ```
 
-2. Проверить логи backend:
-
-```bash
-kubectl logs -l app=backend
-```
-
-## Удаление
-
-```bash
-# Удалить backend
-helm uninstall backend --namespace default
-
-# Удалить Grafana
-helm uninstall grafana --namespace monitoring
-kubectl delete configmap grafana-dashboards --namespace monitoring
-
-# Удалить Victoria Metrics
-helm uninstall victoria-metrics --namespace monitoring
-
-# Удалить namespace
-kubectl delete namespace monitoring
-```
-
-## Retention и Storage
-
-- **Retention период**: 30 дней
-- **Storage size**: 15Gi для Victoria Metrics, 10Gi для Grafana
-- **Backup**: рекомендуется настроить backup PersistentVolumes
-
-## Безопасность
-
-1. **Изменить пароль Grafana** после первого входа
-2. **Настроить RBAC** для доступа к метрикам
-3. **Включить TLS** для Grafana (через Ingress)
-4. **Ограничить доступ** к Victoria Metrics (только из namespace monitoring)
-
-## Масштабирование
-
-Для production рекомендуется использовать Victoria Metrics Cluster:
-
-```bash
-helm install victoria-metrics vm/victoria-metrics-cluster \
-  --namespace monitoring \
-  --set vmselect.replicaCount=2 \
-  --set vminsert.replicaCount=2 \
-  --set vmstorage.replicaCount=2
-```
+Если probe-трафик есть, регенерировать дашборд командой выше.

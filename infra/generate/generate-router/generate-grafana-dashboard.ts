@@ -70,23 +70,37 @@ function normalizeRouteForMetrics(routePath: string): string {
 }
 
 /**
- * Возвращает фильтр исключения статус-чеков (liveness/readiness probes)
+ * Читает точный путь статус-чека из production override файла сервиса.
+ * Берётся path из livenessProbe — он совпадает с тем, что K8s реально запрашивает.
+ * Fallback: /{serviceName}/status для fastapi, /api/status для next/nest.
  */
-function getStatusCheckExcludeFilter(routeLabelKey: 'http_route' | 'http_target'): string {
-  if (routeLabelKey === 'http_target') {
-    return `http_target!~".*/status$"`;
+function getStatusCheckPath(serviceName: string, routeLabelKey: 'http_route' | 'http_target'): string {
+  const overridePath = path.join(__dirname, '../../overrides/production', `${serviceName}.yaml`);
+  if (fs.existsSync(overridePath)) {
+    const content = fs.readFileSync(overridePath, 'utf-8');
+    // Ищем path: внутри блока livenessProbe
+    const match = content.match(/livenessProbe:[\s\S]*?path:\s*(\S+)/);
+    if (match) {
+      return match[1];
+    }
   }
-  return `http_route!~".*/(api/)?status$"`;
+  // Fallback
+  return routeLabelKey === 'http_target' ? `/${serviceName}/status` : '/api/status';
 }
 
 /**
- * Возвращает фильтр включения только статус-чеков
+ * Возвращает фильтр исключения статус-чеков (liveness/readiness probes).
+ * Использует точный путь — не regexp — чтобы не задеть реальные endpoint'ы типа /get-user-info/status.
  */
-function getStatusCheckIncludeFilter(routeLabelKey: 'http_route' | 'http_target'): string {
-  if (routeLabelKey === 'http_target') {
-    return `http_target=~".*/status$"`;
-  }
-  return `http_route=~".*/(api/)?status$"`;
+function getStatusCheckExcludeFilter(statusPath: string, routeLabelKey: 'http_route' | 'http_target'): string {
+  return `${routeLabelKey}!="${statusPath}"`;
+}
+
+/**
+ * Возвращает фильтр включения только статус-чеков.
+ */
+function getStatusCheckIncludeFilter(statusPath: string, routeLabelKey: 'http_route' | 'http_target'): string {
+  return `${routeLabelKey}="${statusPath}"`;
 }
 
 /**
@@ -599,8 +613,9 @@ export function updateGrafanaDashboard(serviceName: string): void {
 
   const routeLabelKey = routerConfig.type === 'fastapi' ? 'http_target' : 'http_route';
   const metricName = routeLabelKey === 'http_target' ? 'http_server_duration_milliseconds' : 'http_server_duration';
-  const statusExcludeFilter = getStatusCheckExcludeFilter(routeLabelKey);
-  const statusIncludeFilter = getStatusCheckIncludeFilter(routeLabelKey);
+  const statusPath = getStatusCheckPath(serviceName, routeLabelKey);
+  const statusExcludeFilter = getStatusCheckExcludeFilter(statusPath, routeLabelKey);
+  const statusIncludeFilter = getStatusCheckIncludeFilter(statusPath, routeLabelKey);
 
   // Группируем панели по секциям на основе row панелей
   const mainPanels: GrafanaPanel[] = [];

@@ -45,7 +45,7 @@
       "id": 2,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)", "legendFormat": "P80", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)", "legendFormat": "P95", "range": true, "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!~\".*/status$\"}[5m])) by (le)) or on() vector(0)", "legendFormat": "P99", "range": true, "refId": "C"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!=\"/{{serviceName}}/status\"}[5m])) by (le)) or on() vector(0)", "legendFormat": "P80", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!=\"/{{serviceName}}/status\"}[5m])) by (le)) or on() vector(0)", "legendFormat": "P95", "range": true, "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!=\"/{{serviceName}}/status\"}[5m])) by (le)) or on() vector(0)", "legendFormat": "P99", "range": true, "refId": "C"}],
       "title": "Timings (ms)",
       "type": "timeseries"
     },
@@ -65,7 +65,7 @@
       "id": 1,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "{{http_status_code}}", "range": true, "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\", http_target!=\"/{{serviceName}}/status\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "{{http_status_code}}", "range": true, "refId": "A"}],
       "title": "OR RPS",
       "type": "timeseries"
     },
@@ -84,7 +84,7 @@
       "id": 9,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "__auto", "range": true, "refId": "A"}],
+      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\", http_target!=\"/{{serviceName}}/status\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "__auto", "range": true, "refId": "A"}],
       "title": "Bad RPS",
       "type": "timeseries"
     },
@@ -111,7 +111,7 @@
       "id": 14,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"editorMode": "code", "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)", "legendFormat": "P80 {{pod}}", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P95 {{pod}}", "range": true, "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!~\".*/status$\"}[5m])) by (le, pod)) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P99 {{pod}}", "range": true, "refId": "C"}],
+      "targets": [{"editorMode": "code", "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!=\"/{{serviceName}}/status\"}[5m])) by (le, pod)) or on() vector(0)", "legendFormat": "P80 {{pod}}", "range": true, "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!=\"/{{serviceName}}/status\"}[5m])) by (le, pod)) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P95 {{pod}}", "range": true, "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "P4169E866C3094E38"}, "editorMode": "code", "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"{{serviceName}}\",http_target!=\"/{{serviceName}}/status\"}[5m])) by (le, pod)) or on() vector(0)", "hide": false, "instant": false, "legendFormat": "P99 {{pod}}", "range": true, "refId": "C"}],
       "title": "Timings (ms) by pod",
       "type": "timeseries"
     },
@@ -130,7 +130,7 @@
       "id": 15,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{http_status_code}} from {{pod}}", "range": true, "refId": "A"}],
+      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\", http_target!=\"/{{serviceName}}/status\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{http_status_code}} from {{pod}}", "range": true, "refId": "A"}],
       "title": "OR RPS by pod",
       "type": "timeseries"
     },
@@ -149,7 +149,7 @@
       "id": 16,
       "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
       "pluginVersion": "11.4.0",
-      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\", http_target!~\".*/status$\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{http_status_code}} by {{pod}}", "range": true, "refId": "A"}],
+      "targets": [{"editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\", http_target!=\"/{{serviceName}}/status\"}[1m])) by (http_status_code, pod) or on() vector(0)", "legendFormat": "{{http_status_code}} by {{pod}}", "range": true, "refId": "A"}],
       "title": "Bad RPS by pod",
       "type": "timeseries"
     },
@@ -212,7 +212,7 @@
           "gridPos": {"h": 8, "w": 12, "x": 0, "y": 28},
           "id": 17,
           "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "none"}},
-          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "{{http_status_code}}", "range": true, "refId": "A"}],
+          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"2..|3..\", http_target=\"/{{serviceName}}/status\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "{{http_status_code}}", "range": true, "refId": "A"}],
           "title": "Status Checks - OK RPS",
           "type": "timeseries"
         },
@@ -222,7 +222,7 @@
           "gridPos": {"h": 8, "w": 12, "x": 12, "y": 28},
           "id": 18,
           "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "none"}},
-          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\", http_target=~\".*/status$\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "__auto", "range": true, "refId": "A"}],
+          "targets": [{"datasource": {"type": "prometheus", "uid": "VictoriaMetrics"}, "editorMode": "code", "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"{{serviceName}}\", http_status_code=~\"[45]..\", http_target=\"/{{serviceName}}/status\"}[1m])) by (http_status_code) or on() vector(0)", "legendFormat": "__auto", "range": true, "refId": "A"}],
           "title": "Status Checks - Bad RPS",
           "type": "timeseries"
         }
