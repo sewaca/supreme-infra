@@ -166,7 +166,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         </Typography>
 
         {isLogin && (
-          <Typography variant="body2" align="center" color="text.secondary" sx={{ mt: 1 }}>
+          <Typography variant="body2" align="center" color="text.secondary" sx={{ mt: 1 }} fontWeight={600}>
             <Link component={NextLink} href="/forgot-password" underline="hover" sx={{ color: '#1a237e' }}>
               Забыли пароль?
             </Link>
