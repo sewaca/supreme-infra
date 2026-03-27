@@ -41,7 +41,32 @@ async function callCoreAuth<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function login(data: { email: string; password: string }): Promise<AuthResponse> {
+type ClientInfo = { location: string | null; device: string | null };
+
+async function detectClientInfo(): Promise<ClientInfo> {
+  try {
+    const response = await fetch('https://api.ipregistry.co/?key=tryout');
+    const payload = await response.json();
+    const country = payload?.location?.country?.name as string | undefined;
+    const city = payload?.location?.city as string | undefined;
+    const locationParts = [country, city].filter(Boolean);
+    const location = locationParts.length > 0 ? locationParts.join(', ') : null;
+    const device = (payload?.user_agent?.device?.name as string | undefined) ?? null;
+    return { location, device };
+  } catch {}
+  let location: string | null = null;
+  try {
+    location = Intl.DateTimeFormat().resolvedOptions().timeZone?.split('/')?.join(', ');
+  } catch {}
+  return { location, device: null };
+}
+
+export async function login(data: {
+  email: string;
+  password: string;
+  location?: string | null;
+  device?: string | null;
+}): Promise<AuthResponse> {
   return callCoreAuth<AuthResponse>('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -57,8 +82,11 @@ export async function register(data: { email: string; password: string; name: st
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  return login({ email: data.email, password: data.password });
+  const { location, device } = await detectClientInfo();
+  return login({ email: data.email, password: data.password, location, device });
 }
+
+export { detectClientInfo };
 
 export async function getCurrentUser(token: string): Promise<UserInfo> {
   return callCoreAuth<UserInfo>('/auth/me', {

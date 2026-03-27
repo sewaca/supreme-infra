@@ -76,7 +76,8 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
         jti=jti,
         user_agent=request.headers.get("user-agent"),
         ip_address=ip,
-        location=None,  # TODO: re-enable after IP forwarding is configured in ingress
+        location=body.location,
+        device=body.device,
         expires_at=datetime.now(UTC) + timedelta(days=TOKEN_EXPIRE_DAYS),
     )
     db.add(session)

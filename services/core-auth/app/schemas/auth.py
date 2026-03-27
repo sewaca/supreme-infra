@@ -7,6 +7,8 @@ from pydantic import BaseModel
 class LoginRequest(BaseModel):
     email: str
     password: str
+    location: str | None = None
+    device: str | None = None
 
 
 class RegisterRequest(BaseModel):
@@ -39,6 +41,7 @@ class SessionInfo(BaseModel):
     user_agent: str | None
     ip_address: str | None
     location: str | None
+    device: str | None
     is_current: bool
 
     model_config = {"from_attributes": True}

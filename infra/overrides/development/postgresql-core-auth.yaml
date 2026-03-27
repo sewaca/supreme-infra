@@ -180,4 +180,6 @@ migrations:
     user_session(user_id);
   003_add_session_location.sql: |
     ALTER TABLE user_session ADD COLUMN IF NOT EXISTS location VARCHAR;
+  004_add_session_device.sql: |
+    ALTER TABLE user_session ADD COLUMN IF NOT EXISTS device VARCHAR;
 skipMigrations: false

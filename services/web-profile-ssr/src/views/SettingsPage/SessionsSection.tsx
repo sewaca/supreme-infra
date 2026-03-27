@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { i18n } from '@supreme-int/i18n';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -14,6 +14,7 @@ export type SessionInfo = {
   user_agent: string | null;
   ip_address: string | null;
   location: string | null;
+  device: string | null;
   is_current: boolean;
 };
 
@@ -61,40 +62,44 @@ export const SessionsSection = ({ sessions }: Props) => {
   return (
     <>
       <Typography variant="h3">{i18n('Активные сессии')}</Typography>
-      <Table size="small" sx={{ mt: 1 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>{i18n('Устройство')}</TableCell>
-            <TableCell>{i18n('Вход')}</TableCell>
-            <TableCell>{i18n('Истекает')}</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sessions.map((session) => (
-            <TableRow key={session.id}>
-              <TableCell>
-                {parseUserAgent(session.user_agent)}
-                {session.is_current && <Chip label={i18n('Текущая')} size="small" color="primary" sx={{ ml: 1 }} />}
-              </TableCell>
-              <TableCell>{new Date(session.created_at).toLocaleString('ru')}</TableCell>
-              <TableCell>{new Date(session.expires_at).toLocaleString('ru')}</TableCell>
-              <TableCell align="right">
-                {!session.is_current && (
-                  <Button
-                    size="small"
-                    color="error"
-                    disabled={revokingId === session.id}
-                    onClick={() => handleRevoke(session.id)}
-                  >
-                    {i18n('Завершить')}
-                  </Button>
-                )}
-              </TableCell>
+      <Box sx={{ overflowX: 'auto', width: '100%', mt: 1 }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{i18n('Устройство')}</TableCell>
+              <TableCell>{i18n('Откуда')}</TableCell>
+              <TableCell>{i18n('Вход')}</TableCell>
+              <TableCell>{i18n('Истекает')}</TableCell>
+              <TableCell />
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {sessions.map((session) => (
+              <TableRow key={session.id}>
+                <TableCell>
+                  {session.device ?? parseUserAgent(session.user_agent)}
+                  {session.is_current && <Chip label={i18n('Текущая')} size="small" color="primary" sx={{ ml: 1 }} />}
+                </TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>{session.location ?? '—'}</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>{new Date(session.created_at).toLocaleString('ru')}</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>{new Date(session.expires_at).toLocaleString('ru')}</TableCell>
+                <TableCell align="right">
+                  {!session.is_current && (
+                    <Button
+                      size="small"
+                      color="error"
+                      disabled={revokingId === session.id}
+                      onClick={() => handleRevoke(session.id)}
+                    >
+                      {i18n('Завершить')}
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
     </>
   );
 };

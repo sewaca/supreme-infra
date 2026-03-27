@@ -14,9 +14,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { backendApi } from '../../shared/api/backendApi';
-import { setAuthToken } from '../../shared/lib/auth.client';
+import { detectClientInfo, setAuthToken } from '../../shared/lib/auth.client';
 
 interface AuthFormProps {
   mode: 'login' | 'register';
@@ -30,6 +30,13 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '', name: '' });
+  const clientInfoRef = useRef<Awaited<ReturnType<typeof detectClientInfo>> | null>(null);
+
+  useEffect(() => {
+    detectClientInfo().then((info) => {
+      clientInfoRef.current = info;
+    });
+  }, []);
 
   const isLogin = mode === 'login';
 
@@ -38,7 +45,12 @@ export function AuthForm({ mode }: AuthFormProps) {
     setError('');
     setIsLoading(true);
     try {
-      const response = isLogin ? await backendApi.login(formData) : await backendApi.register(formData);
+      const { location, device } = isLogin
+        ? (clientInfoRef.current ?? (await detectClientInfo()))
+        : { location: null, device: null };
+      const response = isLogin
+        ? await backendApi.login({ ...formData, location, device })
+        : await backendApi.register(formData);
       setAuthToken(response.access_token);
       router.push('/profile-old');
     } catch (err) {
