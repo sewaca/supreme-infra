@@ -76,9 +76,7 @@ export const SessionsSection = ({ sessions }: Props) => {
           <TableBody>
             {sessions.map((session) => (
               <TableRow key={session.id} sx={{ backgroundColor: session.is_current ? '#e8eaf6' : undefined }}>
-                <TableCell>
-                  {session.device ?? parseUserAgent(session.user_agent)}
-                </TableCell>
+                <TableCell>{session.device ?? parseUserAgent(session.user_agent)}</TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>{session.location ?? '—'}</TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>{new Date(session.created_at).toLocaleString('ru')}</TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>
