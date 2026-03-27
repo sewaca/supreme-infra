@@ -24,7 +24,14 @@ export const calculateLevel = (xp: number): LevelInfo => {
   const currentIndex = levels.indexOf(currentLevel);
   const nextLevel = levels[currentIndex + 1];
   const nextLevelXP = nextLevel ? LEVEL_CONFIGS[nextLevel].minXP : currentConfig.minXP;
-  return { level: currentLevel, title: currentConfig.title, currentXP: xp, nextLevelXP, color: currentConfig.color };
+  return {
+    level: currentLevel,
+    title: currentConfig.title,
+    currentXP: xp,
+    nextLevelXP,
+    color: currentConfig.color,
+    currentLevelMinXP: currentConfig.minXP,
+  };
 };
 
 export const calculateXPFromGrades = (averageGrade: number, achievements: number, streak: number): number => {

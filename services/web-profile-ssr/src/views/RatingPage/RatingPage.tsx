@@ -42,7 +42,7 @@ export const RatingPage = ({ data }: Props) => {
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 Курс
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              <Typography variant="h6" className={styles.statValue} sx={{ fontWeight: 600 }}>
                 {data.studentStats.course}
               </Typography>
             </Box>
@@ -50,7 +50,7 @@ export const RatingPage = ({ data }: Props) => {
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 Факультет
               </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              <Typography variant="body2" className={styles.statValue} sx={{ fontWeight: 600 }}>
                 {data.studentStats.faculty}
               </Typography>
             </Box>
@@ -60,6 +60,7 @@ export const RatingPage = ({ data }: Props) => {
               </Typography>
               <Typography
                 variant="h6"
+                className={styles.statValue}
                 sx={{
                   fontWeight: 700,
                   color:

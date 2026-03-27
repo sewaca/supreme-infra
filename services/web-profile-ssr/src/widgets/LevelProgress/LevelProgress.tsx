@@ -13,7 +13,6 @@ export const LevelProgress = ({ levelInfo }: Props) => {
   const range = levelInfo.nextLevelXP - levelInfo.currentLevelMinXP;
   const earned = levelInfo.currentXP - levelInfo.currentLevelMinXP;
   const progress = range > 0 ? Math.min((earned / range) * 100, 100) : 100;
-  const xpRemaining = levelInfo.nextLevelXP - levelInfo.currentXP;
 
   return (
     <Paper
@@ -34,7 +33,7 @@ export const LevelProgress = ({ levelInfo }: Props) => {
           <>
             <Box className={styles.xpInfo}>
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {earned} / {range} XP
+                {levelInfo.currentXP} / {levelInfo.nextLevelXP} XP
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 до уровня «{levelInfo.nextLevelTitle}»
@@ -50,9 +49,6 @@ export const LevelProgress = ({ levelInfo }: Props) => {
                 '& .MuiLinearProgress-bar': { backgroundColor: levelInfo.color },
               }}
             />
-            <Typography variant="caption" sx={{ color: 'text.secondary', marginTop: 0.5 }}>
-              Ещё {xpRemaining} XP
-            </Typography>
           </>
         ) : (
           <Typography
