@@ -100,7 +100,19 @@ export const RatingPage = ({ data }: Props) => {
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Твоя позиция
           </Typography>
-          <ToggleButtonGroup value={rankingView} exclusive onChange={(_, v) => v && setRankingView(v)} size="small">
+          <ToggleButtonGroup
+            value={rankingView}
+            exclusive
+            onChange={(_, v) => v && setRankingView(v)}
+            size="small"
+            sx={{
+              '& .MuiToggleButton-root.Mui-selected': {
+                backgroundColor: 'primary.main',
+                color: 'primary.contrastText',
+                '&:hover': { backgroundColor: 'primary.dark' },
+              },
+            }}
+          >
             <ToggleButton value="grade" sx={{ fontSize: '0.75rem', padding: '4px 10px' }}>
               Успеваемость
             </ToggleButton>
@@ -109,7 +121,7 @@ export const RatingPage = ({ data }: Props) => {
             </ToggleButton>
           </ToggleButtonGroup>
         </Box>
-        <Spacer size={2} />
+        <Spacer size={6} />
         <Box className={styles.rankingsGrid} data-tour="ranking-cards">
           {rankingView === 'grade' ? (
             <>

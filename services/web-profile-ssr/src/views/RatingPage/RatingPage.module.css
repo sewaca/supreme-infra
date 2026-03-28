@@ -35,13 +35,13 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   gap: 12px;
-  padding-bottom: 8px;
+  padding: 12px 4px 10px;
   scrollbar-width: thin;
 }
 
 .achievementsGrid > * {
   flex: 0 0 auto;
-  width: 120px;
+  width: 148px;
 }
 
 .improvementsList {
