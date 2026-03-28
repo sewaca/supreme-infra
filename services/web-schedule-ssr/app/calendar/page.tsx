@@ -1,5 +1,6 @@
 import { getStatsRatingStatsGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import {
+  DaySchedule,
   groupScheduleGroupsGroupNameScheduleGet,
   teacherScheduleTeachersTeacherIdScheduleGet,
 } from '@supreme-int/api-client/src/generated/core-schedule';
@@ -28,7 +29,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
       ? { dateFrom: params.date_from, dateTo: params.date_to }
       : getWeekRange(new Date());
 
-  let schedule = [];
+  let schedule: DaySchedule[] = [];
   let currentGroup: string | null = params.group ?? null;
 
   try {
