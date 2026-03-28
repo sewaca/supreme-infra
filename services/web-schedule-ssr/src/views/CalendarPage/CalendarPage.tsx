@@ -16,10 +16,11 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
-import type { CalendarEvent } from '@/src/shared/lib/schedule.utils';
-import { GroupSearch } from '@/src/widgets/GroupSearch/GroupSearch';
+
 import styles from './CalendarPage.module.css';
 import './fullcalendar.css';
+import { CalendarEvent } from '../../shared/lib/schedule.utils';
+import { GroupSearch } from '../../widgets/GroupSearch/GroupSearch';
 
 type Props = {
   events: CalendarEvent[];
