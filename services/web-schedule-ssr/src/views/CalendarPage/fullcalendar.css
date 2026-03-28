@@ -4,24 +4,33 @@
 }
 
 .schedule-fc-wrapper .fc-toolbar-title {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
 }
 
+.schedule-fc-wrapper .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 8px;
+}
+
 .schedule-fc-wrapper .fc-button {
-  background-color: var(--color-primary, #1976d2) !important;
-  border-color: var(--color-primary, #1976d2) !important;
+  background-color: transparent !important;
+  border-color: var(--color-border, #e0e0e0) !important;
+  color: var(--color-text-primary, #1a1a1a) !important;
   text-transform: none;
   font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  box-shadow: none !important;
 }
 
 .schedule-fc-wrapper .fc-button:hover {
-  background-color: var(--color-primary-hover, #1565c0) !important;
-  border-color: var(--color-primary-hover, #1565c0) !important;
+  background-color: var(--color-background-secondary, #f5f5f5) !important;
 }
 
 .schedule-fc-wrapper .fc-button-active {
-  background-color: var(--color-primary-hover, #1565c0) !important;
+  background-color: var(--color-primary, #1976d2) !important;
+  border-color: var(--color-primary, #1976d2) !important;
+  color: #fff !important;
 }
 
 .schedule-fc-wrapper .fc-timegrid-slot {
@@ -31,8 +40,25 @@
 .schedule-fc-wrapper .fc-event {
   border-radius: 4px;
   cursor: pointer;
+  border: none;
+}
+
+.schedule-fc-wrapper .fc-col-header-cell {
+  font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+.schedule-fc-wrapper .fc-timegrid-slot-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #757575);
 }
 
 .schedule-fc-wrapper .fc-list-event:hover td {
-  background-color: rgba(25, 118, 210, 0.04);
+  background-color: var(--color-background-secondary, #f5f5f5);
+}
+
+.schedule-fc-wrapper .fc-list-day-text,
+.schedule-fc-wrapper .fc-list-day-side-text {
+  font-size: 0.875rem;
+  font-weight: 600;
 }
