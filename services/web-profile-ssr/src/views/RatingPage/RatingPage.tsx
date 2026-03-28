@@ -119,7 +119,12 @@ export const RatingPage = ({ data }: Props) => {
               <RankingCard title="По специальности" icon="📚" ranking={data.rankings.bySpecialty} />
             </>
           ) : (
-            <RankingCard title="По посещаемости" icon="📅" ranking={data.rankings.byAttendance} />
+            <>
+              <RankingCard title="По курсу" icon="🎓" ranking={data.rankings.byAttendanceCourse} />
+              <RankingCard title="По факультету" icon="🏛️" ranking={data.rankings.byAttendanceFaculty} />
+              <RankingCard title="По вузу" icon="🏫" ranking={data.rankings.byAttendanceUniversity} />
+              <RankingCard title="По специальности" icon="📚" ranking={data.rankings.byAttendanceSpecialty} />
+            </>
           )}
         </Box>
         <Spacer size={6} />

@@ -103,6 +103,10 @@ export default async () => {
       byUniversity: rankingsByType.byUniversity ?? emptyRanking,
       bySpecialty: rankingsByType.bySpecialty ?? emptyRanking,
       byAttendance: rankingsByType.byAttendance ?? emptyRanking,
+      byAttendanceCourse: rankingsByType.byAttendanceCourse ?? emptyRanking,
+      byAttendanceFaculty: rankingsByType.byAttendanceFaculty ?? emptyRanking,
+      byAttendanceUniversity: rankingsByType.byAttendanceUniversity ?? emptyRanking,
+      byAttendanceSpecialty: rankingsByType.byAttendanceSpecialty ?? emptyRanking,
     },
     achievements,
     streak: {

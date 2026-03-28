@@ -62,6 +62,10 @@ export type RatingData = {
     byUniversity: RankingPosition;
     bySpecialty: RankingPosition;
     byAttendance: RankingPosition;
+    byAttendanceCourse: RankingPosition;
+    byAttendanceFaculty: RankingPosition;
+    byAttendanceUniversity: RankingPosition;
+    byAttendanceSpecialty: RankingPosition;
   };
   achievements: Achievement[];
   streak: Streak;
