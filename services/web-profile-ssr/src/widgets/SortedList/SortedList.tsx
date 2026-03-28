@@ -101,11 +101,29 @@ export const SortedList = <T extends SortableItem>({ items, onItemsChange, rende
         if (dragAndDrop.draggedIndex) {
           e.preventDefault();
           e.dataTransfer.dropEffect = 'move';
+
+          // Если курсор вышел за пределы всех элементов — ставим первый/последний как цель
+          if (items.length > 0 && listRef.current) {
+            const listItems = listRef.current.querySelectorAll('[data-item-id]');
+            if (listItems.length > 0) {
+              const firstRect = listItems[0].getBoundingClientRect();
+              const lastRect = listItems[listItems.length - 1].getBoundingClientRect();
+              if (e.clientY < firstRect.top) {
+                dragAndDrop.handleDragOverEdge(items[0].id, 'before');
+              } else if (e.clientY > lastRect.bottom) {
+                dragAndDrop.handleDragOverEdge(items[items.length - 1].id, 'after');
+              }
+            }
+          }
         }
       }}
       onDrop={(e) => {
         e.preventDefault();
-        dragAndDrop.handleDragEnd();
+        if (dragAndDrop.dragOverIndex) {
+          handleDrop(dragAndDrop.dragOverIndex.itemId, undefined, dragAndDrop.dragOverIndex.position);
+        } else {
+          dragAndDrop.handleDragEnd();
+        }
       }}
       onTouchMove={dragAndDrop.handleTouchMove}
       onTouchEnd={handleTouchEnd}

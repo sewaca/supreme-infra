@@ -30,8 +30,17 @@ export const useDragAndDrop = () => {
     }
   };
 
-  const handleDragLeave = () => {
+  const handleDragLeave = (e: React.DragEvent) => {
+    // Не сбрасываем dragOverIndex если курсор всё ещё внутри списка
+    const list = (e.currentTarget as HTMLElement).closest('ul, ol, [role="list"]');
+    if (list?.contains?.(e.relatedTarget as Node)) return;
     setDragOverIndex(null);
+  };
+
+  const handleDragOverEdge = (itemId: string, position: 'before' | 'after') => {
+    if (draggedIndex) {
+      setDragOverIndex({ itemId, position });
+    }
   };
 
   const handleDragEnd = () => {
@@ -116,6 +125,19 @@ export const useDragAndDrop = () => {
         }
       });
 
+      // Если курсор вышел за пределы списка — выбираем первый или последний элемент
+      if (!targetItemId && listItems.length > 0) {
+        const firstRect = listItems[0].getBoundingClientRect();
+        const lastRect = listItems[listItems.length - 1].getBoundingClientRect();
+        if (touch.clientY < firstRect.top) {
+          targetItemId = listItems[0].getAttribute('data-item-id');
+          position = 'before';
+        } else if (touch.clientY > lastRect.bottom) {
+          targetItemId = listItems[listItems.length - 1].getAttribute('data-item-id');
+          position = 'after';
+        }
+      }
+
       if (targetItemId && touchStartItemId.current !== targetItemId) {
         setDragOverIndex({ itemId: targetItemId, position });
       }
@@ -158,6 +180,7 @@ export const useDragAndDrop = () => {
     handleDragOver,
     handleDragLeave,
     handleDragEnd,
+    handleDragOverEdge,
     handleTouchStart,
     handleDragHandleTouchStart,
     handleTouchMove,
