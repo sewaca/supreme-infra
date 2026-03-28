@@ -1,10 +1,11 @@
 'use client';
 
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { Box, Chip, Divider, IconButton, Paper, Typography } from '@mui/material';
+import { Box, Chip, Divider, IconButton, Paper, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
+import { useState } from 'react';
 import { RatingData } from '../../entities/Rating/RatingData';
 import { AchievementBadge } from '../../widgets/AchievementBadge/AchievementBadge';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
@@ -19,6 +20,7 @@ type Props = {
 
 export const RatingPage = ({ data }: Props) => {
   const { startTour } = usePageTour({ page: 'rating' });
+  const [rankingView, setRankingView] = useState<'grade' | 'attendance'>('grade');
   const unlockedAchievements = data.achievements.filter((a) => a.unlocked);
   const lockedAchievements = data.achievements.filter((a) => !a.unlocked);
 
@@ -94,16 +96,31 @@ export const RatingPage = ({ data }: Props) => {
           <StreakCard streak={data.streak} />
         </Box>
         <Spacer size={4} />
-        <Typography variant="h6" sx={{ fontWeight: 700, padding: '0 4px' }}>
-          Твоя позиция
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', gap: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            Твоя позиция
+          </Typography>
+          <ToggleButtonGroup value={rankingView} exclusive onChange={(_, v) => v && setRankingView(v)} size="small">
+            <ToggleButton value="grade" sx={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+              Успеваемость
+            </ToggleButton>
+            <ToggleButton value="attendance" sx={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+              Посещаемость
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
         <Spacer size={2} />
         <Box className={styles.rankingsGrid} data-tour="ranking-cards">
-          <RankingCard title="По курсу" icon="🎓" ranking={data.rankings.byCourse} />
-          <RankingCard title="По факультету" icon="🏛️" ranking={data.rankings.byFaculty} />
-          <RankingCard title="По вузу" icon="🏫" ranking={data.rankings.byUniversity} />
-          <RankingCard title="По специальности" icon="📚" ranking={data.rankings.bySpecialty} />
-          <RankingCard title="По посещаемости" icon="📅" ranking={data.rankings.byAttendance} />
+          {rankingView === 'grade' ? (
+            <>
+              <RankingCard title="По курсу" icon="🎓" ranking={data.rankings.byCourse} />
+              <RankingCard title="По факультету" icon="🏛️" ranking={data.rankings.byFaculty} />
+              <RankingCard title="По вузу" icon="🏫" ranking={data.rankings.byUniversity} />
+              <RankingCard title="По специальности" icon="📚" ranking={data.rankings.bySpecialty} />
+            </>
+          ) : (
+            <RankingCard title="По посещаемости" icon="📅" ranking={data.rankings.byAttendance} />
+          )}
         </Box>
         <Spacer size={6} />
         <Divider />

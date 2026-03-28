@@ -31,9 +31,17 @@
 }
 
 .achievementsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 12px;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+
+.achievementsGrid > * {
+  flex: 0 0 auto;
+  width: 120px;
 }
 
 .improvementsList {
@@ -72,7 +80,8 @@
   }
 
   .achievementsGrid {
-    grid-template-columns: repeat(3, 1fr);
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
 
   .improvementCard {
