@@ -31,6 +31,7 @@ jobs:
           - web-documents-ssr
           - web-profile-ssr
           - web-auth-ssr
+          - web-schedule-ssr
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

@@ -1,0 +1,17 @@
+import react from '@vitejs/plugin-react';
+import { defineConfig, mergeConfig } from 'vitest/config';
+import baseConfig from '../../vitest.config.global';
+
+export default mergeConfig(
+  baseConfig,
+  defineConfig({
+    // biome-ignore lint/suspicious/noExplicitAny:  не смог победить при переезде
+    plugins: [react() as any],
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: ['@supreme-int/nextjs-shared/vitest.setup.tsx'],
+      css: true,
+    },
+  }),
+);

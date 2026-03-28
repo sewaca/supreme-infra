@@ -288,3 +288,17 @@ ingress:
           method: GET
         - path: /web-profile-ssr/.*
           method: GET
+    - service: web-schedule-ssr
+      port: 80
+      type: next
+      paths:
+        - path: /
+          method: GET
+        - path: /calendar
+          method: GET
+        - path: /messages
+          method: GET
+        - path: /news
+          method: GET
+        - path: /web-schedule-ssr/.*
+          method: GET

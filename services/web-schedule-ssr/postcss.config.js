@@ -1,0 +1,20 @@
+module.exports = {
+  plugins: [
+    'postcss-flexbugs-fixes',
+    [
+      'postcss-preset-env',
+      {
+        stage: 1,
+        features: {
+          'custom-properties': false,
+          'custom-media-queries': true,
+          'nesting-rules': true,
+        },
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
+      },
+    ],
+    require('@supreme-int/nextjs-shared/postcss-dvh-fallback'),
+  ],
+};
