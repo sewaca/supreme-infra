@@ -32,7 +32,7 @@ function getLessonColor(lessonType: string): { bg: string; border: string } {
   for (const [pattern, colors] of Object.entries(LESSON_TYPE_COLORS)) {
     if (key.includes(pattern)) return colors;
   }
-  return { bg: '#f57c00', border: '#e65100' };
+  return { bg: '#757575', border: '#616161' };
 }
 
 export function scheduleToEvents(schedule: DaySchedule[]): CalendarEvent[] {

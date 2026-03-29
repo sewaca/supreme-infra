@@ -71,11 +71,19 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     }
 
     if (scheduleRes.status === 'fulfilled') {
-      if (scheduleRes.value.error) {
-        console.error('[calendar] Schedule API error:', scheduleRes.value.error);
+      const res = scheduleRes.value;
+      console.log('[calendar] Schedule response:', {
+        hasData: !!res.data,
+        dataLength: Array.isArray(res.data) ? res.data.length : 'not array',
+        hasError: !!res.error,
+        error: res.error,
+        keys: Object.keys(res),
+      });
+      if (res.error) {
+        console.error('[calendar] Schedule API error:', res.error);
         error ??= 'Не удалось загрузить расписание. Попробуйте позже.';
       } else {
-        schedule = scheduleRes.value.data ?? [];
+        schedule = res.data ?? [];
       }
     } else {
       console.error('[calendar] Schedule fetch failed:', scheduleRes.reason);
@@ -84,6 +92,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   }
 
   const events = scheduleToEvents(schedule);
+  console.log('[calendar] Result:', { scheduleLength: schedule.length, eventsLength: events.length });
 
   return <CalendarPage events={events} initialDate={dateFrom} avatar={avatar} userName={userName} error={error} />;
 }
