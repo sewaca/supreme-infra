@@ -16,6 +16,8 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../shared/lib/schedule.utils';
@@ -83,6 +85,8 @@ export function CalendarPage({
   initialViewMode,
 }: Props) {
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [allEvents, setAllEvents] = useState<CalendarEvent[]>(initialEvents);
@@ -245,7 +249,7 @@ export function CalendarPage({
               <FullCalendar
                 ref={calendarRef}
                 plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-                initialView="timeGridWeek"
+                initialView={isMobile ? 'timeGridDay' : 'timeGridWeek'}
                 initialDate={initialDate}
                 events={allEvents}
                 locale="ru"
@@ -259,9 +263,9 @@ export function CalendarPage({
                 nowIndicator
                 height="100%"
                 headerToolbar={{
-                  left: 'prev,next today',
+                  left: 'prev today next',
                   center: 'title',
-                  right: 'timeGridWeek,timeGridDay',
+                  right: isMobile ? '' : 'timeGridWeek,timeGridDay',
                 }}
                 buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
                 eventContent={(arg) => <EventCard event={arg} />}

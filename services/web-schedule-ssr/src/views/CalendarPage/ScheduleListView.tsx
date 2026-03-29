@@ -61,9 +61,15 @@ type DayGroup = { date: string; events: CalendarEvent[] };
 
 export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick }: Props) {
   const days = useMemo(() => {
+    // Filter events to the visible week: dateFrom (Monday) to dateFrom + 5 days (Saturday)
+    const weekEnd = new Date(`${dateFrom}T00:00:00`);
+    weekEnd.setDate(weekEnd.getDate() + 5);
+    const weekEndStr = weekEnd.toISOString().slice(0, 10);
+
     const map = new Map<string, CalendarEvent[]>();
     for (const ev of events) {
       const date = ev.start.slice(0, 10);
+      if (date < dateFrom || date > weekEndStr) continue;
       const list = map.get(date);
       if (list) {
         list.push(ev);
@@ -71,18 +77,16 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
         map.set(date, [ev]);
       }
     }
-    // Sort events within each day by start time
     for (const list of map.values()) {
       list.sort((a, b) => a.start.localeCompare(b.start));
     }
-    // Build day groups sorted by date
     const groups: DayGroup[] = [];
     for (const [date, evs] of map) {
       groups.push({ date, events: evs });
     }
     groups.sort((a, b) => a.date.localeCompare(b.date));
     return groups;
-  }, [events]);
+  }, [events, dateFrom]);
 
   return (
     <div className={styles.container}>
