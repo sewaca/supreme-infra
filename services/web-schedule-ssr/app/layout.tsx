@@ -10,7 +10,7 @@ import { BottomTabBar } from '../src/widgets/BottomTabBar/BottomTabBar';
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
+  subsets: ['latin', 'cyrillic'],
   display: 'swap',
   variable: '--font-roboto',
 });

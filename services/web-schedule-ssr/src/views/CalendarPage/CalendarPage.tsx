@@ -6,6 +6,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -20,6 +23,7 @@ type Props = {
   initialDate: string;
   avatar: string | null;
   userName: string;
+  error: string | null;
 };
 
 function EventCard({ event }: { event: EventContentArg }) {
@@ -43,47 +47,61 @@ function EventCard({ event }: { event: EventContentArg }) {
   );
 }
 
-export function CalendarPage({ events, initialDate, avatar, userName }: Props) {
+export function CalendarPage({ events, initialDate, avatar, userName, error }: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const initialView = isMobile ? 'listWeek' : 'timeGridWeek';
 
   return (
-    <div className={styles.page}>
+    <Paper sx={{ minHeight: '100dvh', backgroundColor: 'var(--color-background-primary)' }} elevation={0}>
       <DefaultNavbar
         center={<Typography variant="title1">Расписание</Typography>}
         rightSlot={<ProfileButton avatar={avatar} name={userName} />}
       />
-      <div className={`${styles.calendarWrapper} schedule-fc-wrapper`}>
-        <FullCalendar
-          plugins={[timeGridPlugin, dayGridPlugin, listPlugin, interactionPlugin]}
-          initialView={initialView}
-          initialDate={initialDate}
-          events={events}
-          locale="ru"
-          firstDay={1}
-          slotMinTime="07:00:00"
-          slotMaxTime="22:00:00"
-          slotDuration="00:30:00"
-          slotLabelInterval="01:00:00"
-          allDaySlot={false}
-          nowIndicator
-          height="100%"
-          headerToolbar={{
-            left: 'prev,next today',
-            center: 'title',
-            right: isMobile ? 'listWeek,timeGridDay' : 'timeGridWeek,timeGridDay',
-          }}
-          buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День', list: 'Список' }}
-          eventContent={(arg) => <EventCard event={arg} />}
-          weekends={false}
-          dayHeaderFormat={{ weekday: 'short', day: 'numeric', month: 'numeric' }}
-          listDayFormat={{ weekday: 'long', day: 'numeric', month: 'long' }}
-          listDaySideFormat={false}
-          noEventsContent="Занятий нет"
-        />
-      </div>
-    </div>
+
+      <Box className={styles.content}>
+        {error && (
+          <Paper className={styles.errorCard} elevation={0}>
+            <ErrorOutlineIcon color="error" fontSize="small" />
+            <Typography variant="body2" color="error">
+              {error}
+            </Typography>
+          </Paper>
+        )}
+
+        <Paper className={styles.calendarCard} elevation={0}>
+          <div className={`${styles.calendarInner} schedule-fc-wrapper`}>
+            <FullCalendar
+              plugins={[timeGridPlugin, dayGridPlugin, listPlugin, interactionPlugin]}
+              initialView={initialView}
+              initialDate={initialDate}
+              events={events}
+              locale="ru"
+              firstDay={1}
+              slotMinTime="07:00:00"
+              slotMaxTime="22:00:00"
+              slotDuration="00:30:00"
+              slotLabelInterval="01:00:00"
+              allDaySlot={false}
+              nowIndicator
+              height="100%"
+              headerToolbar={{
+                left: 'prev,next today',
+                center: 'title',
+                right: isMobile ? 'listWeek,timeGridDay' : 'timeGridWeek,timeGridDay',
+              }}
+              buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День', list: 'Список' }}
+              eventContent={(arg) => <EventCard event={arg} />}
+              weekends={false}
+              dayHeaderFormat={{ weekday: 'short', day: 'numeric', month: 'numeric' }}
+              listDayFormat={{ weekday: 'long', day: 'numeric', month: 'long' }}
+              listDaySideFormat={false}
+              noEventsContent="Занятий нет"
+            />
+          </div>
+        </Paper>
+      </Box>
+    </Paper>
   );
 }
