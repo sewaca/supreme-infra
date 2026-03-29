@@ -47,7 +47,7 @@ Requires a running PostgreSQL with `core_messages_db` and correct credentials in
 export BASE_URL="https://diploma.sewaca.ru/core-messages"
 
 # Student token (user_id: 550e8400-e29b-41d4-a716-446655440000, role: student)
-export STUDENT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+export STUDENT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJqdGkiOiI5NzA2YzdlMS05NjMxLTQ5YzEtYTgxMi0wZTliOGI5MjlkOTIiLCJlbWFpbCI6Iml2YW4uaXZhbm92QGV4YW1wbGUuY29tIiwibmFtZSI6Ilx1MDQxOFx1MDQzMlx1MDQzMFx1MDQzZCBcdTA0MThcdTA0MzJcdTA0MzBcdTA0M2RcdTA0M2VcdTA0MzIiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTc3NDgwMzk2NCwiZXhwIjoxNzc1NDA4NzY0fQ.e2Y3EqlQYaXuuMjjEWk3rLpO7XXwDy0cY-95b4bhMxE"
 
 # Teacher token (role: teacher) — needed for broadcast endpoints
 export TEACHER_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

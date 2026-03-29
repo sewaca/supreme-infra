@@ -43,11 +43,13 @@ function EventCard({ event }: { event: EventContentArg }) {
 
   return (
     <div className={styles.eventCard}>
-      <div className={styles.eventHeader}>
-        <span className={styles.eventTitle}>{event.event.title}</span>
-        {classroom_name && <span className={styles.eventRoom}>{classroom_name}</span>}
-      </div>
-      {teacher_name && <div className={styles.eventTeacher}>{teacher_name}</div>}
+      <span className={styles.eventTitle}>{event.event.title}</span>
+      {(teacher_name || classroom_name) && (
+        <div className={styles.eventFooter}>
+          <span className={styles.eventTeacher}>{teacher_name ?? ''}</span>
+          {classroom_name && <span className={styles.eventRoom}>{classroom_name}</span>}
+        </div>
+      )}
     </div>
   );
 }
@@ -135,9 +137,9 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
         )}
 
         <Box className={styles.topSection}>
-          <Chip icon={<GroupsIcon />} label="Другая группа" variant="outlined" size="small" clickable />
-          <Chip icon={<PersonIcon />} label="Преподаватель" variant="outlined" size="small" clickable />
-          <Chip icon={<EventIcon />} label="Сессия" variant="outlined" size="small" clickable />
+          <Chip icon={<GroupsIcon />} label="Другая группа" variant="outlined" size="small" clickable onClick={() => router.push('/schedule/group')} />
+          <Chip icon={<PersonIcon />} label="Преподаватель" variant="outlined" size="small" clickable onClick={() => router.push('/schedule/teacher')} />
+          <Chip icon={<EventIcon />} label="Сессия" variant="outlined" size="small" clickable onClick={() => router.push('/schedule/exams')} />
         
           <Box sx={{ marginLeft: 'auto' }}>
             <IconButton onClick={toggleView} size="small" title={viewMode === 'list' ? 'Календарь' : 'Список'}>
