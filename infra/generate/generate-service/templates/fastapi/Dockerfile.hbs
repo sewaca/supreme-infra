@@ -8,13 +8,14 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 EXPOSE {{port}}
 
-WORKDIR /app
+WORKDIR /app/services/{{serviceName}}
+
+COPY packages/authorization-py /app/packages/authorization-py
 
 COPY services/{{serviceName}}/pyproject.toml services/{{serviceName}}/uv.lock* ./
 
 RUN uv sync --frozen --no-dev
 
-COPY packages/authorization-py/authorization_py ./authorization_py
 COPY services/{{serviceName}}/app ./app
 COPY services/{{serviceName}}/_auth_routes_generated.py ./_auth_routes_generated.py{{#if hasDatabase}}
 COPY services/{{serviceName}}/alembic.ini ./alembic.ini

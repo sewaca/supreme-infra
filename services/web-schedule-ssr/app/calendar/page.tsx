@@ -23,10 +23,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   const token = cookieStore.get(TOKEN_KEY)?.value ?? null;
   const decoded = token ? decodeJwt(token) : null;
 
-  const { dateFrom } =
-    params.date_from && params.date_to
-      ? { dateFrom: params.date_from }
-      : getWeekRange(new Date());
+  const { dateFrom } = params.date_from && params.date_to ? { dateFrom: params.date_from } : getWeekRange(new Date());
 
   // Fetch ±2 weeks around the target week for smooth client-side navigation
   const { extendedFrom, extendedTo } = getExtendedRange(dateFrom);
