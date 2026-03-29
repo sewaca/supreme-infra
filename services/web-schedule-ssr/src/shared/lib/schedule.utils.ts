@@ -96,13 +96,13 @@ export function getWeekRange(date: Date): { dateFrom: string; dateTo: string } {
   };
 }
 
-/** Fetch ±2 weeks around the target week for smooth calendar navigation */
+/** Fetch ±8 weeks around the target week so calendar navigation stays smooth */
 export function getExtendedRange(dateFrom: string): { extendedFrom: string; extendedTo: string } {
   const d = new Date(`${dateFrom}T00:00:00`);
   const from = new Date(d);
-  from.setDate(d.getDate() - 14);
+  from.setDate(d.getDate() - 56); // 8 weeks back
   const to = new Date(d);
-  to.setDate(d.getDate() + 20); // current week + 2 weeks ahead
+  to.setDate(d.getDate() + 62); // ~9 weeks ahead
   return {
     extendedFrom: from.toISOString().slice(0, 10),
     extendedTo: to.toISOString().slice(0, 10),

@@ -24,7 +24,7 @@
   padding: 8px 0;
   overflow-x: auto;
   scrollbar-width: none;
-  height: 50px;
+  min-height: 50px;
 }
 
 .topSection::-webkit-scrollbar {
