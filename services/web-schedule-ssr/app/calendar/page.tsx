@@ -7,7 +7,7 @@ import {
 import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { cookies } from 'next/headers';
 import '../../src/shared/api/clients';
-import { getWeekRange, scheduleToEvents } from '../../src/shared/lib/schedule.utils';
+import { getExtendedRange, getWeekRange, scheduleToEvents } from '../../src/shared/lib/schedule.utils';
 import { CalendarPage } from '../../src/views/CalendarPage/CalendarPage';
 
 export const dynamic = 'force-dynamic';
@@ -23,10 +23,13 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   const token = cookieStore.get(TOKEN_KEY)?.value ?? null;
   const decoded = token ? decodeJwt(token) : null;
 
-  const { dateFrom, dateTo } =
+  const { dateFrom } =
     params.date_from && params.date_to
-      ? { dateFrom: params.date_from, dateTo: params.date_to }
+      ? { dateFrom: params.date_from }
       : getWeekRange(new Date());
+
+  // Fetch ±2 weeks around the target week for smooth client-side navigation
+  const { extendedFrom, extendedTo } = getExtendedRange(dateFrom);
 
   let schedule: DaySchedule[] = [];
   let avatar: string | null = null;
@@ -34,7 +37,6 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   let error: string | null = null;
 
   if (decoded) {
-    // Fetch profile in parallel with schedule resolution
     const profilePromise = getUserProfileUserGet({ query: { user_id: decoded.sub } });
 
     let schedulePromise: Promise<{ data?: DaySchedule[]; error?: unknown }>;
@@ -42,10 +44,9 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     if (decoded.role === 'teacher') {
       schedulePromise = teacherScheduleTeachersTeacherIdScheduleGet({
         path: { teacher_id: decoded.sub },
-        query: { date_from: dateFrom, date_to: dateTo },
+        query: { date_from: extendedFrom, date_to: extendedTo },
       });
     } else {
-      // For students: first resolve group name, then fetch schedule
       const statsRes = await getStatsRatingStatsGet({ query: { user_id: decoded.sub } });
       const group = statsRes.data?.group;
 
@@ -56,7 +57,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
       } else {
         schedulePromise = groupScheduleGroupsGroupNameScheduleGet({
           path: { group_name: group },
-          query: { date_from: dateFrom, date_to: dateTo },
+          query: { date_from: extendedFrom, date_to: extendedTo },
         });
       }
     }
@@ -72,13 +73,6 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
 
     if (scheduleRes.status === 'fulfilled') {
       const res = scheduleRes.value;
-      console.log('[calendar] Schedule response:', {
-        hasData: !!res.data,
-        dataLength: Array.isArray(res.data) ? res.data.length : 'not array',
-        hasError: !!res.error,
-        error: res.error,
-        keys: Object.keys(res),
-      });
       if (res.error) {
         console.error('[calendar] Schedule API error:', res.error);
         error ??= 'Не удалось загрузить расписание. Попробуйте позже.';

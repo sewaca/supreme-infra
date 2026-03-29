@@ -1,9 +1,8 @@
 'use client';
 
-import type { DatesSetArg, EventClickArg, EventContentArg } from '@fullcalendar/core';
+import type { EventClickArg, EventContentArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
@@ -37,22 +36,18 @@ type Props = {
 };
 
 function EventCard({ event }: { event: EventContentArg }) {
-  const { teacher_name, classroom_name, lesson_type, is_override } = event.event.extendedProps as {
+  const { teacher_name, classroom_name } = event.event.extendedProps as {
     teacher_name: string | null;
     classroom_name: string | null;
-    lesson_type: string;
-    is_override: boolean;
   };
 
   return (
     <div className={styles.eventCard}>
-      <div className={styles.eventTitle}>
-        {is_override && <span className={styles.overrideDot} />}
-        <span className={styles.eventTitleText}>{event.event.title}</span>
+      <div className={styles.eventHeader}>
+        <span className={styles.eventTitle}>{event.event.title}</span>
+        {classroom_name && <span className={styles.eventRoom}>{classroom_name}</span>}
       </div>
-      {lesson_type && <div className={styles.eventMeta}>{lesson_type}</div>}
-      {classroom_name && <div className={styles.eventMeta}>{classroom_name}</div>}
-      {teacher_name && <div className={styles.eventMeta}>{teacher_name}</div>}
+      {teacher_name && <div className={styles.eventTeacher}>{teacher_name}</div>}
     </div>
   );
 }
@@ -67,7 +62,6 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const calendarRef = useRef<FullCalendar>(null);
-  const isInitialRender = useRef(true);
 
   const toggleView = useCallback(() => {
     const next = viewMode === 'list' ? 'calendar' : 'list';
@@ -83,19 +77,6 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
       router.push(`/calendar?${params.toString()}`);
     },
     [router, searchParams],
-  );
-
-  const handleDatesSet = useCallback(
-    (arg: DatesSetArg) => {
-      if (isInitialRender.current) {
-        isInitialRender.current = false;
-        return;
-      }
-      const from = arg.start.toISOString().slice(0, 10);
-      const to = new Date(arg.end.getTime() - 86400000).toISOString().slice(0, 10);
-      navigateToWeek(from, to);
-    },
-    [navigateToWeek],
   );
 
   const handleEventClick = useCallback(
@@ -152,7 +133,6 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
           </Paper>
         )}
 
-        {/* Top section: navigation chips + view toggle */}
         <Box className={styles.topSection}>
           <Chip icon={<GroupsIcon />} label="Другая группа" variant="outlined" size="small" clickable />
           <Chip icon={<PersonIcon />} label="Преподаватель" variant="outlined" size="small" clickable />
@@ -178,7 +158,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
             <div className={`${styles.calendarInner} schedule-fc-wrapper`}>
               <FullCalendar
                 ref={calendarRef}
-                plugins={[timeGridPlugin, dayGridPlugin, listPlugin, interactionPlugin]}
+                plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
                 initialDate={initialDate}
                 events={events}
@@ -201,8 +181,6 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
                 eventContent={(arg) => <EventCard event={arg} />}
                 eventClick={handleEventClick}
                 dayHeaderFormat={{ weekday: 'short', day: 'numeric', month: 'numeric' }}
-                datesSet={handleDatesSet}
-                noEventsContent="Занятий нет"
               />
             </div>
           </Paper>
