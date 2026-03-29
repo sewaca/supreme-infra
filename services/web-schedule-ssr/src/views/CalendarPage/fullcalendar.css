@@ -1,10 +1,16 @@
+/* Schedule primary — avoids conflict with --color-primary (#f5841f orange) from design-system */
+.schedule-fc-wrapper {
+  --schedule-primary: #1a237e;
+  --schedule-primary-hover: #0d1b4b;
+}
+
 .schedule-fc-wrapper .fc {
   height: 100%;
   font-family: var(--font-roboto, sans-serif);
 }
 
 .schedule-fc-wrapper .fc-toolbar-title {
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   font-weight: 600;
 }
 
@@ -34,20 +40,20 @@
 }
 
 .schedule-fc-wrapper .fc-button:focus {
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.24) !important;
+  box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.24) !important;
 }
 
 .schedule-fc-wrapper .fc-button-active,
 .schedule-fc-wrapper .fc-button-primary:not(:disabled).fc-button-active,
 .schedule-fc-wrapper .fc-button-primary:not(:disabled):active {
-  background-color: var(--color-primary, #1976d2) !important;
+  background-color: var(--schedule-primary) !important;
   color: #fff !important;
-  box-shadow: 0 2px 4px rgba(25, 118, 210, 0.3) !important;
+  box-shadow: 0 2px 4px rgba(26, 35, 126, 0.3) !important;
 }
 
 .schedule-fc-wrapper .fc-button-active:hover,
 .schedule-fc-wrapper .fc-button-primary:not(:disabled).fc-button-active:hover {
-  background-color: #1565c0 !important;
+  background-color: var(--schedule-primary-hover) !important;
 }
 
 /* Button group — remove inner border-radius */
@@ -63,32 +69,55 @@
   border-radius: 0 4px 4px 0 !important;
 }
 
+/* Grid — softer lines */
+.schedule-fc-wrapper .fc td,
+.schedule-fc-wrapper .fc th {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.schedule-fc-wrapper .fc-timegrid-divider {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.schedule-fc-wrapper .fc-scrollgrid {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Slots */
 .schedule-fc-wrapper .fc-timegrid-slot {
   height: 2rem;
 }
 
+/* Events — pastel bg needs dark text */
 .schedule-fc-wrapper .fc-event {
   border-radius: 6px;
   cursor: pointer;
   border: none;
+  color: var(--color-text-primary, #1a1a1a) !important;
 }
 
+.schedule-fc-wrapper .fc-event .fc-event-main {
+  color: inherit !important;
+}
+
+/* Column headers */
 .schedule-fc-wrapper .fc-col-header-cell {
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 
+/* Time labels */
 .schedule-fc-wrapper .fc-timegrid-slot-label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: var(--color-text-secondary, #757575);
 }
 
-.schedule-fc-wrapper .fc-list-event:hover td {
-  background-color: var(--color-background-secondary, #f5f5f5);
+/* Now indicator — clean line instead of arrow */
+.schedule-fc-wrapper .fc-timegrid-now-indicator-line {
+  border-color: #ef5350 !important;
+  border-width: 2px 0 0 !important;
 }
 
-.schedule-fc-wrapper .fc-list-day-text,
-.schedule-fc-wrapper .fc-list-day-side-text {
-  font-size: 0.875rem;
-  font-weight: 600;
+.schedule-fc-wrapper .fc-timegrid-now-indicator-arrow {
+  display: none !important;
 }

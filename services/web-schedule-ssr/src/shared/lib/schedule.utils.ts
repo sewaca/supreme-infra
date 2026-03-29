@@ -17,14 +17,15 @@ export type CalendarEvent = {
   };
 };
 
+/** Pastel palette — light backgrounds with colored left-border */
 const LESSON_TYPE_COLORS: Record<string, { bg: string; border: string }> = {
-  lecture: { bg: '#1976d2', border: '#1565c0' },
-  лекция: { bg: '#1976d2', border: '#1565c0' },
-  seminar: { bg: '#388e3c', border: '#2e7d32' },
-  семинар: { bg: '#388e3c', border: '#2e7d32' },
-  lab: { bg: '#7b1fa2', border: '#6a1b9a' },
-  лаб: { bg: '#7b1fa2', border: '#6a1b9a' },
-  практика: { bg: '#7b1fa2', border: '#6a1b9a' },
+  lecture: { bg: '#e3f2fd', border: '#64b5f6' },
+  лекция: { bg: '#e3f2fd', border: '#64b5f6' },
+  seminar: { bg: '#e8f5e9', border: '#81c784' },
+  семинар: { bg: '#e8f5e9', border: '#81c784' },
+  практ: { bg: '#e8f5e9', border: '#81c784' },
+  lab: { bg: '#fce4ec', border: '#f48fb1' },
+  лаб: { bg: '#fce4ec', border: '#f48fb1' },
 };
 
 function getLessonColor(lessonType: string): { bg: string; border: string } {
@@ -32,7 +33,26 @@ function getLessonColor(lessonType: string): { bg: string; border: string } {
   for (const [pattern, colors] of Object.entries(LESSON_TYPE_COLORS)) {
     if (key.includes(pattern)) return colors;
   }
-  return { bg: '#757575', border: '#616161' };
+  return { bg: '#f5f5f5', border: '#e0e0e0' };
+}
+
+/** Darker shade for lesson-type chip text in list view */
+export const LESSON_TYPE_CHIP_COLORS: Record<string, string> = {
+  lecture: '#1565c0',
+  лекция: '#1565c0',
+  seminar: '#2e7d32',
+  семинар: '#2e7d32',
+  практ: '#2e7d32',
+  lab: '#ad1457',
+  лаб: '#ad1457',
+};
+
+export function getLessonChipColor(lessonType: string): string {
+  const key = lessonType.toLowerCase();
+  for (const [pattern, color] of Object.entries(LESSON_TYPE_CHIP_COLORS)) {
+    if (key.includes(pattern)) return color;
+  }
+  return '#616161';
 }
 
 export function scheduleToEvents(schedule: DaySchedule[]): CalendarEvent[] {
@@ -45,8 +65,8 @@ export function scheduleToEvents(schedule: DaySchedule[]): CalendarEvent[] {
         title: lesson.subject_name,
         start: `${day.date}T${lesson.start_time}`,
         end: `${day.date}T${lesson.end_time}`,
-        backgroundColor: lesson.is_override ? '#d32f2f' : colors.bg,
-        borderColor: lesson.is_override ? '#b71c1c' : colors.border,
+        backgroundColor: lesson.is_override ? '#ffebee' : colors.bg,
+        borderColor: lesson.is_override ? '#ef9a9a' : colors.border,
         extendedProps: {
           teacher_name: lesson.teacher_name,
           classroom_name: lesson.classroom_name,

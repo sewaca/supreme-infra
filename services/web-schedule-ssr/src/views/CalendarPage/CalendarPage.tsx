@@ -1,22 +1,30 @@
 'use client';
 
-import type { EventContentArg } from '@fullcalendar/core';
+import type { DatesSetArg, EventContentArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import EventIcon from '@mui/icons-material/Event';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import GroupsIcon from '@mui/icons-material/Groups';
+import PersonIcon from '@mui/icons-material/Person';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../shared/lib/schedule.utils';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 import styles from './CalendarPage.module.css';
 import './fullcalendar.css';
+import { ScheduleListView } from './ScheduleListView';
 
 type Props = {
   events: CalendarEvent[];
@@ -24,6 +32,7 @@ type Props = {
   avatar: string | null;
   userName: string;
   error: string | null;
+  initialViewMode: 'list' | 'calendar';
 };
 
 function EventCard({ event }: { event: EventContentArg }) {
@@ -47,11 +56,62 @@ function EventCard({ event }: { event: EventContentArg }) {
   );
 }
 
-export function CalendarPage({ events, initialDate, avatar, userName, error }: Props) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+function setViewCookie(mode: 'list' | 'calendar') {
+  document.cookie = `schedule_view=${mode};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+}
 
-  const initialView = isMobile ? 'listWeek' : 'timeGridWeek';
+export function CalendarPage({ events, initialDate, avatar, userName, error, initialViewMode }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
+  const calendarRef = useRef<FullCalendar>(null);
+  const isInitialRender = useRef(true);
+
+  const toggleView = useCallback(() => {
+    const next = viewMode === 'list' ? 'calendar' : 'list';
+    setViewMode(next);
+    setViewCookie(next);
+  }, [viewMode]);
+
+  const navigateToWeek = useCallback(
+    (dateFrom: string, dateTo: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('date_from', dateFrom);
+      params.set('date_to', dateTo);
+      router.push(`/calendar?${params.toString()}`);
+    },
+    [router, searchParams],
+  );
+
+  const handleDatesSet = useCallback(
+    (arg: DatesSetArg) => {
+      // Skip the initial render — data is already loaded for initialDate
+      if (isInitialRender.current) {
+        isInitialRender.current = false;
+        return;
+      }
+      const from = arg.start.toISOString().slice(0, 10);
+      const to = new Date(arg.end.getTime() - 86400000).toISOString().slice(0, 10);
+      navigateToWeek(from, to);
+    },
+    [navigateToWeek],
+  );
+
+  const handleListPrevWeek = useCallback(() => {
+    const d = new Date(initialDate + 'T00:00:00');
+    d.setDate(d.getDate() - 7);
+    const from = d.toISOString().slice(0, 10);
+    const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
+    navigateToWeek(from, to);
+  }, [initialDate, navigateToWeek]);
+
+  const handleListNextWeek = useCallback(() => {
+    const d = new Date(initialDate + 'T00:00:00');
+    d.setDate(d.getDate() + 7);
+    const from = d.toISOString().slice(0, 10);
+    const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
+    navigateToWeek(from, to);
+  }, [initialDate, navigateToWeek]);
 
   return (
     <Paper
@@ -79,37 +139,59 @@ export function CalendarPage({ events, initialDate, avatar, userName, error }: P
           </Paper>
         )}
 
-        <Paper className={styles.calendarCard} elevation={0}>
-          <div className={`${styles.calendarInner} schedule-fc-wrapper`}>
-            <FullCalendar
-              plugins={[timeGridPlugin, dayGridPlugin, listPlugin, interactionPlugin]}
-              initialView={initialView}
-              initialDate={initialDate}
-              events={events}
-              locale="ru"
-              firstDay={1}
-              slotMinTime="07:00:00"
-              slotMaxTime="22:00:00"
-              slotDuration="00:30:00"
-              slotLabelInterval="01:00:00"
-              allDaySlot={false}
-              nowIndicator
-              height="100%"
-              headerToolbar={{
-                left: 'prev,next today',
-                center: 'title',
-                right: isMobile ? 'listWeek,timeGridDay' : 'timeGridWeek,timeGridDay',
-              }}
-              buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День', list: 'Список' }}
-              eventContent={(arg) => <EventCard event={arg} />}
-              weekends={false}
-              dayHeaderFormat={{ weekday: 'short', day: 'numeric', month: 'numeric' }}
-              listDayFormat={{ weekday: 'long', day: 'numeric', month: 'long' }}
-              listDaySideFormat={false}
-              noEventsContent="Занятий нет"
-            />
-          </div>
-        </Paper>
+        {/* Top section: navigation chips + view toggle */}
+        <Box className={styles.topSection}>
+          <Chip icon={<GroupsIcon />} label="Другая группа" variant="outlined" size="small" clickable />
+          <Chip icon={<PersonIcon />} label="Преподаватель" variant="outlined" size="small" clickable />
+          <Chip icon={<EventIcon />} label="Сессия" variant="outlined" size="small" clickable />
+
+          <Box sx={{ marginLeft: 'auto' }}>
+            <IconButton onClick={toggleView} size="small" title={viewMode === 'list' ? 'Календарь' : 'Список'}>
+              {viewMode === 'list' ? <CalendarViewMonthIcon /> : <FormatListBulletedIcon />}
+            </IconButton>
+          </Box>
+        </Box>
+
+        {viewMode === 'list' ? (
+          <ScheduleListView
+            events={events}
+            dateFrom={initialDate}
+            onPrevWeek={handleListPrevWeek}
+            onNextWeek={handleListNextWeek}
+          />
+        ) : (
+          <Paper className={styles.calendarCard} elevation={0}>
+            <div className={`${styles.calendarInner} schedule-fc-wrapper`}>
+              <FullCalendar
+                ref={calendarRef}
+                plugins={[timeGridPlugin, dayGridPlugin, listPlugin, interactionPlugin]}
+                initialView="timeGridWeek"
+                initialDate={initialDate}
+                events={events}
+                locale="ru"
+                firstDay={1}
+                hiddenDays={[0]}
+                slotMinTime="07:00:00"
+                slotMaxTime="22:00:00"
+                slotDuration="00:30:00"
+                slotLabelInterval="01:00:00"
+                allDaySlot={false}
+                nowIndicator
+                height="100%"
+                headerToolbar={{
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'timeGridWeek,timeGridDay',
+                }}
+                buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
+                eventContent={(arg) => <EventCard event={arg} />}
+                dayHeaderFormat={{ weekday: 'short', day: 'numeric', month: 'numeric' }}
+                datesSet={handleDatesSet}
+                noEventsContent="Занятий нет"
+              />
+            </div>
+          </Paper>
+        )}
       </Box>
     </Paper>
   );

@@ -92,7 +92,19 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   }
 
   const events = scheduleToEvents(schedule);
-  console.log('[calendar] Result:', { scheduleLength: schedule.length, eventsLength: events.length });
 
-  return <CalendarPage events={events} initialDate={dateFrom} avatar={avatar} userName={userName} error={error} />;
+  // Read view preference from cookie; default to "list" (mobile-friendly)
+  const viewCookie = cookieStore.get('schedule_view')?.value;
+  const initialViewMode: 'list' | 'calendar' = viewCookie === 'calendar' ? 'calendar' : 'list';
+
+  return (
+    <CalendarPage
+      events={events}
+      initialDate={dateFrom}
+      avatar={avatar}
+      userName={userName}
+      error={error}
+      initialViewMode={initialViewMode}
+    />
+  );
 }
