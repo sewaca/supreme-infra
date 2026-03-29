@@ -54,7 +54,16 @@ export function CalendarPage({ events, initialDate, avatar, userName, error }: P
   const initialView = isMobile ? 'listWeek' : 'timeGridWeek';
 
   return (
-    <Paper sx={{ minHeight: '100dvh', backgroundColor: 'var(--color-background-primary)' }} elevation={0}>
+    <Paper
+      sx={{
+        backgroundColor: 'var(--color-background-primary)',
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        minHeight: 0,
+      }}
+      elevation={0}
+    >
       <DefaultNavbar
         center={<Typography variant="title1">Расписание</Typography>}
         rightSlot={<ProfileButton avatar={avatar} name={userName} />}

@@ -37,13 +37,16 @@
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.24) !important;
 }
 
-.schedule-fc-wrapper .fc-button-active {
+.schedule-fc-wrapper .fc-button-active,
+.schedule-fc-wrapper .fc-button-primary:not(:disabled).fc-button-active,
+.schedule-fc-wrapper .fc-button-primary:not(:disabled):active {
   background-color: var(--color-primary, #1976d2) !important;
   color: #fff !important;
   box-shadow: 0 2px 4px rgba(25, 118, 210, 0.3) !important;
 }
 
-.schedule-fc-wrapper .fc-button-active:hover {
+.schedule-fc-wrapper .fc-button-active:hover,
+.schedule-fc-wrapper .fc-button-primary:not(:disabled).fc-button-active:hover {
   background-color: #1565c0 !important;
 }
 
