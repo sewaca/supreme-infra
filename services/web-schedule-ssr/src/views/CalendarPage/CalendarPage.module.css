@@ -53,16 +53,22 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .eventTitle {
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.3;
-  display: flex;
-  align-items: flex-start;
-  gap: 4px;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.eventTitleText {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .eventMeta {
@@ -72,6 +78,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .overrideDot {

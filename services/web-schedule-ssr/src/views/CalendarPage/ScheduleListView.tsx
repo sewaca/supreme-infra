@@ -16,6 +16,7 @@ type Props = {
   dateFrom: string;
   onPrevWeek: () => void;
   onNextWeek: () => void;
+  onEventClick: (event: CalendarEvent) => void;
 };
 
 const DAY_NAMES: Record<number, string> = {
@@ -44,13 +45,13 @@ const MONTH_NAMES = [
 ];
 
 function formatDayHeader(dateStr: string): string {
-  const d = new Date(dateStr + 'T00:00:00');
+  const d = new Date(`${dateStr}T00:00:00`);
   const dayName = DAY_NAMES[d.getDay()];
   return `${dayName}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
 }
 
 function formatWeekRange(dateFrom: string): string {
-  const from = new Date(dateFrom + 'T00:00:00');
+  const from = new Date(`${dateFrom}T00:00:00`);
   const to = new Date(from);
   to.setDate(from.getDate() + 5);
   return `${from.getDate()} ${MONTH_NAMES[from.getMonth()]} — ${to.getDate()} ${MONTH_NAMES[to.getMonth()]}`;
@@ -58,7 +59,7 @@ function formatWeekRange(dateFrom: string): string {
 
 type DayGroup = { date: string; events: CalendarEvent[] };
 
-export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek }: Props) {
+export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick }: Props) {
   const days = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
     for (const ev of events) {
@@ -115,7 +116,7 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek }: P
             const chipColor = getLessonChipColor(ev.extendedProps.lesson_type);
 
             return (
-              <div key={ev.id} className={styles.lessonRow}>
+              <div key={ev.id} className={styles.lessonRow} onClick={() => onEventClick(ev)} role="button" tabIndex={0}>
                 <div className={styles.lessonLeft}>
                   <span className={styles.lessonTime}>
                     {startTime}–{endTime}

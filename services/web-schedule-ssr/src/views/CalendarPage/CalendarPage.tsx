@@ -1,6 +1,6 @@
 'use client';
 
-import type { DatesSetArg, EventContentArg } from '@fullcalendar/core';
+import type { DatesSetArg, EventClickArg, EventContentArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
@@ -24,6 +24,7 @@ import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 import styles from './CalendarPage.module.css';
 import './fullcalendar.css';
+import { LessonDetailDialog } from './LessonDetailDialog';
 import { ScheduleListView } from './ScheduleListView';
 
 type Props = {
@@ -47,7 +48,7 @@ function EventCard({ event }: { event: EventContentArg }) {
     <div className={styles.eventCard}>
       <div className={styles.eventTitle}>
         {is_override && <span className={styles.overrideDot} />}
-        {event.event.title}
+        <span className={styles.eventTitleText}>{event.event.title}</span>
       </div>
       {lesson_type && <div className={styles.eventMeta}>{lesson_type}</div>}
       {classroom_name && <div className={styles.eventMeta}>{classroom_name}</div>}
@@ -64,6 +65,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
   const router = useRouter();
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const calendarRef = useRef<FullCalendar>(null);
   const isInitialRender = useRef(true);
 
@@ -85,7 +87,6 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
 
   const handleDatesSet = useCallback(
     (arg: DatesSetArg) => {
-      // Skip the initial render — data is already loaded for initialDate
       if (isInitialRender.current) {
         isInitialRender.current = false;
         return;
@@ -97,8 +98,20 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
     [navigateToWeek],
   );
 
+  const handleEventClick = useCallback(
+    (arg: EventClickArg) => {
+      const clicked = events.find((e) => e.id === arg.event.id);
+      if (clicked) setSelectedEvent(clicked);
+    },
+    [events],
+  );
+
+  const handleListEventClick = useCallback((ev: CalendarEvent) => {
+    setSelectedEvent(ev);
+  }, []);
+
   const handleListPrevWeek = useCallback(() => {
-    const d = new Date(initialDate + 'T00:00:00');
+    const d = new Date(`${initialDate}T00:00:00`);
     d.setDate(d.getDate() - 7);
     const from = d.toISOString().slice(0, 10);
     const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
@@ -106,7 +119,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
   }, [initialDate, navigateToWeek]);
 
   const handleListNextWeek = useCallback(() => {
-    const d = new Date(initialDate + 'T00:00:00');
+    const d = new Date(`${initialDate}T00:00:00`);
     d.setDate(d.getDate() + 7);
     const from = d.toISOString().slice(0, 10);
     const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
@@ -158,6 +171,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
             dateFrom={initialDate}
             onPrevWeek={handleListPrevWeek}
             onNextWeek={handleListNextWeek}
+            onEventClick={handleListEventClick}
           />
         ) : (
           <Paper className={styles.calendarCard} elevation={0}>
@@ -185,6 +199,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
                 }}
                 buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
                 eventContent={(arg) => <EventCard event={arg} />}
+                eventClick={handleEventClick}
                 dayHeaderFormat={{ weekday: 'short', day: 'numeric', month: 'numeric' }}
                 datesSet={handleDatesSet}
                 noEventsContent="Занятий нет"
@@ -193,6 +208,8 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
           </Paper>
         )}
       </Box>
+
+      <LessonDetailDialog event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </Paper>
   );
 }

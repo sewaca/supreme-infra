@@ -43,6 +43,13 @@
   gap: 16px;
   padding: 10px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 150ms;
+}
+
+.lessonRow:hover {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .lessonRow:last-child {
