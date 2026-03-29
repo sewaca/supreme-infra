@@ -12,6 +12,9 @@
     "next": "catalog:",
     "react": "catalog:",
     "typescript": "catalog:",
+    "postcss": "catalog:",
+    "postcss-flexbugs-fixes": "catalog:",
+    "postcss-preset-env": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
