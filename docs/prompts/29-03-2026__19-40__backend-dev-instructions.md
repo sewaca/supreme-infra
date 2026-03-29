@@ -3,6 +3,7 @@
 ## Контекст
 
 Нужен сервис обмена сообщениями между пользователями университетской платформы:
+
 - **Личные сообщения** — любой пользователь может написать любому другому
 - **Рассылки (broadcast)** — преподаватель отправляет сообщение студентам выбранных групп. Студенты не могут ответить в рассылке, но могут нажать «Ответить в ЛС» — это создаёт отдельный direct-чат с преподавателем
 - **Файлы/изображения** — к сообщениям можно прикреплять файлы
@@ -23,6 +24,7 @@ pnpm generate:service
 ```
 
 Параметры:
+
 - Name: `core-messages`
 - Type: **FastAPI (Python Backend)**
 - Description: `Messaging — direct messages, broadcasts, file attachments`
@@ -34,11 +36,13 @@ pnpm generate:service
   - Password secret: `DB_PASSWORD`
 
 После генерации:
+
 ```bash
 cd services/core-messages && uv sync
 ```
 
 Генератор создаст стандартный скелет в `services/core-messages/` и обновит:
+
 - `services.yaml` — добавит запись fastapi
 - `packages/api-client/openapi-ts.config.ts` — добавит schema mapping
 - `packages/api-client/src/index.ts` — добавит export
@@ -101,6 +105,7 @@ settings = Settings()
 ### 2.1. database.py
 
 Копируй один-в-один паттерн из `services/core-client-info/app/database.py`:
+
 - `create_async_engine` с `statement_cache_size: 0`, `pool_pre_ping=True`
 - `async_sessionmaker`, `DeclarativeBase`, `get_db` generator
 - SQL query logging через `event.listens_for`
@@ -250,7 +255,7 @@ class UserCache(Base):
     cached_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 ```
 
-#### app/models/__init__.py
+#### app/models/**init**.py
 
 ```python
 from app.models.conversation import Conversation, ConversationParticipant  # noqa: F401
@@ -294,6 +299,7 @@ CREATE TRIGGER tsvector_update
 ```
 
 И в `downgrade()`:
+
 ```python
 op.execute("DROP TRIGGER IF EXISTS tsvector_update ON message;")
 op.execute("DROP FUNCTION IF EXISTS messages_search_trigger();")
@@ -827,15 +833,16 @@ Prefix: /conversations
 Tags: ["conversations"]
 ```
 
-| Метод | Путь | Auth | Описание |
-|-------|------|------|----------|
-| `GET` | `/conversations` | valid | Список чатов текущего пользователя |
-| `POST` | `/conversations/direct` | valid | Создать или получить existing direct чат |
-| `GET` | `/conversations/updates` | valid | Poll для обновлений (fallback, если WS недоступен) |
-| `GET` | `/conversations/{conversation_id}` | valid + participant | Детали чата |
-| `DELETE` | `/conversations/{conversation_id}` | valid + participant | Soft-delete (is_deleted=true на participant) |
+| Метод    | Путь                               | Auth                | Описание                                           |
+| -------- | ---------------------------------- | ------------------- | -------------------------------------------------- |
+| `GET`    | `/conversations`                   | valid               | Список чатов текущего пользователя                 |
+| `POST`   | `/conversations/direct`            | valid               | Создать или получить existing direct чат           |
+| `GET`    | `/conversations/updates`           | valid               | Poll для обновлений (fallback, если WS недоступен) |
+| `GET`    | `/conversations/{conversation_id}` | valid + participant | Детали чата                                        |
+| `DELETE` | `/conversations/{conversation_id}` | valid + participant | Soft-delete (is_deleted=true на participant)       |
 
 **GET /conversations** — список чатов:
+
 - Query params: `cursor: str | None`, `limit: int = 20` (max 50)
 - SQL: JOIN `conversation_participant` (WHERE user_id = current_user AND is_deleted = false) с `conversation`, ORDER BY `last_message_at DESC NULLS LAST`
 - Cursor кодирует `(last_message_at, conversation_id)`
@@ -843,6 +850,7 @@ Tags: ["conversations"]
 - Participants enriched from user_cache
 
 **POST /conversations/direct** — создать/получить direct чат:
+
 - Body: `{ "recipient_id": "uuid" }`
 - Логика:
   1. Проверить, что recipient_id != current_user_id
@@ -851,6 +859,7 @@ Tags: ["conversations"]
   4. Если нет — создать Conversation(type='direct') + 2 ConversationParticipant (can_reply=true) → вернуть (201)
 
 **GET /conversations/updates** — polling endpoint:
+
 - Query params: `since: datetime` (ISO 8601)
 - Возвращает только conversations где current_user — participant AND last_message_at > since
 - Response: `UpdatesResponse` с `server_time`
@@ -862,19 +871,21 @@ Prefix: /conversations/{conversation_id}/messages
 Tags: ["messages"]
 ```
 
-| Метод | Путь | Auth | Описание |
-|-------|------|------|----------|
-| `GET` | `/conversations/{id}/messages` | valid + participant | Сообщения с курсорной пагинацией |
-| `POST` | `/conversations/{id}/messages` | valid + participant + can_reply | Отправить сообщение |
-| `POST` | `/conversations/{id}/read` | valid + participant | Отметить прочитанным |
+| Метод  | Путь                           | Auth                            | Описание                         |
+| ------ | ------------------------------ | ------------------------------- | -------------------------------- |
+| `GET`  | `/conversations/{id}/messages` | valid + participant             | Сообщения с курсорной пагинацией |
+| `POST` | `/conversations/{id}/messages` | valid + participant + can_reply | Отправить сообщение              |
+| `POST` | `/conversations/{id}/read`     | valid + participant             | Отметить прочитанным             |
 
 **GET /conversations/{id}/messages** — paginated:
+
 - Query: `cursor: str | None`, `limit: int = 30` (max 100)
 - SQL: `WHERE conversation_id = :id AND is_deleted = false AND (created_at, id) < (:cursor_ts, :cursor_id) ORDER BY created_at DESC, id DESC LIMIT :limit + 1`
 - Каждое сообщение обогащается sender info из user_cache
 - `is_own = (sender_id == current_user_id)`
 
 **POST /conversations/{id}/messages** — отправка:
+
 - Body: `SendMessageRequest`
 - Проверить `participant.can_reply` (для broadcast студенты не могут)
 - Insert message → UPDATE conversation SET last_message_at, last_message_preview, last_message_sender_id
@@ -882,6 +893,7 @@ Tags: ["messages"]
 - Response: `MessageResponse` (201)
 
 **POST /conversations/{id}/read** — mark read:
+
 - Body: `MarkReadRequest`
 - UPDATE conversation_participant SET last_read_message_id, last_read_at = now()
 - Через WebSocket: отправить `message_read` event sender'у
@@ -894,13 +906,15 @@ Prefix: /messages
 Tags: ["messages"]
 ```
 
-| Метод | Путь | Auth | Описание |
-|-------|------|------|----------|
+| Метод | Путь               | Auth  | Описание            |
+| ----- | ------------------ | ----- | ------------------- |
 | `GET` | `/messages/search` | valid | Поиск по сообщениям |
 
 **GET /messages/search**:
+
 - Query: `q: str` (min 2 chars), `cursor: str | None`, `limit: int = 20`
 - SQL:
+
 ```sql
 SELECT m.*,
        ts_headline('russian', m.content, plainto_tsquery('russian', :q),
@@ -914,6 +928,7 @@ WHERE cp.user_id = :current_user
 ORDER BY ts_rank(m.content_search, plainto_tsquery('russian', :q)) DESC, m.created_at DESC
 LIMIT :limit + 1
 ```
+
 - Response: `SearchMessagesResponse`
 
 ### app/routers/broadcasts.py
@@ -923,13 +938,14 @@ Prefix: /broadcasts
 Tags: ["broadcasts"]
 ```
 
-| Метод | Путь | Auth | Описание |
-|-------|------|------|----------|
-| `POST` | `/broadcasts` | valid + role=teacher | Создать рассылку |
-| `GET` | `/broadcasts` | valid + role=teacher | Список рассылок преподавателя |
-| `GET` | `/broadcasts/groups` | valid + role=teacher | Доступные группы для выбора |
+| Метод  | Путь                 | Auth                 | Описание                      |
+| ------ | -------------------- | -------------------- | ----------------------------- |
+| `POST` | `/broadcasts`        | valid + role=teacher | Создать рассылку              |
+| `GET`  | `/broadcasts`        | valid + role=teacher | Список рассылок преподавателя |
+| `GET`  | `/broadcasts/groups` | valid + role=teacher | Доступные группы для выбора   |
 
 **POST /broadcasts**:
+
 - Body: `CreateBroadcastRequest` (title, group_names, initial_message?)
 - Логика:
   1. Проверить `user["role"] == "teacher"`, иначе 403
@@ -937,11 +953,12 @@ Tags: ["broadcasts"]
   3. Создать Conversation(type='broadcast', title=title, owner_id=teacher_id)
   4. Создать participant для teacher: role='owner', can_reply=true
   5. Создать participants для студентов (batch insert): role='member', can_reply=false
-  6. Если `initial_message` не пуст — создать первое сообщение и обновить last_message_*
+  6. Если `initial_message` не пуст — создать первое сообщение и обновить last*message*\*
   7. Через WebSocket: отправить `new_conversation` event всем студентам
 - Response: `ConversationResponse` (201)
 
 **GET /broadcasts/groups**:
+
 - Проксирует запрос к core-client-info для получения списка групп
 - Response: `list[str]`
 
@@ -952,12 +969,13 @@ Prefix: /users
 Tags: ["users"]
 ```
 
-| Метод | Путь | Auth | Описание |
-|-------|------|------|----------|
-| `GET` | `/users/search` | valid | Поиск пользователей по имени |
-| `GET` | `/users/{user_id}` | valid | Информация о пользователе |
+| Метод | Путь               | Auth  | Описание                     |
+| ----- | ------------------ | ----- | ---------------------------- |
+| `GET` | `/users/search`    | valid | Поиск пользователей по имени |
+| `GET` | `/users/{user_id}` | valid | Информация о пользователе    |
 
 **GET /users/search**:
+
 - Query: `q: str`, `limit: int = 10`
 - Ищет в user_cache по `name ILIKE :q%` OR `last_name ILIKE :q%`
 - Если результатов мало — дополнить из core-client-info
@@ -970,11 +988,12 @@ Prefix: /files
 Tags: ["files"]
 ```
 
-| Метод | Путь | Auth | Описание |
-|-------|------|------|----------|
+| Метод  | Путь            | Auth  | Описание       |
+| ------ | --------------- | ----- | -------------- |
 | `POST` | `/files/upload` | valid | Загрузить файл |
 
 **POST /files/upload**:
+
 - Multipart form: `file: UploadFile`, `conversation_id: UUID`
 - Проверить что current_user — participant conversation
 - Проверить размер файла (max 10MB, изображения max 5MB)
@@ -1040,7 +1059,7 @@ async def websocket_endpoint(
         ws_manager.disconnect(websocket, user_id)
 ```
 
-### app/routers/__init__.py
+### app/routers/**init**.py
 
 Импортируй все роутеры.
 
@@ -1159,13 +1178,14 @@ app.include_router(ws.router)
 
 В сервисе `services/core-client-info` нужно добавить три новых endpoint'а для обслуживания core-messages. Создай новый роутер `app/routers/internal.py`:
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| `POST` | `/profile/users/batch` | Получить список пользователей по UUID (max 100) |
-| `GET` | `/profile/groups` | Список всех групп (distinct) |
-| `GET` | `/profile/users-by-group` | Пользователи конкретной группы |
+| Метод  | Путь                      | Описание                                        |
+| ------ | ------------------------- | ----------------------------------------------- |
+| `POST` | `/profile/users/batch`    | Получить список пользователей по UUID (max 100) |
+| `GET`  | `/profile/groups`         | Список всех групп (distinct)                    |
+| `GET`  | `/profile/users-by-group` | Пользователи конкретной группы                  |
 
 **POST /profile/users/batch**:
+
 ```python
 class BatchUsersRequest(BaseModel):
     user_ids: list[UUID] = Field(..., max_length=100)
@@ -1193,6 +1213,7 @@ async def get_users_batch(body: BatchUsersRequest, db: AsyncSession = Depends(ge
 ```
 
 **GET /profile/groups**:
+
 ```python
 @router.get("/groups")
 async def get_groups(db: AsyncSession = Depends(get_db)):
@@ -1203,6 +1224,7 @@ async def get_groups(db: AsyncSession = Depends(get_db)):
 ```
 
 **GET /profile/users-by-group**:
+
 ```python
 @router.get("/users-by-group")
 async def get_users_by_group(group: str, db: AsyncSession = Depends(get_db)):
@@ -1229,6 +1251,7 @@ pnpm run generate:router
 ```
 
 Затем установи `auth_level: valid` для всех endpoint'ов, кроме:
+
 - `/api/status` → `auth_level: none`
 - `/ws` → `auth_level: none` (аутентификация внутри WebSocket handler'а через query param)
 
@@ -1241,33 +1264,36 @@ pnpm run generate:router
 Добавь в `docker-compose.dev.yml`:
 
 ```yaml
-  minio:
-    image: minio/minio:latest
-    container_name: supreme-minio-dev
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    command: server /data --console-address ":9001"
-    volumes:
-      - minio_data:/data
+minio:
+  image: minio/minio:latest
+  container_name: supreme-minio-dev
+  environment:
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: minioadmin
+  ports:
+    - "9000:9000"
+    - "9001:9001"
+  command: server /data --console-address ":9001"
+  volumes:
+    - minio_data:/data
 ```
 
 И в volumes:
+
 ```yaml
-  minio_data:
-    driver: local
+minio_data:
+  driver: local
 ```
 
 ### Для production
 
 Нужен Helm chart для MinIO. Создай `infra/helmcharts/minio/` по аналогии с другими charts. Основные values:
+
 - `persistence.size: 10Gi`
 - Bucket `messages-attachments` создаётся при первом обращении из file_service
 
 Добавь в `service.yaml` core-messages:
+
 ```yaml
 secrets:
   S3_ACCESS_KEY: MINIO_ACCESS_KEY
@@ -1297,6 +1323,7 @@ pnpm gen:api-client
 ```
 
 Это:
+
 1. Запустит `scripts/export_openapi.py` в services/core-messages
 2. Скопирует `openapi.json` в `packages/api-client/schemas/core-messages.json`
 3. Сгенерирует TypeScript клиент в `packages/api-client/src/generated/core-messages/`

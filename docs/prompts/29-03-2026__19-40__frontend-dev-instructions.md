@@ -5,6 +5,7 @@
 Фронтенд для системы обмена сообщениями. Интегрируется с бэкенд-сервисом `core-messages` (FastAPI, порт 8006).
 
 Основной функционал:
+
 - Список чатов (direct + broadcast) с количеством непрочитанных
 - Просмотр и отправка сообщений (текст + файлы/изображения)
 - Курсорная пагинация — infinite scroll вверх для истории
@@ -25,6 +26,7 @@ pnpm generate:service
 ```
 
 Параметры:
+
 - Name: `web-messages-ssr`
 - Type: **Next.js (Frontend)**
 - Description: `Messaging — chats, direct messages, broadcasts`
@@ -40,16 +42,14 @@ pnpm generate:service
 
 ```typescript
 export const environment = {
-  port: process.env.PORT || '3007',
-  nodeEnv: process.env.NODE_ENV || 'development',
-  isDevelopment: process.env.NODE_ENV === 'development',
-  isProduction: process.env.NODE_ENV === 'production',
-  coreMessagesUrl:
-    process.env.CORE_MESSAGES_URL || 'http://core-messages.default.svc.cluster.local/core-messages',
+  port: process.env.PORT || "3007",
+  nodeEnv: process.env.NODE_ENV || "development",
+  isDevelopment: process.env.NODE_ENV === "development",
+  isProduction: process.env.NODE_ENV === "production",
+  coreMessagesUrl: process.env.CORE_MESSAGES_URL || "http://core-messages.default.svc.cluster.local/core-messages",
   coreClientInfoUrl:
-    process.env.CORE_CLIENT_INFO_URL || 'http://core-client-info.default.svc.cluster.local/core-client-info',
-  coreAuthUrl:
-    process.env.CORE_AUTH_URL || 'http://core-auth.default.svc.cluster.local/core-auth',
+    process.env.CORE_CLIENT_INFO_URL || "http://core-client-info.default.svc.cluster.local/core-client-info",
+  coreAuthUrl: process.env.CORE_AUTH_URL || "http://core-auth.default.svc.cluster.local/core-auth",
 };
 ```
 
@@ -73,9 +73,9 @@ CORE_AUTH_URL=http://localhost:8002/core-auth
 Паттерн — `services/web-profile-ssr/src/shared/api/clients.ts`:
 
 ```typescript
-import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
-import { environment } from '../lib/environment';
+import { client as coreMessagesClient } from "@supreme-int/api-client/src/generated/core-messages/client.gen";
+import { createServerFetch } from "@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch";
+import { environment } from "../lib/environment";
 
 coreMessagesClient.setConfig({
   baseUrl: environment.coreMessagesUrl,
@@ -92,8 +92,8 @@ export { coreMessagesClient };
 Паттерн — `services/web-schedule-ssr/app/calendar/page.tsx`:
 
 ```typescript
-import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
-import { cookies } from 'next/headers';
+import { decodeJwt, TOKEN_KEY } from "@supreme-int/authorization-lib/src/jwt/decode-jwt";
+import { cookies } from "next/headers";
 
 export async function getAuthInfo() {
   const cookieStore = await cookies();
@@ -125,7 +125,7 @@ export interface ParticipantBrief {
 
 export interface Conversation {
   id: string;
-  type: 'direct' | 'broadcast';
+  type: "direct" | "broadcast";
   title: string | null;
   owner_id: string | null;
   last_message_at: string | null;
@@ -206,8 +206,9 @@ app/
 ```
 
 **Все страницы** с серверными вызовами обязательно экспортируют:
+
 ```typescript
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 ```
 
 ---
@@ -413,9 +414,9 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
 ### src/shared/hooks/useWebSocket.ts
 
 ```typescript
-'use client';
+"use client";
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from "react";
 
 interface UseWebSocketProps {
   token: string | null;
@@ -432,13 +433,13 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
     if (!token) return;
 
     // Определяем WS URL: в production через ingress, в dev напрямую
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/core-messages/ws?token=${token}`;
 
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
-      console.log('[ws] connected');
+      console.log("[ws] connected");
     };
 
     ws.onmessage = (event) => {
@@ -446,12 +447,12 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
         const data = JSON.parse(event.data);
         onMessageRef.current(data);
       } catch {
-        console.error('[ws] failed to parse message');
+        console.error("[ws] failed to parse message");
       }
     };
 
     ws.onclose = (event) => {
-      console.log('[ws] disconnected:', event.code, event.reason);
+      console.log("[ws] disconnected:", event.code, event.reason);
       wsRef.current = null;
       // Auto-reconnect через 3 секунды (если не закрыто намеренно)
       if (event.code !== 4001) {
@@ -460,7 +461,7 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
     };
 
     ws.onerror = () => {
-      console.error('[ws] error');
+      console.error("[ws] error");
       ws.close();
     };
 
@@ -473,7 +474,7 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
     return () => {
       clearTimeout(reconnectTimeoutRef.current);
       if (wsRef.current) {
-        wsRef.current.close(1000, 'component unmount');
+        wsRef.current.close(1000, "component unmount");
         wsRef.current = null;
       }
     };
@@ -482,10 +483,12 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
   // Функция для отправки typing indicator
   const sendTyping = useCallback((conversationId: string) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'typing',
-        data: { conversation_id: conversationId },
-      }));
+      wsRef.current.send(
+        JSON.stringify({
+          type: "typing",
+          data: { conversation_id: conversationId },
+        })
+      );
     }
   }, []);
 
@@ -645,19 +648,19 @@ export function formatMessageDate(isoDate: string): string {
   const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) {
-    return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
   }
   if (diffDays === 1) {
-    return 'Вчера';
+    return "Вчера";
   }
   if (diffDays < 7) {
-    return date.toLocaleDateString('ru-RU', { weekday: 'short' });
+    return date.toLocaleDateString("ru-RU", { weekday: "short" });
   }
-  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+  return date.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
 }
 
 export function formatMessageTime(isoDate: string): string {
-  return new Date(isoDate).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  return new Date(isoDate).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
 }
 
 export function formatDateSeparator(isoDate: string): string {
@@ -665,9 +668,9 @@ export function formatDateSeparator(isoDate: string): string {
   const now = new Date();
   const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return 'Сегодня';
-  if (diffDays === 1) return 'Вчера';
-  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  if (diffDays === 0) return "Сегодня";
+  if (diffDays === 1) return "Вчера";
+  return date.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
 }
 ```
 
@@ -1261,34 +1264,34 @@ export function ReplyInDmButton({ ownerId }: Props) {
 Паттерн — `services/web-profile-ssr/app/profile/settings/actions.ts`:
 
 ```typescript
-'use server';
+"use server";
 
-import { CoreMessages } from '@supreme-int/api-client/src/index';
-import { coreMessagesClient } from '../../src/shared/api/clients';
-import type { Message } from '../../src/entities/Message/types';
+import { CoreMessages } from "@supreme-int/api-client/src/index";
+import { coreMessagesClient } from "../../src/shared/api/clients";
+import type { Message } from "../../src/entities/Message/types";
 
 export async function sendMessage(
   conversationId: string,
-  content: string,
+  content: string
 ): Promise<{ success: boolean; message?: Message; error?: string }> {
   try {
     const res = await CoreMessages.sendMessageConversationsConversationIdMessagesPost({
       client: coreMessagesClient,
       path: { conversation_id: conversationId },
-      body: { content, content_type: 'text' },
+      body: { content, content_type: "text" },
     });
 
     if (res.data) {
       return { success: true, message: res.data as Message };
     }
-    return { success: false, error: 'Не удалось отправить сообщение' };
+    return { success: false, error: "Не удалось отправить сообщение" };
   } catch {
-    return { success: false, error: 'Ошибка отправки сообщения' };
+    return { success: false, error: "Ошибка отправки сообщения" };
   }
 }
 
 export async function createDirectConversation(
-  recipientId: string,
+  recipientId: string
 ): Promise<{ success: boolean; conversationId?: string; error?: string }> {
   try {
     const res = await CoreMessages.createDirectConversationConversationsDirectPost({
@@ -1299,16 +1302,16 @@ export async function createDirectConversation(
     if (res.data) {
       return { success: true, conversationId: res.data.id };
     }
-    return { success: false, error: 'Не удалось создать чат' };
+    return { success: false, error: "Не удалось создать чат" };
   } catch {
-    return { success: false, error: 'Ошибка создания чата' };
+    return { success: false, error: "Ошибка создания чата" };
   }
 }
 
 export async function createBroadcast(
   title: string,
   groupNames: string[],
-  initialMessage?: string,
+  initialMessage?: string
 ): Promise<{ success: boolean; conversationId?: string; error?: string }> {
   try {
     const res = await CoreMessages.createBroadcastBroadcastsPost({
@@ -1319,16 +1322,13 @@ export async function createBroadcast(
     if (res.data) {
       return { success: true, conversationId: res.data.id };
     }
-    return { success: false, error: 'Не удалось создать рассылку' };
+    return { success: false, error: "Не удалось создать рассылку" };
   } catch {
-    return { success: false, error: 'Ошибка создания рассылки' };
+    return { success: false, error: "Ошибка создания рассылки" };
   }
 }
 
-export async function markAsRead(
-  conversationId: string,
-  lastReadMessageId: string,
-): Promise<void> {
+export async function markAsRead(conversationId: string, lastReadMessageId: string): Promise<void> {
   try {
     await CoreMessages.markAsReadConversationsConversationIdReadPost({
       client: coreMessagesClient,
@@ -1337,13 +1337,11 @@ export async function markAsRead(
     });
   } catch {
     // Не критично — просто лог
-    console.error('[markAsRead] failed for conversation:', conversationId);
+    console.error("[markAsRead] failed for conversation:", conversationId);
   }
 }
 
-export async function deleteConversation(
-  conversationId: string,
-): Promise<{ success: boolean; error?: string }> {
+export async function deleteConversation(conversationId: string): Promise<{ success: boolean; error?: string }> {
   try {
     await CoreMessages.deleteConversationConversationsConversationIdDelete({
       client: coreMessagesClient,
@@ -1351,12 +1349,12 @@ export async function deleteConversation(
     });
     return { success: true };
   } catch {
-    return { success: false, error: 'Не удалось удалить чат' };
+    return { success: false, error: "Не удалось удалить чат" };
   }
 }
 
 export async function searchUsers(
-  query: string,
+  query: string
 ): Promise<{ user_id: string; name: string; last_name: string; avatar: string | null }[]> {
   try {
     const res = await CoreMessages.searchUsersUsersSearchGet({
@@ -1369,10 +1367,7 @@ export async function searchUsers(
   }
 }
 
-export async function searchMessages(
-  query: string,
-  cursor?: string,
-) {
+export async function searchMessages(query: string, cursor?: string) {
   try {
     const res = await CoreMessages.searchMessagesMessagesSearchGet({
       client: coreMessagesClient,
@@ -1754,28 +1749,26 @@ export function SearchView() {
 Этот route нужен для клиентских запросов (infinite scroll), чтобы не делать fetch с клиента напрямую к бэкенду:
 
 ```typescript
-import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
-import { environment } from '../../../../src/shared/lib/environment';
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import { environment } from "../../../../src/shared/lib/environment";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const conversationId = searchParams.get('conversation_id');
-  const cursor = searchParams.get('cursor');
-  const limit = searchParams.get('limit') || '30';
+  const conversationId = searchParams.get("conversation_id");
+  const cursor = searchParams.get("cursor");
+  const limit = searchParams.get("limit") || "30";
 
   if (!conversationId) {
-    return NextResponse.json({ error: 'conversation_id required' }, { status: 400 });
+    return NextResponse.json({ error: "conversation_id required" }, { status: 400 });
   }
 
   const cookieStore = await cookies();
-  const token = cookieStore.get('auth_token')?.value;
+  const token = cookieStore.get("auth_token")?.value;
 
-  const url = new URL(
-    `${environment.coreMessagesUrl}/conversations/${conversationId}/messages`
-  );
-  url.searchParams.set('limit', limit);
-  if (cursor) url.searchParams.set('cursor', cursor);
+  const url = new URL(`${environment.coreMessagesUrl}/conversations/${conversationId}/messages`);
+  url.searchParams.set("limit", limit);
+  if (cursor) url.searchParams.set("cursor", cursor);
 
   const res = await fetch(url.toString(), {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -1862,18 +1855,18 @@ export function FileAttachment({ attachment }: Props) {
 ### middleware.ts (корень сервиса, рядом с next.config.ts)
 
 ```typescript
-export { proxy as middleware } from './proxy';
+export { proxy as middleware } from "./proxy";
 
 export const config = {
-  matcher: ['/((?!api|web-messages-ssr/_next|favicon.ico).*)'],
+  matcher: ["/((?!api|web-messages-ssr/_next|favicon.ico).*)"],
 };
 ```
 
 ### proxy.ts
 
 ```typescript
-import { createRouteAuthMiddleware } from '@supreme-int/nextjs-shared/src/shared/middleware/create-route-auth-middleware';
-import { authRoutes } from './_auth-routes.generated';
+import { createRouteAuthMiddleware } from "@supreme-int/nextjs-shared/src/shared/middleware/create-route-auth-middleware";
+import { authRoutes } from "./_auth-routes.generated";
 
 export const proxy = createRouteAuthMiddleware({ routes: authRoutes });
 ```
@@ -1881,6 +1874,7 @@ export const proxy = createRouteAuthMiddleware({ routes: authRoutes });
 ### router.yaml
 
 Сгенерируется через `pnpm run generate:router`. Вручную установи:
+
 - Все `/messages/**` → `auth_level: valid`
 - `/web-messages-ssr/.*` → `auth_level: none`
 

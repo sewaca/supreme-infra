@@ -10,13 +10,13 @@
 
 ## Что кэшировать
 
-| Данные | Источник | TTL | Ключ | Приоритет |
-|--------|----------|-----|------|-----------|
-| Профиль пользователя (name, avatar, group, role) | core-client-info | 1 час | `user:{user_id}` | Высокий |
-| Список групп | core-client-info | 6 часов | `groups:all` | Средний |
-| Пользователи по группе | core-client-info | 1 час | `group:{group_name}:users` | Средний |
-| Online-статус | core-messages (WS) | 5 мин | `online:{user_id}` | Низкий (v2) |
-| Rate limiting | per-service | sliding window | `ratelimit:{user_id}:{endpoint}` | Низкий (v2) |
+| Данные                                           | Источник           | TTL            | Ключ                             | Приоритет   |
+| ------------------------------------------------ | ------------------ | -------------- | -------------------------------- | ----------- |
+| Профиль пользователя (name, avatar, group, role) | core-client-info   | 1 час          | `user:{user_id}`                 | Высокий     |
+| Список групп                                     | core-client-info   | 6 часов        | `groups:all`                     | Средний     |
+| Пользователи по группе                           | core-client-info   | 1 час          | `group:{group_name}:users`       | Средний     |
+| Online-статус                                    | core-messages (WS) | 5 мин          | `online:{user_id}`               | Низкий (v2) |
+| Rate limiting                                    | per-service        | sliding window | `ratelimit:{user_id}:{endpoint}` | Низкий (v2) |
 
 ---
 
@@ -51,7 +51,7 @@ service:
 # Redis config
 config:
   maxmemory: 256mb
-  maxmemory-policy: allkeys-lru  # LRU eviction — кэш, не хранилище
+  maxmemory-policy: allkeys-lru # LRU eviction — кэш, не хранилище
 ```
 
 Service DNS: `redis.default.svc.cluster.local:6379`
@@ -61,13 +61,13 @@ Service DNS: `redis.default.svc.cluster.local:6379`
 Добавить в `docker-compose.dev.yml`:
 
 ```yaml
-  redis:
-    image: redis:7-alpine
-    container_name: supreme-redis-dev
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+redis:
+  image: redis:7-alpine
+  container_name: supreme-redis-dev
+  ports:
+    - "6379:6379"
+  volumes:
+    - redis_data:/data
 ```
 
 ### 3. Shared Python-пакет: `cache-py`
@@ -153,6 +153,7 @@ def cached(prefix: str, ttl: int = 3600, key_func=None):
 ```
 
 Зависимости (`pyproject.toml`):
+
 ```toml
 dependencies = ["redis[hiredis]>=5.0.0"]
 ```
@@ -178,6 +179,7 @@ packages/cache/
 **Write-through**: при обновлении профиля пользователя в core-client-info — записать в Redis.
 
 В `app/routers/profile.py` добавить инвалидацию:
+
 ```python
 # После обновления профиля
 await invalidate_user(user_id)
@@ -212,6 +214,7 @@ REDIS_URL=redis://redis.default.svc.cluster.local:6379
 ```
 
 В Helm values каждого сервиса:
+
 ```yaml
 env:
   REDIS_URL: "redis://redis.default.svc.cluster.local:6379"
@@ -244,11 +247,11 @@ env:
 
 ## Ожидаемый эффект
 
-| Метрика | Без Redis | С Redis |
-|---------|-----------|---------|
-| Получение user info | ~50ms (HTTP) | ~1ms (Redis) |
-| Загрузка списка чатов (20 чатов) | ~200ms (20 HTTP) | ~5ms (batch mget) |
-| Нагрузка на core-client-info | Линейно от сообщений | Только cache miss |
+| Метрика                          | Без Redis            | С Redis           |
+| -------------------------------- | -------------------- | ----------------- |
+| Получение user info              | ~50ms (HTTP)         | ~1ms (Redis)      |
+| Загрузка списка чатов (20 чатов) | ~200ms (20 HTTP)     | ~5ms (batch mget) |
+| Нагрузка на core-client-info     | Линейно от сообщений | Только cache miss |
 
 ---
 
