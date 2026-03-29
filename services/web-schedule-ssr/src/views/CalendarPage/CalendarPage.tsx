@@ -53,6 +53,7 @@ function EventCard({ event }: { event: EventContentArg }) {
 }
 
 function setViewCookie(mode: 'list' | 'calendar') {
+  // biome-ignore lint/suspicious/noDocumentCookie: работаем с кукой, нам похуй
   document.cookie = `schedule_view=${mode};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
 }
 
