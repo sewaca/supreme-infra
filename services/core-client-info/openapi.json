@@ -748,6 +748,98 @@
           }
         }
       }
+    },
+    "/profile/users/batch": {
+      "post": {
+        "tags": ["internal"],
+        "summary": "Get Users Batch",
+        "operationId": "get_users_batch_profile_users_batch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchUsersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/groups": {
+      "get": {
+        "tags": ["internal"],
+        "summary": "Get Groups",
+        "operationId": "get_groups_profile_groups_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/users-by-group": {
+      "get": {
+        "tags": ["internal"],
+        "summary": "Get Users By Group",
+        "operationId": "get_users_by_group_profile_users_by_group_get",
+        "parameters": [
+          {
+            "name": "group",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Group"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -766,6 +858,22 @@
         "type": "object",
         "required": ["label", "value"],
         "title": "AcademicInfoItem"
+      },
+      "BatchUsersRequest": {
+        "properties": {
+          "user_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "User Ids"
+          }
+        },
+        "type": "object",
+        "required": ["user_ids"],
+        "title": "BatchUsersRequest"
       },
       "ChangeEmailRequest": {
         "properties": {

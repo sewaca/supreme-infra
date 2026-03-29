@@ -876,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 4056,
+      "id": 4408,
       "panels": [
         {
-          "id": 4054,
+          "id": 4406,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -970,7 +970,7 @@
           }
         },
         {
-          "id": 4055,
+          "id": 4407,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1069,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 4057,
+      "id": 4409,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1080,8 +1080,8 @@
       }
     },
     {
-      "id": 4058,
-      "title": "GET /core-client-info/profile/personal-data",
+      "id": 4410,
+      "title": "GET /core-client-info/profile/groups",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1091,8 +1091,8 @@
       }
     },
     {
-      "id": 4059,
-      "title": "GET /core-client-info/profile/personal-data - Timings",
+      "id": 4411,
+      "title": "GET /core-client-info/profile/groups - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1103,6 +1103,324 @@
         "w": 8,
         "x": 0,
         "y": 70
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/groups\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/groups\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/groups\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4412,
+      "title": "GET /core-client-info/profile/groups - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 70
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\",http_target=\"/core-client-info/profile/groups\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4413,
+      "title": "GET /core-client-info/profile/groups - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 70
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\",http_target=\"/core-client-info/profile/groups\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4414,
+      "title": "GET /core-client-info/profile/personal-data",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 78
+      }
+    },
+    {
+      "id": 4415,
+      "title": "GET /core-client-info/profile/personal-data - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 79
       },
       "targets": [
         {
@@ -1212,7 +1530,7 @@
       }
     },
     {
-      "id": 4060,
+      "id": 4416,
       "title": "GET /core-client-info/profile/personal-data - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1541,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 70
+        "y": 79
       },
       "targets": [
         {
@@ -1303,7 +1621,7 @@
       }
     },
     {
-      "id": 4061,
+      "id": 4417,
       "title": "GET /core-client-info/profile/personal-data - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1632,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 70
+        "y": 79
       },
       "targets": [
         {
@@ -1398,18 +1716,18 @@
       }
     },
     {
-      "id": 4062,
+      "id": 4418,
       "title": "GET /core-client-info/profile/user",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 87
       }
     },
     {
-      "id": 4063,
+      "id": 4419,
       "title": "GET /core-client-info/profile/user - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1420,7 +1738,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1530,7 +1848,7 @@
       }
     },
     {
-      "id": 4064,
+      "id": 4420,
       "title": "GET /core-client-info/profile/user - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1859,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1621,7 +1939,7 @@
       }
     },
     {
-      "id": 4065,
+      "id": 4421,
       "title": "GET /core-client-info/profile/user - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1950,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 79
+        "y": 88
       },
       "targets": [
         {
@@ -1716,18 +2034,654 @@
       }
     },
     {
-      "id": 4066,
+      "id": 4422,
+      "title": "GET /core-client-info/profile/users-by-group",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 96
+      }
+    },
+    {
+      "id": 4423,
+      "title": "GET /core-client-info/profile/users-by-group - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 97
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/users-by-group\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/users-by-group\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/users-by-group\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4424,
+      "title": "GET /core-client-info/profile/users-by-group - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 97
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\",http_target=\"/core-client-info/profile/users-by-group\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4425,
+      "title": "GET /core-client-info/profile/users-by-group - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 97
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\",http_target=\"/core-client-info/profile/users-by-group\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4426,
+      "title": "POST /core-client-info/profile/users/batch",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 105
+      }
+    },
+    {
+      "id": 4427,
+      "title": "POST /core-client-info/profile/users/batch - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 106
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/users/batch\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/users/batch\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-client-info\",http_target=\"/core-client-info/profile/users/batch\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4428,
+      "title": "POST /core-client-info/profile/users/batch - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 106
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\",http_target=\"/core-client-info/profile/users/batch\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4429,
+      "title": "POST /core-client-info/profile/users/batch - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 106
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-client-info\",http_target=\"/core-client-info/profile/users/batch\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4430,
       "title": "GET /core-client-info/rating/achievements",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 114
       }
     },
     {
-      "id": 4067,
+      "id": 4431,
       "title": "GET /core-client-info/rating/achievements - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1738,7 +2692,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 88
+        "y": 115
       },
       "targets": [
         {
@@ -1848,7 +2802,7 @@
       }
     },
     {
-      "id": 4068,
+      "id": 4432,
       "title": "GET /core-client-info/rating/achievements - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1859,7 +2813,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 88
+        "y": 115
       },
       "targets": [
         {
@@ -1939,7 +2893,7 @@
       }
     },
     {
-      "id": 4069,
+      "id": 4433,
       "title": "GET /core-client-info/rating/achievements - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1950,7 +2904,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 88
+        "y": 115
       },
       "targets": [
         {
@@ -2034,18 +2988,18 @@
       }
     },
     {
-      "id": 4070,
+      "id": 4434,
       "title": "GET /core-client-info/rating/grade-improvements",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 123
       }
     },
     {
-      "id": 4071,
+      "id": 4435,
       "title": "GET /core-client-info/rating/grade-improvements - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2056,7 +3010,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 97
+        "y": 124
       },
       "targets": [
         {
@@ -2166,7 +3120,7 @@
       }
     },
     {
-      "id": 4072,
+      "id": 4436,
       "title": "GET /core-client-info/rating/grade-improvements - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2177,7 +3131,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 97
+        "y": 124
       },
       "targets": [
         {
@@ -2257,7 +3211,7 @@
       }
     },
     {
-      "id": 4073,
+      "id": 4437,
       "title": "GET /core-client-info/rating/grade-improvements - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2268,7 +3222,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 97
+        "y": 124
       },
       "targets": [
         {
@@ -2352,18 +3306,18 @@
       }
     },
     {
-      "id": 4074,
+      "id": 4438,
       "title": "GET /core-client-info/rating/grades",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 105
+        "y": 132
       }
     },
     {
-      "id": 4075,
+      "id": 4439,
       "title": "GET /core-client-info/rating/grades - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2374,7 +3328,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 106
+        "y": 133
       },
       "targets": [
         {
@@ -2484,7 +3438,7 @@
       }
     },
     {
-      "id": 4076,
+      "id": 4440,
       "title": "GET /core-client-info/rating/grades - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2495,7 +3449,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 106
+        "y": 133
       },
       "targets": [
         {
@@ -2575,7 +3529,7 @@
       }
     },
     {
-      "id": 4077,
+      "id": 4441,
       "title": "GET /core-client-info/rating/grades - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2586,7 +3540,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 106
+        "y": 133
       },
       "targets": [
         {
@@ -2670,18 +3624,18 @@
       }
     },
     {
-      "id": 4078,
+      "id": 4442,
       "title": "GET /core-client-info/rating/level",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 141
       }
     },
     {
-      "id": 4079,
+      "id": 4443,
       "title": "GET /core-client-info/rating/level - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2692,7 +3646,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 115
+        "y": 142
       },
       "targets": [
         {
@@ -2802,7 +3756,7 @@
       }
     },
     {
-      "id": 4080,
+      "id": 4444,
       "title": "GET /core-client-info/rating/level - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2813,7 +3767,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 115
+        "y": 142
       },
       "targets": [
         {
@@ -2893,7 +3847,7 @@
       }
     },
     {
-      "id": 4081,
+      "id": 4445,
       "title": "GET /core-client-info/rating/level - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2904,7 +3858,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 115
+        "y": 142
       },
       "targets": [
         {
@@ -2988,18 +3942,18 @@
       }
     },
     {
-      "id": 4082,
+      "id": 4446,
       "title": "GET /core-client-info/rating/rankings",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 123
+        "y": 150
       }
     },
     {
-      "id": 4083,
+      "id": 4447,
       "title": "GET /core-client-info/rating/rankings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3010,7 +3964,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 124
+        "y": 151
       },
       "targets": [
         {
@@ -3120,7 +4074,7 @@
       }
     },
     {
-      "id": 4084,
+      "id": 4448,
       "title": "GET /core-client-info/rating/rankings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3131,7 +4085,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 124
+        "y": 151
       },
       "targets": [
         {
@@ -3211,7 +4165,7 @@
       }
     },
     {
-      "id": 4085,
+      "id": 4449,
       "title": "GET /core-client-info/rating/rankings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3222,7 +4176,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 124
+        "y": 151
       },
       "targets": [
         {
@@ -3306,18 +4260,18 @@
       }
     },
     {
-      "id": 4086,
+      "id": 4450,
       "title": "GET /core-client-info/rating/stats",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 132
+        "y": 159
       }
     },
     {
-      "id": 4087,
+      "id": 4451,
       "title": "GET /core-client-info/rating/stats - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3328,7 +4282,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 133
+        "y": 160
       },
       "targets": [
         {
@@ -3438,7 +4392,7 @@
       }
     },
     {
-      "id": 4088,
+      "id": 4452,
       "title": "GET /core-client-info/rating/stats - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3449,7 +4403,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 133
+        "y": 160
       },
       "targets": [
         {
@@ -3529,7 +4483,7 @@
       }
     },
     {
-      "id": 4089,
+      "id": 4453,
       "title": "GET /core-client-info/rating/stats - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3540,7 +4494,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 133
+        "y": 160
       },
       "targets": [
         {
@@ -3624,18 +4578,18 @@
       }
     },
     {
-      "id": 4090,
+      "id": 4454,
       "title": "GET /core-client-info/rating/streak",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 141
+        "y": 168
       }
     },
     {
-      "id": 4091,
+      "id": 4455,
       "title": "GET /core-client-info/rating/streak - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3646,7 +4600,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 142
+        "y": 169
       },
       "targets": [
         {
@@ -3756,7 +4710,7 @@
       }
     },
     {
-      "id": 4092,
+      "id": 4456,
       "title": "GET /core-client-info/rating/streak - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3767,7 +4721,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 142
+        "y": 169
       },
       "targets": [
         {
@@ -3847,7 +4801,7 @@
       }
     },
     {
-      "id": 4093,
+      "id": 4457,
       "title": "GET /core-client-info/rating/streak - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3858,7 +4812,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 142
+        "y": 169
       },
       "targets": [
         {
@@ -3942,18 +4896,18 @@
       }
     },
     {
-      "id": 4094,
+      "id": 4458,
       "title": "GET /core-client-info/settings",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 150
+        "y": 177
       }
     },
     {
-      "id": 4095,
+      "id": 4459,
       "title": "GET /core-client-info/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3964,7 +4918,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 151
+        "y": 178
       },
       "targets": [
         {
@@ -4074,7 +5028,7 @@
       }
     },
     {
-      "id": 4096,
+      "id": 4460,
       "title": "GET /core-client-info/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4085,7 +5039,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 151
+        "y": 178
       },
       "targets": [
         {
@@ -4165,7 +5119,7 @@
       }
     },
     {
-      "id": 4097,
+      "id": 4461,
       "title": "GET /core-client-info/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4176,7 +5130,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 151
+        "y": 178
       },
       "targets": [
         {
@@ -4260,18 +5214,18 @@
       }
     },
     {
-      "id": 4098,
+      "id": 4462,
       "title": "PUT /core-client-info/settings",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 159
+        "y": 186
       }
     },
     {
-      "id": 4099,
+      "id": 4463,
       "title": "PUT /core-client-info/settings - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4282,7 +5236,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 160
+        "y": 187
       },
       "targets": [
         {
@@ -4392,7 +5346,7 @@
       }
     },
     {
-      "id": 4100,
+      "id": 4464,
       "title": "PUT /core-client-info/settings - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4403,7 +5357,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 160
+        "y": 187
       },
       "targets": [
         {
@@ -4483,7 +5437,7 @@
       }
     },
     {
-      "id": 4101,
+      "id": 4465,
       "title": "PUT /core-client-info/settings - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4494,7 +5448,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 160
+        "y": 187
       },
       "targets": [
         {
@@ -4578,18 +5532,18 @@
       }
     },
     {
-      "id": 4102,
+      "id": 4466,
       "title": "POST /core-client-info/settings/email",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 168
+        "y": 195
       }
     },
     {
-      "id": 4103,
+      "id": 4467,
       "title": "POST /core-client-info/settings/email - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4600,7 +5554,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 169
+        "y": 196
       },
       "targets": [
         {
@@ -4710,7 +5664,7 @@
       }
     },
     {
-      "id": 4104,
+      "id": 4468,
       "title": "POST /core-client-info/settings/email - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4721,7 +5675,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 169
+        "y": 196
       },
       "targets": [
         {
@@ -4801,7 +5755,7 @@
       }
     },
     {
-      "id": 4105,
+      "id": 4469,
       "title": "POST /core-client-info/settings/email - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4812,7 +5766,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 169
+        "y": 196
       },
       "targets": [
         {
@@ -4896,18 +5850,18 @@
       }
     },
     {
-      "id": 4106,
+      "id": 4470,
       "title": "POST /core-client-info/settings/password",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 177
+        "y": 204
       }
     },
     {
-      "id": 4107,
+      "id": 4471,
       "title": "POST /core-client-info/settings/password - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4918,7 +5872,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 178
+        "y": 205
       },
       "targets": [
         {
@@ -5028,7 +5982,7 @@
       }
     },
     {
-      "id": 4108,
+      "id": 4472,
       "title": "POST /core-client-info/settings/password - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5039,7 +5993,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 178
+        "y": 205
       },
       "targets": [
         {
@@ -5119,7 +6073,7 @@
       }
     },
     {
-      "id": 4109,
+      "id": 4473,
       "title": "POST /core-client-info/settings/password - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5130,7 +6084,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 178
+        "y": 205
       },
       "targets": [
         {
@@ -5214,18 +6168,18 @@
       }
     },
     {
-      "id": 4110,
+      "id": 4474,
       "title": "GET /core-client-info/subjects/choices",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 186
+        "y": 213
       }
     },
     {
-      "id": 4111,
+      "id": 4475,
       "title": "GET /core-client-info/subjects/choices - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5236,7 +6190,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 187
+        "y": 214
       },
       "targets": [
         {
@@ -5346,7 +6300,7 @@
       }
     },
     {
-      "id": 4112,
+      "id": 4476,
       "title": "GET /core-client-info/subjects/choices - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5357,7 +6311,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 187
+        "y": 214
       },
       "targets": [
         {
@@ -5437,7 +6391,7 @@
       }
     },
     {
-      "id": 4113,
+      "id": 4477,
       "title": "GET /core-client-info/subjects/choices - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5448,7 +6402,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 187
+        "y": 214
       },
       "targets": [
         {
@@ -5532,18 +6486,18 @@
       }
     },
     {
-      "id": 4114,
+      "id": 4478,
       "title": "POST /core-client-info/subjects/save-priorities",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 195
+        "y": 222
       }
     },
     {
-      "id": 4115,
+      "id": 4479,
       "title": "POST /core-client-info/subjects/save-priorities - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5554,7 +6508,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 196
+        "y": 223
       },
       "targets": [
         {
@@ -5664,7 +6618,7 @@
       }
     },
     {
-      "id": 4116,
+      "id": 4480,
       "title": "POST /core-client-info/subjects/save-priorities - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5675,7 +6629,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 196
+        "y": 223
       },
       "targets": [
         {
@@ -5755,7 +6709,7 @@
       }
     },
     {
-      "id": 4117,
+      "id": 4481,
       "title": "POST /core-client-info/subjects/save-priorities - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5766,7 +6720,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 196
+        "y": 223
       },
       "targets": [
         {
@@ -5850,18 +6804,18 @@
       }
     },
     {
-      "id": 4118,
+      "id": 4482,
       "title": "GET /core-client-info/subjects/user-priorities/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 204
+        "y": 231
       }
     },
     {
-      "id": 4119,
+      "id": 4483,
       "title": "GET /core-client-info/subjects/user-priorities/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5872,7 +6826,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 205
+        "y": 232
       },
       "targets": [
         {
@@ -5982,7 +6936,7 @@
       }
     },
     {
-      "id": 4120,
+      "id": 4484,
       "title": "GET /core-client-info/subjects/user-priorities/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5993,7 +6947,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 205
+        "y": 232
       },
       "targets": [
         {
@@ -6073,7 +7027,7 @@
       }
     },
     {
-      "id": 4121,
+      "id": 4485,
       "title": "GET /core-client-info/subjects/user-priorities/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6084,7 +7038,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 205
+        "y": 232
       },
       "targets": [
         {

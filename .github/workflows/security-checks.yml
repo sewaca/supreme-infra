@@ -51,6 +51,8 @@ jobs:
           - core-client-info
           - core-applications
           - core-schedule
+          - core-messages
+          - core-messages
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

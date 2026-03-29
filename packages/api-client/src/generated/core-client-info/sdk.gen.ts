@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangeEmailSettingsEmailPostData, ChangeEmailSettingsEmailPostErrors, ChangeEmailSettingsEmailPostResponses, ChangePasswordSettingsPasswordPostData, ChangePasswordSettingsPasswordPostErrors, ChangePasswordSettingsPasswordPostResponses, GetAchievementsRatingAchievementsGetData, GetAchievementsRatingAchievementsGetErrors, GetAchievementsRatingAchievementsGetResponses, GetChoicesSubjectsChoicesGetData, GetChoicesSubjectsChoicesGetResponses, GetGradeImprovementsRatingGradeImprovementsGetData, GetGradeImprovementsRatingGradeImprovementsGetErrors, GetGradeImprovementsRatingGradeImprovementsGetResponses, GetGradesRatingGradesGetData, GetGradesRatingGradesGetErrors, GetGradesRatingGradesGetResponses, GetLevelRatingLevelGetData, GetLevelRatingLevelGetErrors, GetLevelRatingLevelGetResponses, GetPersonalDataProfilePersonalDataGetData, GetPersonalDataProfilePersonalDataGetErrors, GetPersonalDataProfilePersonalDataGetResponses, GetRankingsRatingRankingsGetData, GetRankingsRatingRankingsGetErrors, GetRankingsRatingRankingsGetResponses, GetSettingsSettingsGetData, GetSettingsSettingsGetErrors, GetSettingsSettingsGetResponses, GetStatsRatingStatsGetData, GetStatsRatingStatsGetErrors, GetStatsRatingStatsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetStreakRatingStreakGetData, GetStreakRatingStreakGetErrors, GetStreakRatingStreakGetResponses, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetData, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetErrors, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetResponses, GetUserProfileUserGetData, GetUserProfileUserGetErrors, GetUserProfileUserGetResponses, SavePrioritiesSubjectsSavePrioritiesPostData, SavePrioritiesSubjectsSavePrioritiesPostErrors, SavePrioritiesSubjectsSavePrioritiesPostResponses, UpdateSettingsSettingsPutData, UpdateSettingsSettingsPutErrors, UpdateSettingsSettingsPutResponses } from './types.gen';
+import type { ChangeEmailSettingsEmailPostData, ChangeEmailSettingsEmailPostErrors, ChangeEmailSettingsEmailPostResponses, ChangePasswordSettingsPasswordPostData, ChangePasswordSettingsPasswordPostErrors, ChangePasswordSettingsPasswordPostResponses, GetAchievementsRatingAchievementsGetData, GetAchievementsRatingAchievementsGetErrors, GetAchievementsRatingAchievementsGetResponses, GetChoicesSubjectsChoicesGetData, GetChoicesSubjectsChoicesGetResponses, GetGradeImprovementsRatingGradeImprovementsGetData, GetGradeImprovementsRatingGradeImprovementsGetErrors, GetGradeImprovementsRatingGradeImprovementsGetResponses, GetGradesRatingGradesGetData, GetGradesRatingGradesGetErrors, GetGradesRatingGradesGetResponses, GetGroupsProfileGroupsGetData, GetGroupsProfileGroupsGetResponses, GetLevelRatingLevelGetData, GetLevelRatingLevelGetErrors, GetLevelRatingLevelGetResponses, GetPersonalDataProfilePersonalDataGetData, GetPersonalDataProfilePersonalDataGetErrors, GetPersonalDataProfilePersonalDataGetResponses, GetRankingsRatingRankingsGetData, GetRankingsRatingRankingsGetErrors, GetRankingsRatingRankingsGetResponses, GetSettingsSettingsGetData, GetSettingsSettingsGetErrors, GetSettingsSettingsGetResponses, GetStatsRatingStatsGetData, GetStatsRatingStatsGetErrors, GetStatsRatingStatsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetStreakRatingStreakGetData, GetStreakRatingStreakGetErrors, GetStreakRatingStreakGetResponses, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetData, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetErrors, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetResponses, GetUserProfileUserGetData, GetUserProfileUserGetErrors, GetUserProfileUserGetResponses, GetUsersBatchProfileUsersBatchPostData, GetUsersBatchProfileUsersBatchPostErrors, GetUsersBatchProfileUsersBatchPostResponses, GetUsersByGroupProfileUsersByGroupGetData, GetUsersByGroupProfileUsersByGroupGetErrors, GetUsersByGroupProfileUsersByGroupGetResponses, SavePrioritiesSubjectsSavePrioritiesPostData, SavePrioritiesSubjectsSavePrioritiesPostErrors, SavePrioritiesSubjectsSavePrioritiesPostResponses, UpdateSettingsSettingsPutData, UpdateSettingsSettingsPutErrors, UpdateSettingsSettingsPutResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -131,3 +131,25 @@ export const savePrioritiesSubjectsSavePrioritiesPost = <ThrowOnError extends bo
         ...options.headers
     }
 });
+
+/**
+ * Get Users Batch
+ */
+export const getUsersBatchProfileUsersBatchPost = <ThrowOnError extends boolean = false>(options: Options<GetUsersBatchProfileUsersBatchPostData, ThrowOnError>) => (options.client ?? client).post<GetUsersBatchProfileUsersBatchPostResponses, GetUsersBatchProfileUsersBatchPostErrors, ThrowOnError>({
+    url: '/profile/users/batch',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Groups
+ */
+export const getGroupsProfileGroupsGet = <ThrowOnError extends boolean = false>(options?: Options<GetGroupsProfileGroupsGetData, ThrowOnError>) => (options?.client ?? client).get<GetGroupsProfileGroupsGetResponses, unknown, ThrowOnError>({ url: '/profile/groups', ...options });
+
+/**
+ * Get Users By Group
+ */
+export const getUsersByGroupProfileUsersByGroupGet = <ThrowOnError extends boolean = false>(options: Options<GetUsersByGroupProfileUsersByGroupGetData, ThrowOnError>) => (options.client ?? client).get<GetUsersByGroupProfileUsersByGroupGetResponses, GetUsersByGroupProfileUsersByGroupGetErrors, ThrowOnError>({ url: '/profile/users-by-group', ...options });

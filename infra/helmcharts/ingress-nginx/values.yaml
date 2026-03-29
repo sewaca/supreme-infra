@@ -94,10 +94,16 @@ ingress:
       port: 80
       type: fastapi
       paths:
+        - path: /core-client-info/profile/groups
+          method: GET
         - path: /core-client-info/profile/personal-data
           method: GET
         - path: /core-client-info/profile/user
           method: GET
+        - path: /core-client-info/profile/users-by-group
+          method: GET
+        - path: /core-client-info/profile/users/batch
+          method: POST
         - path: /core-client-info/rating/achievements
           method: GET
         - path: /core-client-info/rating/grade-improvements
@@ -125,6 +131,40 @@ ingress:
         - path: /core-client-info/subjects/save-priorities
           method: POST
         - path: /core-client-info/subjects/user-priorities/[^/]+
+          method: GET
+    - service: core-messages
+      port: 80
+      type: fastapi
+      paths:
+        - path: /core-messages/broadcasts
+          method: GET
+        - path: /core-messages/broadcasts
+          method: POST
+        - path: /core-messages/broadcasts/groups
+          method: GET
+        - path: /core-messages/conversations
+          method: GET
+        - path: /core-messages/conversations/[^/]+
+          method: DELETE
+        - path: /core-messages/conversations/[^/]+
+          method: GET
+        - path: /core-messages/conversations/[^/]+/messages
+          method: GET
+        - path: /core-messages/conversations/[^/]+/messages
+          method: POST
+        - path: /core-messages/conversations/[^/]+/messages/read
+          method: POST
+        - path: /core-messages/conversations/direct
+          method: POST
+        - path: /core-messages/conversations/updates
+          method: GET
+        - path: /core-messages/files
+          method: POST
+        - path: /core-messages/messages/search
+          method: GET
+        - path: /core-messages/users/[^/]+
+          method: GET
+        - path: /core-messages/users/search
           method: GET
     - service: core-recipes-bff
       port: 80

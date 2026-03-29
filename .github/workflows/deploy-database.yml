@@ -12,6 +12,7 @@ on:
           - core-client-info
           - core-applications
           - core-schedule
+          - core-messages
         default: core-recipes-bff
       action:
         description: Deployment action

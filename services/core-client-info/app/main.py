@@ -13,6 +13,7 @@ from app.config import settings
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.routers import (
+    internal,
     profile,
     rating,
     settings as settings_router,
@@ -93,3 +94,4 @@ app.include_router(profile.router)
 app.include_router(settings_router.router)
 app.include_router(rating.router)
 app.include_router(subjects.router)
+app.include_router(internal.router)

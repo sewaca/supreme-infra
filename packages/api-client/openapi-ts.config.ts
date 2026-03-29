@@ -6,11 +6,13 @@ export default defineConfig({
     './schemas/core-client-info.json',
     './schemas/core-applications.json',
     './schemas/core-schedule.json',
+    './schemas/core-messages.json',
   ],
   output: [
     './src/generated/core-auth',
     './src/generated/core-client-info',
     './src/generated/core-applications',
     './src/generated/core-schedule',
+    './src/generated/core-messages',
   ],
 });

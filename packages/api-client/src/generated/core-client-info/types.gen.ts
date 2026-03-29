@@ -19,6 +19,16 @@ export type AcademicInfoItem = {
 };
 
 /**
+ * BatchUsersRequest
+ */
+export type BatchUsersRequest = {
+    /**
+     * User Ids
+     */
+    user_ids: Array<string>;
+};
+
+/**
  * ChangeEmailRequest
  */
 export type ChangeEmailRequest = {
@@ -972,6 +982,71 @@ export type SavePrioritiesSubjectsSavePrioritiesPostErrors = {
 export type SavePrioritiesSubjectsSavePrioritiesPostError = SavePrioritiesSubjectsSavePrioritiesPostErrors[keyof SavePrioritiesSubjectsSavePrioritiesPostErrors];
 
 export type SavePrioritiesSubjectsSavePrioritiesPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetUsersBatchProfileUsersBatchPostData = {
+    body: BatchUsersRequest;
+    path?: never;
+    query?: never;
+    url: '/profile/users/batch';
+};
+
+export type GetUsersBatchProfileUsersBatchPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetUsersBatchProfileUsersBatchPostError = GetUsersBatchProfileUsersBatchPostErrors[keyof GetUsersBatchProfileUsersBatchPostErrors];
+
+export type GetUsersBatchProfileUsersBatchPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetGroupsProfileGroupsGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/profile/groups';
+};
+
+export type GetGroupsProfileGroupsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetUsersByGroupProfileUsersByGroupGetData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Group
+         */
+        group: string;
+    };
+    url: '/profile/users-by-group';
+};
+
+export type GetUsersByGroupProfileUsersByGroupGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetUsersByGroupProfileUsersByGroupGetError = GetUsersByGroupProfileUsersByGroupGetErrors[keyof GetUsersByGroupProfileUsersByGroupGetErrors];
+
+export type GetUsersByGroupProfileUsersByGroupGetResponses = {
     /**
      * Successful Response
      */

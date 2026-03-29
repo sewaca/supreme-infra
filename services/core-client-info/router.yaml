@@ -5,12 +5,21 @@
 service: core-client-info
 type: fastapi
 routes:
+  - path: /core-client-info/profile/groups
+    method: GET
+    auth_level: none
   - path: /core-client-info/profile/personal-data
     method: GET
     auth_level: valid
   - path: /core-client-info/profile/user
     method: GET
     auth_level: valid
+  - path: /core-client-info/profile/users-by-group
+    method: GET
+    auth_level: none
+  - path: /core-client-info/profile/users/batch
+    method: POST
+    auth_level: none
   - path: /core-client-info/rating/achievements
     method: GET
     auth_level: valid
