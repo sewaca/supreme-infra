@@ -138,7 +138,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
           <Chip icon={<GroupsIcon />} label="Другая группа" variant="outlined" size="small" clickable />
           <Chip icon={<PersonIcon />} label="Преподаватель" variant="outlined" size="small" clickable />
           <Chip icon={<EventIcon />} label="Сессия" variant="outlined" size="small" clickable />
-
+        
           <Box sx={{ marginLeft: 'auto' }}>
             <IconButton onClick={toggleView} size="small" title={viewMode === 'list' ? 'Календарь' : 'Список'}>
               {viewMode === 'list' ? <CalendarViewMonthIcon /> : <FormatListBulletedIcon />}
