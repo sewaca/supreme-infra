@@ -5,6 +5,9 @@
 service: web-schedule-ssr
 type: next
 routes:
+  - path: /api/schedule
+    method: GET
+    auth_level: valid
   - path: /calendar
     method: GET
     auth_level: valid

@@ -332,6 +332,8 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /api/schedule
+          method: GET
         - path: /calendar
           method: GET
         - path: /web-schedule-ssr/.*

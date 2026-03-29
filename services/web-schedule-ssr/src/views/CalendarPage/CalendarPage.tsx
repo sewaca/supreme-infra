@@ -1,6 +1,6 @@
 'use client';
 
-import type { EventClickArg, EventContentArg } from '@fullcalendar/core';
+import type { DatesSetArg, EventClickArg, EventContentArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -16,7 +16,7 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../shared/lib/schedule.utils';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
@@ -29,6 +29,8 @@ import { ScheduleListView } from './ScheduleListView';
 type Props = {
   events: CalendarEvent[];
   initialDate: string;
+  loadedFrom: string;
+  loadedTo: string;
   avatar: string | null;
   userName: string;
   error: string | null;
@@ -55,16 +57,71 @@ function EventCard({ event }: { event: EventContentArg }) {
 }
 
 function setViewCookie(mode: 'list' | 'calendar') {
-  // biome-ignore lint/suspicious/noDocumentCookie: работаем с кукой, нам похуй
+  // biome-ignore lint/suspicious/noDocumentCookie: setting view preference cookie
   document.cookie = `schedule_view=${mode};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
 }
 
-export function CalendarPage({ events, initialDate, avatar, userName, error, initialViewMode }: Props) {
+async function fetchScheduleRange(from: string, to: string): Promise<CalendarEvent[]> {
+  try {
+    const res = await fetch(`/api/schedule?date_from=${from}&date_to=${to}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.events ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export function CalendarPage({
+  events: initialEvents,
+  initialDate,
+  loadedFrom: initialLoadedFrom,
+  loadedTo: initialLoadedTo,
+  avatar,
+  userName,
+  error,
+  initialViewMode,
+}: Props) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [allEvents, setAllEvents] = useState<CalendarEvent[]>(initialEvents);
+  const [loadedFrom, setLoadedFrom] = useState(initialLoadedFrom);
+  const [loadedTo, setLoadedTo] = useState(initialLoadedTo);
+  const [listWeekStart, setListWeekStart] = useState(initialDate);
+  const loadingRef = useRef(false);
   const calendarRef = useRef<FullCalendar>(null);
+  const isInitialRender = useRef(true);
+
+  const ensureRange = useCallback(
+    async (needFrom: string, needTo: string) => {
+      if (loadingRef.current) return;
+      // Check if we need to fetch anything
+      const fetchFrom = needFrom < loadedFrom ? needFrom : null;
+      const fetchTo = needTo > loadedTo ? needTo : null;
+      if (!fetchFrom && !fetchTo) return;
+
+      loadingRef.current = true;
+      const actualFrom = fetchFrom ?? loadedFrom;
+      const actualTo = fetchTo ?? loadedTo;
+
+      const newEvents = await fetchScheduleRange(actualFrom, actualTo);
+
+      setAllEvents((prev) => {
+        const existing = new Set(prev.map((e) => e.id));
+        const merged = [...prev];
+        for (const ev of newEvents) {
+          if (!existing.has(ev.id)) merged.push(ev);
+        }
+        return merged;
+      });
+
+      setLoadedFrom((prev) => (actualFrom < prev ? actualFrom : prev));
+      setLoadedTo((prev) => (actualTo > prev ? actualTo : prev));
+      loadingRef.current = false;
+    },
+    [loadedFrom, loadedTo],
+  );
 
   const toggleView = useCallback(() => {
     const next = viewMode === 'list' ? 'calendar' : 'list';
@@ -72,22 +129,25 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
     setViewCookie(next);
   }, [viewMode]);
 
-  const navigateToWeek = useCallback(
-    (dateFrom: string, dateTo: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('date_from', dateFrom);
-      params.set('date_to', dateTo);
-      router.push(`/calendar?${params.toString()}`);
+  const handleDatesSet = useCallback(
+    (arg: DatesSetArg) => {
+      if (isInitialRender.current) {
+        isInitialRender.current = false;
+        return;
+      }
+      const from = arg.start.toISOString().slice(0, 10);
+      const to = new Date(arg.end.getTime() - 86400000).toISOString().slice(0, 10);
+      ensureRange(from, to);
     },
-    [router, searchParams],
+    [ensureRange],
   );
 
   const handleEventClick = useCallback(
     (arg: EventClickArg) => {
-      const clicked = events.find((e) => e.id === arg.event.id);
+      const clicked = allEvents.find((e) => e.id === arg.event.id);
       if (clicked) setSelectedEvent(clicked);
     },
-    [events],
+    [allEvents],
   );
 
   const handleListEventClick = useCallback((ev: CalendarEvent) => {
@@ -95,20 +155,22 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
   }, []);
 
   const handleListPrevWeek = useCallback(() => {
-    const d = new Date(`${initialDate}T00:00:00`);
+    const d = new Date(`${listWeekStart}T00:00:00`);
     d.setDate(d.getDate() - 7);
     const from = d.toISOString().slice(0, 10);
     const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
-    navigateToWeek(from, to);
-  }, [initialDate, navigateToWeek]);
+    setListWeekStart(from);
+    ensureRange(from, to);
+  }, [listWeekStart, ensureRange]);
 
   const handleListNextWeek = useCallback(() => {
-    const d = new Date(`${initialDate}T00:00:00`);
+    const d = new Date(`${listWeekStart}T00:00:00`);
     d.setDate(d.getDate() + 7);
     const from = d.toISOString().slice(0, 10);
     const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
-    navigateToWeek(from, to);
-  }, [initialDate, navigateToWeek]);
+    setListWeekStart(from);
+    ensureRange(from, to);
+  }, [listWeekStart, ensureRange]);
 
   return (
     <Paper
@@ -137,10 +199,31 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
         )}
 
         <Box className={styles.topSection}>
-          <Chip icon={<GroupsIcon />} label="Другая группа" variant="outlined" size="small" clickable onClick={() => router.push('/schedule/group')} />
-          <Chip icon={<PersonIcon />} label="Преподаватель" variant="outlined" size="small" clickable onClick={() => router.push('/schedule/teacher')} />
-          <Chip icon={<EventIcon />} label="Сессия" variant="outlined" size="small" clickable onClick={() => router.push('/schedule/exams')} />
-        
+          <Chip
+            icon={<GroupsIcon />}
+            label="Другая группа"
+            variant="outlined"
+            size="small"
+            clickable
+            onClick={() => router.push('/schedule/group')}
+          />
+          <Chip
+            icon={<PersonIcon />}
+            label="Преподаватель"
+            variant="outlined"
+            size="small"
+            clickable
+            onClick={() => router.push('/schedule/teacher')}
+          />
+          <Chip
+            icon={<EventIcon />}
+            label="Сессия"
+            variant="outlined"
+            size="small"
+            clickable
+            onClick={() => router.push('/schedule/exams')}
+          />
+
           <Box sx={{ marginLeft: 'auto' }}>
             <IconButton onClick={toggleView} size="small" title={viewMode === 'list' ? 'Календарь' : 'Список'}>
               {viewMode === 'list' ? <CalendarViewMonthIcon /> : <FormatListBulletedIcon />}
@@ -150,8 +233,8 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
 
         {viewMode === 'list' ? (
           <ScheduleListView
-            events={events}
-            dateFrom={initialDate}
+            events={allEvents}
+            dateFrom={listWeekStart}
             onPrevWeek={handleListPrevWeek}
             onNextWeek={handleListNextWeek}
             onEventClick={handleListEventClick}
@@ -164,7 +247,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
                 plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
                 initialDate={initialDate}
-                events={events}
+                events={allEvents}
                 locale="ru"
                 firstDay={1}
                 hiddenDays={[0]}
@@ -183,6 +266,7 @@ export function CalendarPage({ events, initialDate, avatar, userName, error, ini
                 buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
                 eventContent={(arg) => <EventCard event={arg} />}
                 eventClick={handleEventClick}
+                datesSet={handleDatesSet}
                 dayHeaderFormat={{ weekday: 'short', day: 'numeric', month: 'numeric' }}
               />
             </div>
