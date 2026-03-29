@@ -20,6 +20,8 @@ env:
   PORT: "3006"
   NODE_ENV: "production"
   BACKEND_SERVICE_NAMESPACE: "default"
+  CORE_SCHEDULE_URL: "http://core-schedule.default.svc.cluster.local/core-schedule"
+  CORE_CLIENT_INFO_URL: "http://core-client-info.default.svc.cluster.local/core-client-info"
 
 resources:
   limits:
