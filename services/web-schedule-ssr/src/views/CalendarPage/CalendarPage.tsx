@@ -279,7 +279,7 @@ export function CalendarPage({
                 nowIndicator
                 height="100%"
                 headerToolbar={{
-                  left: 'prev today next',
+                  left: 'prev,today,next',
                   center: 'title',
                   right: calendarRight,
                 }}
