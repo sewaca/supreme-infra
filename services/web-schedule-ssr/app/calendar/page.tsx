@@ -89,7 +89,8 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   return (
     <CalendarPage
       events={events}
-      initialDate={userSpecifiedDate ?? undefined}
+      // initialDate={userSpecifiedDate ?? undefined}
+      initialDate={dateFrom}
       loadedFrom={extendedFrom}
       loadedTo={extendedTo}
       avatar={avatar}
