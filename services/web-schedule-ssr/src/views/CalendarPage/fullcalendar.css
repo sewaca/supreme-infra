@@ -105,6 +105,17 @@
   color: inherit !important;
 }
 
+/* Remove yellow highlight from today's column */
+.schedule-fc-wrapper .fc-day-today {
+  background: transparent !important;
+}
+
+/* Highlight today in the header */
+.schedule-fc-wrapper .fc-col-header-cell.fc-day-today {
+  background: #ffebee !important;
+  font-weight: 700;
+}
+
 /* Column headers */
 .schedule-fc-wrapper .fc-col-header-cell {
   font-weight: 500;

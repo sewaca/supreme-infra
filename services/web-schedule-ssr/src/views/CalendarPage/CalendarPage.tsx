@@ -19,7 +19,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from 'next/navigation';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../shared/lib/schedule.utils';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
@@ -85,12 +85,14 @@ async function fetchScheduleRange(from: string, to: string): Promise<CalendarEve
   }
 }
 
-/** Pick best calendar type: prefer saved cookie, then largest that fits screen */
-function resolveCalType(saved: CalType | null, canWeek: boolean, can3Day: boolean): CalType {
+/** Pick best calendar type: prefer saved cookie, then largest that fits screen.
+ *  `mounted` = false during SSR/hydration when useMediaQuery always returns false —
+ *  in that case trust the cookie unconditionally so initialView is correct. */
+function resolveCalType(saved: CalType | null, canWeek: boolean, can3Day: boolean, mounted: boolean): CalType {
+  if (!mounted && saved) return saved; // SSR: trust cookie
   if (saved === 'timeGridWeek' && canWeek) return 'timeGridWeek';
   if (saved === 'timeGrid3Day' && can3Day) return 'timeGrid3Day';
   if (saved === 'timeGridDay') return 'timeGridDay';
-  // Fallback: largest available
   if (canWeek) return 'timeGridWeek';
   if (can3Day) return 'timeGrid3Day';
   return 'timeGridDay';
@@ -108,10 +110,12 @@ export function CalendarPage({
   initialCalType,
 }: Props) {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   // Breakpoints based on ~200px per day column + 60px time label
-  const canShowWeek = useMediaQuery('(min-width: 1260px)'); // 6 days
-  const canShow3Days = useMediaQuery('(min-width: 660px)'); // 3 days
-  const calendarView = resolveCalType(initialCalType, canShowWeek, canShow3Days);
+  const canShowWeek = useMediaQuery('(min-width: 1260px)');
+  const canShow3Days = useMediaQuery('(min-width: 660px)');
+  const calendarView = resolveCalType(initialCalType, canShowWeek, canShow3Days, mounted);
   const calendarRight = canShowWeek ? 'timeGridWeek,timeGridDay' : canShow3Days ? 'timeGrid3Day,timeGridDay' : '';
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
@@ -297,7 +301,13 @@ export function CalendarPage({
                   timeGrid3Day: {
                     type: 'timeGrid',
                     duration: { days: 3 },
+                    dateAlignment: 'week',
                     buttonText: '3 дня',
+                  },
+                  timeGridWeek: {
+                    type: 'timeGrid',
+                    duration: { weeks: 1 },
+                    dateAlignment: 'week',
                   },
                 }}
                 initialDate={initialDate}
