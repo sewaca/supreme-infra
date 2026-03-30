@@ -21,18 +21,7 @@
 
 ## Шаг 0. Генерация сервиса
 
-```bash
-pnpm generate:service
-```
-
-Параметры:
-
-- Name: `web-messages-ssr`
-- Type: **Next.js (Frontend)**
-- Description: `Messaging — chats, direct messages, broadcasts`
-- Port: `3007`
-
-После генерации генератор создаст стандартный скелет Next.js SSR сервиса.
+Пустой сервис уже сгенерирован, лежит по пути `services/web-messages-ssr`.
 
 ---
 
