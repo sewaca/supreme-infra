@@ -174,7 +174,7 @@ export function CaldavGuideDialog({ open, onClose }: Props) {
                   fullWidth
                   slotProps={{ input: { readOnly: true, sx: { fontSize: '0.75rem', fontFamily: 'monospace' } } }}
                 />
-                <IconButton onClick={copyUrl} color={copied ? 'success' : 'primary'} size="small">
+                <IconButton onClick={copyUrl} color="primary" size="small">
                   {copied ? <CheckCircleIcon /> : <ContentCopyIcon />}
                 </IconButton>
               </Box>

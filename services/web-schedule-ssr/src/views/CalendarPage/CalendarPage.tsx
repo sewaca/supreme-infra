@@ -14,6 +14,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -135,6 +136,7 @@ export function CalendarPage({
   const [loadedFrom, setLoadedFrom] = useState(initialLoadedFrom);
   const [loadedTo, setLoadedTo] = useState(initialLoadedTo);
   const [listWeekStart, setListWeekStart] = useState(initialDate);
+  const [isFetching, setIsFetching] = useState(false);
   const loadingRef = useRef(false);
   const calendarRef = useRef<FullCalendar>(null);
   const isInitialRender = useRef(true);
@@ -168,6 +170,7 @@ export function CalendarPage({
       if (!fetchFrom && !fetchTo) return;
 
       loadingRef.current = true;
+      setIsFetching(true);
       const actualFrom = fetchFrom ?? loadedFrom;
       const actualTo = fetchTo ?? loadedTo;
 
@@ -185,6 +188,7 @@ export function CalendarPage({
       setLoadedFrom((prev) => (actualFrom < prev ? actualFrom : prev));
       setLoadedTo((prev) => (actualTo > prev ? actualTo : prev));
       loadingRef.current = false;
+      setIsFetching(false);
     },
     [loadedFrom, loadedTo],
   );
@@ -285,7 +289,7 @@ export function CalendarPage({
             onClick={() => router.push('/schedule/group')}
             sx={{ borderRadius: '20px', textTransform: 'none', fontWeight: 600, fontSize: '0.8125rem', px: 2 }}
           >
-            Другая группа
+            Группа
           </Button>
           <Button
             variant="outlined"
@@ -320,9 +324,33 @@ export function CalendarPage({
             onPrevWeek={handleListPrevWeek}
             onNextWeek={handleListNextWeek}
             onEventClick={handleListEventClick}
+            isFetching={isFetching}
           />
         ) : (
-          <Paper className={styles.calendarCard} elevation={0}>
+          <Paper className={styles.calendarCard} elevation={0} sx={{ px: 0, position: 'relative' }}>
+            {isFetching && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 12,
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.75,
+                  backgroundColor: 'var(--color-background-secondary)',
+                  borderRadius: '20px',
+                  px: 1.5,
+                  py: 0.5,
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+                }}
+              >
+                <CircularProgress size={14} thickness={5} sx={{ color: 'var(--schedule-primary, #1a237e)' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
+                  Загрузка...
+                </Typography>
+              </Box>
+            )}
             <div
               className={`${styles.calendarInner} schedule-fc-wrapper`}
               onTouchStart={handleTouchStart}
@@ -357,11 +385,7 @@ export function CalendarPage({
                 allDaySlot={false}
                 nowIndicator
                 height="100%"
-                headerToolbar={{
-                  left: 'prev,today,next',
-                  center: 'title',
-                  right: calendarRight,
-                }}
+                headerToolbar={{ left: 'prev,today,next', center: 'title', right: calendarRight }}
                 buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
                 eventContent={(arg) => <EventCard event={arg} />}
                 eventClick={handleEventClick}

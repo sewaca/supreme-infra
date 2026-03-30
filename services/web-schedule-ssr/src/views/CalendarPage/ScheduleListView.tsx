@@ -3,6 +3,7 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -17,6 +18,7 @@ type Props = {
   onPrevWeek: () => void;
   onNextWeek: () => void;
   onEventClick: (event: CalendarEvent) => void;
+  isFetching?: boolean;
 };
 
 const DAY_NAMES: Record<number, string> = {
@@ -59,7 +61,7 @@ function formatWeekRange(dateFrom: string): string {
 
 type DayGroup = { date: string; events: CalendarEvent[] };
 
-export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick }: Props) {
+export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick, isFetching }: Props) {
   const days = useMemo(() => {
     // Filter events to the visible week: dateFrom (Monday) to dateFrom + 5 days (Saturday)
     const weekEnd = new Date(`${dateFrom}T00:00:00`);
@@ -94,9 +96,12 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
         <IconButton onClick={onPrevWeek} size="small">
           <ChevronLeftIcon />
         </IconButton>
-        <Typography variant="body1" sx={{ fontWeight: 600 }}>
-          {formatWeekRange(dateFrom)}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            {formatWeekRange(dateFrom)}
+          </Typography>
+          {isFetching && <CircularProgress size={14} thickness={5} />}
+        </Box>
         <IconButton onClick={onNextWeek} size="small">
           <ChevronRightIcon />
         </IconButton>
