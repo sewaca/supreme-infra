@@ -1,5 +1,5 @@
 import { createCaldavTokenAuthCaldavTokensPost } from '@supreme-int/api-client/src/generated/core-auth';
-import { getStatsRatingStatsGet } from '@supreme-int/api-client/src/generated/core-client-info';
+import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -37,8 +37,8 @@ export async function POST() {
     if (decoded.role === 'teacher') {
       caldavUrl = `${base}/${caldavToken}/teachers/${decoded.sub}/calendar.ics`;
     } else {
-      const statsRes = await getStatsRatingStatsGet({ query: { user_id: decoded.sub } });
-      const group = statsRes.data?.group;
+      const profileRes = await getUserProfileUserGet({ query: { user_id: decoded.sub } });
+      const group = profileRes.data?.group;
       if (!group) {
         return NextResponse.json({ error: 'Group not found' }, { status: 400 });
       }
