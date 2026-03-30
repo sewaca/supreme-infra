@@ -6,15 +6,14 @@ import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
-import CloseIcon from '@mui/icons-material/Close';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import EventIcon from '@mui/icons-material/Event';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
 import SyncIcon from '@mui/icons-material/Sync';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -30,6 +29,8 @@ import './fullcalendar.css';
 import { LessonDetailDialog } from './LessonDetailDialog';
 import { ScheduleListView } from './ScheduleListView';
 
+type CalType = 'timeGridWeek' | 'timeGrid3Day' | 'timeGridDay';
+
 type Props = {
   events: CalendarEvent[];
   initialDate: string;
@@ -39,6 +40,7 @@ type Props = {
   userName: string;
   error: string | null;
   initialViewMode: 'list' | 'calendar';
+  initialCalType: CalType | null;
 };
 
 function formatRoom(classroom: string | null, building: string | null): string | null {
@@ -67,9 +69,9 @@ function EventCard({ event }: { event: EventContentArg }) {
   );
 }
 
-function setViewCookie(mode: 'list' | 'calendar') {
-  // biome-ignore lint/suspicious/noDocumentCookie: setting view preference cookie
-  document.cookie = `schedule_view=${mode};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+function setCookie(name: string, value: string) {
+  // biome-ignore lint/suspicious/noDocumentCookie: setting preference cookie
+  document.cookie = `${name}=${value};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
 }
 
 async function fetchScheduleRange(from: string, to: string): Promise<CalendarEvent[]> {
@@ -83,6 +85,17 @@ async function fetchScheduleRange(from: string, to: string): Promise<CalendarEve
   }
 }
 
+/** Pick best calendar type: prefer saved cookie, then largest that fits screen */
+function resolveCalType(saved: CalType | null, canWeek: boolean, can3Day: boolean): CalType {
+  if (saved === 'timeGridWeek' && canWeek) return 'timeGridWeek';
+  if (saved === 'timeGrid3Day' && can3Day) return 'timeGrid3Day';
+  if (saved === 'timeGridDay') return 'timeGridDay';
+  // Fallback: largest available
+  if (canWeek) return 'timeGridWeek';
+  if (can3Day) return 'timeGrid3Day';
+  return 'timeGridDay';
+}
+
 export function CalendarPage({
   events: initialEvents,
   initialDate,
@@ -92,17 +105,17 @@ export function CalendarPage({
   userName,
   error,
   initialViewMode,
+  initialCalType,
 }: Props) {
   const router = useRouter();
   // Breakpoints based on ~200px per day column + 60px time label
   const canShowWeek = useMediaQuery('(min-width: 1260px)'); // 6 days
   const canShow3Days = useMediaQuery('(min-width: 660px)'); // 3 days
-  const calendarView = canShowWeek ? 'timeGridWeek' : canShow3Days ? 'timeGrid3Day' : 'timeGridDay';
+  const calendarView = resolveCalType(initialCalType, canShowWeek, canShow3Days);
   const calendarRight = canShowWeek ? 'timeGridWeek,timeGridDay' : canShow3Days ? 'timeGrid3Day,timeGridDay' : '';
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [caldavOpen, setCaldavOpen] = useState(false);
-  const [caldavBannerDismissed, setCaldavBannerDismissed] = useState(false);
   const [allEvents, setAllEvents] = useState<CalendarEvent[]>(initialEvents);
   const [loadedFrom, setLoadedFrom] = useState(initialLoadedFrom);
   const [loadedTo, setLoadedTo] = useState(initialLoadedTo);
@@ -144,11 +157,16 @@ export function CalendarPage({
   const toggleView = useCallback(() => {
     const next = viewMode === 'list' ? 'calendar' : 'list';
     setViewMode(next);
-    setViewCookie(next);
+    setCookie('schedule_view', next);
   }, [viewMode]);
 
   const handleDatesSet = useCallback(
     (arg: DatesSetArg) => {
+      // Save selected calendar type to cookie
+      const viewType = arg.view.type;
+      if (viewType === 'timeGridWeek' || viewType === 'timeGrid3Day' || viewType === 'timeGridDay') {
+        setCookie('schedule_cal_type', viewType);
+      }
       if (isInitialRender.current) {
         isInitialRender.current = false;
         return;
@@ -202,69 +220,56 @@ export function CalendarPage({
       elevation={0}
     >
       <DefaultNavbar
-        center={<Typography variant="title1">Расписание</Typography>}
+        // biome-ignore lint/complexity/noUselessFragments: нужен для того чтобы не показывать кнопку назад в навбаре
+        leftSlot={<></>}
+        center={<Typography variant="title2">Расписание</Typography>}
         rightSlot={<ProfileButton avatar={avatar} name={userName} />}
       />
 
       <Box className={styles.content}>
-        {error && (
-          <Paper className={styles.errorCard} elevation={0}>
-            <ErrorOutlineIcon color="error" fontSize="small" />
-            <Typography variant="body2" color="error">
-              {error}
-            </Typography>
-          </Paper>
-        )}
+        <Alert
+          icon={<SyncIcon fontSize="small" />}
+          severity="info"
+          onClick={() => setCaldavOpen(true)}
+          sx={{ cursor: 'pointer', borderRadius: '12px', mb: 1, mt: 1 }}
+        >
+          <strong>Привяжите CalDAV-календарь</strong> — расписание прямо в вашем телефоне!
+        </Alert>
 
-        {!caldavBannerDismissed && (
-          <Paper
-            className={styles.caldavBanner}
-            elevation={0}
-            onClick={() => setCaldavOpen(true)}
-            role="button"
-            tabIndex={0}
-          >
-            <SyncIcon sx={{ color: '#1a237e', fontSize: 20 }} />
-            <Typography variant="body2" sx={{ flex: 1, fontWeight: 500 }}>
-              Привяжите CalDAV-календарь — это удобно!
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                setCaldavBannerDismissed(true);
-              }}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </Paper>
+        {error && (
+          <Alert severity="error" sx={{ borderRadius: '12px', mb: 1 }}>
+            {error}
+          </Alert>
         )}
 
         <Box className={styles.topSection}>
-          <Chip
-            icon={<GroupsIcon />}
-            label="Другая группа"
+          <Button
             variant="outlined"
             size="small"
-            clickable
+            startIcon={<GroupsIcon />}
             onClick={() => router.push('/schedule/group')}
-          />
-          <Chip
-            icon={<PersonIcon />}
-            label="Преподаватель"
+            sx={{ borderRadius: '20px', textTransform: 'none', fontWeight: 600, fontSize: '0.8125rem', px: 2 }}
+          >
+            Другая группа
+          </Button>
+          <Button
             variant="outlined"
             size="small"
-            clickable
+            startIcon={<PersonIcon />}
             onClick={() => router.push('/schedule/teacher')}
-          />
-          <Chip
-            icon={<EventIcon />}
-            label="Сессия"
+            sx={{ borderRadius: '20px', textTransform: 'none', fontWeight: 600, fontSize: '0.8125rem', px: 2 }}
+          >
+            Преподаватель
+          </Button>
+          <Button
             variant="outlined"
             size="small"
-            clickable
+            startIcon={<EventIcon />}
             onClick={() => router.push('/schedule/exams')}
-          />
+            sx={{ borderRadius: '20px', textTransform: 'none', fontWeight: 600, fontSize: '0.8125rem', px: 2 }}
+          >
+            Сессия
+          </Button>
 
           <Box sx={{ marginLeft: 'auto' }}>
             <IconButton onClick={toggleView} size="small" title={viewMode === 'list' ? 'Календарь' : 'Список'}>

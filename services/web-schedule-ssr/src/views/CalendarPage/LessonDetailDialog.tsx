@@ -1,6 +1,7 @@
 'use client';
 
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import GroupsIcon from '@mui/icons-material/Groups';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PersonIcon from '@mui/icons-material/Person';
 import RoomIcon from '@mui/icons-material/Room';
@@ -96,7 +97,7 @@ export function LessonDetailDialog({ event, onClose }: Props) {
         )}
         {teacher_name && <InfoRow icon={<PersonIcon fontSize="small" />} label="Преподаватель" value={teacher_name} />}
 
-        <InfoRow icon={null} label="Группа" value={group_name} />
+        <InfoRow icon={<GroupsIcon fontSize="small" />} label="Группа" value={group_name} />
 
         {is_override && (
           <Box

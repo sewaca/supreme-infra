@@ -72,15 +72,20 @@
 /* Grid — softer lines */
 .schedule-fc-wrapper .fc td,
 .schedule-fc-wrapper .fc th {
-  border-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.04) !important;
 }
 
 .schedule-fc-wrapper .fc-timegrid-divider {
-  border-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.04) !important;
 }
 
 .schedule-fc-wrapper .fc-scrollgrid {
-  border-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Hide half-hour lines, keep only hour lines */
+.schedule-fc-wrapper .fc-timegrid-slot-minor {
+  border-top: none !important;
 }
 
 /* Slots */

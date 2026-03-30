@@ -11,73 +11,117 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
 
-type Step = {
-  number: number;
-  title: string;
-  description: string;
+type Step = { number: number; title: string; description: string };
+
+type Platform = 'apple' | 'google' | 'yandex' | 'other';
+
+const STEPS: Record<Platform, Step[]> = {
+  apple: [
+    {
+      number: 1,
+      title: 'Откройте Настройки',
+      description: 'Перейдите в Настройки → Приложения → Календарь → Учётные записи',
+    },
+    {
+      number: 2,
+      title: 'Добавьте учётную запись',
+      description: 'Нажмите «Добавить учётную запись» → «Другое» → «Подписной календарь»',
+    },
+    {
+      number: 3,
+      title: 'Вставьте ссылку',
+      description: 'Вставьте скопированную ссылку и нажмите «Далее» → «Сохранить»',
+    },
+    {
+      number: 4,
+      title: 'Готово!',
+      description: 'Расписание появится в приложении Календарь и будет автоматически обновляться',
+    },
+  ],
+  google: [
+    {
+      number: 1,
+      title: 'Откройте Google Календарь',
+      description: 'Перейдите на calendar.google.com в браузере (в мобильном приложении эта функция недоступна)',
+    },
+    { number: 2, title: 'Добавьте подписку', description: 'Нажмите «+» рядом с «Другие календари» → «По URL»' },
+    {
+      number: 3,
+      title: 'Вставьте ссылку',
+      description: 'Вставьте скопированную ссылку и нажмите «Добавить календарь»',
+    },
+    {
+      number: 4,
+      title: 'Готово!',
+      description:
+        'Расписание появится в Google Календаре на всех устройствах. Синхронизация может занять до нескольких часов.',
+    },
+  ],
+  yandex: [
+    { number: 1, title: 'Откройте Яндекс Календарь', description: 'Перейдите на calendar.yandex.ru в браузере' },
+    {
+      number: 2,
+      title: 'Добавьте подписку',
+      description: 'Нажмите на шестерёнку → «Настройки» → «Подписки» → «Добавить подписку»',
+    },
+    {
+      number: 3,
+      title: 'Вставьте ссылку',
+      description: 'Вставьте скопированную ссылку в поле «Ссылка на календарь» и нажмите «Подписаться»',
+    },
+    {
+      number: 4,
+      title: 'Готово!',
+      description: 'Расписание появится в Яндекс Календаре. Обновление может занять до нескольких часов.',
+    },
+  ],
+  other: [
+    { number: 1, title: 'Откройте календарь', description: 'Зайдите в ваше приложение-календарь' },
+    {
+      number: 2,
+      title: 'Найдите подписку',
+      description: 'Нажмите «Подписаться на календарь» или «Добавить подписной календарь» (название может отличаться)',
+    },
+    { number: 3, title: 'Вставьте ссылку', description: 'Введите ссылку, которую скопировали выше, и сохраните' },
+    {
+      number: 4,
+      title: 'Дождитесь синхронизации',
+      description: 'Расписание появится в календаре. Первая синхронизация может занять до нескольких часов.',
+    },
+  ],
 };
-
-const IOS_STEPS: Step[] = [
-  {
-    number: 1,
-    title: 'Откройте Настройки',
-    description: 'Перейдите в Настройки → Приложения → Календарь → Учётные записи',
-  },
-  {
-    number: 2,
-    title: 'Добавьте учётную запись',
-    description: 'Нажмите «Добавить учётную запись» → «Другое» → «Подписной календарь»',
-  },
-  { number: 3, title: 'Вставьте ссылку', description: 'Вставьте скопированную ссылку CalDAV и нажмите «Далее»' },
-  {
-    number: 4,
-    title: 'Готово!',
-    description: 'Расписание появится в приложении Календарь и будет автоматически обновляться',
-  },
-];
-
-const ANDROID_STEPS: Step[] = [
-  { number: 1, title: 'Установите ICSx⁵', description: 'Скачайте приложение ICSx⁵ из Google Play (бесплатное)' },
-  { number: 2, title: 'Добавьте подписку', description: 'Откройте ICSx⁵, нажмите «+» и вставьте скопированную ссылку' },
-  {
-    number: 3,
-    title: 'Настройте обновление',
-    description: 'Выберите интервал обновления (рекомендуем: каждые 4 часа)',
-  },
-  { number: 4, title: 'Готово!', description: 'Расписание появится в Google Календаре' },
-];
 
 export function CaldavGuideDialog({ open, onClose }: Props) {
   const [caldavUrl, setCaldavUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [platform, setPlatform] = useState<'ios' | 'android' | null>(null);
+  const [platform, setPlatform] = useState<Platform | null>(null);
 
-  const generateUrl = useCallback(async () => {
+  // Auto-fetch URL when dialog opens
+  useEffect(() => {
+    if (!open || caldavUrl || loading) return;
     setLoading(true);
     setError(null);
-    try {
-      const res = await fetch('/api/caldav-setup', { method: 'POST' });
-      const data = await res.json();
-      if (!res.ok || data.error) {
-        setError(data.error || 'Ошибка при создании ссылки');
-        return;
-      }
-      setCaldavUrl(data.caldavUrl);
-    } catch {
-      setError('Не удалось создать ссылку. Попробуйте позже.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    fetch('/api/caldav-setup', { method: 'POST' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setCaldavUrl(data.caldavUrl);
+        }
+      })
+      .catch(() => setError('Не удалось создать ссылку. Попробуйте позже.'))
+      .finally(() => setLoading(false));
+  }, [open, caldavUrl, loading]);
 
   const copyUrl = useCallback(async () => {
     if (!caldavUrl) return;
@@ -88,16 +132,13 @@ export function CaldavGuideDialog({ open, onClose }: Props) {
 
   const handleClose = useCallback(() => {
     onClose();
-    // Reset state for next open
     setTimeout(() => {
-      setCaldavUrl(null);
-      setError(null);
       setPlatform(null);
       setCopied(false);
     }, 300);
   }, [onClose]);
 
-  const steps = platform === 'ios' ? IOS_STEPS : platform === 'android' ? ANDROID_STEPS : [];
+  const steps = platform ? STEPS[platform] : [];
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -105,22 +146,8 @@ export function CaldavGuideDialog({ open, onClose }: Props) {
 
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, paddingTop: '8px !important' }}>
         <Typography variant="body2" color="text.secondary">
-          Расписание будет автоматически синхронизироваться с вашим календарём на телефоне.
+          Расписание будет автоматически синхронизироваться с календарём на вашем устройстве.
         </Typography>
-
-        {/* Step 1: Generate URL */}
-        {!caldavUrl && !loading && (
-          <Box sx={{ textAlign: 'center', py: 1 }}>
-            <Button variant="contained" onClick={generateUrl} disabled={loading} size="large">
-              Получить ссылку на календарь
-            </Button>
-            {error && (
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                {error}
-              </Typography>
-            )}
-          </Box>
-        )}
 
         {loading && (
           <Box sx={{ textAlign: 'center', py: 2 }}>
@@ -128,36 +155,63 @@ export function CaldavGuideDialog({ open, onClose }: Props) {
           </Box>
         )}
 
-        {/* Step 2: Show URL + copy */}
+        {error && (
+          <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
+            {error}
+          </Typography>
+        )}
+
         {caldavUrl && (
           <>
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <TextField
-                value={caldavUrl}
-                size="small"
-                fullWidth
-                slotProps={{ input: { readOnly: true, sx: { fontSize: '0.75rem', fontFamily: 'monospace' } } }}
-              />
-              <IconButton onClick={copyUrl} color={copied ? 'success' : 'default'} size="small">
-                {copied ? <CheckCircleIcon /> : <ContentCopyIcon />}
-              </IconButton>
+            <Box>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+                Ваша ссылка на календарь:
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <TextField
+                  value={caldavUrl}
+                  size="small"
+                  fullWidth
+                  slotProps={{ input: { readOnly: true, sx: { fontSize: '0.75rem', fontFamily: 'monospace' } } }}
+                />
+                <IconButton onClick={copyUrl} color={copied ? 'success' : 'default'} size="small">
+                  {copied ? <CheckCircleIcon /> : <ContentCopyIcon />}
+                </IconButton>
+              </Box>
             </Box>
 
-            {/* Step 3: Choose platform */}
             {!platform && (
-              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                <Button variant="outlined" onClick={() => setPlatform('ios')}>
-                  iPhone / iPad
-                </Button>
-                <Button variant="outlined" onClick={() => setPlatform('android')}>
-                  Android
-                </Button>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5 }}>
+                  Выберите ваш календарь:
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  <Button variant="outlined" size="small" onClick={() => setPlatform('apple')}>
+                    Apple
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={() => setPlatform('google')}>
+                    Google
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={() => setPlatform('yandex')}>
+                    Яндекс
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={() => setPlatform('other')}>
+                    Другое
+                  </Button>
+                </Box>
               </Box>
             )}
 
-            {/* Step 4: Show guide */}
             {platform && (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => setPlatform(null)}
+                  sx={{ alignSelf: 'flex-start', p: 0 }}
+                >
+                  &larr; Выбрать другой календарь
+                </Button>
                 {steps.map((step) => (
                   <Box key={step.number} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
                     <Box

@@ -84,9 +84,15 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
 
   const events = scheduleToEvents(schedule);
 
-  // Read view preference from cookie; default to "list" (mobile-friendly)
+  // Read view preferences from cookies
   const viewCookie = cookieStore.get('schedule_view')?.value;
   const initialViewMode: 'list' | 'calendar' = viewCookie === 'calendar' ? 'calendar' : 'list';
+
+  const calTypeCookie = cookieStore.get('schedule_cal_type')?.value;
+  const validCalTypes = ['timeGridWeek', 'timeGrid3Day', 'timeGridDay'] as const;
+  const initialCalType = validCalTypes.includes(calTypeCookie as (typeof validCalTypes)[number])
+    ? (calTypeCookie as (typeof validCalTypes)[number])
+    : null;
 
   return (
     <CalendarPage
@@ -98,6 +104,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
       userName={userName}
       error={error}
       initialViewMode={initialViewMode}
+      initialCalType={initialCalType}
     />
   );
 }
