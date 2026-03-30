@@ -133,7 +133,7 @@ export function ScheduleCalendarView({
         return;
       }
       const from = arg.start.toISOString().slice(0, 10);
-      const to = new Date(arg.end.getTime() - 86400000).toISOString().slice(0, 10);
+      const to = new Date(arg.end.getTime() ).toISOString().slice(0, 10);
       onRangeChange(from, to);
     },
     [onRangeChange],
@@ -185,7 +185,8 @@ export function ScheduleCalendarView({
             timeGrid3Day: {
               type: 'timeGrid',
               duration: { days: 3 },
-              dateAlignment: 'week',
+              firstDay: 1,
+              // dateAlignment: 'week',
               buttonText: '3 дня',
             },
             timeGridWeek: {
