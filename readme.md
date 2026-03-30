@@ -84,10 +84,9 @@ services:
 - 📖 [Database Configuration Summary](DATABASE_CONFIGURATION_SUMMARY.md) - Complete overview
 - 🔑 [Database Password Setup](DATABASE_PASSWORD_SETUP.md) - Quick password configuration
 - 🚀 [Deploy Database Guide](DEPLOY_DATABASE_GUIDE.md) - Deployment instructions
-- 📚 [Database Deployment Workflow](docs/database-deployment-workflow.md) - Detailed workflow guide
+- 📚 [Databases](docs/databases.md) - PostgreSQL, init scripts, SQL migrations, deploy workflow
 - 🔐 [Database Secrets Configuration](docs/database-secrets-configuration.md) - Secrets management
 - 🔧 [Fix Missing Tables](FIX_MISSING_TABLES.md) - Fix "relation does not exist" errors
-- 🔄 [Database Migrations](infra/databases/DATABASE_MIGRATIONS.md) - Migration system documentation
 
 ## Infra:
 
@@ -495,11 +494,8 @@ Madara-robot will take care about everything another
 - **[CI/CD Pipeline](docs/ci.md)** - Настройка непрерывной интеграции и развертывания
 - **[Процесс релиза](docs/release-process.md)** - Полная документация по pipeline релиза
 - **[Управление секретами](docs/secrets-management.md)** - Как работать с секретами и переменными окружения
-- **[Настройка базы данных](docs/database-setup.md)** - Полная документация по PostgreSQL
-- **[Быстрый старт: База данных](docs/quick-start-database.md)** - Быстрая инструкция по деплою PostgreSQL
-- **[Добавление новой БД](docs/adding-new-database.md)** - Руководство по добавлению БД для нового сервиса
-- **[Database Deployment Workflow](docs/database-deployment-workflow.md)** - GitHub Actions workflow для деплоя БД
-- **[Database Init Scripts](docs/database-init-scripts.md)** - Автоматическая инициализация БД через SQL скрипты
+- **[Базы данных](docs/databases.md)** - PostgreSQL, init.sql, SQL-миграции, генерация values, workflow деплоя, подключение через PgBouncer
+- **[Быстрый старт: База данных](docs/quick-start-database.md)** - Краткая инструкция по деплою PostgreSQL
 
 ## Version Naming
 

@@ -480,11 +480,11 @@ pnpm run generate
 # Deploy (migrations run automatically)
 ```
 
-See `infra/databases/DATABASE_MIGRATIONS.md` for complete documentation.
+See `docs/databases.md` for complete documentation.
 
 ## See Also
 
 - `API_EXAMPLES.md` — Complete API documentation with all endpoints
 - `JWT_FORMAT.md` — JWT structure and how to generate custom tokens
 - `README.md` — Service overview and setup instructions
-- `infra/databases/DATABASE_MIGRATIONS.md` — Database migration system documentation
+- `docs/databases.md` — database init, SQL migrations, deploy workflow

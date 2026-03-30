@@ -513,4 +513,4 @@ CORE_CLIENT_INFO_URL=http://localhost:8000/core-client-info
 - `README.md` — Service overview
 - `docs/prompts/29-03-2026__21-00__s3-file-service-instructions.md` — File storage service implementation notes
 - `infra/databases/core-messages-db/init.sql` — Database schema
-- `infra/databases/DATABASE_MIGRATIONS.md` — Migration system documentation
+- `docs/databases.md` — database init, SQL migrations, deploy workflow

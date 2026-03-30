@@ -2,6 +2,8 @@
 
 Быстрая инструкция по деплою PostgreSQL для авторизации.
 
+Подробная документация: [databases.md](./databases.md)
+
 ## Шаг 1: Деплой PostgreSQL
 
 ### Development
@@ -105,7 +107,3 @@ kubectl exec -i postgresql-0 -- psql -U auth_user auth_db < backup.sql
 cd services/backend
 pnpm run migration:run
 ```
-
-## Дополнительная информация
-
-Подробная документация: [database-setup.md](./database-setup.md)

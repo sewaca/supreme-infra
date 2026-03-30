@@ -321,4 +321,4 @@ uv run alembic upgrade head
 
 - `README.md` — Service overview and setup
 - `infra/databases/core-auth-db/` — Database schema and seed data
-- `infra/databases/DATABASE_MIGRATIONS.md` — Migration system documentation
+- `docs/databases.md` — database init, SQL migrations, deploy workflow
