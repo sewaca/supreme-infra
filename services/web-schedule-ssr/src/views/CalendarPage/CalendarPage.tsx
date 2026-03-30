@@ -150,8 +150,8 @@ export function CalendarPage({
     touchStartX.current = null;
     const api = calendarRef.current?.getApi();
     if (!api) return;
-    if (diff > 60) api.prev();
-    else if (diff < -60) api.next();
+    if (diff > 130) api.prev();
+    else if (diff < -130) api.next();
   }, []);
 
   const ensureRange = useCallback(
