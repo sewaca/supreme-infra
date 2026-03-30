@@ -112,7 +112,7 @@
 
 /* Highlight today in the header */
 .schedule-fc-wrapper .fc-col-header-cell.fc-day-today {
-  background: #e3f2fd !important;
+  background: #e5f3fb !important;
   font-weight: 700;
 }
 
