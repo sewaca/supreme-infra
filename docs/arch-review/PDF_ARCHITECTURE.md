@@ -4,14 +4,24 @@
 
 This document describes the architecture for PDF document generation and storage for orders, references, and applications in the supreme-infra system.
 
+### Alignment with platform file storage (source of truth)
+
+Persistent object storage for **any** files (including PDFs) is standardized on **MinIO (S3-compatible)** and a **dedicated file service** (`core-files` / `core-storage`), not ad-hoc S3 clients inside domain services. Implementation details, Helm layout, boto3 settings, buckets, validation limits, and ingress live in:
+
+[`docs/prompts/29-03-2026__21-00__s3-file-service-instructions.md`](../prompts/29-03-2026__21-00__s3-file-service-instructions.md)
+
+**PDF-specific rule:** `core-applications` (or another domain service) **generates** PDFs and **persists** them by integrating with that stack—typically via `core-files` (HTTP) and/or presigned URLs—rather than owning its own long-lived MinIO credentials and upload logic. Chat attachments and generated PDFs can share the same MinIO cluster; **bucket and key prefix** should separate concerns (e.g. `messages-attachments` vs `pdfs` or `…/orders/…` keys), with **private buckets and short-lived presigned GET** for sensitive documents (see [Security Considerations](#security-considerations)).
+
+**Infrastructure already in repo:** `infra/helmcharts/minio/` (ClusterIP API `:9000`, console `:9001`, 10Gi PVC, secrets via `MINIO_SECRET_KEY`). Local dev: `docker-compose.dev.yml` MinIO service; internal URL pattern: `http://minio.default.svc.cluster.local:9000`.
+
 ## Requirements
 
 1. **Generate PDFs** for orders, references, and applications
-2. **Store PDFs** securely with access control
-3. **Support both** generated and uploaded (signed) PDFs
-4. **Enable PDF download** via API endpoints
-5. **Track PDF versions** for audit purposes
-6. **Handle updates** when source data changes
+2. **Store PDFs** in MinIO **through the same platform pattern as other files** (`core-files` + buckets/keys), with access control appropriate to document sensitivity
+3. **Support both** generated and uploaded (signed) PDFs (uploaded binaries also flow through the file service / same storage model)
+4. **Enable PDF download** via API endpoints (domain API returns bytes, redirects, or **presigned** URLs—consistent with how `core-files` exposes objects)
+5. **Track PDF versions** for audit purposes (metadata in DB; blobs in object storage)
+6. **Handle updates** when source data changes (re-upload new object, bump version, invalidate or replace URL reference)
 
 ## Architecture Options
 
@@ -29,21 +39,21 @@ This document describes the architecture for PDF document generation and storage
 │  │ 1. Fetch data       │    │
 │  │    from DB          │    │
 │  └─────────┬───────────┘    │
-│            │                 │
-│            ▼                 │
+│            │                │
+│            ▼                │
 │  ┌─────────────────────┐    │
 │  │ 2. Render HTML      │    │
 │  │    template         │    │
 │  │    (Jinja2)         │    │
 │  └─────────┬───────────┘    │
-│            │                 │
-│            ▼                 │
+│            │                │
+│            ▼                │
 │  ┌─────────────────────┐    │
 │  │ 3. Convert to PDF   │    │
 │  │    (WeasyPrint)     │    │
 │  └─────────┬───────────┘    │
-│            │                 │
-│            ▼                 │
+│            │                │
+│            ▼                │
 │  ┌─────────────────────┐    │
 │  │ 4. Return bytes     │    │
 │  │    with headers     │    │
@@ -74,7 +84,7 @@ This document describes the architecture for PDF document generation and storage
 
 ---
 
-### Option B: Pre-Generated with S3 Storage (Production Recommendation)
+### Option B: Pre-Generated with MinIO Storage (Production Recommendation)
 
 ```
 ┌─────────────┐
@@ -85,52 +95,51 @@ This document describes the architecture for PDF document generation and storage
 ┌─────────────────────────────────────┐
 │  core-applications API              │
 │  ┌─────────────────────┐            │
-│  │ 1. Check pdf_url    │            │
-│  │    in database      │            │
+│  │ 1. Check pdf_url /  │            │
+│  │    object ref in DB │            │
 │  └─────────┬───────────┘            │
-│            │                         │
+│            │                        │
 │      ┌─────┴─────┐                  │
 │      │           │                  │
 │   Exists      Not Exists            │
 │      │           │                  │
 │      ▼           ▼                  │
-│  ┌────────┐  ┌──────────────┐      │
-│  │Return  │  │Generate PDF  │      │
-│  │Signed  │  │              │      │
-│  │URL     │  │Upload to S3  │      │
-│  │        │  │              │      │
-│  │        │  │Save pdf_url  │      │
-│  │        │  │              │      │
-│  │        │  │Return URL    │      │
-│  └────────┘  └──────────────┘      │
+│   ┌────────┐  ┌──────────────┐      │
+│   │Return  │  │Generate PDF  │      │
+│   │presign │  │bytes         │      │
+│   │or      │  │              │      │
+│   │redirect│  │Upload via    │      │
+│   │        │  │core-files    │      │
+│   │        │  │(S3 put)      │      │
+│   │        │  │              │      │
+│   │        │  │Save URL/key  │      │
+│   │        │  │in DB         │      │
+│   └────────┘  └──────────────┘      │
 └──────────┬──────────────────────────┘
-           │
+           │ server-side upload / presign
            ▼
-    ┌──────────────┐
-    │   MinIO/S3   │
-    │   Storage    │
-    │              │
-    │ /pdfs/       │
-    │  orders/     │
-    │  references/ │
-    │  applications│
-    └──────────────┘
+    ┌──────────────┐      ┌──────────────┐
+    │  core-files  │─────▶│    MinIO     │
+    │  (optional   │ S3   │  (cluster)   │
+    │   presign)   │ API  │              │
+    └──────────────┘      └──────────────┘
 ```
 
 **Pros:**
 
-- ✅ Fast response times (<100ms)
-- ✅ Can handle signed documents
+- ✅ Fast response times for clients once object exists (<100ms to issue redirect/presigned URL)
+- ✅ Can handle signed documents (binary stored once; access via controlled URLs)
 - ✅ Scalable to high traffic
-- ✅ Can implement CDN caching
+- ✅ Can implement CDN caching in front of stable public URLs if policy allows
 - ✅ Offline access possible
+- ✅ Same operational model as message attachments and other files
 
 **Cons:**
 
-- ❌ Storage costs
-- ❌ More complex implementation
-- ❌ Need to handle updates/invalidation
-- ❌ Requires S3-compatible storage
+- ❌ Storage and backup planning for MinIO PVC / capacity
+- ❌ More moving parts (domain service + `core-files` + MinIO)
+- ❌ Need to handle updates/invalidation and versioning
+- ❌ Requires S3-compatible storage (provided by MinIO in-cluster)
 
 **Use Cases:**
 
@@ -155,25 +164,27 @@ This document describes the architecture for PDF document generation and storage
 │  │ Check pdf_url &     │            │
 │  │ document type       │            │
 │  └─────────┬───────────┘            │
-│            │                         │
+│            │                        │
 │      ┌─────┴─────────┐              │
 │      │               │              │
 │   Official       Temporary          │
 │   Document       Document           │
 │      │               │              │
 │      ▼               ▼              │
-│  ┌────────┐    ┌──────────┐        │
-│  │ S3     │    │Generate  │        │
-│  │Storage │    │On-Demand │        │
-│  └────────┘    └──────────┘        │
+│  ┌────────┐    ┌──────────┐         │
+│  │ MinIO  │    │Generate  │         │
+│  │via     │    │On-Demand │         │
+│  │core-   │    │          │         │
+│  │files   │    │          │         │
+│  └────────┘    └──────────┘         │
 └─────────────────────────────────────┘
 ```
 
 **Decision Logic:**
 
-- **Official documents** (signed orders, archived references) → Pre-generate & store in S3
-- **Temporary documents** (draft orders, pending references) → Generate on-demand
-- **Frequently accessed** → Cache in S3 after first generation
+- **Official documents** (signed orders, archived references) → Pre-generate & store in MinIO via `core-files` (or equivalent internal upload/presign flow)
+- **Temporary documents** (draft orders, pending references) → Generate on-demand (optional: promote to stored object after first generation)
+- **Frequently accessed** → Persist in object storage after first generation to reduce CPU
 
 ---
 
@@ -191,7 +202,7 @@ CREATE TABLE "order" (
     title VARCHAR NOT NULL,
     date DATE NOT NULL,
     additional_fields JSONB,
-    pdf_url VARCHAR,  -- Existing
+    pdf_url VARCHAR,  -- Existing: prefer URL or stable key aligned with core-files / MinIO object identity
     actions JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -207,7 +218,7 @@ CREATE TABLE reference_order (
     pickup_point_id VARCHAR,
     virtual_only BOOLEAN DEFAULT FALSE,
     storage_until TIMESTAMP WITH TIME ZONE,
-    pdf_url VARCHAR  -- Existing
+    pdf_url VARCHAR  -- Existing: same semantics as orders
 );
 
 -- Applications
@@ -366,89 +377,56 @@ CREATE TABLE pdf_generation_log (
        )
    ```
 
-### Phase 2: Storage Integration (S3)
+### Phase 2: Storage Integration (MinIO via `core-files`)
 
-**Goal:** Add persistent storage for official documents
+**Goal:** Add persistent storage for official documents using the **same** MinIO + service boundaries as the rest of the platform.
 
-**Stack:**
+**Stack (see file-service instructions):**
 
-- **MinIO** - S3-compatible object storage (can run in k8s)
-- **boto3** - AWS S3 client for Python
+- **MinIO** — already charted at `infra/helmcharts/minio/` (not AWS S3 unless you add it later)
+- **`core-files`** — owns boto3/S3 client, bucket ensure-on-startup, validation, optional thumbnails (not required for PDF)
+- **`core-applications`** — WeasyPrint/Jinja2 only; talks to `core-files` over HTTP (or consumes presigned URLs), **does not** embed a second copy of S3 credentials for routine uploads
 
 **Steps:**
 
-1. **Deploy MinIO to Kubernetes**
+1. **MinIO in cluster** — Deploy/operate per [`docs/prompts/29-03-2026__21-00__s3-file-service-instructions.md`](../prompts/29-03-2026__21-00__s3-file-service-instructions.md). Bucket(s): either a dedicated bucket for PDFs (e.g. `pdfs`) or a separate key prefix in an existing bucket—choose based on lifecycle and IAM-style policies you apply at the bucket level.
 
-   ```yaml
-   # infra/helmcharts/minio/values.yaml
-   mode: standalone
-   persistence:
-     enabled: true
-     size: 50Gi
-   buckets:
-     - name: pdfs
-       policy: none
-       purge: false
-   ```
+2. **Extend or use `core-files` for server-side PDF bytes** — The public prompt focuses on **multipart upload from clients** (`POST /core-files/upload`). For generated PDFs, add one of:
+   - **Internal/trusted upload** from `core-applications` (service account / mTLS / cluster-only route): accept `application/pdf` bytes + metadata (`entity_type`, `entity_id`, `version`) and return the same shape as user uploads (`file_url`, `mime_type`, `file_size`, …).
+   - **Presigned PUT** issued by `core-files`, then `core-applications` `PUT`s the PDF to MinIO—still no boto3 in the domain service.
 
-2. **Create Storage Service**
+   boto3 configuration in `core-files` should match the platform pattern (`Config(signature_version="s3v4")`, `endpoint_url`, region `us-east-1` for MinIO compatibility)—see the instructions doc.
 
-   ```python
-   # services/core-applications/app/services/storage.py
-   import boto3
-   from app.config import settings
+3. **Persist reference in domain DB** — Store whatever the file service returns as the stable handle (`file_url` and/or object key + bucket). Prefer **presigned GET** (or redirect) at download time for private buckets rather than handing clients long-lived public URLs for sensitive PDFs. The messages use-case may use a more public URL pattern; **orders/references/applications should default to private object + short TTL presign**.
 
-   class StorageService:
-       def __init__(self):
-           self.s3 = boto3.client(
-               's3',
-               endpoint_url=settings.s3_endpoint,
-               aws_access_key_id=settings.s3_access_key,
-               aws_secret_access_key=settings.s3_secret_key
-           )
-           self.bucket = settings.s3_bucket_name
-
-       def upload_pdf(self, file_bytes: bytes, path: str) -> str:
-           self.s3.put_object(
-               Bucket=self.bucket,
-               Key=path,
-               Body=file_bytes,
-               ContentType='application/pdf'
-           )
-           return f"s3://{self.bucket}/{path}"
-
-       def get_signed_url(self, path: str, expires_in: int = 3600) -> str:
-           return self.s3.generate_presigned_url(
-               'get_object',
-               Params={'Bucket': self.bucket, 'Key': path},
-               ExpiresIn=expires_in
-           )
-   ```
-
-3. **Update Endpoints for Hybrid Approach**
+4. **Update endpoints (hybrid) — illustrative flow**
 
    ```python
    @router.get("/{order_id}/pdf")
    async def get_order_pdf(order_id: UUID, user_id: UUID, db: AsyncSession = Depends(get_db)):
        order = await get_order_by_id(order_id, user_id, db)
 
-       # Check if PDF exists in storage
-       if order.pdf_url and order.pdf_url.startswith('s3://'):
-           signed_url = storage_service.get_signed_url(order.pdf_url)
+       if order.pdf_url:
+           # Resolve via core-files: presigned GET or redirect (implementation detail of file API)
+           signed_url = await core_files_client.presign_get(order.pdf_url)
            return RedirectResponse(url=signed_url)
 
-       # Generate on-demand
        pdf_bytes = pdf_generator.generate_order_pdf(order)
 
-       # For official documents, save to S3
-       if order.type in ['scholarship', 'education']:
-           path = f"orders/{order.id}.pdf"
-           order.pdf_url = storage_service.upload_pdf(pdf_bytes, path)
+       if order.type in ["scholarship", "education"]:
+           meta = await core_files_client.upload_pdf(
+               content=pdf_bytes,
+               key_hint=f"orders/{order.id}.pdf",
+               mime_type="application/pdf",
+           )
+           order.pdf_url = meta["file_url"]
            order.pdf_generated_at = datetime.now()
            await db.commit()
 
        return Response(content=pdf_bytes, media_type="application/pdf")
    ```
+
+   `core_files_client` is a placeholder for the real HTTP client and API surface once `core-files` defines internal vs public upload routes.
 
 ### Phase 3: Advanced Features
 
@@ -474,9 +452,9 @@ CREATE TABLE pdf_generation_log (
    - Implement rate limiting on PDF endpoints
 
 3. **Storage Security**
-   - Encrypt PDFs at rest in S3
-   - Use IAM roles for S3 access (no hardcoded keys)
-   - Implement bucket policies to prevent public access
+   - Encrypt PDFs at rest (MinIO at-rest encryption / underlying storage class as deployed)
+   - **No duplicate secrets in domain services:** MinIO credentials live with `core-files` (e.g. `S3_ACCESS_KEY` / `S3_SECRET_KEY` from the cluster secrets store, mapped from `MINIO_*` per the file-service instructions)
+   - Bucket policy: default to **no public read** for PDF buckets; use presigned GET with short TTL. Only open read policies where the product explicitly requires it (similar trade-off as optional public-read for attachments in the instructions doc)
 
 ---
 
@@ -523,9 +501,9 @@ Track the following metrics:
    - File sizes
 
 2. **Storage Metrics**
-   - Total storage used
+   - Total storage used (MinIO PVC / object count)
    - Number of PDFs stored
-   - S3 API call count
+   - S3 API call count (from `core-files` and MinIO metrics)
 
 3. **Access Metrics**
    - PDF download count
@@ -542,20 +520,21 @@ Track the following metrics:
 - **Storage:** $0
 - **Total:** ~$0/month
 
-### Production (S3 Storage)
+### Production (MinIO in-cluster + `core-files`)
 
-- **Storage:** 50GB × $0.023/GB = ~$1.15/month
-- **Requests:** 100k requests × $0.0004/1k = ~$0.04/month
-- **Data Transfer:** 50GB × $0.09/GB = ~$4.50/month (if external)
-- **Total:** ~$5-10/month
+- **Object storage:** primarily **PVC capacity** and backup/DR for the MinIO volume (no per-GB AWS S3 line item unless you later use external S3)
+- **Compute:** `core-files` pods + existing `core-applications` PDF generation CPU
+- **Egress:** same as today for whatever path serves downloads (ingress → client)
+
+If you later move blobs to **hosted S3**, reuse the same `core-files` abstraction and revisit per-request/transfer pricing.
 
 ---
 
 ## Migration Path
 
-1. **Week 1:** Implement MVP with on-demand generation
-2. **Week 2:** Deploy MinIO to staging, test S3 integration
-3. **Week 3:** Implement hybrid approach, A/B test performance
+1. **Week 1:** Implement MVP with on-demand generation (no object storage dependency)
+2. **Week 2:** Ensure MinIO + `core-files` on staging per the file-service instructions; add server-side PDF upload path (internal API or presigned PUT)
+3. **Week 3:** Implement hybrid approach in `core-applications` (DB `pdf_url` + presigned GET), measure latency and CPU
 4. **Week 4:** Roll out to production, monitor metrics
 5. **Week 5+:** Add advanced features based on usage patterns
 
@@ -568,10 +547,10 @@ Track the following metrics:
 **Rationale:**
 
 - ✅ Fastest time to market
-- ✅ No infrastructure dependencies
+- ✅ No dependency on `core-files` upload APIs being ready
 - ✅ Easy to iterate on design
 - ✅ Sufficient for current traffic levels
-- ✅ Can upgrade to hybrid later without breaking changes
+- ✅ Can upgrade to Option B/C later: persistence goes through **MinIO + `core-files`**, not a one-off S3 client in `core-applications`
 
 **Next Steps:**
 
@@ -580,4 +559,4 @@ Track the following metrics:
 3. Implement PDF generator service
 4. Update endpoints to return PDF bytes
 5. Test with real data
-6. Monitor performance and decide when to add S3 storage
+6. When persistent PDFs are needed: follow [`docs/prompts/29-03-2026__21-00__s3-file-service-instructions.md`](../prompts/29-03-2026__21-00__s3-file-service-instructions.md) and Phase 2 in this document (hybrid + presigned access)

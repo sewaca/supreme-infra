@@ -6,6 +6,8 @@ The `core-messages` service needs file attachment support (images, documents, et
 
 The infrastructure for MinIO is already partially in place. This document describes what exists and what needs to be built.
 
+**Related:** Server-generated PDFs (orders, references, applications) use the **same** MinIO + dedicated file-service pattern; domain-specific flows (on-demand vs stored, versioning, presigned GET) are described in [`docs/arch-review/PDF_ARCHITECTURE.md`](../arch-review/PDF_ARCHITECTURE.md). Prefer a separate bucket or key prefix for PDFs if lifecycle or access policy differs from message attachments.
+
 ---
 
 ## What's already built
