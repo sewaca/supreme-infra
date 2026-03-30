@@ -3,7 +3,6 @@
   border-radius: 16px;
   padding: 16px;
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -11,7 +10,6 @@
 
 .calendarInner {
   flex: 1;
-  min-height: 0;
 }
 
 /* Compact event card — title up to 4 lines, footer with teacher + room */

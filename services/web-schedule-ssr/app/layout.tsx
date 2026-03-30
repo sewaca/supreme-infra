@@ -24,9 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <main style={{ flex: 1, minHeight: 0, paddingBottom: '56px', display: 'flex', flexDirection: 'column' }}>
-              {children}
-            </main>
+            <main style={{ flex: 1, paddingBottom: '56px', display: 'flex', flexDirection: 'column' }}>{children}</main>
             <BottomTabBar />
           </ThemeProvider>
         </AppRouterCacheProvider>
