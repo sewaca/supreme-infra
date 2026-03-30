@@ -1,4 +1,4 @@
-import { getStatsRatingStatsGet } from '@supreme-int/api-client/src/generated/core-client-info';
+import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import {
   groupScheduleGroupsGroupNameScheduleGet,
   teacherScheduleTeachersTeacherIdScheduleGet,
@@ -36,8 +36,8 @@ export async function GET(request: NextRequest) {
         query: { date_from: dateFrom, date_to: dateTo },
       });
     } else {
-      const statsRes = await getStatsRatingStatsGet({ query: { user_id: decoded.sub } });
-      const group = statsRes.data?.group;
+      const profileRes = await getUserProfileUserGet({ query: { user_id: decoded.sub } });
+      const group = profileRes.data?.group;
 
       if (!group) {
         return NextResponse.json({ events: [], error: 'group not found' });

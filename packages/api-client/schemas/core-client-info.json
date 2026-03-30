@@ -1623,6 +1623,17 @@
               }
             ],
             "title": "Region"
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group"
           }
         },
         "type": "object",

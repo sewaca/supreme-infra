@@ -29,6 +29,7 @@ async def get_user(user_id: UUID, db: AsyncSession = Depends(get_db)):
         snils=user.snils,
         snils_issue_date=user.snils_issue_date,
         region=user.region,
+        group=user.group,
     )
 
 

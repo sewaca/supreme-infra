@@ -14,6 +14,7 @@ class UserResponse(BaseModel):
     snils: str | None = None
     snils_issue_date: date | None = None
     region: str | None = None
+    group: str | None = None
 
 
 class AcademicInfoItem(BaseModel):

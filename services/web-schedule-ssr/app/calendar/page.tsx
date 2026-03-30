@@ -1,4 +1,4 @@
-import { getStatsRatingStatsGet, getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
+import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import type { DaySchedule } from '@supreme-int/api-client/src/generated/core-schedule';
 import {
   groupScheduleGroupsGroupNameScheduleGet,
@@ -27,7 +27,6 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   const userSpecifiedDate = params.date_from && params.date_to ? params.date_from : null;
   const { dateFrom } = userSpecifiedDate ? { dateFrom: userSpecifiedDate } : getWeekRange(new Date());
 
-  // Fetch ±2 weeks around the target week for smooth client-side navigation
   const { extendedFrom, extendedTo } = getExtendedRange(dateFrom);
 
   let schedule: DaySchedule[] = [];
@@ -36,7 +35,14 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   let error: string | null = null;
 
   if (decoded) {
-    const profilePromise = getUserProfileUserGet({ query: { user_id: decoded.sub } });
+    const profileRes = await getUserProfileUserGet({ query: { user_id: decoded.sub } });
+
+    if (profileRes.data) {
+      avatar = profileRes.data.avatar ?? null;
+      userName = profileRes.data.name;
+    } else {
+      console.error('[calendar] Profile fetch failed:', profileRes.error);
+    }
 
     let schedulePromise: Promise<{ data?: DaySchedule[]; error?: unknown }>;
 
@@ -46,11 +52,10 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
         query: { date_from: extendedFrom, date_to: extendedTo },
       });
     } else {
-      const statsRes = await getStatsRatingStatsGet({ query: { user_id: decoded.sub } });
-      const group = statsRes.data?.group;
+      const group = profileRes.data?.group;
 
       if (!group) {
-        console.error('[calendar] Failed to resolve student group:', statsRes.error ?? 'group is null');
+        console.error('[calendar] Failed to resolve student group: group is null in profile');
         error = 'Не удалось определить группу. Обратитесь в поддержку.';
         schedulePromise = Promise.resolve({ data: [] });
       } else {
@@ -61,32 +66,17 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
       }
     }
 
-    const [profileRes, scheduleRes] = await Promise.allSettled([profilePromise, schedulePromise]);
-
-    if (profileRes.status === 'fulfilled') {
-      avatar = profileRes.value.data?.avatar ?? null;
-      userName = profileRes.value.data?.name ?? '';
-    } else {
-      console.error('[calendar] Profile fetch failed:', profileRes.reason);
-    }
-
-    if (scheduleRes.status === 'fulfilled') {
-      const res = scheduleRes.value;
-      if (res.error) {
-        console.error('[calendar] Schedule API error:', res.error);
-        error ??= 'Не удалось загрузить расписание. Попробуйте позже.';
-      } else {
-        schedule = res.data ?? [];
-      }
-    } else {
-      console.error('[calendar] Schedule fetch failed:', scheduleRes.reason);
+    const scheduleRes = await schedulePromise;
+    if (scheduleRes.error) {
+      console.error('[calendar] Schedule API error:', scheduleRes.error);
       error ??= 'Не удалось загрузить расписание. Попробуйте позже.';
+    } else {
+      schedule = scheduleRes.data ?? [];
     }
   }
 
   const events = scheduleToEvents(schedule);
 
-  // Read view preferences from cookies
   const viewCookie = cookieStore.get('schedule_view')?.value;
   const initialViewMode: 'list' | 'calendar' = viewCookie === 'calendar' ? 'calendar' : 'list';
 

@@ -439,6 +439,10 @@ export type UserResponse = {
      * Region
      */
     region?: string | null;
+    /**
+     * Group
+     */
+    group?: string | null;
 };
 
 /**
