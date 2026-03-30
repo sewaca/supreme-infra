@@ -1,215 +1,187 @@
 # Руководство по стилю кода
 
-Этот документ содержит исчерпывающую информацию о стандартах кодирования, соглашениях и лучших практиках, используемых в монопрепозитории supreme-infra.
+Этот документ описывает стандарты кодирования, соглашения и практики монорепозитория supreme-infra. Раздел про Next.js SSR опирается на реальный код сервисов **web-profile-ssr** и **web-documents-ssr**.
 
 ## Содержание
 
-- [Конфигурация Biome](#biome-configuration)
-- [Конфигурация TypeScript](#typescript-configuration)
-- [Структура проекта](#project-structure)
-- [Соглашения по именованию](#naming-conventions)
-- [React компоненты](#react-components)
+- [Конфигурация Biome](#конфигурация-biome)
+- [Prettier и согласованность с Biome](#prettier-и-согласованность-с-biome)
+- [Конфигурация TypeScript](#конфигурация-typescript)
+- [Структура проекта](#структура-проекта)
+- [Next.js SSR (web-profile-ssr, web-documents-ssr)](#nextjs-ssr-web-profile-ssr-web-documents-ssr)
+- [Соглашения по именованию](#соглашения-по-именованию)
+- [React компоненты](#react-компоненты)
 - [Backend (NestJS)](#backend-nestjs)
-- [Паттерны API слоя](#api-layer-patterns)
-- [Руководство по тестированию](#testing-guidelines)
-- [Организация импортов](#import-organization)
-- [Скрипты и команды](#scripts-and-commands)
+- [Паттерны API слоя](#паттерны-api-слоя)
+- [Руководство по тестированию](#руководство-по-тестированию)
+- [Организация импортов](#организация-импортов)
+- [Скрипты и команды](#скрипты-и-команды)
+- [Pre-commit хуки](#pre-commit-хуки)
 
 ## Конфигурация Biome
 
-Располагается в `biome.json`:
+Файл в корне: `biome.json`. Актуальное содержимое лучше смотреть в репозитории; ниже — смысловые опоры.
 
-```json
-{
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "style": {
-        "useImportType": "off"
-      }
-    },
-    "domains": {
-      "next": "recommended",
-      "react": "recommended"
-    }
-  },
-  "javascript": {
-    "parser": {
-      "unsafeParameterDecoratorsEnabled": true
-    },
-    "formatter": {
-      "quoteStyle": "single",
-      "jsxQuoteStyle": "double"
-    }
-  }
-}
-```
+**Форматирование:**
 
-**Основные правила:**
+- Отступы: 2 пробела, пробелы, не табы
+- Максимальная ширина строки: **120**
+- JavaScript/TypeScript: одинарные кавычки; JSX: двойные кавычки
+- JSON: те же отступы и `lineWidth: 120`, комментарии в JSON разрешены, хвостовые запятые в JSON — нет
 
-- Отступы: 2 пробела
-- Одинарные кавычки для JS/TS, двойные для JSX
-- Включены рекомендуемые правила линтинга
-- `useImportType` отключено (позволяет `import type` при необходимости)
+**Линтер:**
+
+- Включены рекомендуемые правила
+- Домены **next** и **react** — recommended
+- `style/useImportType` — **off** (не навязывать отдельный стиль `import type` там, где команда использует обычный импорт)
+- Рекомендации **a11y** в Biome отключены (`recommended: false`) — доступность не дублируется линтером Biome в этой конфигурации
+- `performance/noImgElement` — off (допускается `<img>` там, где это принято в проекте)
+- `complexity/noImportantStyles` — off
+
+**Прочее:**
+
+- Учитывается `.gitignore` для исключения файлов
+- Игнорируются сгенерированные и отчётные пути (например `packages/api-client/src/generated`, `__reports`)
+- В assist включена организация импортов (`organizeImports`: on)
+- Для декораторов параметров в JS-парсере включён флаг, нужный NestJS и аналогам
+
+## Prettier и согласованность с Biome
+
+Файл `.prettierrc.json` задаёт **`printWidth: 120`**, **`tabWidth: 2`**, **`useTabs: false`**, **`semi: true`**, **`singleQuote: false`**, **`trailingComma: "es5"`**, **`endOfLine: "lf"`**, **`arrowParens: "always"`**, **`bracketSpacing: true`**, **`proseWrap: "preserve"`**. Есть `overrides` для `*.yaml`, `*.yml`, `*.md`.
+
+**Важно:** TypeScript/JavaScript/React в репозитории форматирует и проверяет **Biome** (`pnpm run format:biome` / `pnpm run lint:ts`). **Prettier** в корне вызывается отдельно для файлов `md`, `yaml`, `yml` (скрипт `format:prettier`) — ширина строки и отступы согласованы с Biome, но стиль кавычек в Prettier (`singleQuote: false`) не является каноном для `.ts`/`.tsx`; для кода ориентир — **Biome** (одинарные в TS/JS, двойные в JSX).
 
 ## Конфигурация TypeScript
 
-Базовая конфигурация в `tsconfig.base.json`:
+База: `tsconfig.base.json` (строгий режим, `noUnusedLocals` / `noUnusedParameters`, `noImplicitReturns`, и т.д.). Алиасы пакетов монорепозитория: `@supreme-int/*` → `packages/*`.
 
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "incremental": true,
-    "esModuleInterop": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-    "noUnusedLocals": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "noEmitOnError": true,
-    "noEmit": true,
-    "resolveJsonModule": true,
-    "removeComments": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noUnusedParameters": true,
-    "module": "esnext",
-    "target": "esnext",
-    "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "lib": ["dom", "esnext"]
-  }
-}
-```
+SSR-приложения расширяют `tsconfig.ssr.json`: `jsx: "preserve"`, плагин Next, `typescript-plugin-css-modules` для перехода к определениям в CSS-модулях, `baseUrl: "."` (корень монорепозитория при работе из сервиса), `allowJs`, `isolatedModules`.
 
-**Основные настройки:**
-
-- Строгий режим включен
-- Запрещены неиспользуемые переменные/параметры
-- Запрещены неявные возвраты или переопределения
-- Явные типы обязательны везде
+**Практика:** в строгом режиме типы обязательны там, где TypeScript их требует; для пропсов компонентов и DTO удобно явно описывать формы данных (`type` / `interface`, `export type` для сущностей). Не обязательно дублировать явный возврат у каждой маленькой функции, если вывод типов однозначен.
 
 ## Структура проекта
 
-Следует архитектуре **Feature-Sliced Design**:
+Используется **Feature-Sliced Design** в `src/` SSR-сервисов: **entities**, **views**, **widgets**, **shared**. Маршруты и точки входа Next — в **`app/`**.
+
+### SSR-сервисы (пример web-profile-ssr)
 
 ```
-services/
-├── backend/                      # Сервис NestJS
-│   ├── src/
-│   │   ├── app.controller.spec.ts
-│   │   ├── app.module.ts
-│   │   ├── features/             # Бизнес-функции
-│   │   │   └── Posts/
-│   │   │       ├── Posts.controller.spec.ts
-│   │   │       ├── Posts.controller.ts
-│   │   │       ├── Posts.module.ts
-│   │   │       └── Posts.service.spec.ts
-│   │   │       └── Posts.service.ts
-│   │   └── shared/               # Общие утилиты
-│   │       └── api/
-│   │           └── jsonplaceholderDatasource.ts
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vitest.config.ts
-└── frontend/                     # Сервис Next.js
-    ├── src/
-    │   ├── app/                  # Next.js app router
-    │   │   ├── [id]/
-    │   │   │   └── page.tsx
-    │   │   ├── api/
-    │   │   ├── layout.tsx
-    │   │   └── page.tsx
-    │   ├── entities/             # Бизнес-сущности
-    │   │   └── post/
-    │   │       ├── PostCard.module.css
-    │   │       ├── PostCard.spec.tsx
-    │   │       └── PostCard.tsx
-    │   ├── features/             # Компоненты функций
-    │   ├── shared/               # Общие утилиты
-    │   │   └── api/
-    │   │       └── backendApi.ts
-    │   ├── views/                # Компоненты страниц
-    │   │   └── PostDetailsPage/
-    │   │       └── index.tsx
-    │   └── widgets/              # UI компоненты
-    │       └── Breadcrumbs/
-    │           └── index.tsx
-    ├── next.config.ts
-    ├── package.json
-    └── vitest.config.ts
+services/web-profile-ssr/
+├── app/                          # App Router
+│   ├── layout.tsx
+│   ├── api/                      # route handlers (например status)
+│   └── profile/                  # сегменты маршрутов, page.tsx, actions.ts
+├── src/
+│   ├── entities/                 # модели и типы предметной области
+│   ├── views/                    # страничные композиции (ProfilePage, SettingsPage, …)
+│   ├── widgets/                  # крупные блоки UI (карточки, списки, навбар)
+│   └── shared/                   # api, hooks, lib, theme
+├── proxy.ts                      # middleware (экспорт proxy + config.matcher)
+├── _auth-routes.generated.ts     # сгенерированные защищённые маршруты
+├── next.config.ts
+└── package.json
 ```
+
+### web-documents-ssr
+
+Та же схема, узкий домен: страницы в `app/documents/…`, виджеты (например зачётка, студенческий), общий `shared/api`, `layout` с MUI и шрифтами. Переходы из профиля на документы идут обычными путями вида `/documents/gradebook`.
+
+### Прочие сервисы
+
+Шаблон с **backend** (NestJS) и условным **frontend** из старых примеров остаётся валидным для других частей монорепозитория: `features/` в Nest, FSD в клиентах.
+
+## Next.js SSR (web-profile-ssr, web-documents-ssr)
+
+**Страницы (`app/.../page.tsx`):**
+
+- Часто `export const dynamic = 'force-dynamic'` для данных с сервера
+- Асинхронный default export или `async function Page()` — загрузка данных, вызовы `@supreme-int/api-client`, затем рендер view из `src/views/...`
+- Импорты из кода сервиса из `app/` — абсолютные от корня репозитория: `services/web-<name>-ssr/src/...`
+
+**Server Actions:**
+
+- В начале файла `'use server'` при необходимости; у отдельных экспортов встречается повтор `'use server'` в теле функции
+- Результаты в виде `{ success, error?, ... }`, пользовательские тексты через `i18n(...)` из `@supreme-int/i18n`
+- Ошибки API обрабатываются через `response.ok`, коды статуса, узкие проверки `detail` от клиента
+
+**API routes:**
+
+- `NextResponse.json(...)`, явный тип возврата у handler’а при необходимости (`Promise<NextResponse>`)
+
+**Proxy / auth:**
+
+- `proxy.ts` экспортирует `proxy` из `@supreme-int/nextjs-shared` и `config.matcher` с исключениями для `api`, `/_next`, статики
+
+**Стек UI:**
+
+- MUI (`@mui/material`, иконки), `@supreme-int/design-system`, глобальные стили и переменные дизайн-системы в `layout`
+- Стили страниц/виджетов — **CSS modules** (`*.module.css`) рядом с компонентом
+
+**Связь сервисов:**
+
+- UI профиля ссылается на маршруты другого приложения (`/documents/...`) — это нормальная схема при раздельном деплое страниц при общем ingress
 
 ## Соглашения по именованию
 
 ### Файлы и директории
 
-- **Компоненты**: PascalCase (`PostCard.tsx`, `PostsController.ts`)
-- **Утилиты**: camelCase (`backendApi.ts`, `jsonplaceholderDatasource.ts`)
-- **CSS модули**: kebab-case (`PostCard.module.css`)
-- **Файлы тестов**: То же имя, что и тестируемый файл + `.spec.ts/tsx`
+- **Компоненты и страницы-вью**: PascalCase каталог и файл (`ProfilePage.tsx`, `DefaultNavbar/`)
+- **Утилиты и API-клиенты**: camelCase (`getUserId.ts`, `clients.ts`, `environment.ts`)
+- **Вспомогательные хуки в подпапках lib**: иногда kebab-case (`use-drag-and-drop.ts`)
+- **CSS modules**: рядом с компонентом, обычно `ComponentName.module.css`
+- **Тесты**: суффикс `.spec.ts` / `.spec.tsx`
 
 ### Элементы кода
 
-- **Классы/Интерфейсы/Типы**: PascalCase (`PostsController`, `PostSummary`)
-- **Переменные/Функции/Методы**: camelCase (`getPostsSummary()`, `postId`)
-- **Константы**: UPPER_SNAKE_CASE (`BASE_URL`)
-- **Приватные методы**: camelCase с маленькой буквы (`countCommentsByPostId()`)
+- **Типы/интерфейсы для домена**: PascalCase; публичные формы сущностей — `export type` в файлах вроде `ProfileData.ts`
+- **Компоненты**: PascalCase, именованный экспорт
+- **Переменные и функции**: camelCase
+- **Константы**: по смыслу — UPPER_SNAKE_CASE для truly-constant конфигов; локальные данные — camelCase
 
 ## React компоненты
 
-**Функциональные компоненты** с TypeScript интерфейсами:
+**Функциональные компоненты**, пропсы через `type Props = { ... }` или интерфейс, если так принято в файле:
 
 ```tsx
-interface PostCardProps {
-  post: PostSummary;
-}
+type Props = { data: ProfileData };
 
-export function PostCard({ post }: PostCardProps) {
+export const ProfilePage = ({ data }: Props) => {
   return (
-    <Link href={`/${post.id}`} className={styles.card}>
-      <h2 className={styles.title}>{post.title}</h2>
-      <p className={styles.body}>{post.body}</p>
-      <div className={styles.commentsCount}>Комментарии: {post.commentsCount}</div>
-    </Link>
+    <Paper sx={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }} elevation={0}>
+      <DefaultNavbar rightSlot={<LogoutButton />} position="absolute" />
+      {/* … */}
+    </Paper>
   );
-}
+};
 ```
 
-**Основные паттерны:**
+**Паттерны:**
 
-- Предпочитаются именованные экспорты
-- Интерфейсы пропсов определяются над компонентом
-- CSS модули для стилизации
-- Ранние возвраты для условного рендеринга
+- Именованные экспорты для view/widget
+- Условный рендер через тернарники или ранние возвраты там, где читаемость лучше
+- Тексты для пользователя — `i18n('…')`
+- Для списков и сеток — компоненты дизайн-системы (`Row`, `Spacer`, …) и при необходимости `sx` у MUI
 
 ## Backend (NestJS)
+
+(Без изменений по смыслу — см. примеры контроллеров/сервисов в документации к вашему модулю backend.)
 
 ### Контроллеры
 
 ```ts
-import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from "@nestjs/common";
-import { PostsService } from "./Posts.service";
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
+import { PostsService } from './Posts.service';
 
-@Controller("posts")
+@Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get("get-summary")
-  public async getSummary(@Query("userId") userId?: string): Promise<ReturnType<PostsService["getPostsSummary"]>> {
+  @Get('get-summary')
+  public async getSummary(@Query('userId') userId?: string): Promise<ReturnType<PostsService['getPostsSummary']>> {
     const userIdNumber = userId ? Number.parseInt(userId, 10) : undefined;
 
     if (userId && Number.isNaN(userIdNumber)) {
-      throw new BadRequestException("Invalid userId parameter");
+      throw new BadRequestException('Invalid userId parameter');
     }
 
     return this.postsService.getPostsSummary(userIdNumber);
@@ -220,8 +192,8 @@ export class PostsController {
 ### Сервисы
 
 ```ts
-import { Injectable } from "@nestjs/common";
-import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
+import { Injectable } from '@nestjs/common';
+import { Comment, JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
 
 export interface PostSummary {
   userId: number;
@@ -272,343 +244,90 @@ export class PostsService {
 }
 ```
 
-**Основные паттерны:**
+**Паттерны:**
 
-- Внедрение зависимостей для сервисов
-- Явные типы возврата
+- Внедрение зависимостей
+- Явные типы возврата публичных методов
 - Приватные методы для внутренней логики
-- Async/await вместо промисов
-- Ранняя валидация и обработка ошибок
+- Async/await
+- Ранняя валидация и исключения с понятными сообщениями
 
 ## Паттерны API слоя
 
-### Внешние API источники данных
+Клиенты OpenAPI в SSR: настройка `createServerFetch` из `@supreme-int/nextjs-shared`, `baseUrl` из `shared/lib/environment`, экспорт настроенного клиента из `shared/api/clients.ts`. Вызовы — через сгенерированные методы `@supreme-int/api-client` (`CoreClientInfo.*`, `CoreAuth.*`, …) с передачей `client` в параметрах.
 
-```ts
-import { Injectable } from "@nestjs/common";
-
-export interface Comment {
-  postId: number;
-  id: number;
-  name: string;
-  email: string;
-  body: string;
-}
-
-@Injectable()
-export class JsonplaceholderDatasource {
-  private readonly baseUrl = "https://jsonplaceholder.typicode.com";
-
-  public async getPosts(userId?: number): Promise<Post[]> {
-    const url = userId ? `${this.baseUrl}/posts?userId=${userId}` : `${this.baseUrl}/posts`;
-
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch posts: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<Post[]>;
-  }
-
-  public async getPostById(postId: number): Promise<Post> {
-    const response = await fetch(`${this.baseUrl}/posts/${postId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch post: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<Post>;
-  }
-
-  public async getComments(): Promise<Comment[]> {
-    const response = await fetch(`${this.baseUrl}/comments`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch comments: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<Comment[]>;
-  }
-
-  public async getCommentsByPostId(postId: number): Promise<Comment[]> {
-    const response = await fetch(`${this.baseUrl}/posts/${postId}/comments`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch comments: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<Comment[]>;
-  }
-}
-```
+Пример внешнего datasource в Nest (jsonplaceholder) остаётся справочным для backend.
 
 ## Руководство по тестированию
 
 ### Unit тесты с Vitest
 
-**Конфигурация** (`vitest.config.global.ts`):
+Конфигурация наследуется от общих паттернов монорепозитория (`vitest.config.global.ts` и локальный `vitest.config.ts` сервиса).
 
-```ts
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: "node",
-    root: cwd(),
-    include: ["**/*.spec.{ts,tsx,mts,cts}", "!**/*.screen.spec.{ts,tsx}"],
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "lcov", "html", "json"],
-      reportsDirectory: "coverage",
-      include: collectCoverageFrom.filter((pattern) => !pattern.startsWith("!")),
-      exclude: collectCoverageFrom.filter((pattern) => pattern.startsWith("!")).map((pattern) => pattern.slice(1)),
-    },
-  },
-});
-```
+**Принципы:**
 
-**Пример теста Backend сервиса**:
+- Мокать все внешние зависимости (сеть, Next, клиенты)
+- По договорённости команды простые объекты-моки можно писать **в одну строку**
+- Имена тестов — описательные; структура AAA
 
-```ts
-import { Test } from "@nestjs/testing";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
-import { PostsService } from "./Posts.service";
-
-describe("PostsService", () => {
-  let service: PostsService;
-  let datasource: {
-    getPosts: ReturnType<typeof vi.fn>;
-    getPostById: ReturnType<typeof vi.fn>;
-    getComments: ReturnType<typeof vi.fn>;
-    getCommentsByPostId: ReturnType<typeof vi.fn>;
-  };
-
-  beforeEach(async () => {
-    datasource = {
-      getPosts: vi.fn(),
-      getPostById: vi.fn(),
-      getComments: vi.fn(),
-      getCommentsByPostId: vi.fn(),
-    };
-
-    const module = await Test.createTestingModule({
-      providers: [
-        PostsService,
-        {
-          provide: JsonplaceholderDatasource,
-          useValue: datasource,
-        },
-      ],
-    }).compile();
-
-    service = module.get<PostsService>(PostsService);
-  });
-
-  describe("getPostsSummary", () => {
-    it("should return posts summary with truncated body and comments count", async () => {
-      const mockPosts = [
-        {
-          userId: 1,
-          id: 1,
-          title: "Test",
-          body: "This is a very long body text",
-        },
-        { userId: 1, id: 2, title: "Test 2", body: "Short" },
-      ];
-
-      const mockComments = [
-        {
-          postId: 1,
-          id: 1,
-          name: "Test",
-          email: "test@test.com",
-          body: "Comment 1",
-        },
-        {
-          postId: 1,
-          id: 2,
-          name: "Test",
-          email: "test@test.com",
-          body: "Comment 2",
-        },
-        {
-          postId: 2,
-          id: 3,
-          name: "Test",
-          email: "test@test.com",
-          body: "Comment 3",
-        },
-      ];
-
-      datasource.getPosts.mockResolvedValue(mockPosts);
-      datasource.getComments.mockResolvedValue(mockComments);
-
-      const result = await service.getPostsSummary();
-
-      expect(result).toEqual([
-        {
-          userId: 1,
-          id: 1,
-          title: "Test",
-          body: "This is a very long ...",
-          commentsCount: 2,
-        },
-        {
-          userId: 1,
-          id: 2,
-          title: "Test 2",
-          body: "Short",
-          commentsCount: 1,
-        },
-      ]);
-    });
-  });
-});
-```
-
-**Пример теста Frontend компонента**:
-
-```tsx
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { PostSummary } from "../../shared/api/backendApi";
-import { PostCard } from "./PostCard";
-
-// Mock Next.js Link component
-vi.mock("next/link", () => {
-  return {
-    default: function MockLink({
-      children,
-      href,
-      className,
-    }: {
-      children: React.ReactNode;
-      href: string;
-      className?: string;
-    }) {
-      return (
-        <a href={href} className={className}>
-          {children}
-        </a>
-      );
-    },
-  };
-});
-
-describe("PostCard", () => {
-  const mockPost: PostSummary = {
-    userId: 1,
-    id: 1,
-    title: "Test Post",
-    body: "Test body",
-    commentsCount: 5,
-  };
-
-  it("should render post card with correct props", () => {
-    render(<PostCard post={mockPost} />);
-
-    expect(screen.getByText("Test Post")).toBeInTheDocument();
-    expect(screen.getByText("Test body")).toBeInTheDocument();
-    expect(screen.getByText("Comments: 5")).toBeInTheDocument();
-  });
-
-  it("should have correct link href", () => {
-    render(<PostCard post={mockPost} />);
-
-    const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", "/1");
-  });
-});
-```
-
-**Основные принципы тестирования:**
-
-- Мокировать ВСЕ внешние зависимости
-- Писать моки в однострочном формате
-- Использовать описательные имена тестов
-- Следовать паттерну AAA (Arrange, Act, Assert)
-- Тестировать как успешные, так и случаи ошибок
-- Использовать `beforeEach` для настройки тестов
-
-**Команды для тестирования**:
+**Команды:**
 
 ```bash
-# Запуск unit тестов для конкретного сервиса
-cd services/backend && pnpm run unit --verbose
-cd services/frontend && pnpm run unit --verbose
+cd services/web-profile-ssr && pnpm run unit --verbose
+cd services/web-documents-ssr && pnpm run unit --verbose
 ```
 
 ## Организация импортов
 
-**Группировка и порядок импортов**:
+Рекомендуемый порядок (Biome может переупорядочить при organize imports):
 
-1. **Внешние библиотеки** (React, NestJS, библиотеки тестирования)
-2. **Внутренние общие модули** (из shared/)
-3. **Относительные импорты** (родительские/дочерние директории)
-4. **Импорты типов** (при необходимости)
+1. **Стандартные и внешние пакеты** (`next`, `react`, `@mui/...`)
+2. **Внутренние пакеты монорепозитория** (`@supreme-int/...`)
+3. **Абсолютные пути сервиса** из `app/`: `services/web-<service>-ssr/src/...`
+4. **Относительные импорты** внутри `src/` (`../../entities/...`, `./ProfilePage.module.css`)
 
-**Примеры**:
+Типы из сущностей в `app/` при необходимости: `import type { ... } from 'services/.../entities/...'`.
 
-Backend сервис:
-
-```ts
-import { Injectable } from "@nestjs/common";
-import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
-import { PostsService } from "./Posts.service";
-```
-
-Frontend компонент:
+**Пример страницы:**
 
 ```tsx
-import Link from "next/link";
-import { PostSummary } from "../../shared/api/backendApi";
-import styles from "./PostCard.module.css";
+import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import type { ProfileData } from 'services/web-profile-ssr/src/entities/Profile/ProfileData';
+import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { ProfilePage } from 'services/web-profile-ssr/src/views/ProfilePage/ProfilePage';
 ```
 
-Файл теста:
+**Пример view:**
 
-```ts
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { PostSummary } from "../../shared/api/backendApi";
-import { PostCard } from "./PostCard";
+```tsx
+import { Paper, Typography } from '@mui/material';
+import { Row } from '@supreme-int/design-system/src/components/Row/Row';
+import { i18n } from '@supreme-int/i18n/src/i18n';
+import { ProfileData } from '../../entities/Profile/ProfileData';
+import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
+import styles from './ProfilePage.module.css';
 ```
 
 ## Скрипты и команды
 
-**Команды корневого уровня** (`package.json`):
+Корневой `package.json` (смысл; точные команды смотрите в файле):
 
-```json
-{
-  "scripts": {
-    "lint": "biome check",
-    "format": "biome format --fix",
-    "generate:router": "tsx infra/generate/generate-router/index.ts",
-    "generate:overrides": "tsx infra/generate-overrides/index.ts",
-    "generate": "tsx infra/generate/index.ts"
-  }
-}
-```
+- **`pnpm lint`** — `lint:ts` (Biome `check --write`) и `lint:deps` (валидация зависимостей), плюс при необходимости линтеры других языков
+- **`pnpm format`** — `format:biome` (Biome `check --fix`), **`format:prettier`** для `md`/`yaml`/`yml`, при необходимости формат Python (ruff)
 
-**Управление пакетами**:
+Генерация: `pnpm generate`, `pnpm generate:router`, `pnpm generate:api-client`, `pnpm generate:overrides`, `pnpm generate:service` и др. — см. актуальный `package.json`.
 
-- Используется `pnpm` как менеджер пакетов
-- Требуется Node.js версии 22
-- Требуется pnpm версии 9
-
-**Доступные команды**:
+Требования к окружению задаются в корневом `package.json` (`engines`: например Node и версия **pnpm**).
 
 ```bash
-pnpm lint              # Запуск Biome линтинга
-pnpm format            # Запуск Biome форматирования (авто-исправление)
-pnpm generate:router   # Генерация конфигурации роутера сервиса
-pnpm generate:overrides # Генерация Helm overrides для сервисов
-pnpm generate          # Запуск всех генераторов
+pnpm lint              # полная проверка согласно корневым скриптам
+pnpm run lint:ts       # только Biome по TS/JS/JSON и т.д.
+pnpm format            # Biome + Prettier (md/yaml) + прочее по скриптам
+pnpm run format:biome  # только Biome с автоисправлением
+pnpm run format:prettier  # только Prettier для md/yaml/yml
 ```
 
 ## Pre-commit хуки
 
-Проект использует pre-commit хуки для обеспечения качества кода:
-
-- Проверки Biome линтинга
-- Валидация форматирования кода
-- Проверки компиляции TypeScript
-
-Все проверки должны пройти перед разрешением коммитов. "Madara-robot" занимается автоматизированным обеспечением качества кода.
+Pre-commit запускает проверки качества (в т.ч. Biome и типизацию — по настройке репозитория). Перед коммитом желательно локально выполнить `pnpm lint` и `pnpm format` (или минимум `pnpm run lint:ts` и `pnpm run format:biome` для правок только в TS/JS).
