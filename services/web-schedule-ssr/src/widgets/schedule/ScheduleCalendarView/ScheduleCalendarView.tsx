@@ -1,6 +1,6 @@
 'use client';
 
-import type { DatesSetArg, EventClickArg, EventContentArg } from '@fullcalendar/core';
+import type { CalendarApi, DatesSetArg, EventClickArg, EventContentArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -27,6 +27,71 @@ type Props = {
   onRangeChange: (from: string, to: string) => void;
   onEventClick: (event: CalendarEvent) => void;
 };
+
+// TODO: прибраться 
+/** Matches `hiddenDays` on FullCalendar — navigation uses the same rules. */
+const SCHEDULE_HIDDEN_WEEKDAYS = [0] as const;
+
+function startOfLocalDay(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function addLocalDays(d: Date, delta: number): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + delta);
+}
+
+function isLocallyHidden(d: Date, hidden: readonly number[]): boolean {
+  return hidden.includes(d.getDay());
+}
+
+/** First day of the contiguous visible block that ends on `lastVisible` and has `span` visible days. */
+function startOfVisibleBlockEndingOn(lastVisible: Date, span: number, hidden: readonly number[]): Date {
+  let count = 0;
+  let day = startOfLocalDay(lastVisible);
+  for (;;) {
+    if (!isLocallyHidden(day, hidden)) {
+      count += 1;
+      if (count === span) return day;
+    }
+    day = addLocalDays(day, -1);
+  }
+}
+
+function firstVisibleOnOrAfter(day: Date, hidden: readonly number[]): Date {
+  let d = startOfLocalDay(day);
+  while (isLocallyHidden(d, hidden)) {
+    d = addLocalDays(d, 1);
+  }
+  return d;
+}
+
+function lastVisibleBefore(firstDayOfRange: Date, hidden: readonly number[]): Date {
+  let d = addLocalDays(startOfLocalDay(firstDayOfRange), -1);
+  while (isLocallyHidden(d, hidden)) {
+    d = addLocalDays(d, -1);
+  }
+  return d;
+}
+
+function prevTimeGrid3DayTarget(activeStart: Date, hidden: readonly number[]): Date {
+  return startOfVisibleBlockEndingOn(lastVisibleBefore(activeStart, hidden), 3, hidden);
+}
+
+function nextTimeGrid3DayTarget(activeEnd: Date, hidden: readonly number[]): Date {
+  return firstVisibleOnOrAfter(activeEnd, hidden);
+}
+
+function navigateScheduleHorizontally(api: CalendarApi, dir: -1 | 1): void {
+  if (api.view.type !== 'timeGrid3Day') {
+    if (dir < 0) api.prev();
+    else api.next();
+    return;
+  }
+  const hidden = SCHEDULE_HIDDEN_WEEKDAYS;
+  const { activeStart, activeEnd } = api.view;
+  const target = dir < 0 ? prevTimeGrid3DayTarget(activeStart, hidden) : nextTimeGrid3DayTarget(activeEnd, hidden);
+  api.gotoDate(target);
+}
 
 function formatRoom(classroom: string | null, building: string | null): string | null {
   if (!classroom) return null;
@@ -84,10 +149,31 @@ export function ScheduleCalendarView({
   const calendarView = resolveCalType(initialCalType, canShowWeek, canShow3Days, mounted);
 
   const calendarHeaderToolbar = useMemo(() => {
-    if (canShowWeek) return { left: 'prev,today,next', center: 'title', right: 'timeGridWeek,timeGridDay' };
-    if (canShow3Days) return { left: 'prev,today,next', center: 'title', right: 'timeGrid3Day,timeGridDay' };
-    return { left: '', center: 'prev,today,next', right: '' };
+    if (canShowWeek) return { left: 'schedulePrev,today,scheduleNext', center: 'title', right: 'timeGridWeek,timeGridDay' };
+    if (canShow3Days) return { left: 'schedulePrev,today,scheduleNext', center: 'title', right: 'timeGrid3Day,timeGridDay' };
+    return { left: '', center: 'schedulePrev,today,scheduleNext', right: '' };
   }, [canShow3Days, canShowWeek]);
+
+  const handleScheduleNav = useCallback((dir: -1 | 1) => {
+    const api = calendarRef.current?.getApi();
+    if (api) navigateScheduleHorizontally(api, dir);
+  }, []);
+
+  const customButtons = useMemo(
+    () => ({
+      schedulePrev: {
+        text: '‹',
+        hint: 'Назад',
+        click: () => handleScheduleNav(-1),
+      },
+      scheduleNext: {
+        text: '›',
+        hint: 'Вперёд',
+        click: () => handleScheduleNav(1),
+      },
+    }),
+    [handleScheduleNav],
+  );
 
   const calendarRef = useRef<FullCalendar>(null);
   const isInitialRender = useRef(true);
@@ -118,8 +204,8 @@ export function ScheduleCalendarView({
     if (!api) return;
 
     if (Math.abs(diffY) > 60) return;
-    if (diffX > 80) api.prev();
-    else if (diffX < -80) api.next();
+    if (diffX > 80) navigateScheduleHorizontally(api, -1);
+    else if (diffX < -80) navigateScheduleHorizontally(api, 1);
   }, []);
 
   const handleDatesSet = useCallback(
@@ -184,8 +270,7 @@ export function ScheduleCalendarView({
           views={{
             timeGrid3Day: {
               type: 'timeGrid',
-              duration: { days: 3 },
-              dateAlignment: 'week',
+              dayCount: 3,
               buttonText: '3 дня',
             },
             timeGridWeek: {
@@ -198,7 +283,7 @@ export function ScheduleCalendarView({
           events={events}
           locale="ru"
           firstDay={1}
-          hiddenDays={[0]}
+          hiddenDays={[...SCHEDULE_HIDDEN_WEEKDAYS]}
           slotMinTime="07:00:00"
           slotMaxTime="22:00:00"
           slotDuration="00:30:00"
@@ -207,6 +292,7 @@ export function ScheduleCalendarView({
           nowIndicator
           height="100%"
           headerToolbar={calendarHeaderToolbar}
+          customButtons={customButtons}
           buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
           eventContent={(arg) => <EventCard event={arg} />}
           eventClick={handleEventClick}
