@@ -10,7 +10,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { type TouchEvent as ReactTouchEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { type TouchEvent as ReactTouchEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../../entities/Lesson/model/Lesson';
 import { setCookie } from '../../../shared/lib/cookies';
 import styles from './ScheduleCalendarView.module.css';
@@ -82,7 +82,12 @@ export function ScheduleCalendarView({
   const canShowWeek = useMediaQuery('(min-width: 1260px)');
   const canShow3Days = useMediaQuery('(min-width: 660px)');
   const calendarView = resolveCalType(initialCalType, canShowWeek, canShow3Days, mounted);
-  const calendarRight = canShowWeek ? 'timeGridWeek,timeGridDay' : canShow3Days ? 'timeGrid3Day,timeGridDay' : '';
+
+  const calendarHeaderToolbar = useMemo(() => {
+    if (canShowWeek) return { left: 'prev,today,next', center: 'title', right: 'timeGridWeek,timeGridDay' };
+    if (canShow3Days) return { left: 'prev,today,next', center: 'title', right: 'timeGrid3Day,timeGridDay' };
+    return { left: '', center: 'prev,today,next', right: '' };
+  }, [canShow3Days, canShowWeek]);
 
   const calendarRef = useRef<FullCalendar>(null);
   const isInitialRender = useRef(true);
@@ -201,7 +206,7 @@ export function ScheduleCalendarView({
           allDaySlot={false}
           nowIndicator
           height="100%"
-          headerToolbar={{ left: 'prev,today,next', center: 'title', right: calendarRight }}
+          headerToolbar={calendarHeaderToolbar}
           buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
           eventContent={(arg) => <EventCard event={arg} />}
           eventClick={handleEventClick}
