@@ -263,7 +263,7 @@ export async function generateRouterConfigs(): Promise<void> {
       const existingAuthLevels = loadExistingAuthLevels(outputPath);
 
       const extracted = extractFastapiRoutes(servicePath, service.name);
-      const routes: Route[] = extracted.map((r) => ({
+      const routes: Route[] = extracted.map((r: Route) => ({
         ...r,
         auth_level: existingAuthLevels.get(`${r.path}:${r.method ?? ''}`) ?? r.auth_level ?? 'none',
       }));
