@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 203,
+      "id": 219,
       "panels": [
         {
-          "id": 201,
+          "id": 217,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 202,
+          "id": 218,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 204,
+      "id": 220,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 205,
+      "id": 221,
       "title": "POST /api/caldav-setup",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 206,
+      "id": 222,
       "title": "POST /api/caldav-setup - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 207,
+      "id": 223,
       "title": "POST /api/caldav-setup - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 208,
+      "id": 224,
       "title": "POST /api/caldav-setup - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 209,
+      "id": 225,
       "title": "GET /api/schedule",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 210,
+      "id": 226,
       "title": "GET /api/schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 211,
+      "id": 227,
       "title": "GET /api/schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 212,
+      "id": 228,
       "title": "GET /api/schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 213,
+      "id": 229,
       "title": "GET /calendar",
       "type": "row",
       "gridPos": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 214,
+      "id": 230,
       "title": "GET /calendar - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1859,7 +1859,7 @@
       }
     },
     {
-      "id": 215,
+      "id": 231,
       "title": "GET /calendar - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1950,7 +1950,7 @@
       }
     },
     {
-      "id": 216,
+      "id": 232,
       "title": "GET /calendar - Bad RPS",
       "type": "timeseries",
       "datasource": {

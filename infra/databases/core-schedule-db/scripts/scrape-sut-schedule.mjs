@@ -367,15 +367,10 @@ async function main() {
           seedFileHeader('classrooms'),
           '-- classroom',
           'INSERT INTO classroom (id, name, building) VALUES',
-          classRows
-            .map((c) => `    (${sqlStr(c.id)}, ${sqlStr(c.name)}, ${sqlStr(c.building)})`)
-            .join(',\n'),
+          classRows.map((c) => `    (${sqlStr(c.id)}, ${sqlStr(c.name)}, ${sqlStr(c.building)})`).join(',\n'),
           'ON CONFLICT (id) DO UPDATE SET building = EXCLUDED.building;',
         ].join('\n')
-      : [
-          seedFileHeader('classrooms'),
-          '-- classroom (нет строк в этом прогоне)',
-        ].join('\n');
+      : [seedFileHeader('classrooms'), '-- classroom (нет строк в этом прогоне)'].join('\n');
 
   const scheduleParts = [
     seedFileHeader('schedule_template'),
@@ -408,9 +403,7 @@ async function main() {
   writeFileSync(join(MIGRATIONS_DIR, '003_seed_classrooms.sql'), classroomsSql + '\n', 'utf8');
   writeFileSync(join(MIGRATIONS_DIR, '004_seed_schedule_template.sql'), scheduleSql, 'utf8');
   writeFileSync(join(MIGRATIONS_DIR, '005_seed_session_event.sql'), sessionSql, 'utf8');
-  console.error(
-    `Wrote ${MIGRATIONS_DIR}/001…005 (${templateRows.length} schedule_template rows)`,
-  );
+  console.error(`Wrote ${MIGRATIONS_DIR}/001…005 (${templateRows.length} schedule_template rows)`);
 
   mkdirSync(dirname(OUT_CSV), { recursive: true });
   const csvLines = [];

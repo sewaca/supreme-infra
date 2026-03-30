@@ -361,7 +361,14 @@ kill $(lsof -ti:9464)
 If endpoints return empty results:
 
 1. Check if `init.sql` was executed (only runs on first DB creation)
-2. Manually run seed: `psql -h localhost -U core_schedule_user -d core_schedule_db -f infra/databases/core-schedule-db/migrations/001_seed_mock_data.sql`
+2. Manually apply seeds (по порядку, как в `core-client-info-db/migrations`):
+
+   ```bash
+   for f in infra/databases/core-schedule-db/migrations/*.sql; do
+     psql -h localhost -U core_schedule_user -d core_schedule_db -f "$f"
+   done
+   ```
+
 3. Or recreate database:
 
 ```bash
