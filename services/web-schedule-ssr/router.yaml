@@ -5,6 +5,9 @@
 service: web-schedule-ssr
 type: next
 routes:
+  - path: /api/caldav-setup
+    method: POST
+    auth_level: valid
   - path: /api/schedule
     method: GET
     auth_level: valid

@@ -6,11 +6,13 @@ import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
+import CloseIcon from '@mui/icons-material/Close';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import EventIcon from '@mui/icons-material/Event';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
+import SyncIcon from '@mui/icons-material/Sync';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
@@ -22,6 +24,7 @@ import { useCallback, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../shared/lib/schedule.utils';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
+import { CaldavGuideDialog } from './CaldavGuideDialog';
 import styles from './CalendarPage.module.css';
 import './fullcalendar.css';
 import { LessonDetailDialog } from './LessonDetailDialog';
@@ -98,6 +101,8 @@ export function CalendarPage({
   const calendarRight = canShowWeek ? 'timeGridWeek,timeGridDay' : canShow3Days ? 'timeGrid3Day,timeGridDay' : '';
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [caldavOpen, setCaldavOpen] = useState(false);
+  const [caldavBannerDismissed, setCaldavBannerDismissed] = useState(false);
   const [allEvents, setAllEvents] = useState<CalendarEvent[]>(initialEvents);
   const [loadedFrom, setLoadedFrom] = useState(initialLoadedFrom);
   const [loadedTo, setLoadedTo] = useState(initialLoadedTo);
@@ -211,6 +216,30 @@ export function CalendarPage({
           </Paper>
         )}
 
+        {!caldavBannerDismissed && (
+          <Paper
+            className={styles.caldavBanner}
+            elevation={0}
+            onClick={() => setCaldavOpen(true)}
+            role="button"
+            tabIndex={0}
+          >
+            <SyncIcon sx={{ color: '#1a237e', fontSize: 20 }} />
+            <Typography variant="body2" sx={{ flex: 1, fontWeight: 500 }}>
+              Привяжите CalDAV-календарь — это удобно!
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                setCaldavBannerDismissed(true);
+              }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Paper>
+        )}
+
         <Box className={styles.topSection}>
           <Chip
             icon={<GroupsIcon />}
@@ -295,6 +324,7 @@ export function CalendarPage({
       </Box>
 
       <LessonDetailDialog event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      <CaldavGuideDialog open={caldavOpen} onClose={() => setCaldavOpen(false)} />
     </Paper>
   );
 }
