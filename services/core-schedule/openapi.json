@@ -2122,6 +2122,17 @@
             ],
             "title": "Classroom Name"
           },
+          "classroom_building": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Classroom Building"
+          },
           "is_override": {
             "type": "boolean",
             "title": "Is Override",
@@ -2137,18 +2148,6 @@
               }
             ],
             "title": "Override Comment"
-          },
-          "classroom_building": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Classroom Building"
           }
         },
         "type": "object",

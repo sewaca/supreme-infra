@@ -1032,12 +1032,16 @@
             },
             "type": "array",
             "title": "Academic Info"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/StudentStatsResponse"
           }
         },
         "type": "object",
         "required": [
           "user",
-          "academic_info"
+          "academic_info",
+          "stats"
         ],
         "title": "PersonalDataResponse"
       },

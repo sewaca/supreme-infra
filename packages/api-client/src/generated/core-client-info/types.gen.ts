@@ -111,6 +111,7 @@ export type PersonalDataResponse = {
      * Academic Info
      */
     academic_info: Array<AcademicInfoItem>;
+    stats: StudentStatsResponse;
 };
 
 /**

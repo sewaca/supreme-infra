@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.user import User
-from app.schemas.profile import AcademicInfoItem, PersonalDataResponse, UserResponse
+from app.schemas.profile import AcademicInfoItem, PersonalDataResponse, StudentStatsResponse, UserResponse
 
 router = APIRouter(prefix="/profile", tags=["profile"])
 
@@ -78,4 +78,17 @@ async def get_personal_data(user_id: UUID, db: AsyncSession = Depends(get_db)):
             AcademicInfoItem(label="profile.academic.study_period", value=f"{user.start_year}-{user.end_year}")
         )
 
-    return PersonalDataResponse(user=user_response, academic_info=academic_info)
+    stats = StudentStatsResponse(
+        course=user.course,
+        faculty=user.faculty,
+        specialty=user.specialty,
+        direction=user.direction,
+        profile=user.profile,
+        group=user.group,
+        status=user.status,
+        qualification=user.qualification,
+        average_grade=user.average_grade,
+        education_form=user.education_form,
+    )
+
+    return PersonalDataResponse(user=user_response, academic_info=academic_info, stats=stats)

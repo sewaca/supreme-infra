@@ -973,10 +973,13 @@
             },
             "type": "array",
             "title": "Academic Info"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/StudentStatsResponse"
           }
         },
         "type": "object",
-        "required": ["user", "academic_info"],
+        "required": ["user", "academic_info", "stats"],
         "title": "PersonalDataResponse"
       },
       "RankingPositionResponse": {
@@ -1519,6 +1522,17 @@
               }
             ],
             "title": "Region"
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group"
           }
         },
         "type": "object",

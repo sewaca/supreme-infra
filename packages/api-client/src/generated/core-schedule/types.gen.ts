@@ -153,6 +153,10 @@ export type LessonSlot = {
      */
     classroom_name: string | null;
     /**
+     * Classroom Building
+     */
+    classroom_building?: string | null;
+    /**
      * Is Override
      */
     is_override?: boolean;
@@ -160,10 +164,6 @@ export type LessonSlot = {
      * Override Comment
      */
     override_comment?: string | null;
-    /**
-     * Classroom Building
-     */
-    classroom_building?: string | null;
 };
 
 /**
