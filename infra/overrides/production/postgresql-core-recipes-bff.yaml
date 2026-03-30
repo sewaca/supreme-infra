@@ -3086,47 +3086,49 @@ initScript: >
 
   SELECT setval('published_recipes_id_seq', (SELECT MAX(id) FROM
   published_recipes));
-migrations:
-  001_fix_recipe_likes_user_id_to_uuid.sql: >
-    -- Migration: fix recipe_likes.user_id column type from INTEGER to UUID
+migrationConfigMapParts:
+  - 001_fix_recipe_likes_user_id_to_uuid.sql: >
+      -- Migration: fix recipe_likes.user_id column type from INTEGER to UUID
 
-    --
+      --
 
-    -- The column was originally created as INTEGER when user IDs were numeric.
+      -- The column was originally created as INTEGER when user IDs were
+      numeric.
 
-    -- core-auth uses UUIDs, so this column must be UUID.
+      -- core-auth uses UUIDs, so this column must be UUID.
 
-    --
+      --
 
-    -- This migration truncates recipe_likes (no production data, only test
-    data)
+      -- This migration truncates recipe_likes (no production data, only test
+      data)
 
-    -- and recreates the column with the correct type.
+      -- and recreates the column with the correct type.
 
-    -- Run on: core_recipes_bff_db
-
-
-    -- Drop existing constraints/indexes that reference user_id
-
-    ALTER TABLE recipe_likes DROP CONSTRAINT IF EXISTS unique_user_recipe;
-
-    DROP INDEX IF EXISTS idx_recipe_likes_user_id;
+      -- Run on: core_recipes_bff_db
 
 
-    -- Recreate the column as UUID (truncate first since integer values can't be
-    cast to UUID)
+      -- Drop existing constraints/indexes that reference user_id
 
-    TRUNCATE TABLE recipe_likes;
+      ALTER TABLE recipe_likes DROP CONSTRAINT IF EXISTS unique_user_recipe;
 
-    ALTER TABLE recipe_likes DROP COLUMN user_id;
-
-    ALTER TABLE recipe_likes ADD COLUMN user_id UUID NOT NULL;
+      DROP INDEX IF EXISTS idx_recipe_likes_user_id;
 
 
-    -- Restore constraints and indexes
+      -- Recreate the column as UUID (truncate first since integer values can't
+      be cast to UUID)
 
-    ALTER TABLE recipe_likes ADD CONSTRAINT unique_user_recipe UNIQUE (user_id,
-    recipe_id);
+      TRUNCATE TABLE recipe_likes;
 
-    CREATE INDEX idx_recipe_likes_user_id ON recipe_likes(user_id);
+      ALTER TABLE recipe_likes DROP COLUMN user_id;
+
+      ALTER TABLE recipe_likes ADD COLUMN user_id UUID NOT NULL;
+
+
+      -- Restore constraints and indexes
+
+      ALTER TABLE recipe_likes ADD CONSTRAINT unique_user_recipe UNIQUE
+      (user_id, recipe_id);
+
+      CREATE INDEX idx_recipe_likes_user_id ON recipe_likes(user_id);
+migrations: {}
 skipMigrations: false

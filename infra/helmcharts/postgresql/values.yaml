@@ -46,6 +46,10 @@ initScript: ""
 
 # Migrations (SQL files to run on every upgrade)
 # This will be executed via Kubernetes Job with post-upgrade hook
+# Preferred: array of file maps — each map becomes a separate ConfigMap (Kubernetes 1 MiB limit per object).
+# Format: [ { "001_a.sql": "...", "002_b.sql": "..." }, { "003_large.sql": "..." } ]
+migrationConfigMapParts: []
+# Legacy single map (may exceed 1 MiB; generator emits migrationConfigMapParts instead)
 # Format: { "001_migration.sql": "content", "002_migration.sql": "content" }
 migrations: {}
 

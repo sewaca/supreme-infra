@@ -1,12 +1,21 @@
-{{- if .Values.migrations }}
+{{- $parts := .Values.migrationConfigMapParts | default list }}
+{{- if not (gt (len $parts) 0) }}
+  {{- if and .Values.migrations (gt (len .Values.migrations) 0) }}
+    {{- $parts = list .Values.migrations }}
+  {{- end }}
+{{- end }}
+{{- range $i, $part := $parts }}
+{{- if gt $i 0 }}
+---
+{{- end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "postgresql.fullname" . }}-migrations
+  name: {{ include "postgresql.fullname" $ }}-migrations-{{ $i }}
   labels:
-    {{- include "postgresql.labels" . | nindent 4 }}
+    {{- include "postgresql.labels" $ | nindent 4 }}
 data:
-{{- range $filename, $content := .Values.migrations }}
+{{- range $filename, $content := $part }}
   {{ $filename }}: |
 {{ $content | indent 4 }}
 {{- end }}

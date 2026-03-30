@@ -1,4 +1,10 @@
-{{- if and .Values.migrations (ne .Values.skipMigrations true) }}
+{{- $parts := .Values.migrationConfigMapParts | default list }}
+{{- if not (gt (len $parts) 0) }}
+  {{- if and .Values.migrations (gt (len .Values.migrations) 0) }}
+    {{- $parts = list .Values.migrations }}
+  {{- end }}
+{{- end }}
+{{- if and (gt (len $parts) 0) (ne .Values.skipMigrations true) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -20,8 +26,13 @@ spec:
       restartPolicy: Never
       volumes:
         - name: migrations
-          configMap:
-            name: {{ include "postgresql.fullname" . }}-migrations
+          projected:
+            defaultMode: 420
+            sources:
+            {{- range $i, $_ := $parts }}
+              - configMap:
+                  name: {{ include "postgresql.fullname" $ }}-migrations-{{ $i }}
+            {{- end }}
       initContainers:
         - name: wait-for-db
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

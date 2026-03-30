@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
+import { splitMigrationsIntoConfigMapParts } from './split-migrations-for-configmaps';
 import type { BaseChartValues, DatabaseServiceConfig, ServiceWithDatabase } from './types';
 
 const INFRA_DIR = path.join(__dirname, '../../');
@@ -90,7 +91,7 @@ function buildFinalValues(
       result.initScript = initScript;
     }
     if (Object.keys(migrations).length > 0) {
-      result.migrations = migrations;
+      result.migrationConfigMapParts = splitMigrationsIntoConfigMapParts(migrations);
     }
     return result;
   }
@@ -134,9 +135,9 @@ function buildFinalValues(
     result.initScript = initScript;
   }
 
-  // Add migrations if exist
+  // Add migrations if exist (split across ConfigMaps — K8s 1 MiB limit per ConfigMap)
   if (Object.keys(migrations).length > 0) {
-    result.migrations = migrations;
+    result.migrationConfigMapParts = splitMigrationsIntoConfigMapParts(migrations);
   }
 
   return result;
