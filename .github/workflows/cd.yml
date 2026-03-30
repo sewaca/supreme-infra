@@ -18,6 +18,7 @@ on:
           - frontend
           - web-auth-ssr
           - web-documents-ssr
+          - web-messages-ssr
           - web-profile-ssr
           - web-schedule-ssr
         default: "core-applications"

@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\", http_route!=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\", http_status_code=~\"2..|3..\", http_route!=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -337,7 +337,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\", http_route!=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\", http_status_code=~\"[45]..\", http_route!=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -446,7 +446,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -457,7 +457,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -468,7 +468,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -564,7 +564,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\", http_route!=\"/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\", http_status_code=~\"2..|3..\", http_route!=\"/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
@@ -660,7 +660,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\", http_route!=\"/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\", http_status_code=~\"[45]..\", http_route!=\"/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -766,7 +766,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(nodejs_eventloop_utilization{service=\"web-documents-ssr\"}) by (pod) or on() vector(0)",
+          "expr": "sum(nodejs_eventloop_utilization{service=\"web-messages-ssr\"}) by (pod) or on() vector(0)",
           "legendFormat": "Event Loop Utilization {{pod}}",
           "range": true,
           "refId": "A"
@@ -859,7 +859,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(v8js_memory_heap_used{service=\"web-documents-ssr\"}) by (pod) or on() vector(0)",
+          "expr": "sum(v8js_memory_heap_used{service=\"web-messages-ssr\"}) by (pod) or on() vector(0)",
           "legendFormat": "Heap Used {{pod}}",
           "range": true,
           "refId": "A"
@@ -870,7 +870,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(v8js_memory_heap_limit{service=\"web-documents-ssr\"}) by (pod) or on() vector(0)",
+          "expr": "sum(v8js_memory_heap_limit{service=\"web-messages-ssr\"}) by (pod) or on() vector(0)",
           "legendFormat": "Heap Limit {{pod}}",
           "range": true,
           "refId": "B"
@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 653,
+      "id": 19,
       "panels": [
         {
-          "id": 651,
+          "id": 17,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -910,7 +910,7 @@
                 "uid": "VictoriaMetrics"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"2..|3..\", http_route=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+              "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\", http_status_code=~\"2..|3..\", http_route=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
               "legendFormat": "{{http_status_code}}",
               "range": true,
               "refId": "A"
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 652,
+          "id": 18,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1001,7 +1001,7 @@
                 "uid": "VictoriaMetrics"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\", http_status_code=~\"[45]..\", http_route=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+              "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\", http_status_code=~\"[45]..\", http_route=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 654,
+      "id": 20,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1089,648 +1089,12 @@
         "x": 0,
         "y": 68
       }
-    },
-    {
-      "id": 655,
-      "title": "GET /documents/gradebook",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 69
-      }
-    },
-    {
-      "id": 656,
-      "title": "GET /documents/gradebook - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route=\"/documents/gradebook\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route=\"/documents/gradebook\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route=\"/documents/gradebook\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 657,
-      "title": "GET /documents/gradebook - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\",http_route=\"/documents/gradebook\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 658,
-      "title": "GET /documents/gradebook - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\",http_route=\"/documents/gradebook\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 659,
-      "title": "GET /documents/student-id-card",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 78
-      }
-    },
-    {
-      "id": 660,
-      "title": "GET /documents/student-id-card - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route=\"/documents/student-id-card\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route=\"/documents/student-id-card\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-documents-ssr\",http_route=\"/documents/student-id-card\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 661,
-      "title": "GET /documents/student-id-card - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\",http_route=\"/documents/student-id-card\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 662,
-      "title": "GET /documents/student-id-card - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-documents-ssr\",http_route=\"/documents/student-id-card\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
     }
   ],
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["web-documents-ssr", "opentelemetry"],
+  "tags": ["web-messages-ssr", "opentelemetry"],
   "templating": {
     "list": []
   },
@@ -1740,8 +1104,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "web-documents-ssr Service Metrics",
-  "uid": "web-documents-ssr-metrics",
+  "title": "web-messages-ssr Service Metrics",
+  "uid": "web-messages-ssr-metrics",
   "version": 2,
   "weekStart": ""
 }

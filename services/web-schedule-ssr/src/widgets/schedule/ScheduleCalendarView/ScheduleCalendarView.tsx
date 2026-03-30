@@ -28,7 +28,7 @@ type Props = {
   onEventClick: (event: CalendarEvent) => void;
 };
 
-// TODO: прибраться 
+// TODO: прибраться
 /** Matches `hiddenDays` on FullCalendar — navigation uses the same rules. */
 const SCHEDULE_HIDDEN_WEEKDAYS = [0] as const;
 
@@ -149,8 +149,10 @@ export function ScheduleCalendarView({
   const calendarView = resolveCalType(initialCalType, canShowWeek, canShow3Days, mounted);
 
   const calendarHeaderToolbar = useMemo(() => {
-    if (canShowWeek) return { left: 'schedulePrev,today,scheduleNext', center: 'title', right: 'timeGridWeek,timeGridDay' };
-    if (canShow3Days) return { left: 'schedulePrev,today,scheduleNext', center: 'title', right: 'timeGrid3Day,timeGridDay' };
+    if (canShowWeek)
+      return { left: 'schedulePrev,today,scheduleNext', center: 'title', right: 'timeGridWeek,timeGridDay' };
+    if (canShow3Days)
+      return { left: 'schedulePrev,today,scheduleNext', center: 'title', right: 'timeGrid3Day,timeGridDay' };
     return { left: '', center: 'schedulePrev,today,scheduleNext', right: '' };
   }, [canShow3Days, canShowWeek]);
 

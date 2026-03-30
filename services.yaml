@@ -18,6 +18,8 @@ services:
       description: Auth pages — login and register
     - name: web-schedule-ssr
       description: Сервис для просмотра расписания для студентов и преподавателей
+    - name: web-messages-ssr
+      description: Отображение сообщений
   fastapi:
     - name: core-auth
       description: Authentication — login, JWT tokens, 2FA
