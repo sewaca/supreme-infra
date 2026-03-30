@@ -13,10 +13,11 @@ import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { CalendarEvent } from '../../entities/Lesson/model/Lesson';
 import { useScheduleRange } from '../../shared/hooks/useScheduleRange';
 import { setCookie } from '../../shared/lib/cookies';
+import { getWeekRange } from '../../shared/lib/schedule.utils';
 import { CaldavGuideDialog } from '../../widgets/CaldavGuideDialog/CaldavGuideDialog';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
@@ -28,7 +29,8 @@ import styles from './CalendarPage.module.css';
 
 type Props = {
   events: CalendarEvent[];
-  initialDate: string;
+  /** Explicit date from URL params. Undefined = let the client use today (avoids server UTC mismatch). */
+  initialDate: string | undefined;
   loadedFrom: string;
   loadedTo: string;
   avatar: string | null;
@@ -54,7 +56,14 @@ export function CalendarPage({
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [caldavOpen, setCaldavOpen] = useState(false);
-  const [listWeekStart, setListWeekStart] = useState(initialDate);
+  // initialDate may be undefined (default load) or a server-UTC date that is wrong for the user's timezone.
+  // Correct it client-side after mount so the list view shows the right week.
+  const [listWeekStart, setListWeekStart] = useState(initialDate ?? '');
+  useEffect(() => {
+    if (!initialDate) {
+      setListWeekStart(getWeekRange(new Date()).dateFrom);
+    }
+  }, [initialDate]);
 
   const toggleView = useCallback(() => {
     const next = viewMode === 'list' ? 'calendar' : 'list';

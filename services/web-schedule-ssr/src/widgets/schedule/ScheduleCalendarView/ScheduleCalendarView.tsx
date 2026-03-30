@@ -20,7 +20,8 @@ export type CalType = 'timeGridWeek' | 'timeGrid3Day' | 'timeGridDay';
 
 type Props = {
   events: CalendarEvent[];
-  initialDate: string;
+  /** Explicit date from URL params. Undefined = FullCalendar uses browser new Date() (correct timezone). */
+  initialDate?: string;
   initialCalType: CalType | null;
   isFetching: boolean;
   onRangeChange: (from: string, to: string) => void;
