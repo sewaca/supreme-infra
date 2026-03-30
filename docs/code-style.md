@@ -147,7 +147,7 @@ type Props = { data: ProfileData };
 
 export const ProfilePage = ({ data }: Props) => {
   return (
-    <Paper sx={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }} elevation={0}>
+    <Paper sx={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }} elevation={0}>
       <DefaultNavbar rightSlot={<LogoutButton />} position="absolute" />
       {/* … */}
     </Paper>
@@ -169,19 +169,19 @@ export const ProfilePage = ({ data }: Props) => {
 ### Контроллеры
 
 ```ts
-import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
-import { PostsService } from './Posts.service';
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from "@nestjs/common";
+import { PostsService } from "./Posts.service";
 
-@Controller('posts')
+@Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('get-summary')
-  public async getSummary(@Query('userId') userId?: string): Promise<ReturnType<PostsService['getPostsSummary']>> {
+  @Get("get-summary")
+  public async getSummary(@Query("userId") userId?: string): Promise<ReturnType<PostsService["getPostsSummary"]>> {
     const userIdNumber = userId ? Number.parseInt(userId, 10) : undefined;
 
     if (userId && Number.isNaN(userIdNumber)) {
-      throw new BadRequestException('Invalid userId parameter');
+      throw new BadRequestException("Invalid userId parameter");
     }
 
     return this.postsService.getPostsSummary(userIdNumber);
@@ -192,8 +192,8 @@ export class PostsController {
 ### Сервисы
 
 ```ts
-import { Injectable } from '@nestjs/common';
-import { Comment, JsonplaceholderDatasource } from '../../shared/api/jsonplaceholderDatasource';
+import { Injectable } from "@nestjs/common";
+import { Comment, JsonplaceholderDatasource } from "../../shared/api/jsonplaceholderDatasource";
 
 export interface PostSummary {
   userId: number;
@@ -291,22 +291,22 @@ cd services/web-documents-ssr && pnpm run unit --verbose
 **Пример страницы:**
 
 ```tsx
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
-import type { ProfileData } from 'services/web-profile-ssr/src/entities/Profile/ProfileData';
-import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
-import { ProfilePage } from 'services/web-profile-ssr/src/views/ProfilePage/ProfilePage';
+import { CoreClientInfo } from "@supreme-int/api-client/src/index";
+import type { ProfileData } from "services/web-profile-ssr/src/entities/Profile/ProfileData";
+import { coreClientInfoClient } from "services/web-profile-ssr/src/shared/api/clients";
+import { getMockedUserId } from "services/web-profile-ssr/src/shared/api/getUserId";
+import { ProfilePage } from "services/web-profile-ssr/src/views/ProfilePage/ProfilePage";
 ```
 
 **Пример view:**
 
 ```tsx
-import { Paper, Typography } from '@mui/material';
-import { Row } from '@supreme-int/design-system/src/components/Row/Row';
-import { i18n } from '@supreme-int/i18n/src/i18n';
-import { ProfileData } from '../../entities/Profile/ProfileData';
-import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
-import styles from './ProfilePage.module.css';
+import { Paper, Typography } from "@mui/material";
+import { Row } from "@supreme-int/design-system/src/components/Row/Row";
+import { i18n } from "@supreme-int/i18n/src/i18n";
+import { ProfileData } from "../../entities/Profile/ProfileData";
+import { DefaultNavbar } from "../../widgets/DefaultNavbar/DefaultNavbar";
+import styles from "./ProfilePage.module.css";
 ```
 
 ## Скрипты и команды

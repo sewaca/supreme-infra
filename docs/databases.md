@@ -42,9 +42,9 @@ services:
       description: ...
       database:
         enabled: true
-        name: core_auth_db      # опционально; иначе шаблон: дефисы → подчёркивания + _db
-        user: core_auth_user    # опционально; иначе аналогично + _user
-        passwordSecret: DB_PASSWORD   # имя GitHub Secret с паролем (см. использование в CD)
+        name: core_auth_db # опционально; иначе шаблон: дефисы → подчёркивания + _db
+        user: core_auth_user # опционально; иначе аналогично + _user
+        passwordSecret: DB_PASSWORD # имя GitHub Secret с паролем (см. использование в CD)
 ```
 
 Проверка в коде генератора: `database.enabled`, имя и пользователь подставляются в Helm values. Сервисы с БД могут жить в любой из веток `nest` / `next` / `fastapi` — генератор объединяет все списки.
@@ -95,7 +95,6 @@ pnpm run generate
 
 - **`update-database-workflow`** — в `.github/workflows/deploy-database.yml` обновляется список сервисов в input `service` (все с `database.enabled: true`).
 - **`generate-database-values`** — для каждого такого сервиса пересоздаются `infra/overrides/development/postgresql-{service}.yaml` и `infra/overrides/production/postgresql-{service}.yaml` из:
-
   - базовых defaults chart’а;
   - `overrides` окружения в `infra/helmcharts/postgresql/values.yaml`;
   - `infra/databases/{service}-db/service.yaml` (если есть);
@@ -182,13 +181,13 @@ kubectl exec -i -n default postgresql-core-auth-0 -- psql -U core_auth_user core
 
 ## Устранение неполадок
 
-| Симптом | Что проверить |
-|--------|----------------|
-| Workflow: service does not have database enabled | В `services.yaml` у выбранного имени должно быть `database.enabled: true`, затем снова `pnpm run generate`. |
-| Values file not found | Не запускали generate после добавления сервиса; должен появиться `infra/overrides/production/postgresql-{service}.yaml`. |
-| Install при уже существующем release | Использовать `upgrade` или удалить release осознанно. |
-| Init не применился | Данные уже в PVC — init не повторяется; нужна миграция SQL или пересоздание PVC (только dev / с бэкапом). |
-| Миграция падает во второй раз | Сделать скрипт идемпотентным (`IF NOT EXISTS`, `ON CONFLICT`, и т.д.). |
+| Симптом                                          | Что проверить                                                                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| Workflow: service does not have database enabled | В `services.yaml` у выбранного имени должно быть `database.enabled: true`, затем снова `pnpm run generate`.              |
+| Values file not found                            | Не запускали generate после добавления сервиса; должен появиться `infra/overrides/production/postgresql-{service}.yaml`. |
+| Install при уже существующем release             | Использовать `upgrade` или удалить release осознанно.                                                                    |
+| Init не применился                               | Данные уже в PVC — init не повторяется; нужна миграция SQL или пересоздание PVC (только dev / с бэкапом).                |
+| Миграция падает во второй раз                    | Сделать скрипт идемпотентным (`IF NOT EXISTS`, `ON CONFLICT`, и т.д.).                                                   |
 
 ## Ссылки
 
