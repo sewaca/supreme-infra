@@ -7,7 +7,8 @@ import {
 import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { cookies } from 'next/headers';
 import '../../src/shared/api/clients';
-import { getExtendedRange, getWeekRange, scheduleToEvents } from '../../src/shared/lib/schedule.utils';
+import { scheduleToEvents } from '../../src/entities/Lesson/model/Lesson';
+import { getExtendedRange, getWeekRange } from '../../src/shared/lib/schedule.utils';
 import { CalendarPage } from '../../src/views/CalendarPage/CalendarPage';
 
 export const dynamic = 'force-dynamic';

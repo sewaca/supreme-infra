@@ -12,8 +12,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import type { CalendarEvent } from '../../shared/lib/schedule.utils';
-import { getLessonChipColor } from '../../shared/lib/schedule.utils';
+import type { CalendarEvent } from '../../../entities/Lesson/model/Lesson';
+import { getLessonChipColor } from '../../../entities/Lesson/model/Lesson';
 
 type Props = {
   event: CalendarEvent | null;

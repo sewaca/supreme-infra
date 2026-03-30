@@ -8,9 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useMemo } from 'react';
-import type { CalendarEvent } from '../../shared/lib/schedule.utils';
-import { getLessonChipColor } from '../../shared/lib/schedule.utils';
+import type { CalendarEvent } from '../../../entities/Lesson/model/Lesson';
+import { getLessonChipColor } from '../../../entities/Lesson/model/Lesson';
 import styles from './ScheduleListView.module.css';
+
+export type { CalendarEvent };
 
 type Props = {
   events: CalendarEvent[];
@@ -63,7 +65,6 @@ type DayGroup = { date: string; events: CalendarEvent[] };
 
 export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick, isFetching }: Props) {
   const days = useMemo(() => {
-    // Filter events to the visible week: dateFrom (Monday) to dateFrom + 5 days (Saturday)
     const weekEnd = new Date(`${dateFrom}T00:00:00`);
     weekEnd.setDate(weekEnd.getDate() + 5);
     const weekEndStr = weekEnd.toISOString().slice(0, 10);

@@ -1,0 +1,76 @@
+.calendarCard {
+  background: var(--color-background-secondary);
+  border-radius: 16px;
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.calendarInner {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Compact event card — title up to 4 lines, footer with teacher + room */
+.eventCard {
+  padding: 2px 4px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.eventTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.eventFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 2px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  min-width: 0;
+}
+
+.eventTeacher {
+  font-size: 0.625rem;
+  color: var(--color-text-secondary, #757575);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.eventRoom {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #757575);
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0 4px;
+  border-radius: 3px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .calendarCard {
+    padding: 12px;
+    border-radius: 12px;
+  }
+}

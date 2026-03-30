@@ -7,7 +7,7 @@ import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/dec
 import { cookies } from 'next/headers';
 import { type NextRequest, NextResponse } from 'next/server';
 import '../../../src/shared/api/clients';
-import { scheduleToEvents } from '../../../src/shared/lib/schedule.utils';
+import { scheduleToEvents } from '../../../src/entities/Lesson/model/Lesson';
 
 export const dynamic = 'force-dynamic';
 
