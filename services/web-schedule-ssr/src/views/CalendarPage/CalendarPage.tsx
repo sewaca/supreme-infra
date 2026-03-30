@@ -19,7 +19,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type TouchEvent as ReactTouchEvent, useCallback, useEffect, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../shared/lib/schedule.utils';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
@@ -117,6 +117,17 @@ export function CalendarPage({
   const canShow3Days = useMediaQuery('(min-width: 660px)');
   const calendarView = resolveCalType(initialCalType, canShowWeek, canShow3Days, mounted);
   const calendarRight = canShowWeek ? 'timeGridWeek,timeGridDay' : canShow3Days ? 'timeGrid3Day,timeGridDay' : '';
+
+  // After hydration, if cookie view doesn't fit screen — switch FullCalendar programmatically
+  const correctedRef = useRef(false);
+  useEffect(() => {
+    if (!mounted || correctedRef.current) return;
+    correctedRef.current = true;
+    const api = calendarRef.current?.getApi();
+    if (api && api.view.type !== calendarView) {
+      api.changeView(calendarView);
+    }
+  }, [mounted, calendarView]);
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [caldavOpen, setCaldavOpen] = useState(false);
@@ -127,6 +138,21 @@ export function CalendarPage({
   const loadingRef = useRef(false);
   const calendarRef = useRef<FullCalendar>(null);
   const isInitialRender = useRef(true);
+  const touchStartX = useRef<number | null>(null);
+
+  const handleTouchStart = useCallback((e: ReactTouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: ReactTouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    const api = calendarRef.current?.getApi();
+    if (!api) return;
+    if (diff > 60) api.prev();
+    else if (diff < -60) api.next();
+  }, []);
 
   const ensureRange = useCallback(
     async (needFrom: string, needTo: string) => {
@@ -292,7 +318,11 @@ export function CalendarPage({
           />
         ) : (
           <Paper className={styles.calendarCard} elevation={0}>
-            <div className={`${styles.calendarInner} schedule-fc-wrapper`}>
+            <div
+              className={`${styles.calendarInner} schedule-fc-wrapper`}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               <FullCalendar
                 ref={calendarRef}
                 plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
