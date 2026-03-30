@@ -138,20 +138,25 @@ export function CalendarPage({
   const loadingRef = useRef(false);
   const calendarRef = useRef<FullCalendar>(null);
   const isInitialRender = useRef(true);
-  const touchStartX = useRef<number | null>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   const handleTouchStart = useCallback((e: ReactTouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, []);
 
   const handleTouchEnd = useCallback((e: ReactTouchEvent) => {
-    if (touchStartX.current === null) return;
-    const diff = e.changedTouches[0].clientX - touchStartX.current;
-    touchStartX.current = null;
+    if (touchStart.current === null) return;
+    const diffX = e.changedTouches[0].clientX - touchStart.current.x;
+    const diffY = e.changedTouches[0].clientY - touchStart.current.y;
+
+    touchStart.current = null;
+
     const api = calendarRef.current?.getApi();
     if (!api) return;
-    if (diff > 130) api.prev();
-    else if (diff < -130) api.next();
+
+    if (Math.abs(diffY) > 60) return; // dont trigger prev/next on user scrolling down/top
+    if (diffX > 80) api.prev();
+    else if (diffX < -80) api.next();
   }, []);
 
   const ensureRange = useCallback(
