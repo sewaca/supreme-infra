@@ -2137,6 +2137,18 @@
               }
             ],
             "title": "Override Comment"
+          },
+          "classroom_building": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Classroom Building"
           }
         },
         "type": "object",

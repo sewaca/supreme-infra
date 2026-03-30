@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.classroom import Classroom
 from app.models.schedule_override import ScheduleOverride
 from app.models.schedule_template import ScheduleTemplate
 from app.models.semester import Semester
@@ -29,6 +30,12 @@ def _time_str(t) -> str:
 async def _load_teacher_names(db: AsyncSession) -> dict[UUID, str]:
     result = await db.execute(select(TeacherCache))
     return {t.id: t.name for t in result.scalars().all()}
+
+
+async def _load_classroom_buildings(db: AsyncSession) -> dict[str, str | None]:
+    """Map classroom name → building code."""
+    result = await db.execute(select(Classroom))
+    return {c.name: c.building for c in result.scalars().all()}
 
 
 def _resolve_teacher_name(teacher_id: UUID | None, cache: dict[UUID, str]) -> str | None:
@@ -86,6 +93,7 @@ async def resolve_group_schedule(
     db: AsyncSession, group_name: str, date_from: date, date_to: date, semester: Semester
 ) -> list[DaySchedule]:
     teacher_cache = await _load_teacher_names(db)
+    building_cache = await _load_classroom_buildings(db)
 
     templates = (
         (
@@ -130,13 +138,16 @@ async def resolve_group_schedule(
         .all()
     )
 
-    return _assemble_calendar(templates, overrides, session_events, date_from, date_to, semester, teacher_cache)
+    return _assemble_calendar(
+        templates, overrides, session_events, date_from, date_to, semester, teacher_cache, building_cache
+    )
 
 
 async def resolve_teacher_schedule(
     db: AsyncSession, teacher_id: UUID, date_from: date, date_to: date, semester: Semester
 ) -> list[DaySchedule]:
     teacher_cache = await _load_teacher_names(db)
+    building_cache = await _load_classroom_buildings(db)
 
     templates = (
         (
@@ -186,7 +197,7 @@ async def resolve_teacher_schedule(
     )
 
     return _assemble_calendar(
-        templates, relevant_overrides, session_events, date_from, date_to, semester, teacher_cache
+        templates, relevant_overrides, session_events, date_from, date_to, semester, teacher_cache, building_cache
     )
 
 
@@ -198,6 +209,7 @@ def _assemble_calendar(
     date_to: date,
     semester: Semester,
     teacher_cache: dict[UUID, str],
+    building_cache: dict[str, str | None] | None = None,
 ) -> list[DaySchedule]:
     # Index templates by (week_number, day_of_week)
     tmpl_by_day: dict[tuple[int, int], list[ScheduleTemplate]] = {}
@@ -234,6 +246,7 @@ def _assemble_calendar(
                     continue
                 if ov.action == "replace":
                     effective_teacher_id = ov.new_teacher_id if ov.new_teacher_id is not None else t.teacher_id
+                    eff_classroom = ov.new_classroom_name if ov.new_classroom_name is not None else t.classroom_name
                     lessons.append(
                         LessonSlot(
                             slot_number=t.slot_number,
@@ -244,9 +257,8 @@ def _assemble_calendar(
                             teacher_id=str(effective_teacher_id) if effective_teacher_id else None,
                             teacher_name=_resolve_teacher_name(effective_teacher_id, teacher_cache),
                             group_name=t.group_name,
-                            classroom_name=ov.new_classroom_name
-                            if ov.new_classroom_name is not None
-                            else t.classroom_name,
+                            classroom_name=eff_classroom,
+                            classroom_building=(building_cache or {}).get(eff_classroom or ""),
                             is_override=True,
                             override_comment=ov.comment,
                         )
@@ -263,6 +275,7 @@ def _assemble_calendar(
                     teacher_name=_resolve_teacher_name(t.teacher_id, teacher_cache),
                     group_name=t.group_name,
                     classroom_name=t.classroom_name,
+                    classroom_building=(building_cache or {}).get(t.classroom_name or ""),
                 )
             )
 
@@ -279,6 +292,7 @@ def _assemble_calendar(
                     teacher_name=_resolve_teacher_name(ev.teacher_id, teacher_cache),
                     group_name=ev.group_name,
                     classroom_name=ev.classroom_name,
+                    classroom_building=(building_cache or {}).get(ev.classroom_name or ""),
                 )
             )
 

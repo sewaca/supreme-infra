@@ -55,7 +55,8 @@ export function LessonDetailDialog({ event, onClose }: Props) {
   const date = event.start.slice(0, 10);
   const startTime = event.start.slice(11, 16);
   const endTime = event.end.slice(11, 16);
-  const { teacher_name, classroom_name, lesson_type, is_override, override_comment, group_name } = event.extendedProps;
+  const { teacher_name, classroom_name, classroom_building, lesson_type, is_override, override_comment, group_name } =
+    event.extendedProps;
   const chipColor = getLessonChipColor(lesson_type);
 
   return (
@@ -86,7 +87,13 @@ export function LessonDetailDialog({ event, onClose }: Props) {
 
         <InfoRow icon={<AccessTimeIcon fontSize="small" />} label="Время" value={`${startTime} – ${endTime}`} />
         <InfoRow icon={<MenuBookIcon fontSize="small" />} label="Дата" value={formatDate(date)} />
-        {classroom_name && <InfoRow icon={<RoomIcon fontSize="small" />} label="Аудитория" value={classroom_name} />}
+        {classroom_name && (
+          <InfoRow
+            icon={<RoomIcon fontSize="small" />}
+            label="Аудитория"
+            value={classroom_building ? `${classroom_building}, ${classroom_name}` : classroom_name}
+          />
+        )}
         {teacher_name && <InfoRow icon={<PersonIcon fontSize="small" />} label="Преподаватель" value={teacher_name} />}
 
         <InfoRow icon={null} label="Группа" value={group_name} />

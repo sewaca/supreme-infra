@@ -16,6 +16,7 @@ class LessonSlot(BaseModel):
     teacher_name: str | None
     group_name: str
     classroom_name: str | None
+    classroom_building: str | None = None
     is_override: bool = False
     override_comment: str | None = None
 

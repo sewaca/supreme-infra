@@ -160,6 +160,10 @@ export type LessonSlot = {
      * Override Comment
      */
     override_comment?: string | null;
+    /**
+     * Classroom Building
+     */
+    classroom_building?: string | null;
 };
 
 /**

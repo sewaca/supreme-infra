@@ -16,7 +16,6 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
@@ -39,19 +38,26 @@ type Props = {
   initialViewMode: 'list' | 'calendar';
 };
 
+function formatRoom(classroom: string | null, building: string | null): string | null {
+  if (!classroom) return null;
+  return building ? `${building}, ${classroom}` : classroom;
+}
+
 function EventCard({ event }: { event: EventContentArg }) {
-  const { teacher_name, classroom_name } = event.event.extendedProps as {
+  const { teacher_name, classroom_name, classroom_building } = event.event.extendedProps as {
     teacher_name: string | null;
     classroom_name: string | null;
+    classroom_building: string | null;
   };
+  const room = formatRoom(classroom_name, classroom_building);
 
   return (
     <div className={styles.eventCard}>
       <span className={styles.eventTitle}>{event.event.title}</span>
-      {(teacher_name || classroom_name) && (
+      {(teacher_name || room) && (
         <div className={styles.eventFooter}>
           <span className={styles.eventTeacher}>{teacher_name ?? ''}</span>
-          {classroom_name && <span className={styles.eventRoom}>{classroom_name}</span>}
+          {room && <span className={styles.eventRoom}>{room}</span>}
         </div>
       )}
     </div>
@@ -85,8 +91,11 @@ export function CalendarPage({
   initialViewMode,
 }: Props) {
   const router = useRouter();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  // Breakpoints based on ~200px per day column + 60px time label
+  const canShowWeek = useMediaQuery('(min-width: 1260px)'); // 6 days
+  const canShow3Days = useMediaQuery('(min-width: 660px)'); // 3 days
+  const calendarView = canShowWeek ? 'timeGridWeek' : canShow3Days ? 'timeGrid3Day' : 'timeGridDay';
+  const calendarRight = canShowWeek ? 'timeGridWeek,timeGridDay' : canShow3Days ? 'timeGrid3Day,timeGridDay' : '';
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [allEvents, setAllEvents] = useState<CalendarEvent[]>(initialEvents);
@@ -249,7 +258,14 @@ export function CalendarPage({
               <FullCalendar
                 ref={calendarRef}
                 plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-                initialView={isMobile ? 'timeGridDay' : 'timeGridWeek'}
+                initialView={calendarView}
+                views={{
+                  timeGrid3Day: {
+                    type: 'timeGrid',
+                    duration: { days: 3 },
+                    buttonText: '3 дня',
+                  },
+                }}
                 initialDate={initialDate}
                 events={allEvents}
                 locale="ru"
@@ -265,7 +281,7 @@ export function CalendarPage({
                 headerToolbar={{
                   left: 'prev today next',
                   center: 'title',
-                  right: isMobile ? '' : 'timeGridWeek,timeGridDay',
+                  right: calendarRight,
                 }}
                 buttonText={{ today: 'Сегодня', week: 'Неделя', day: 'День' }}
                 eventContent={(arg) => <EventCard event={arg} />}

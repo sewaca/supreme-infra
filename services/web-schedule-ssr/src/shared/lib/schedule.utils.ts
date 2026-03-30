@@ -10,6 +10,7 @@ export type CalendarEvent = {
   extendedProps: {
     teacher_name: string | null;
     classroom_name: string | null;
+    classroom_building: string | null;
     lesson_type: string;
     is_override: boolean;
     override_comment?: string | null;
@@ -70,6 +71,7 @@ export function scheduleToEvents(schedule: DaySchedule[]): CalendarEvent[] {
         extendedProps: {
           teacher_name: lesson.teacher_name,
           classroom_name: lesson.classroom_name,
+          classroom_building: lesson.classroom_building ?? null,
           lesson_type: lesson.lesson_type,
           is_override: lesson.is_override ?? false,
           override_comment: lesson.override_comment,
