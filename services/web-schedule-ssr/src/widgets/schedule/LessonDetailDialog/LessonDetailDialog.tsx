@@ -88,13 +88,7 @@ export function LessonDetailDialog({ event, onClose }: Props) {
 
         <InfoRow icon={<AccessTimeIcon fontSize="small" />} label="Время" value={`${startTime} – ${endTime}`} />
         <InfoRow icon={<MenuBookIcon fontSize="small" />} label="Дата" value={formatDate(date)} />
-        {classroom_name && (
-          <InfoRow
-            icon={<RoomIcon fontSize="small" />}
-            label="Аудитория"
-            value={classroom_building ? `${classroom_building}, ${classroom_name}` : classroom_name}
-          />
-        )}
+        {classroom_name && <InfoRow icon={<RoomIcon fontSize="small" />} label="Аудитория" value={classroom_name} />}
         {teacher_name && <InfoRow icon={<PersonIcon fontSize="small" />} label="Преподаватель" value={teacher_name} />}
 
         <InfoRow icon={<GroupsIcon fontSize="small" />} label="Группа" value={group_name} />

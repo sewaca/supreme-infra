@@ -132,11 +132,7 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
                     {startTime}–{endTime}
                   </span>
                   {ev.extendedProps.classroom_name && (
-                    <span className={styles.lessonClassroom}>
-                      {ev.extendedProps.classroom_building
-                        ? `${ev.extendedProps.classroom_building}, ${ev.extendedProps.classroom_name}`
-                        : ev.extendedProps.classroom_name}
-                    </span>
+                    <span className={styles.lessonClassroom}>{ev.extendedProps.classroom_name}</span>
                   )}
                 </div>
                 <div className={styles.lessonRight}>

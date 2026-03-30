@@ -95,7 +95,7 @@ function navigateScheduleHorizontally(api: CalendarApi, dir: -1 | 1): void {
 
 function formatRoom(classroom: string | null, building: string | null): string | null {
   if (!classroom) return null;
-  return building ? `${building}, ${classroom}` : classroom;
+  return classroom;
 }
 
 function EventCard({ event }: { event: EventContentArg }) {
