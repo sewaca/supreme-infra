@@ -48,6 +48,25 @@ const MONTH_NAMES = [
   'декабря',
 ];
 
+function toLocalDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function addCalendarDays(isoDate: string, deltaDays: number): string {
+  const d = new Date(`${isoDate}T12:00:00`);
+  d.setDate(d.getDate() + deltaDays);
+  return toLocalDateStr(d);
+}
+
+/** Monday of the ISO-style calendar week (Mon–Sun) that contains `isoDate`. */
+function mondayOfWeekContaining(isoDate: string): string {
+  const d = new Date(`${isoDate}T12:00:00`);
+  const day = d.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diffToMonday);
+  return toLocalDateStr(d);
+}
+
 function formatDayHeader(dateStr: string): string {
   const d = new Date(`${dateStr}T00:00:00`);
   const dayName = DAY_NAMES[d.getDay()];
@@ -56,23 +75,27 @@ function formatDayHeader(dateStr: string): string {
 
 function formatWeekRange(dateFrom: string): string {
   const from = new Date(`${dateFrom}T00:00:00`);
-  const to = new Date(from);
-  to.setDate(from.getDate() + 5);
+  const toStr = addCalendarDays(dateFrom, 6);
+  const to = new Date(`${toStr}T00:00:00`);
   return `${from.getDate()} ${MONTH_NAMES[from.getMonth()]} — ${to.getDate()} ${MONTH_NAMES[to.getMonth()]}`;
 }
 
 type DayGroup = { date: string; events: CalendarEvent[] };
 
 export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick, isFetching }: Props) {
+  const weekMonday = useMemo(
+    () => (dateFrom ? mondayOfWeekContaining(dateFrom) : ''),
+    [dateFrom],
+  );
+
   const days = useMemo(() => {
-    const weekEnd = new Date(`${dateFrom}T00:00:00`);
-    weekEnd.setDate(weekEnd.getDate() + 5);
-    const weekEndStr = weekEnd.toISOString().slice(0, 10);
+    if (!weekMonday) return [];
+    const weekEndStr = addCalendarDays(weekMonday, 6);
 
     const map = new Map<string, CalendarEvent[]>();
     for (const ev of events) {
       const date = ev.start.slice(0, 10);
-      if (date < dateFrom || date > weekEndStr) continue;
+      if (date < weekMonday || date > weekEndStr) continue;
       const list = map.get(date);
       if (list) {
         list.push(ev);
@@ -89,7 +112,7 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
     }
     groups.sort((a, b) => a.date.localeCompare(b.date));
     return groups;
-  }, [events, dateFrom]);
+  }, [events, weekMonday]);
 
   return (
     <div className={styles.container}>
@@ -99,7 +122,7 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
         </IconButton>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            {formatWeekRange(dateFrom)}
+            {weekMonday ? formatWeekRange(weekMonday) : ''}
           </Typography>
           {isFetching && <CircularProgress size={14} thickness={5} />}
         </Box>
