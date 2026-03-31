@@ -3,10 +3,10 @@ import '@supreme-int/design-system/variables.css';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import { MainAppBottomTabBar } from '@supreme-int/design-system/src/components/BottomTabBar/MainAppBottomTabBar';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import theme from '../src/shared/next/theme';
-import { BottomTabBar } from '../src/widgets/BottomTabBar/BottomTabBar';
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '600', '700'],
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             >
               {children}
             </main>
-            <BottomTabBar />
+            <MainAppBottomTabBar homePath="/messages" />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
