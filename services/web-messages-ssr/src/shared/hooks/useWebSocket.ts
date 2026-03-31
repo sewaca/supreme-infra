@@ -19,7 +19,8 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
     if (!token) return;
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/core-messages/ws?token=${token}`;
+    // Браузер не позволяет передать Authorization на WebSocket-handshake; тот же JWT уходит в cookie auth_token (same-origin).
+    const wsUrl = `${protocol}//${window.location.host}/core-messages/ws`;
 
     const ws = new WebSocket(wsUrl);
 

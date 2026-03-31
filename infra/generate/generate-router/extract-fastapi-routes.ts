@@ -10,6 +10,8 @@ const HTTP_METHODS = ['get', 'post', 'put', 'delete', 'patch', 'head', 'options'
 
 // Matches @router.get("/path") or @app.post("/path") or @router.get('') - use * to capture empty paths
 const ROUTE_DECORATOR_REGEX = /^\s*@\w+\.(\w+)\s*\(\s*["']([^"']*)["']/;
+// WebSocket: в Ingress нужен GET (handshake Upgrade); в router.yaml — тот же путь
+const WEBSOCKET_DECORATOR_REGEX = /^\s*@\w+\.websocket\s*\(\s*["']([^"']*)["']/;
 
 // Matches APIRouter(prefix="/xxx") or APIRouter(prefix='/xxx')
 const APIROUTER_PREFIX_REGEX = /APIRouter\s*\(\s*[^)]*prefix\s*=\s*["']([^"']*)["']/;
@@ -81,6 +83,19 @@ function scanPythonFileForRoutes(filePath: string, prefix: string): Route[] {
   const lines = content.split('\n');
 
   for (const line of lines) {
+    const wsMatch = WEBSOCKET_DECORATOR_REGEX.exec(line);
+    if (wsMatch) {
+      const routePath = wsMatch[1];
+      if (routePath === '/status' || routePath.endsWith('/api/status')) continue;
+      const fullPath = prefix ? `${prefix}${routePath}` : routePath;
+      const normalizedPath = convertFastapiPathToRegex(fullPath);
+      routes.push({
+        path: normalizedPath,
+        method: 'GET',
+      });
+      continue;
+    }
+
     const match = ROUTE_DECORATOR_REGEX.exec(line);
     if (!match) continue;
 

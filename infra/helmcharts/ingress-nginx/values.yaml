@@ -170,6 +170,8 @@ ingress:
           method: GET
         - path: /core-messages/users/search
           method: GET
+        - path: /core-messages/ws
+          method: GET
       extraAnnotations:
         nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
         nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"

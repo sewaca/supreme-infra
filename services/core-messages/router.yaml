@@ -56,3 +56,6 @@ routes:
   - path: /core-messages/users/search
     method: GET
     auth_level: valid
+  - path: /core-messages/ws
+    method: GET
+    auth_level: none

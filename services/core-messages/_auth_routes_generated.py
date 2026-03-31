@@ -39,4 +39,5 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-messages/messages/search$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-messages/users/[^/]+$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-messages/users/search$"), method="GET", auth_level="valid"),
+    AuthRoute(path=re.compile(r"^/core-messages/ws$"), method="GET", auth_level="none"),
 ]
