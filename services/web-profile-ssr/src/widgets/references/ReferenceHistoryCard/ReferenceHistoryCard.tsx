@@ -5,7 +5,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Card, CardActionArea, Stack, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { REFERENCE_STATUS_LABELS } from 'services/web-profile-ssr/src/entities/Reference/constants';
 import type { OrderedReference } from 'services/web-profile-ssr/src/entities/Reference/Reference';
 import { REFERENCE_STATUS } from 'services/web-profile-ssr/src/entities/Reference/Reference';

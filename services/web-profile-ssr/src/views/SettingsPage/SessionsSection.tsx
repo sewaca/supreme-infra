@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { revokeSession } from 'services/web-profile-ssr/app/profile/settings/actions';

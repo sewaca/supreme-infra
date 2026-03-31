@@ -2,7 +2,7 @@ import helmet from '@fastify/helmet';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
-import { OtelLoggerService } from '../logger';
+import { OtelLoggerService } from '../logger/otel-logger.service';
 import type { BootstrapOptions, CorsConfig } from './bootstrap.types';
 
 const DEFAULT_MAX_BODY_SIZE = 10 * 1024;
@@ -31,6 +31,8 @@ export async function bootstrapNestApp(options: BootstrapOptions): Promise<NestF
   const logger = app.get(OtelLoggerService);
   const otelLogger = loggerProvider.getLogger('nestjs-logger');
   logger.setOtelLogger(otelLogger);
+  // NestJS INestApplication.useLogger — not a React hook (Biome heuristic matches "use*" names).
+  // biome-ignore lint/correctness/useHookAtTopLevel: NestJS Application.useLogger
   app.useLogger(logger);
 
   app.enableShutdownHooks();

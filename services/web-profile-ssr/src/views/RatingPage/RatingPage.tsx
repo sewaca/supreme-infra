@@ -3,7 +3,7 @@
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Box, Chip, Divider, IconButton, Paper, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import { useState } from 'react';
 import { RatingData } from '../../entities/Rating/RatingData';

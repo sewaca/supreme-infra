@@ -1,6 +1,6 @@
 import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n/src';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { Fragment, memo, ReactNode, useState } from 'react';
 import { saveChoices } from 'services/web-profile-ssr/app/profile/subjects-ranking/actions';
 import { SubjectRanking } from '../../entities/SubjectRanking/SubjectRanking';
@@ -50,7 +50,7 @@ export const SubjectsRankingPageView = memo(({ subjects, deadlineDate }: Props) 
     <>
       <Stack spacing={0}>
         {choices.map((choice, listIndex) => (
-          <Fragment key={`${listIndex + 1} discipline choice`}>
+          <Fragment key={choice.id}>
             <SortedList
               items={choice.subjects}
               onItemsChange={createListOnChange(listIndex)}

@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { OrderCard } from '../OrderCard/OrderCard';

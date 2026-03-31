@@ -3,7 +3,7 @@
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
 import { CoreAuth, CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { coreAuthClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';

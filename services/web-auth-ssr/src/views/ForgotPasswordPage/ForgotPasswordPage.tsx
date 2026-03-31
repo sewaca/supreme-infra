@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { CodeInput } from '@supreme-int/design-system/src/components/CodeInput/CodeInput';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { PasswordInput } from '@supreme-int/design-system/src/components/PasswordInput/PasswordInput';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {

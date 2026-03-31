@@ -16,7 +16,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { isDeeplink } from '@supreme-int/lib/src/deeplink';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useMemo, useState } from 'react';

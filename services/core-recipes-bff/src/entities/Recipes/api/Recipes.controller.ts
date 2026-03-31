@@ -14,9 +14,10 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { Roles, RolesGuard } from '@supreme-int/nestjs-shared/src/entities/roles';
-import { JwtAuthGuard } from '@supreme-int/nestjs-shared/src/features/jwt';
-import { ZodValidationPipe } from '@supreme-int/nestjs-shared/src/shared/pipes';
+import { Roles } from '@supreme-int/nestjs-shared/src/entities/roles/Roles.decorator';
+import { RolesGuard } from '@supreme-int/nestjs-shared/src/entities/roles/Roles.guard';
+import { JwtAuthGuard } from '@supreme-int/nestjs-shared/src/features/jwt/JwtAuth.guard';
+import { ZodValidationPipe } from '@supreme-int/nestjs-shared/src/shared/pipes/ZodValidation.pipe';
 import { RecipeLikesService } from '../../../features/RecipeLikes/api/RecipeLikes.service';
 import { CommentsService } from '../../Comments/api/Comments.service';
 import { ProposedRecipeEntity } from '../model/ProposedRecipe.entity';

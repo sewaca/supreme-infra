@@ -1,4 +1,4 @@
-import { i18n } from '@supreme-int/i18n/src';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { DriveStep, driver } from 'driver.js';
 import { useEffect, useRef } from 'react';
 import 'driver.js/dist/driver.css';

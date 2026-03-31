@@ -4,5 +4,5 @@ export async function register() {
   }
 }
 
-// Импортируем onRequestError из отдельного файла
+// biome-ignore lint/performance/noBarrelFile: Next.js требует корневой `instrumentation.ts`; `onRequestError` объявлен в edge-only модуле.
 export { onRequestError } from './instrumentation.edge';

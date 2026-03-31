@@ -4,7 +4,7 @@ packages:
   - ./e2e
 lockfileIncludeTarballUrl: false
 catalog:
-  "@biomejs/biome": 2.2.6
+  "@biomejs/biome": 2.4.10
   "@emotion/cache": 11.14.0
   "@emotion/react": 11.14.0
   "@emotion/styled": 11.14.1

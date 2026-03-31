@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';

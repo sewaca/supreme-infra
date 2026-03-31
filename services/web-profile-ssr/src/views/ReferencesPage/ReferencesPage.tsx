@@ -4,7 +4,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Box, Container, IconButton, Stack, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import { useCallback, useState } from 'react';
 import type { ReferenceOrderOptions } from 'services/web-profile-ssr/app/profile/references/actions';

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { type ReactNode, useMemo, useState } from 'react';
 import { cancelReference, extendStorage } from 'services/web-profile-ssr/app/profile/references/actions';
 import { REFERENCE_STATUS_LABELS } from 'services/web-profile-ssr/src/entities/Reference/constants';

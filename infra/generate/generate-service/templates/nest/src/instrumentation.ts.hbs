@@ -1,10 +1,8 @@
-import {
-  createNestInstrumentationConfig,
-  createOpenTelemetrySDK,
-  patchConsole,
-  setupErrorHandlers,
-  startOpenTelemetrySDK,
-} from '@supreme-int/instrumentation/src';
+import { createOpenTelemetrySDK } from '@supreme-int/instrumentation/src/entities/otel/lib/create-sdk';
+import { startOpenTelemetrySDK } from '@supreme-int/instrumentation/src/entities/otel/lib/start-sdk';
+import { patchConsole } from '@supreme-int/instrumentation/src/features/console-patching/lib/patch-console';
+import { setupErrorHandlers } from '@supreme-int/instrumentation/src/features/error-handling/lib/setup-handlers';
+import { createNestInstrumentationConfig } from '@supreme-int/instrumentation/src/features/nest-instrumentation/lib/create-config';
 
 // Конфигурация OpenTelemetry
 const config = {

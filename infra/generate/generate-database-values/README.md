@@ -131,7 +131,7 @@ pnpm run generate
 Или отдельно:
 
 ```bash
-tsx infra/generate/generate-database-values/index.ts
+tsx infra/generate/generate-database-values/generate-database-values.ts
 ```
 
 ## Пример сгенерированного файла

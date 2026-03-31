@@ -357,7 +357,13 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       <div className={styles.field}>
         <label className={styles.label}>Ингредиенты (список) *</label>
         {formData.ingredients.map((ingredient, index) => (
-          <div key={`${index}-${ingredient}`} className={styles.ingredientRow}>
+          <div
+            key={`${
+              // biome-ignore lint/suspicious/noArrayIndexKey: похуй ваще. старый сервис
+              index
+            }-${ingredient}`}
+            className={styles.ingredientRow}
+          >
             <input
               type="text"
               value={ingredient}
@@ -381,7 +387,13 @@ export function SubmitRecipeForm({ recipe, onSuccess }: SubmitRecipeFormProps) {
       <div className={styles.field}>
         <label className={styles.label}>Детальные ингредиенты *</label>
         {formData.detailedIngredients.map((ingredient, index) => (
-          <div key={`${ingredient.name}-${index}`} className={styles.detailedIngredientRow}>
+          <div
+            key={`${ingredient.name}-${
+              // biome-ignore lint/suspicious/noArrayIndexKey: похуй ваще. старый сервис
+              index
+            }`}
+            className={styles.detailedIngredientRow}
+          >
             <input
               type="text"
               value={ingredient.name}

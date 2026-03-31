@@ -5,7 +5,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Button, Container, Stack, Switch, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 import { updateSettings } from 'services/web-profile-ssr/app/profile/settings/actions';

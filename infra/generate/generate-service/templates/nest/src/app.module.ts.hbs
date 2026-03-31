@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { createDatabaseImports } from '@supreme-int/nestjs-shared/src/database';
-import { HealthModule } from '@supreme-int/nestjs-shared/src/health';
-import { LoggerModule } from '@supreme-int/nestjs-shared/src/logger';
+import { createDatabaseImports } from '@supreme-int/nestjs-shared/src/database/lib/createDatabaseImports';
+import { HealthModule } from '@supreme-int/nestjs-shared/src/health/api/health.module';
+import { LoggerModule } from '@supreme-int/nestjs-shared/src/logger/logger.module';
 import { SESSION_CHECK_ROUTES, SessionCheckInterceptor } from '@supreme-int/nestjs-shared/src/features/session-check/session-check.interceptor';
 import { authRoutes } from '../_auth-routes.generated';
 

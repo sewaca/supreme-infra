@@ -35,7 +35,13 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           </div>
           <div className={styles.ingredientsList}>
             {recipe.ingredients.map((ingredient, index) => (
-              <span key={`${index}-${ingredient}`} className={styles.ingredient}>
+              <span
+                key={`${
+                  // biome-ignore lint/suspicious/noArrayIndexKey: похуй ваще. старый сервис
+                  index
+                }-${ingredient}`}
+                className={styles.ingredient}
+              >
                 {ingredient}
               </span>
             ))}

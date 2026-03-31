@@ -1,4 +1,4 @@
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { ORDER_TYPE } from './Order';
 
 export const ORDER_TYPE_LABELS: Record<string, string> = {

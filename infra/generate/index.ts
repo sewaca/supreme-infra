@@ -1,4 +1,4 @@
-import { generateDatabaseValues } from './generate-database-values';
+import { generateDatabaseValues } from './generate-database-values/generate-database-values';
 import { generateValuesForAllServices } from './generate-overrides/generate-overrides';
 import { generatePgbouncerValues } from './generate-pgbouncer-values';
 import { generateRouterConfigs } from './generate-router';

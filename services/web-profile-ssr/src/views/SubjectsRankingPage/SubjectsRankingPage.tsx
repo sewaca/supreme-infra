@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import type { SortableItem } from '../../widgets/SortedList/types';

@@ -8,4 +8,4 @@ coreScheduleClient.setConfig({ baseUrl: environment.coreScheduleUrl, fetch: crea
 coreClientInfoClient.setConfig({ baseUrl: environment.coreClientInfoUrl, fetch: createServerFetch() });
 coreAuthClient.setConfig({ baseUrl: environment.coreAuthUrl, fetch: createServerFetch() });
 
-export { coreScheduleClient, coreClientInfoClient, coreAuthClient };
+export { coreAuthClient, coreClientInfoClient, coreScheduleClient };

@@ -5,6 +5,8 @@ import { ClipboardEvent, KeyboardEvent, useRef } from 'react';
 
 const CODE_LENGTH = 6;
 
+const KEY_STOMP = ['code-a', 'code-b', 'code-c', 'code-d', 'code-e', 'code-f'];
+
 type Props = {
   value: string;
   onChange: (value: string) => void;
@@ -89,7 +91,7 @@ export const CodeInput = ({ value, onChange, disabled = false, error = false }: 
     >
       {digits.map((digit, index) => (
         <Box
-          key={`${index}-${digit}`}
+          key={`${KEY_STOMP[index]}-${digit}`}
           sx={{
             position: 'relative',
             width: 44,

@@ -1,3 +1,4 @@
+// biome-ignore lint/performance/noBarrelFile: TODO: remove barrel import
 export * from './base-api';
 export * from './core-auth-bff';
 export * from './core-recipes-bff';

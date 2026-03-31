@@ -5,7 +5,7 @@ import type {
   ReferenceType,
 } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { CoreApplications } from '@supreme-int/api-client/src/index';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { format, parseISO } from 'date-fns';
 import { PICKUP_POINTS } from 'services/web-profile-ssr/src/entities/Reference/pickupPoints';
 import type { OrderedReference, ReferenceStatus } from 'services/web-profile-ssr/src/entities/Reference/Reference';

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { LoggerModule } from '../logger';
+import { LoggerModule } from '../logger/logger.module';
 import { bootstrapNestApp } from './bootstrap';
 
 // Mock module for testing

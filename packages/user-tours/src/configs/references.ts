@@ -1,4 +1,4 @@
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import type { DriveStep } from 'driver.js';
 
 export const getReferencesTourSteps = (): DriveStep[] => [

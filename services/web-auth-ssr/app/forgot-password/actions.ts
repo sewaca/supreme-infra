@@ -1,7 +1,7 @@
 'use server';
 
 import { CoreAuth } from '@supreme-int/api-client/src/index';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { coreAuthClient } from '../../src/shared/api/clients';
 
 export const startForgotPasswordChallenge = async (

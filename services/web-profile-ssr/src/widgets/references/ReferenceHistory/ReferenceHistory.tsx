@@ -2,7 +2,7 @@
 
 import { Box, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { useMemo, useState } from 'react';
 import { REFERENCE_STATUS_LABELS } from 'services/web-profile-ssr/src/entities/Reference/constants';
 import type { OrderedReference } from 'services/web-profile-ssr/src/entities/Reference/Reference';

@@ -1,6 +1,6 @@
 'use client';
 
-import { i18n } from '@supreme-int/i18n/src';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePathname } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import { AlertMessage } from '../../widgets/AlertMessage/AlertMessage';

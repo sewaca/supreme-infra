@@ -3,7 +3,7 @@
 import { Alert, Box, Button, CircularProgress, Container, Stack, Typography } from '@mui/material';
 import { CodeInput } from '@supreme-int/design-system/src/components/CodeInput/CodeInput';
 import { PasswordInput } from '@supreme-int/design-system/src/components/PasswordInput/PasswordInput';
-import { i18n } from '@supreme-int/i18n';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { applyPasswordChange, startChallenge, verifyChallenge } from '../../../app/profile/settings/actions';

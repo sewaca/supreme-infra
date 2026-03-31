@@ -1,6 +1,6 @@
 'use client';
 import Button from '@mui/material/Button';
-import { i18n } from '@supreme-int/i18n/src';
+import { i18n } from '@supreme-int/i18n/src/i18n';
 import { useHelpCenter } from '../../../shared/hooks/useHelpCenter';
 
 export const MismatchDataButton = () => {
