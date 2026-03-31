@@ -20,11 +20,11 @@ export const metadata: Metadata = { title: 'Сообщения — СПбГУТ'
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" className={roboto.variable}>
-      <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', margin: 0 }}>
+      <body style={{ margin: 0, overflow: 'hidden' }}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <main style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingBottom: '56px' }}>{children}</main>
+            <main style={{ height: 'calc(100dvh - 56px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>{children}</main>
             <BottomTabBar />
           </ThemeProvider>
         </AppRouterCacheProvider>
