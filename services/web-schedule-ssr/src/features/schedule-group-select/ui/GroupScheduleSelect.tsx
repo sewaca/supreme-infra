@@ -1,7 +1,6 @@
 'use client';
 
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import { Autocomplete, TextField } from '@mui/material';
 
 type Props = {
   groups: string[];
@@ -14,6 +13,7 @@ export function GroupScheduleSelect({ groups, value, onChange }: Props) {
 
   return (
     <Autocomplete
+      fullWidth
       size="small"
       options={groups}
       value={selected}
@@ -24,20 +24,10 @@ export function GroupScheduleSelect({ groups, value, onChange }: Props) {
       getOptionLabel={(option) => option}
       isOptionEqualToValue={(a, b) => a === b}
       noOptionsText="Нет совпадений"
-      sx={{ flex: '1 1 auto', minWidth: 120, maxWidth: 320 }}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Группа"
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '12px',
-              fontWeight: 600,
-              fontSize: '0.8125rem',
-            },
-          }}
-        />
+        <TextField {...params} label="Группа" placeholder="Выберите или найдите группу..." />
       )}
+      sx={{ flex: '1 1 auto', minWidth: 120, maxWidth: 320 }}
     />
   );
 }
