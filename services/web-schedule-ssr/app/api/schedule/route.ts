@@ -1,4 +1,7 @@
-import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
+import {
+  getGroupsProfileGroupsGet,
+  getUserProfileUserGet,
+} from '@supreme-int/api-client/src/generated/core-client-info';
 import {
   groupScheduleGroupsGroupNameScheduleGet,
   teacherScheduleTeachersTeacherIdScheduleGet,
@@ -11,9 +14,15 @@ import { scheduleToEvents } from '../../../src/entities/Lesson/model/Lesson';
 
 export const dynamic = 'force-dynamic';
 
+function parseAllowedGroups(payload: unknown): string[] {
+  if (!Array.isArray(payload)) return [];
+  return payload.filter((g): g is string => typeof g === 'string');
+}
+
 export async function GET(request: NextRequest) {
   const dateFrom = request.nextUrl.searchParams.get('date_from');
   const dateTo = request.nextUrl.searchParams.get('date_to');
+  const explicitGroupName = request.nextUrl.searchParams.get('group_name');
 
   if (!dateFrom || !dateTo) {
     return NextResponse.json({ error: 'date_from and date_to required' }, { status: 400 });
@@ -30,7 +39,18 @@ export async function GET(request: NextRequest) {
   try {
     let scheduleRes: { data?: unknown[]; error?: unknown };
 
-    if (decoded.role === 'teacher') {
+    if (explicitGroupName) {
+      const groupsRes = await getGroupsProfileGroupsGet();
+      const allowed = parseAllowedGroups(groupsRes.data);
+      if (!allowed.includes(explicitGroupName)) {
+        return NextResponse.json({ error: 'invalid group' }, { status: 403 });
+      }
+
+      scheduleRes = await groupScheduleGroupsGroupNameScheduleGet({
+        path: { group_name: explicitGroupName },
+        query: { date_from: dateFrom, date_to: dateTo },
+      });
+    } else if (decoded.role === 'teacher') {
       scheduleRes = await teacherScheduleTeachersTeacherIdScheduleGet({
         path: { teacher_id: decoded.sub },
         query: { date_from: dateFrom, date_to: dateTo },

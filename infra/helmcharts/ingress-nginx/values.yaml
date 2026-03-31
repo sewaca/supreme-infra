@@ -344,5 +344,7 @@ ingress:
           method: GET
         - path: /calendar
           method: GET
+        - path: /schedule/group
+          method: GET
         - path: /web-schedule-ssr/.*
           method: GET

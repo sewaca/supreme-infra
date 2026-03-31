@@ -12,5 +12,6 @@ export const authRoutes: AuthRoute[] = [
   { path: /^\/api\/caldav-setup$/, method: 'POST', auth_level: 'valid' },
   { path: /^\/api\/schedule$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/calendar$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/schedule\/group$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/web-schedule-ssr\/.*$/, method: 'GET', auth_level: 'none' },
 ];

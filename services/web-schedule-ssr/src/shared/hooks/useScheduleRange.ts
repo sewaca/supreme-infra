@@ -1,16 +1,18 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CalendarEvent } from '../../entities/Lesson/model/Lesson';
 
 const CHUNK_DAYS = 14;
 const MAX_CHUNK_ITERATIONS = 26;
 
-async function fetchScheduleRange(from: string, to: string): Promise<CalendarEvent[]> {
+async function fetchScheduleRange(from: string, to: string, groupName?: string): Promise<CalendarEvent[]> {
   try {
-    const res = await fetch(`/api/schedule?date_from=${from}&date_to=${to}`);
+    const qs = new URLSearchParams({ date_from: from, date_to: to });
+    if (groupName) qs.set('group_name', groupName);
+    const res = await fetch(`/api/schedule?${qs.toString()}`);
     if (!res.ok) return [];
-    const data = await res.json();
+    const data: { events?: CalendarEvent[] } = await res.json();
     return data.events ?? [];
   } catch {
     return [];
@@ -43,6 +45,7 @@ export function useScheduleRange(
   initialEvents: CalendarEvent[],
   initialFrom: string,
   initialTo: string,
+  scheduleGroupName?: string,
 ): {
   allEvents: CalendarEvent[];
   isFetching: boolean;
@@ -52,38 +55,71 @@ export function useScheduleRange(
   const [isFetching, setIsFetching] = useState(false);
   const loadingRef = useRef(false);
   const loadedBoundsRef = useRef<{ from: string; to: string }>({ from: initialFrom, to: initialTo });
+  const skipGroupEffectRef = useRef(scheduleGroupName !== undefined);
 
-  const ensureRange = useCallback(async (needFrom: string, needTo: string) => {
-    if (loadingRef.current) return;
+  useEffect(() => {
+    if (scheduleGroupName === undefined) return;
+    if (skipGroupEffectRef.current) {
+      skipGroupEffectRef.current = false;
+      return;
+    }
+
+    let cancelled = false;
     loadingRef.current = true;
     setIsFetching(true);
-    try {
-      let iterations = 0;
-      while (needFrom < loadedBoundsRef.current.from && iterations < MAX_CHUNK_ITERATIONS) {
-        iterations += 1;
-        const lf = loadedBoundsRef.current.from;
-        const chunkEnd = addDaysISO(lf, -1);
-        const chunkStart = addDaysISO(chunkEnd, -(CHUNK_DAYS - 1));
-        const newEvents = await fetchScheduleRange(chunkStart, chunkEnd);
-        loadedBoundsRef.current = { from: chunkStart, to: loadedBoundsRef.current.to };
-        setAllEvents((prev) => mergeById(prev, newEvents));
+    void (async () => {
+      try {
+        const events = await fetchScheduleRange(initialFrom, initialTo, scheduleGroupName);
+        if (cancelled) return;
+        setAllEvents(events);
+        loadedBoundsRef.current = { from: initialFrom, to: initialTo };
+      } finally {
+        if (!cancelled) {
+          loadingRef.current = false;
+          setIsFetching(false);
+        }
       }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [scheduleGroupName, initialFrom, initialTo]);
 
-      iterations = 0;
-      while (needTo > loadedBoundsRef.current.to && iterations < MAX_CHUNK_ITERATIONS) {
-        iterations += 1;
-        const lt = loadedBoundsRef.current.to;
-        const chunkStart = addDaysISO(lt, 1);
-        const chunkEnd = addDaysISO(chunkStart, CHUNK_DAYS - 1);
-        const newEvents = await fetchScheduleRange(chunkStart, chunkEnd);
-        loadedBoundsRef.current = { from: loadedBoundsRef.current.from, to: chunkEnd };
-        setAllEvents((prev) => mergeById(prev, newEvents));
+  const ensureRange = useCallback(
+    async (needFrom: string, needTo: string) => {
+      if (loadingRef.current) return;
+      loadingRef.current = true;
+      setIsFetching(true);
+      const groupArg = scheduleGroupName;
+      try {
+        let iterations = 0;
+        while (needFrom < loadedBoundsRef.current.from && iterations < MAX_CHUNK_ITERATIONS) {
+          iterations += 1;
+          const lf = loadedBoundsRef.current.from;
+          const chunkEnd = addDaysISO(lf, -1);
+          const chunkStart = addDaysISO(chunkEnd, -(CHUNK_DAYS - 1));
+          const newEvents = await fetchScheduleRange(chunkStart, chunkEnd, groupArg);
+          loadedBoundsRef.current = { from: chunkStart, to: loadedBoundsRef.current.to };
+          setAllEvents((prev) => mergeById(prev, newEvents));
+        }
+
+        iterations = 0;
+        while (needTo > loadedBoundsRef.current.to && iterations < MAX_CHUNK_ITERATIONS) {
+          iterations += 1;
+          const lt = loadedBoundsRef.current.to;
+          const chunkStart = addDaysISO(lt, 1);
+          const chunkEnd = addDaysISO(chunkStart, CHUNK_DAYS - 1);
+          const newEvents = await fetchScheduleRange(chunkStart, chunkEnd, groupArg);
+          loadedBoundsRef.current = { from: loadedBoundsRef.current.from, to: chunkEnd };
+          setAllEvents((prev) => mergeById(prev, newEvents));
+        }
+      } finally {
+        loadingRef.current = false;
+        setIsFetching(false);
       }
-    } finally {
-      loadingRef.current = false;
-      setIsFetching(false);
-    }
-  }, []);
+    },
+    [scheduleGroupName],
+  );
 
   return { allEvents, isFetching, ensureRange };
 }
