@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 559,
+      "id": 619,
       "panels": [
         {
-          "id": 557,
+          "id": 617,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 558,
+          "id": 618,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 560,
+      "id": 620,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 561,
+      "id": 621,
       "title": "POST /api/caldav-setup",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 562,
+      "id": 622,
       "title": "POST /api/caldav-setup - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 563,
+      "id": 623,
       "title": "POST /api/caldav-setup - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 564,
+      "id": 624,
       "title": "POST /api/caldav-setup - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 565,
+      "id": 625,
       "title": "GET /api/schedule",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 566,
+      "id": 626,
       "title": "GET /api/schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 567,
+      "id": 627,
       "title": "GET /api/schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 568,
+      "id": 628,
       "title": "GET /api/schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,8 +1727,8 @@
       }
     },
     {
-      "id": 569,
-      "title": "GET /calendar",
+      "id": 629,
+      "title": "GET /schedule",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1738,8 +1738,8 @@
       }
     },
     {
-      "id": 570,
-      "title": "GET /calendar - Timings",
+      "id": 630,
+      "title": "GET /schedule - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1758,7 +1758,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/calendar\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1769,7 +1769,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/calendar\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1780,7 +1780,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/calendar\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1859,8 +1859,8 @@
       }
     },
     {
-      "id": 571,
-      "title": "GET /calendar - OK RPS",
+      "id": 631,
+      "title": "GET /schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1879,7 +1879,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/calendar\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1950,8 +1950,8 @@
       }
     },
     {
-      "id": 572,
-      "title": "GET /calendar - Bad RPS",
+      "id": 632,
+      "title": "GET /schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1970,7 +1970,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/calendar\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 573,
+      "id": 633,
       "title": "GET /schedule/group",
       "type": "row",
       "gridPos": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": 574,
+      "id": 634,
       "title": "GET /schedule/group - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2177,7 +2177,7 @@
       }
     },
     {
-      "id": 575,
+      "id": 635,
       "title": "GET /schedule/group - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2268,7 +2268,7 @@
       }
     },
     {
-      "id": 576,
+      "id": 636,
       "title": "GET /schedule/group - Bad RPS",
       "type": "timeseries",
       "datasource": {

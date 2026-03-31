@@ -77,8 +77,7 @@ export function GroupCalendarPage({
       elevation={0}
     >
       <DefaultNavbar
-        // biome-ignore lint/complexity/noUselessFragments: нужен для того чтобы не показывать кнопку назад в навбаре
-        leftSlot={<></>}
+        backPath="/schedule"
         center={<Typography variant="title2">Расписание</Typography>}
         rightSlot={<ProfileButton avatar={avatar} name={userName} />}
       />

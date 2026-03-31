@@ -7,7 +7,7 @@ import { BottomTabBar as BottomTabBarBase } from '@supreme-int/design-system/src
 import { usePathname, useRouter } from 'next/navigation';
 
 const TABS = [
-  { label: 'Расписание', value: '/calendar', icon: <CalendarMonthIcon /> },
+  { label: 'Расписание', value: '/schedule', icon: <CalendarMonthIcon /> },
   { label: 'Сообщения', value: '/messages', icon: <ChatIcon /> },
   { label: 'Новости', value: '/news', icon: <NewspaperIcon /> },
 ];

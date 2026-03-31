@@ -367,7 +367,7 @@ ingress:
           method: POST
         - path: /api/schedule
           method: GET
-        - path: /calendar
+        - path: /schedule
           method: GET
         - path: /schedule/group
           method: GET

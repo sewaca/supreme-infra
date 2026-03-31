@@ -11,7 +11,7 @@ routes:
   - path: /api/schedule
     method: GET
     auth_level: valid
-  - path: /calendar
+  - path: /schedule
     method: GET
     auth_level: valid
   - path: /schedule/group
