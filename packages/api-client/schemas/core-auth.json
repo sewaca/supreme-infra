@@ -8,9 +8,7 @@
   "paths": {
     "/status": {
       "get": {
-        "tags": [
-          "status"
-        ],
+        "tags": ["status"],
         "summary": "Get Status",
         "operationId": "get_status_status_get",
         "responses": {
@@ -27,9 +25,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Login",
         "operationId": "login_auth_login_post",
         "requestBody": {
@@ -68,9 +64,7 @@
     },
     "/auth/register": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Register",
         "operationId": "register_auth_register_post",
         "requestBody": {
@@ -109,9 +103,7 @@
     },
     "/auth/me": {
       "get": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Get Me",
         "operationId": "get_me_auth_me_get",
         "responses": {
@@ -135,9 +127,7 @@
     },
     "/auth/sessions": {
       "get": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": ["sessions"],
         "summary": "Get Sessions",
         "operationId": "get_sessions_auth_sessions_get",
         "responses": {
@@ -165,9 +155,7 @@
     },
     "/auth/sessions/{session_id}": {
       "delete": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": ["sessions"],
         "summary": "Revoke Session",
         "operationId": "revoke_session_auth_sessions__session_id__delete",
         "security": [
@@ -206,9 +194,7 @@
     },
     "/auth/validate-session": {
       "post": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": ["sessions"],
         "summary": "Validate Session",
         "operationId": "validate_session_auth_validate_session_post",
         "requestBody": {
@@ -247,9 +233,7 @@
     },
     "/auth/caldav-tokens": {
       "get": {
-        "tags": [
-          "caldav-tokens"
-        ],
+        "tags": ["caldav-tokens"],
         "summary": "List Caldav Tokens",
         "operationId": "list_caldav_tokens_auth_caldav_tokens_get",
         "responses": {
@@ -275,9 +259,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "caldav-tokens"
-        ],
+        "tags": ["caldav-tokens"],
         "summary": "Create Caldav Token",
         "operationId": "create_caldav_token_auth_caldav_tokens_post",
         "requestBody": {
@@ -321,9 +303,7 @@
     },
     "/auth/caldav-tokens/{token_id}": {
       "delete": {
-        "tags": [
-          "caldav-tokens"
-        ],
+        "tags": ["caldav-tokens"],
         "summary": "Revoke Caldav Token",
         "operationId": "revoke_caldav_token_auth_caldav_tokens__token_id__delete",
         "security": [
@@ -362,9 +342,7 @@
     },
     "/auth/challenge": {
       "post": {
-        "tags": [
-          "challenge"
-        ],
+        "tags": ["challenge"],
         "summary": "Start Challenge",
         "operationId": "start_challenge_auth_challenge_post",
         "responses": {
@@ -388,9 +366,7 @@
     },
     "/auth/challenge/{challenge_id}/verify": {
       "post": {
-        "tags": [
-          "challenge"
-        ],
+        "tags": ["challenge"],
         "summary": "Verify Challenge",
         "operationId": "verify_challenge_auth_challenge__challenge_id__verify_post",
         "security": [
@@ -446,9 +422,7 @@
     },
     "/auth/challenge/{challenge_id}/check": {
       "get": {
-        "tags": [
-          "challenge"
-        ],
+        "tags": ["challenge"],
         "summary": "Check Challenge",
         "operationId": "check_challenge_auth_challenge__challenge_id__check_get",
         "parameters": [
@@ -489,9 +463,7 @@
     },
     "/auth/forgot-password": {
       "post": {
-        "tags": [
-          "forgot-password"
-        ],
+        "tags": ["forgot-password"],
         "summary": "Start Forgot Password",
         "operationId": "start_forgot_password_auth_forgot_password_post",
         "requestBody": {
@@ -530,9 +502,7 @@
     },
     "/auth/forgot-password/{challenge_id}/verify": {
       "post": {
-        "tags": [
-          "forgot-password"
-        ],
+        "tags": ["forgot-password"],
         "summary": "Verify Forgot Password",
         "operationId": "verify_forgot_password_auth_forgot_password__challenge_id__verify_post",
         "parameters": [
@@ -583,9 +553,7 @@
     },
     "/auth/forgot-password/{challenge_id}/reset": {
       "post": {
-        "tags": [
-          "forgot-password"
-        ],
+        "tags": ["forgot-password"],
         "summary": "Reset Forgot Password",
         "operationId": "reset_forgot_password_auth_forgot_password__challenge_id__reset_post",
         "parameters": [
@@ -634,9 +602,7 @@
     },
     "/auth/internal/users/{user_id}/email": {
       "patch": {
-        "tags": [
-          "internal"
-        ],
+        "tags": ["internal"],
         "summary": "Update User Email",
         "operationId": "update_user_email_auth_internal_users__user_id__email_patch",
         "parameters": [
@@ -685,9 +651,7 @@
     },
     "/auth/internal/users/{user_id}/password": {
       "patch": {
-        "tags": [
-          "internal"
-        ],
+        "tags": ["internal"],
         "summary": "Update User Password",
         "operationId": "update_user_password_auth_internal_users__user_id__password_patch",
         "parameters": [
@@ -736,9 +700,7 @@
     },
     "/auth/internal/caldav-tokens/validate/{token}": {
       "get": {
-        "tags": [
-          "internal"
-        ],
+        "tags": ["internal"],
         "summary": "Validate Caldav Token",
         "description": "Called by core-schedule to validate a CalDAV token before serving an .ics feed.",
         "operationId": "validate_caldav_token_auth_internal_caldav_tokens_validate__token__get",
@@ -789,10 +751,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "access_token",
-          "user"
-        ],
+        "required": ["access_token", "user"],
         "title": "AuthResponse"
       },
       "CheckChallengeResponse": {
@@ -815,9 +774,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "is_valid"
-        ],
+        "required": ["is_valid"],
         "title": "CheckChallengeResponse"
       },
       "ForgotPasswordResetRequest": {
@@ -828,9 +785,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "new_password"
-        ],
+        "required": ["new_password"],
         "title": "ForgotPasswordResetRequest"
       },
       "ForgotPasswordStartRequest": {
@@ -841,9 +796,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "email"
-        ],
+        "required": ["email"],
         "title": "ForgotPasswordStartRequest"
       },
       "ForgotPasswordStartResponse": {
@@ -860,10 +813,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "challenge_id",
-          "expiring_at"
-        ],
+        "required": ["challenge_id", "expiring_at"],
         "title": "ForgotPasswordStartResponse"
       },
       "ForgotPasswordVerifyRequest": {
@@ -874,9 +824,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "code"
-        ],
+        "required": ["code"],
         "title": "ForgotPasswordVerifyRequest"
       },
       "ForgotPasswordVerifyResponse": {
@@ -887,9 +835,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "title": "ForgotPasswordVerifyResponse"
       },
       "HTTPValidationError": {
@@ -950,10 +896,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "title": "LoginRequest"
       },
       "MessageResponse": {
@@ -964,9 +907,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "message"
-        ],
+        "required": ["message"],
         "title": "MessageResponse"
       },
       "RegisterRequest": {
@@ -985,11 +926,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "email",
-          "password",
-          "name"
-        ],
+        "required": ["email", "password", "name"],
         "title": "RegisterRequest"
       },
       "SessionInfo": {
@@ -1001,10 +938,7 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "session",
-              "caldav"
-            ],
+            "enum": ["session", "caldav"],
             "title": "Type",
             "default": "session"
           },
@@ -1088,10 +1022,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "created_at"
-        ],
+        "required": ["id", "created_at"],
         "title": "SessionInfo"
       },
       "StartChallengeResponse": {
@@ -1108,10 +1039,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "challenge_id",
-          "expiring_at"
-        ],
+        "required": ["challenge_id", "expiring_at"],
         "title": "StartChallengeResponse"
       },
       "TokenCreateRequest": {
@@ -1147,12 +1075,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "token",
-          "device_name",
-          "created_at"
-        ],
+        "required": ["id", "token", "device_name", "created_at"],
         "title": "TokenCreateResponse"
       },
       "TokenListItem": {
@@ -1185,12 +1108,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "device_name",
-          "created_at",
-          "revoked_at"
-        ],
+        "required": ["id", "device_name", "created_at", "revoked_at"],
         "title": "TokenListItem"
       },
       "UpdateEmailRequest": {
@@ -1201,9 +1119,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "new_email"
-        ],
+        "required": ["new_email"],
         "title": "UpdateEmailRequest"
       },
       "UpdatePasswordRequest": {
@@ -1226,9 +1142,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "new_password"
-        ],
+        "required": ["new_password"],
         "title": "UpdatePasswordRequest"
       },
       "UserInfo": {
@@ -1252,12 +1166,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "email",
-          "name",
-          "role"
-        ],
+        "required": ["id", "email", "name", "role"],
         "title": "UserInfo"
       },
       "ValidateSessionRequest": {
@@ -1268,9 +1177,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "token"
-        ],
+        "required": ["token"],
         "title": "ValidateSessionRequest"
       },
       "ValidateSessionResponse": {
@@ -1325,9 +1232,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "title": "ValidateSessionResponse"
       },
       "ValidationError": {
@@ -1363,11 +1268,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       },
       "VerifyChallengeRequest": {
@@ -1378,9 +1279,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "code"
-        ],
+        "required": ["code"],
         "title": "VerifyChallengeRequest"
       },
       "VerifyChallengeResponse": {
@@ -1391,9 +1290,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "title": "VerifyChallengeResponse"
       }
     },

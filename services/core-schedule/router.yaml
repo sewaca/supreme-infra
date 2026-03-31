@@ -86,6 +86,9 @@ routes:
   - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
     method: GET
     auth_level: none
+  - path: /core-schedule/groups
+    method: GET
+    auth_level: valid
   - path: /core-schedule/groups/[^/]+/exams
     method: GET
     auth_level: valid

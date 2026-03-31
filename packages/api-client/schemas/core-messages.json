@@ -8,9 +8,7 @@
   "paths": {
     "/status": {
       "get": {
-        "tags": [
-          "status"
-        ],
+        "tags": ["status"],
         "summary": "Get Status",
         "operationId": "get_status_status_get",
         "responses": {
@@ -27,9 +25,7 @@
     },
     "/conversations": {
       "get": {
-        "tags": [
-          "conversations"
-        ],
+        "tags": ["conversations"],
         "summary": "List Conversations",
         "operationId": "list_conversations_conversations_get",
         "security": [
@@ -92,9 +88,7 @@
     },
     "/conversations/direct": {
       "post": {
-        "tags": [
-          "conversations"
-        ],
+        "tags": ["conversations"],
         "summary": "Create Or Get Direct Conversation",
         "operationId": "create_or_get_direct_conversation_conversations_direct_post",
         "requestBody": {
@@ -138,9 +132,7 @@
     },
     "/conversations/updates": {
       "get": {
-        "tags": [
-          "conversations"
-        ],
+        "tags": ["conversations"],
         "summary": "Get Updates",
         "operationId": "get_updates_conversations_updates_get",
         "security": [
@@ -186,9 +178,7 @@
     },
     "/conversations/{conversation_id}": {
       "get": {
-        "tags": [
-          "conversations"
-        ],
+        "tags": ["conversations"],
         "summary": "Get Conversation",
         "operationId": "get_conversation_conversations__conversation_id__get",
         "security": [
@@ -232,9 +222,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "conversations"
-        ],
+        "tags": ["conversations"],
         "summary": "Delete Conversation",
         "operationId": "delete_conversation_conversations__conversation_id__delete",
         "security": [
@@ -273,9 +261,7 @@
     },
     "/conversations/{conversation_id}/messages": {
       "get": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "summary": "List Messages",
         "operationId": "list_messages_conversations__conversation_id__messages_get",
         "security": [
@@ -346,9 +332,7 @@
         }
       },
       "post": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "summary": "Send Message",
         "operationId": "send_message_conversations__conversation_id__messages_post",
         "security": [
@@ -404,9 +388,7 @@
     },
     "/conversations/{conversation_id}/messages/read": {
       "post": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "summary": "Mark Read",
         "operationId": "mark_read_conversations__conversation_id__messages_read_post",
         "security": [
@@ -455,9 +437,7 @@
     },
     "/messages/search": {
       "get": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "summary": "Search Messages",
         "operationId": "search_messages_messages_search_get",
         "security": [
@@ -530,9 +510,7 @@
     },
     "/broadcasts": {
       "get": {
-        "tags": [
-          "broadcasts"
-        ],
+        "tags": ["broadcasts"],
         "summary": "List Broadcasts",
         "operationId": "list_broadcasts_broadcasts_get",
         "responses": {
@@ -558,9 +536,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "broadcasts"
-        ],
+        "tags": ["broadcasts"],
         "summary": "Create Broadcast",
         "operationId": "create_broadcast_broadcasts_post",
         "requestBody": {
@@ -604,9 +580,7 @@
     },
     "/broadcasts/groups": {
       "get": {
-        "tags": [
-          "broadcasts"
-        ],
+        "tags": ["broadcasts"],
         "summary": "Get Groups",
         "operationId": "get_groups_broadcasts_groups_get",
         "responses": {
@@ -634,9 +608,7 @@
     },
     "/users/search": {
       "get": {
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "summary": "Search Users",
         "operationId": "search_users_users_search_get",
         "security": [
@@ -693,9 +665,7 @@
     },
     "/users/{user_id}": {
       "get": {
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "summary": "Get User",
         "operationId": "get_user_users__user_id__get",
         "security": [
@@ -741,9 +711,7 @@
     },
     "/files": {
       "post": {
-        "tags": [
-          "files"
-        ],
+        "tags": ["files"],
         "summary": "Add Attachment",
         "description": "Save a pre-uploaded file attachment to a message.\n\nThe file itself must already be uploaded via the dedicated file storage service.\nThis endpoint only saves the file metadata and URL to the database.",
         "operationId": "add_attachment_files_post",
@@ -825,13 +793,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "message_id",
-          "file_url",
-          "file_name",
-          "file_size",
-          "mime_type"
-        ],
+        "required": ["message_id", "file_url", "file_name", "file_size", "mime_type"],
         "title": "AddAttachmentRequest"
       },
       "AttachmentResponse": {
@@ -870,13 +832,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "file_url",
-          "file_name",
-          "file_size",
-          "mime_type"
-        ],
+        "required": ["id", "file_url", "file_name", "file_size", "mime_type"],
         "title": "AttachmentResponse"
       },
       "ConversationListResponse": {
@@ -901,9 +857,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "items"
-        ],
+        "required": ["items"],
         "title": "ConversationListResponse"
       },
       "ConversationResponse": {
@@ -983,10 +937,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "type"
-        ],
+        "required": ["id", "type"],
         "title": "ConversationResponse"
       },
       "ConversationUpdateItem": {
@@ -1037,9 +988,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "conversation_id"
-        ],
+        "required": ["conversation_id"],
         "title": "ConversationUpdateItem"
       },
       "CreateBroadcastRequest": {
@@ -1068,10 +1017,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "title",
-          "group_names"
-        ],
+        "required": ["title", "group_names"],
         "title": "CreateBroadcastRequest"
       },
       "CreateDirectConversationRequest": {
@@ -1083,9 +1029,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "recipient_id"
-        ],
+        "required": ["recipient_id"],
         "title": "CreateDirectConversationRequest"
       },
       "HTTPValidationError": {
@@ -1110,9 +1054,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "last_read_message_id"
-        ],
+        "required": ["last_read_message_id"],
         "title": "MarkReadRequest"
       },
       "MessageListResponse": {
@@ -1142,9 +1084,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "items"
-        ],
+        "required": ["items"],
         "title": "MessageListResponse"
       },
       "MessageResponse": {
@@ -1254,12 +1194,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "message",
-          "conversation_id",
-          "conversation_type",
-          "highlight"
-        ],
+        "required": ["message", "conversation_id", "conversation_type", "highlight"],
         "title": "MessageSearchResult"
       },
       "ParticipantBrief": {
@@ -1301,11 +1236,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "user_id",
-          "name",
-          "last_name"
-        ],
+        "required": ["user_id", "name", "last_name"],
         "title": "ParticipantBrief"
       },
       "SearchMessagesResponse": {
@@ -1330,9 +1261,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "items"
-        ],
+        "required": ["items"],
         "title": "SearchMessagesResponse"
       },
       "SendMessageRequest": {
@@ -1349,9 +1278,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "content"
-        ],
+        "required": ["content"],
         "title": "SendMessageRequest"
       },
       "UpdatesResponse": {
@@ -1370,10 +1297,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "conversations",
-          "server_time"
-        ],
+        "required": ["conversations", "server_time"],
         "title": "UpdatesResponse"
       },
       "UserBrief": {
@@ -1426,11 +1350,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "user_id",
-          "name",
-          "last_name"
-        ],
+        "required": ["user_id", "name", "last_name"],
         "title": "UserBrief"
       },
       "UserSearchResponse": {
@@ -1444,9 +1364,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "items"
-        ],
+        "required": ["items"],
         "title": "UserSearchResponse"
       },
       "ValidationError": {
@@ -1482,11 +1400,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       }
     },

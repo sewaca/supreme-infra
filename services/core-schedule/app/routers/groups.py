@@ -2,9 +2,11 @@ from datetime import date
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.models.schedule_template import ScheduleTemplate
 from app.schemas.schedule import DaySchedule
 from app.schemas.session_event import SessionEventResponse
 from app.schemas.template import TemplateResponse
@@ -17,6 +19,21 @@ from app.services.schedule_resolver import (
 )
 
 router = APIRouter(prefix="/groups", tags=["groups"])
+
+
+@router.get("", response_model=list[str])
+async def list_groups_with_schedule(db: AsyncSession = Depends(get_db)):
+    """Distinct group names that have rows in the active semester schedule template."""
+    semester = await get_active_semester(db)
+    if not semester:
+        return []
+    result = await db.execute(
+        select(ScheduleTemplate.group_name)
+        .where(ScheduleTemplate.semester_id == semester.id)
+        .distinct()
+        .order_by(ScheduleTemplate.group_name)
+    )
+    return [row[0] for row in result.all()]
 
 
 @router.get("/{group_name}/schedule", response_model=list[DaySchedule])

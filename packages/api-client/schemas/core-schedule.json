@@ -114,6 +114,32 @@
         }
       }
     },
+    "/groups": {
+      "get": {
+        "tags": [
+          "groups"
+        ],
+        "summary": "List Groups With Schedule",
+        "description": "Distinct group names that have rows in the active semester schedule template.",
+        "operationId": "list_groups_with_schedule_groups_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "title": "Response List Groups With Schedule Groups Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/groups/{group_name}/schedule": {
       "get": {
         "tags": [

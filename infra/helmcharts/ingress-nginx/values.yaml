@@ -250,6 +250,8 @@ ingress:
           method: GET
         - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
           method: GET
+        - path: /core-schedule/groups
+          method: GET
         - path: /core-schedule/groups/[^/]+/exams
           method: GET
         - path: /core-schedule/groups/[^/]+/schedule

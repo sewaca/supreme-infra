@@ -886,6 +886,24 @@ export type TeacherCalendarCaldavTokenTeachersTeacherIdCalendarIcsGetResponses =
     200: unknown;
 };
 
+export type ListGroupsWithScheduleGroupsGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/groups';
+};
+
+export type ListGroupsWithScheduleGroupsGetResponses = {
+    /**
+     * Response List Groups With Schedule Groups Get
+     *
+     * Successful Response
+     */
+    200: Array<string>;
+};
+
+export type ListGroupsWithScheduleGroupsGetResponse = ListGroupsWithScheduleGroupsGetResponses[keyof ListGroupsWithScheduleGroupsGetResponses];
+
 export type GroupScheduleGroupsGroupNameScheduleGetData = {
     body?: never;
     path: {
