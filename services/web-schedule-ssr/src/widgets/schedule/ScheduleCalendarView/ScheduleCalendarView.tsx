@@ -207,11 +207,14 @@ export function ScheduleCalendarView({
   useEffect(() => {
     if (!mounted || correctedRef.current) return;
     correctedRef.current = true;
+    
     const api = calendarRef.current?.getApi();
     if (api && api.view.type !== calendarView) {
       api.changeView(calendarView);
     }
-  }, [mounted, calendarView]);
+
+    handleTodayClick();
+  }, [mounted, calendarView, handleTodayClick]);
 
   const handleTouchStart = useCallback((e: ReactTouchEvent) => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
