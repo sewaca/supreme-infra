@@ -9,12 +9,12 @@ export interface AuthRoute {
 }
 
 export const authRoutes: AuthRoute[] = [
-  { path: /^\/api\/messages\/history$/, method: 'GET', auth_level: 'none' },
-  { path: /^\/messages$/, method: 'GET', auth_level: 'none' },
-  { path: /^\/messages\/[^/]+$/, method: 'GET', auth_level: 'none' },
-  { path: /^\/messages\/broadcast$/, method: 'GET', auth_level: 'none' },
-  { path: /^\/messages\/broadcast\/new$/, method: 'GET', auth_level: 'none' },
-  { path: /^\/messages\/new$/, method: 'GET', auth_level: 'none' },
-  { path: /^\/messages\/search$/, method: 'GET', auth_level: 'none' },
+  { path: /^\/api\/messages\/history$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/messages$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/messages\/[^/]+$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/messages\/broadcast$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/messages\/broadcast\/new$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/messages\/new$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/messages\/search$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/web-messages-ssr\/.*$/, method: 'GET', auth_level: 'none' },
 ];

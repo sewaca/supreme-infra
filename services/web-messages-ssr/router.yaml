@@ -7,25 +7,25 @@ type: next
 routes:
   - path: /api/messages/history
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /messages
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /messages/[^/]+
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /messages/broadcast
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /messages/broadcast/new
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /messages/new
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /messages/search
     method: GET
-    auth_level: none
+    auth_level: valid
   - path: /web-messages-ssr/.*
     method: GET
     auth_level: none

@@ -1,3 +1,5 @@
+'use client';
+
 import ChatIcon from '@mui/icons-material/Chat';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
