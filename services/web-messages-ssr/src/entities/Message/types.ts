@@ -19,6 +19,7 @@ export interface Message {
   attachments: Attachment[];
   created_at: string;
   is_own: boolean;
+  is_edited?: boolean;
 }
 
 export interface MessageSearchResult {

@@ -876,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 1491,
+      "id": 1555,
       "panels": [
         {
-          "id": 1489,
+          "id": 1553,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -970,7 +970,7 @@
           }
         },
         {
-          "id": 1490,
+          "id": 1554,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1069,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 1492,
+      "id": 1556,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1080,7 +1080,7 @@
       }
     },
     {
-      "id": 1493,
+      "id": 1557,
       "title": "GET /core-messages/broadcasts",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 1494,
+      "id": 1558,
       "title": "GET /core-messages/broadcasts - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1212,7 +1212,7 @@
       }
     },
     {
-      "id": 1495,
+      "id": 1559,
       "title": "GET /core-messages/broadcasts - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1303,7 +1303,7 @@
       }
     },
     {
-      "id": 1496,
+      "id": 1560,
       "title": "GET /core-messages/broadcasts - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1398,7 +1398,7 @@
       }
     },
     {
-      "id": 1497,
+      "id": 1561,
       "title": "POST /core-messages/broadcasts",
       "type": "row",
       "gridPos": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 1498,
+      "id": 1562,
       "title": "POST /core-messages/broadcasts - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1530,7 +1530,7 @@
       }
     },
     {
-      "id": 1499,
+      "id": 1563,
       "title": "POST /core-messages/broadcasts - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1621,7 +1621,7 @@
       }
     },
     {
-      "id": 1500,
+      "id": 1564,
       "title": "POST /core-messages/broadcasts - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1716,7 +1716,7 @@
       }
     },
     {
-      "id": 1501,
+      "id": 1565,
       "title": "GET /core-messages/broadcasts/groups",
       "type": "row",
       "gridPos": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 1502,
+      "id": 1566,
       "title": "GET /core-messages/broadcasts/groups - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1848,7 +1848,7 @@
       }
     },
     {
-      "id": 1503,
+      "id": 1567,
       "title": "GET /core-messages/broadcasts/groups - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1939,7 +1939,7 @@
       }
     },
     {
-      "id": 1504,
+      "id": 1568,
       "title": "GET /core-messages/broadcasts/groups - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2034,7 +2034,7 @@
       }
     },
     {
-      "id": 1505,
+      "id": 1569,
       "title": "GET /core-messages/conversations",
       "type": "row",
       "gridPos": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 1506,
+      "id": 1570,
       "title": "GET /core-messages/conversations - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2166,7 +2166,7 @@
       }
     },
     {
-      "id": 1507,
+      "id": 1571,
       "title": "GET /core-messages/conversations - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2257,7 +2257,7 @@
       }
     },
     {
-      "id": 1508,
+      "id": 1572,
       "title": "GET /core-messages/conversations - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2352,7 +2352,7 @@
       }
     },
     {
-      "id": 1509,
+      "id": 1573,
       "title": "DELETE /core-messages/conversations/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 1510,
+      "id": 1574,
       "title": "DELETE /core-messages/conversations/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2484,7 +2484,7 @@
       }
     },
     {
-      "id": 1511,
+      "id": 1575,
       "title": "DELETE /core-messages/conversations/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2575,7 +2575,7 @@
       }
     },
     {
-      "id": 1512,
+      "id": 1576,
       "title": "DELETE /core-messages/conversations/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2670,7 +2670,7 @@
       }
     },
     {
-      "id": 1513,
+      "id": 1577,
       "title": "GET /core-messages/conversations/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 1514,
+      "id": 1578,
       "title": "GET /core-messages/conversations/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2802,7 +2802,7 @@
       }
     },
     {
-      "id": 1515,
+      "id": 1579,
       "title": "GET /core-messages/conversations/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2893,7 +2893,7 @@
       }
     },
     {
-      "id": 1516,
+      "id": 1580,
       "title": "GET /core-messages/conversations/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2988,7 +2988,7 @@
       }
     },
     {
-      "id": 1517,
+      "id": 1581,
       "title": "GET /core-messages/conversations/[^/]+/messages",
       "type": "row",
       "gridPos": {
@@ -2999,7 +2999,7 @@
       }
     },
     {
-      "id": 1518,
+      "id": 1582,
       "title": "GET /core-messages/conversations/:id/messages - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3120,7 +3120,7 @@
       }
     },
     {
-      "id": 1519,
+      "id": 1583,
       "title": "GET /core-messages/conversations/:id/messages - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3211,7 +3211,7 @@
       }
     },
     {
-      "id": 1520,
+      "id": 1584,
       "title": "GET /core-messages/conversations/:id/messages - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3306,7 +3306,7 @@
       }
     },
     {
-      "id": 1521,
+      "id": 1585,
       "title": "POST /core-messages/conversations/[^/]+/messages",
       "type": "row",
       "gridPos": {
@@ -3317,7 +3317,7 @@
       }
     },
     {
-      "id": 1522,
+      "id": 1586,
       "title": "POST /core-messages/conversations/:id/messages - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3438,7 +3438,7 @@
       }
     },
     {
-      "id": 1523,
+      "id": 1587,
       "title": "POST /core-messages/conversations/:id/messages - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3529,7 +3529,7 @@
       }
     },
     {
-      "id": 1524,
+      "id": 1588,
       "title": "POST /core-messages/conversations/:id/messages - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3624,8 +3624,8 @@
       }
     },
     {
-      "id": 1525,
-      "title": "POST /core-messages/conversations/[^/]+/messages/read",
+      "id": 1589,
+      "title": "DELETE /core-messages/conversations/[^/]+/messages/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -3635,8 +3635,8 @@
       }
     },
     {
-      "id": 1526,
-      "title": "POST /core-messages/conversations/:id/messages/read - Timings",
+      "id": 1590,
+      "title": "DELETE /core-messages/conversations/:id/messages/:id - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -3647,6 +3647,642 @@
         "w": 8,
         "x": 0,
         "y": 142
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"DELETE\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1591,
+      "title": "DELETE /core-messages/conversations/:id/messages/:id - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 142
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"DELETE\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1592,
+      "title": "DELETE /core-messages/conversations/:id/messages/:id - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 142
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"DELETE\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1593,
+      "title": "PATCH /core-messages/conversations/[^/]+/messages/[^/]+",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 150
+      }
+    },
+    {
+      "id": 1594,
+      "title": "PATCH /core-messages/conversations/:id/messages/:id - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 151
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"PATCH\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"PATCH\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"PATCH\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1595,
+      "title": "PATCH /core-messages/conversations/:id/messages/:id - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 151
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"PATCH\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1596,
+      "title": "PATCH /core-messages/conversations/:id/messages/:id - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 151
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-messages\",http_target=\"/core-messages/conversations/:id/messages/:id\",http_method=\"PATCH\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 1597,
+      "title": "POST /core-messages/conversations/[^/]+/messages/read",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 159
+      }
+    },
+    {
+      "id": 1598,
+      "title": "POST /core-messages/conversations/:id/messages/read - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 160
       },
       "targets": [
         {
@@ -3756,7 +4392,7 @@
       }
     },
     {
-      "id": 1527,
+      "id": 1599,
       "title": "POST /core-messages/conversations/:id/messages/read - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3767,7 +4403,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 142
+        "y": 160
       },
       "targets": [
         {
@@ -3847,7 +4483,7 @@
       }
     },
     {
-      "id": 1528,
+      "id": 1600,
       "title": "POST /core-messages/conversations/:id/messages/read - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3858,7 +4494,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 142
+        "y": 160
       },
       "targets": [
         {
@@ -3942,18 +4578,18 @@
       }
     },
     {
-      "id": 1529,
+      "id": 1601,
       "title": "POST /core-messages/conversations/direct",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 150
+        "y": 168
       }
     },
     {
-      "id": 1530,
+      "id": 1602,
       "title": "POST /core-messages/conversations/direct - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3964,7 +4600,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 151
+        "y": 169
       },
       "targets": [
         {
@@ -4074,7 +4710,7 @@
       }
     },
     {
-      "id": 1531,
+      "id": 1603,
       "title": "POST /core-messages/conversations/direct - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4085,7 +4721,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 151
+        "y": 169
       },
       "targets": [
         {
@@ -4165,7 +4801,7 @@
       }
     },
     {
-      "id": 1532,
+      "id": 1604,
       "title": "POST /core-messages/conversations/direct - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4176,7 +4812,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 151
+        "y": 169
       },
       "targets": [
         {
@@ -4260,18 +4896,18 @@
       }
     },
     {
-      "id": 1533,
+      "id": 1605,
       "title": "GET /core-messages/conversations/updates",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 159
+        "y": 177
       }
     },
     {
-      "id": 1534,
+      "id": 1606,
       "title": "GET /core-messages/conversations/updates - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4282,7 +4918,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 160
+        "y": 178
       },
       "targets": [
         {
@@ -4392,7 +5028,7 @@
       }
     },
     {
-      "id": 1535,
+      "id": 1607,
       "title": "GET /core-messages/conversations/updates - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4403,7 +5039,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 160
+        "y": 178
       },
       "targets": [
         {
@@ -4483,7 +5119,7 @@
       }
     },
     {
-      "id": 1536,
+      "id": 1608,
       "title": "GET /core-messages/conversations/updates - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4494,7 +5130,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 160
+        "y": 178
       },
       "targets": [
         {
@@ -4578,18 +5214,18 @@
       }
     },
     {
-      "id": 1537,
+      "id": 1609,
       "title": "POST /core-messages/files",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 168
+        "y": 186
       }
     },
     {
-      "id": 1538,
+      "id": 1610,
       "title": "POST /core-messages/files - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4600,7 +5236,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 169
+        "y": 187
       },
       "targets": [
         {
@@ -4710,7 +5346,7 @@
       }
     },
     {
-      "id": 1539,
+      "id": 1611,
       "title": "POST /core-messages/files - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4721,7 +5357,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 169
+        "y": 187
       },
       "targets": [
         {
@@ -4801,7 +5437,7 @@
       }
     },
     {
-      "id": 1540,
+      "id": 1612,
       "title": "POST /core-messages/files - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4812,7 +5448,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 169
+        "y": 187
       },
       "targets": [
         {
@@ -4896,18 +5532,18 @@
       }
     },
     {
-      "id": 1541,
+      "id": 1613,
       "title": "GET /core-messages/messages/search",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 177
+        "y": 195
       }
     },
     {
-      "id": 1542,
+      "id": 1614,
       "title": "GET /core-messages/messages/search - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4918,7 +5554,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 178
+        "y": 196
       },
       "targets": [
         {
@@ -5028,7 +5664,7 @@
       }
     },
     {
-      "id": 1543,
+      "id": 1615,
       "title": "GET /core-messages/messages/search - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5039,7 +5675,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 178
+        "y": 196
       },
       "targets": [
         {
@@ -5119,7 +5755,7 @@
       }
     },
     {
-      "id": 1544,
+      "id": 1616,
       "title": "GET /core-messages/messages/search - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5130,7 +5766,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 178
+        "y": 196
       },
       "targets": [
         {
@@ -5214,18 +5850,18 @@
       }
     },
     {
-      "id": 1545,
+      "id": 1617,
       "title": "GET /core-messages/users/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 186
+        "y": 204
       }
     },
     {
-      "id": 1546,
+      "id": 1618,
       "title": "GET /core-messages/users/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5236,7 +5872,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 187
+        "y": 205
       },
       "targets": [
         {
@@ -5346,7 +5982,7 @@
       }
     },
     {
-      "id": 1547,
+      "id": 1619,
       "title": "GET /core-messages/users/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5357,7 +5993,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 187
+        "y": 205
       },
       "targets": [
         {
@@ -5437,7 +6073,7 @@
       }
     },
     {
-      "id": 1548,
+      "id": 1620,
       "title": "GET /core-messages/users/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5448,7 +6084,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 187
+        "y": 205
       },
       "targets": [
         {
@@ -5532,18 +6168,18 @@
       }
     },
     {
-      "id": 1549,
+      "id": 1621,
       "title": "GET /core-messages/users/search",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 195
+        "y": 213
       }
     },
     {
-      "id": 1550,
+      "id": 1622,
       "title": "GET /core-messages/users/search - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5554,7 +6190,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 196
+        "y": 214
       },
       "targets": [
         {
@@ -5664,7 +6300,7 @@
       }
     },
     {
-      "id": 1551,
+      "id": 1623,
       "title": "GET /core-messages/users/search - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5675,7 +6311,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 196
+        "y": 214
       },
       "targets": [
         {
@@ -5755,7 +6391,7 @@
       }
     },
     {
-      "id": 1552,
+      "id": 1624,
       "title": "GET /core-messages/users/search - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5766,7 +6402,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 196
+        "y": 214
       },
       "targets": [
         {

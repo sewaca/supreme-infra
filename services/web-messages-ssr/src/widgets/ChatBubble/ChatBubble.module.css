@@ -1,6 +1,6 @@
 .wrapper {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   max-width: 75%;
 }
 
@@ -14,13 +14,13 @@
 }
 
 .bubble {
-  padding: 8px 12px;
-  border-radius: 12px;
-  min-width: 80px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  min-width: 70px;
 }
 
 .bubbleOwn {
-  background: var(--color-primary, #1976d2);
+  background: #1a237e;
   color: #fff;
   border-bottom-right-radius: 4px;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Autocomplete, Box, CircularProgress, IconButton, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, CircularProgress, IconButton, Snackbar, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
@@ -14,11 +14,16 @@ interface UserOption {
   avatar: string | null;
 }
 
-export function NewMessageView() {
+interface Props {
+  currentUserId: string;
+}
+
+export function NewMessageView({ currentUserId }: Props) {
   const router = useRouter();
   const [options, setOptions] = useState<UserOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout>>();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleSearch = useCallback(
     (query: string) => {
@@ -31,12 +36,12 @@ export function NewMessageView() {
         setTimeout(async () => {
           setLoading(true);
           const users = await searchUsers(query);
-          setOptions(users);
+          setOptions(users.filter((u) => u.user_id !== currentUserId));
           setLoading(false);
         }, 300),
       );
     },
-    [searchTimeout],
+    [searchTimeout, currentUserId],
   );
 
   const handleSelect = useCallback(
@@ -45,19 +50,22 @@ export function NewMessageView() {
       const result = await createDirectConversation(user.user_id);
       if (result.success && result.conversationId) {
         router.push(`/messages/${result.conversationId}`);
+      } else {
+        setErrorMsg(result.error ?? 'Не удалось создать чат');
       }
     },
     [router],
   );
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-        <IconButton component={Link} href="/messages">
+    <Box sx={{ p: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
+        <IconButton component={Link} href="/messages" size="small">
           <ArrowBackIcon />
         </IconButton>
         <Typography variant="h6">Новое сообщение</Typography>
       </Box>
+
       <Autocomplete
         options={options}
         getOptionLabel={(opt) => `${opt.name} ${opt.last_name}`}
@@ -85,6 +93,12 @@ export function NewMessageView() {
           />
         )}
       />
+
+      <Snackbar open={!!errorMsg} autoHideDuration={4000} onClose={() => setErrorMsg(null)}>
+        <Alert severity="error" onClose={() => setErrorMsg(null)}>
+          {errorMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

@@ -30,11 +30,23 @@ export function ConversationItem({ conversation, isActive }: Props) {
       component={Link}
       href={`/messages/${conversation.id}`}
       selected={isActive}
-      sx={{ px: 2, py: 1.5, gap: 1.5 }}
+      sx={{ px: 1.5, py: 1, gap: 1 }}
     >
       <Badge badgeContent={unread_count} color="primary" invisible={unread_count === 0} overlap="circular">
-        <Avatar src={avatar ?? undefined} sx={{ width: 48, height: 48 }}>
-          {type === 'broadcast' ? <CampaignIcon /> : initials}
+        <Avatar
+          src={avatar ?? undefined}
+          sx={{
+            width: 40,
+            height: 40,
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            ...(!avatar && {
+              background: 'linear-gradient(135deg, #2b4878 0%, #1a2e4a 100%)',
+              color: 'rgba(255,255,255,0.9)',
+            }),
+          }}
+        >
+          {type === 'broadcast' ? <CampaignIcon fontSize="small" /> : initials}
         </Avatar>
       </Badge>
 

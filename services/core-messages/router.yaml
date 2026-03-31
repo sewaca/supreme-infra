@@ -29,6 +29,12 @@ routes:
   - path: /core-messages/conversations/[^/]+/messages
     method: POST
     auth_level: valid
+  - path: /core-messages/conversations/[^/]+/messages/[^/]+
+    method: DELETE
+    auth_level: none
+  - path: /core-messages/conversations/[^/]+/messages/[^/]+
+    method: PATCH
+    auth_level: none
   - path: /core-messages/conversations/[^/]+/messages/read
     method: POST
     auth_level: valid

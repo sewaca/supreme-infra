@@ -10,6 +10,7 @@ from app.dependencies import ValidSession
 from app.models.conversation import Conversation, ConversationParticipant
 from app.models.message import Message
 from app.schemas.message import (
+    EditMessageRequest,
     MarkReadRequest,
     MessageListResponse,
     MessageResponse,
@@ -68,6 +69,7 @@ async def _build_message_response(
         ],
         created_at=msg.created_at,
         is_own=(msg.sender_id == current_user_id),
+        is_edited=(msg.updated_at is not None),
     )
 
 
@@ -200,3 +202,99 @@ async def mark_read(
                 },
             },
         )
+
+
+async def _get_participant_ids(conversation_id: uuid.UUID, db: AsyncSession) -> list:
+    result = await db.execute(
+        select(ConversationParticipant.user_id).where(
+            ConversationParticipant.conversation_id == conversation_id,
+            ConversationParticipant.is_deleted.is_(False),
+        )
+    )
+    return [row[0] for row in result.all()]
+
+
+@router.patch("/{message_id}", response_model=MessageResponse)
+async def edit_message(
+    conversation_id: uuid.UUID,
+    message_id: uuid.UUID,
+    body: EditMessageRequest,
+    current_user: ValidSession,
+    db: AsyncSession = Depends(get_db),
+):
+    current_user_id = uuid.UUID(current_user["sub"])
+    await _get_participant(conversation_id, current_user_id, db)
+
+    result = await db.execute(
+        select(Message).where(
+            Message.id == message_id,
+            Message.conversation_id == conversation_id,
+            Message.is_deleted.is_(False),
+        )
+    )
+    msg = result.scalar_one_or_none()
+    if not msg:
+        raise HTTPException(status_code=404, detail="Message not found")
+    if msg.sender_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Cannot edit other's message")
+
+    msg.content = body.content
+    msg.updated_at = datetime.now(UTC)
+    await db.flush()
+
+    participant_ids = await _get_participant_ids(conversation_id, db)
+    await ws_manager.broadcast_to_conversation(
+        participant_ids,
+        {
+            "type": "message_edited",
+            "data": {
+                "message_id": str(message_id),
+                "conversation_id": str(conversation_id),
+                "content": body.content,
+            },
+        },
+    )
+
+    users_map = await get_cached_users_batch([msg.sender_id], db)
+    await db.refresh(msg, attribute_names=["attachments"])
+    return await _build_message_response(msg, current_user_id, users_map)
+
+
+@router.delete("/{message_id}", status_code=204)
+async def delete_message(
+    conversation_id: uuid.UUID,
+    message_id: uuid.UUID,
+    current_user: ValidSession,
+    db: AsyncSession = Depends(get_db),
+):
+    current_user_id = uuid.UUID(current_user["sub"])
+    await _get_participant(conversation_id, current_user_id, db)
+
+    result = await db.execute(
+        select(Message).where(
+            Message.id == message_id,
+            Message.conversation_id == conversation_id,
+            Message.is_deleted.is_(False),
+        )
+    )
+    msg = result.scalar_one_or_none()
+    if not msg:
+        raise HTTPException(status_code=404, detail="Message not found")
+    if msg.sender_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Cannot delete other's message")
+
+    msg.is_deleted = True
+    msg.updated_at = datetime.now(UTC)
+    await db.flush()
+
+    participant_ids = await _get_participant_ids(conversation_id, db)
+    await ws_manager.broadcast_to_conversation(
+        participant_ids,
+        {
+            "type": "message_deleted",
+            "data": {
+                "message_id": str(message_id),
+                "conversation_id": str(conversation_id),
+            },
+        },
+    )

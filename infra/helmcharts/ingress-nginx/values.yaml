@@ -152,6 +152,10 @@ ingress:
           method: GET
         - path: /core-messages/conversations/[^/]+/messages
           method: POST
+        - path: /core-messages/conversations/[^/]+/messages/[^/]+
+          method: DELETE
+        - path: /core-messages/conversations/[^/]+/messages/[^/]+
+          method: PATCH
         - path: /core-messages/conversations/[^/]+/messages/read
           method: POST
         - path: /core-messages/conversations/direct

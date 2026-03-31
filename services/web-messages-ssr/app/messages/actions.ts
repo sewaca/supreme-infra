@@ -10,8 +10,10 @@ import {
   searchUsersUsersSearchGet,
   sendMessageConversationsConversationIdMessagesPost,
 } from '@supreme-int/api-client/src/generated/core-messages';
+import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
 import type { Message } from '../../src/entities/Message/types';
 import { coreMessagesClient } from '../../src/shared/api/clients';
+import { environment } from '../../src/shared/lib/environment';
 
 export async function sendMessage(
   conversationId: string,
@@ -118,6 +120,45 @@ export async function searchMessages(query: string, cursor?: string) {
     return res.data ?? { items: [], next_cursor: null };
   } catch {
     return { items: [], next_cursor: null };
+  }
+}
+
+export async function editMessage(
+  conversationId: string,
+  messageId: string,
+  content: string,
+): Promise<{ success: boolean; message?: Message; error?: string }> {
+  try {
+    const fetchWithAuth = createServerFetch();
+    const res = await fetchWithAuth(
+      `${environment.coreMessagesUrl}/conversations/${conversationId}/messages/${messageId}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      },
+    );
+    if (!res.ok) return { success: false, error: 'Не удалось редактировать сообщение' };
+    const data = await res.json();
+    return { success: true, message: data as Message };
+  } catch {
+    return { success: false, error: 'Ошибка редактирования сообщения' };
+  }
+}
+
+export async function deleteMessage(
+  conversationId: string,
+  messageId: string,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const fetchWithAuth = createServerFetch();
+    const res = await fetchWithAuth(
+      `${environment.coreMessagesUrl}/conversations/${conversationId}/messages/${messageId}`,
+      { method: 'DELETE' },
+    );
+    return { success: res.ok };
+  } catch {
+    return { success: false, error: 'Ошибка удаления сообщения' };
   }
 }
 

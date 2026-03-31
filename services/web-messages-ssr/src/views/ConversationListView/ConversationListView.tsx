@@ -21,7 +21,8 @@ export function ConversationListView({ conversations, userRole, currentPath }: P
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box
         sx={{
-          p: 2,
+          px: 1.5,
+          py: 1,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -29,19 +30,19 @@ export function ConversationListView({ conversations, userRole, currentPath }: P
           borderColor: 'divider',
         }}
       >
-        <Typography variant="h6" fontWeight={600}>
+        <Typography variant="subtitle1" fontWeight={600}>
           Сообщения
         </Typography>
         <Box>
           <IconButton component={Link} href="/messages/search" size="small">
-            <SearchIcon />
+            <SearchIcon fontSize="small" />
           </IconButton>
           <IconButton component={Link} href="/messages/new" size="small">
-            <AddIcon />
+            <AddIcon fontSize="small" />
           </IconButton>
           {userRole === 'teacher' && (
             <IconButton component={Link} href="/messages/broadcast" size="small">
-              <CampaignIcon />
+              <CampaignIcon fontSize="small" />
             </IconButton>
           )}
         </Box>

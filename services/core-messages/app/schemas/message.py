@@ -25,6 +25,7 @@ class MessageResponse(BaseModel):
     attachments: list[AttachmentResponse] = []
     created_at: datetime
     is_own: bool = False
+    is_edited: bool = False
 
 
 class MessageListResponse(BaseModel):
@@ -36,6 +37,10 @@ class MessageListResponse(BaseModel):
 class SendMessageRequest(BaseModel):
     content: str = Field(..., max_length=5000)
     content_type: str = "text"
+
+
+class EditMessageRequest(BaseModel):
+    content: str = Field(..., max_length=5000)
 
 
 class MarkReadRequest(BaseModel):

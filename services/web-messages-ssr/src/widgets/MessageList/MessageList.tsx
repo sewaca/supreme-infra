@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import type { Message } from '../../entities/Message/types';
 import { formatDateSeparator } from '../../shared/lib/formatDate';
 import { ChatBubble } from '../ChatBubble/ChatBubble';
+import type { MessageAction } from '../MessageContextMenu/MessageContextMenu';
 import styles from './MessageList.module.css';
 
 interface Props {
@@ -13,9 +14,25 @@ interface Props {
   loading: boolean;
   onLoadMore: () => void;
   userId: string;
+  canReplyInDm?: boolean;
+  editingMessageId?: string | null;
+  onAction?: (action: MessageAction, message: Message) => void;
+  onEditSubmit?: (messageId: string, content: string) => void;
+  onCancelEdit?: () => void;
 }
 
-export function MessageList({ messages, hasMore, loading, onLoadMore, userId }: Props) {
+export function MessageList({
+  messages,
+  hasMore,
+  loading,
+  onLoadMore,
+  userId,
+  canReplyInDm = false,
+  editingMessageId,
+  onAction,
+  onEditSubmit,
+  onCancelEdit,
+}: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef(0);
@@ -76,8 +93,8 @@ export function MessageList({ messages, hasMore, loading, onLoadMore, userId }: 
     <Box ref={scrollRef} className={styles.messageList}>
       <Box ref={sentinelRef} sx={{ minHeight: 1 }}>
         {loading && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
-            <CircularProgress size={24} />
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 1.5 }}>
+            <CircularProgress size={20} />
           </Box>
         )}
       </Box>
@@ -88,15 +105,23 @@ export function MessageList({ messages, hasMore, loading, onLoadMore, userId }: 
         lastDate = msgDate;
 
         return (
-          <Box key={msg.id}>
+          <Box key={msg.id} sx={{ display: 'flex', flexDirection: 'column' }}>
             {showDateSeparator && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 1.5 }}>
-                <Typography variant="caption" sx={{ px: 2, py: 0.5, borderRadius: 2, bgcolor: 'action.hover' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
+                <Typography variant="caption" sx={{ px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'action.hover' }}>
                   {formatDateSeparator(msg.created_at)}
                 </Typography>
               </Box>
             )}
-            <ChatBubble message={msg} isOwn={msg.sender_id === userId} />
+            <ChatBubble
+              message={msg}
+              isOwn={msg.sender_id === userId}
+              canReplyInDm={canReplyInDm}
+              isEditing={editingMessageId === msg.id}
+              onAction={onAction}
+              onEditSubmit={onEditSubmit}
+              onCancelEdit={onCancelEdit}
+            />
           </Box>
         );
       })}

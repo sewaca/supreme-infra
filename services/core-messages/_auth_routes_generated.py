@@ -25,6 +25,12 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-messages/conversations/[^/]+/messages$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-messages/conversations/[^/]+/messages$"), method="POST", auth_level="valid"),
     AuthRoute(
+        path=re.compile(r"^/core-messages/conversations/[^/]+/messages/[^/]+$"), method="DELETE", auth_level="none"
+    ),
+    AuthRoute(
+        path=re.compile(r"^/core-messages/conversations/[^/]+/messages/[^/]+$"), method="PATCH", auth_level="none"
+    ),
+    AuthRoute(
         path=re.compile(r"^/core-messages/conversations/[^/]+/messages/read$"), method="POST", auth_level="valid"
     ),
     AuthRoute(path=re.compile(r"^/core-messages/conversations/direct$"), method="POST", auth_level="valid"),
