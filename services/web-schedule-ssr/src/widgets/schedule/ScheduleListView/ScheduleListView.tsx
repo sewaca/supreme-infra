@@ -7,10 +7,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { alpha, useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
 import type { CalendarEvent } from '../../../entities/Lesson/model/Lesson';
 import { getLessonChipColor } from '../../../entities/Lesson/model/Lesson';
-import { addCalendarDays, mondayOfCalendarWeek } from '../../../shared/lib/schedule.utils';
+import { addCalendarDays, mondayOfCalendarWeek, toDateStr } from '../../../shared/lib/schedule.utils';
 import styles from './ScheduleListView.module.css';
 
 export type { CalendarEvent };
@@ -65,6 +66,8 @@ function formatWeekRange(dateFrom: string): string {
 type DayGroup = { date: string; events: CalendarEvent[] };
 
 export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick, isFetching }: Props) {
+  const theme = useTheme();
+  const todayStr = toDateStr(new Date());
   const weekMonday = useMemo(() => (dateFrom ? mondayOfCalendarWeek(dateFrom) : ''), [dateFrom]);
 
   const days = useMemo(() => {
@@ -118,9 +121,29 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
         </Paper>
       )}
 
-      {days.map((day) => (
-        <Paper key={day.date} className={styles.dayCard} elevation={0}>
-          <Typography className={styles.dayHeader}>{formatDayHeader(day.date)}</Typography>
+      {days.map((day) => {
+        const isToday = day.date === todayStr;
+        const primary = theme.palette.primary.main;
+        return (
+        <Paper
+          key={day.date}
+          className={styles.dayCard}
+          elevation={0}
+          sx={
+            isToday
+              ? {
+                  bgcolor: alpha(primary, 0.1),
+                  border: `1px solid ${alpha(primary, 0.22)}`,
+                }
+              : undefined
+          }
+        >
+          <Typography
+            className={styles.dayHeader}
+            sx={isToday ? { color: 'primary.dark', borderBottomColor: alpha(primary, 0.18) } : undefined}
+          >
+            {formatDayHeader(day.date)}
+          </Typography>
 
           {day.events.map((ev) => {
             const startTime = ev.start.slice(11, 16);
@@ -150,7 +173,8 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
             );
           })}
         </Paper>
-      ))}
+        );
+      })}
     </div>
   );
 }
