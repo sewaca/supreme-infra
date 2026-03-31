@@ -45,5 +45,7 @@ class ConversationParticipant(Base):
     last_read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # Direct: cached full name of the counterparty for this row (sidebar title for that user).
+    peer_display_name: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     conversation: Mapped["Conversation"] = relationship(back_populates="participants")

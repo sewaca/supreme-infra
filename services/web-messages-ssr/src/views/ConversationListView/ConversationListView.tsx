@@ -12,9 +12,10 @@ interface Props {
   conversations: Conversation[];
   userRole: string | null;
   currentPath: string;
+  currentUserId: string | null;
 }
 
-export function ConversationListView({ conversations, userRole, currentPath }: Props) {
+export function ConversationListView({ conversations, userRole, currentPath, currentUserId }: Props) {
   const activeId = currentPath.startsWith('/messages/') ? currentPath.split('/')[2] : null;
 
   return (
@@ -55,7 +56,12 @@ export function ConversationListView({ conversations, userRole, currentPath }: P
           </Box>
         ) : (
           conversations.map((conv) => (
-            <ConversationItem key={conv.id} conversation={conv} isActive={conv.id === activeId} />
+            <ConversationItem
+              key={conv.id}
+              conversation={conv}
+              isActive={conv.id === activeId}
+              currentUserId={currentUserId}
+            />
           ))
         )}
       </List>

@@ -109,7 +109,12 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
   return (
     <div className={styles.container}>
       <aside className={`${styles.sidebar} ${showMain && isMobile ? styles.hidden : ''}`}>
-        <ConversationListView conversations={conversations} userRole={userRole} currentPath={pathname} />
+        <ConversationListView
+          conversations={conversations}
+          userRole={userRole}
+          currentPath={pathname}
+          currentUserId={userId}
+        />
       </aside>
       <main className={`${styles.main} ${!showMain && isMobile ? styles.hidden : ''}`}>{children}</main>
     </div>

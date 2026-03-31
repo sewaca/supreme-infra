@@ -16,6 +16,8 @@ export interface Conversation {
   unread_count: number;
   participants: ParticipantBrief[];
   participant_count: number;
+  /** Direct: имя собеседника для текущего пользователя (из API / БД). */
+  peer_display_name?: string | null;
 }
 
 export interface ConversationUpdateItem {

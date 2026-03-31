@@ -118,6 +118,10 @@ export type ConversationResponse = {
      * Participant Count
      */
     participant_count?: number;
+    /**
+     * Direct: counterparty full name for the current user (sidebar title).
+     */
+    peer_display_name?: string | null;
 };
 
 /**

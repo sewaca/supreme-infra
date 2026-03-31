@@ -934,6 +934,18 @@
             "type": "integer",
             "title": "Participant Count",
             "default": 0
+          },
+          "peer_display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peer Display Name",
+            "description": "Direct: counterparty full name for the current user (sidebar title)."
           }
         },
         "type": "object",

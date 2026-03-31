@@ -9,21 +9,40 @@ import { formatMessageDate } from '../../shared/lib/formatDate';
 interface Props {
   conversation: Conversation;
   isActive: boolean;
+  currentUserId: string | null;
 }
 
-export function ConversationItem({ conversation, isActive }: Props) {
-  const { type, participants, title, last_message_at, last_message_preview, unread_count } = conversation;
+export function ConversationItem({ conversation, isActive, currentUserId }: Props) {
+  const { type, participants, title, last_message_at, last_message_preview, unread_count, peer_display_name } =
+    conversation;
+
+  const directPeer =
+    type === 'direct'
+      ? currentUserId
+        ? participants.find((p) => p.user_id !== currentUserId)
+        : participants[0]
+      : undefined;
 
   const displayName =
     type === 'broadcast'
       ? (title ?? 'Рассылка')
-      : participants[0]
-        ? `${participants[0].name} ${participants[0].last_name}`
-        : 'Неизвестный';
+      : peer_display_name?.trim()
+        ? peer_display_name.trim()
+        : directPeer
+          ? `${directPeer.name} ${directPeer.last_name}`.trim()
+          : participants[0]
+            ? `${participants[0].name} ${participants[0].last_name}`.trim()
+            : 'Неизвестный';
 
-  const avatar = type === 'direct' ? participants[0]?.avatar : null;
+  const avatar = type === 'direct' ? (directPeer?.avatar ?? participants[0]?.avatar) : null;
   const initials =
-    type === 'broadcast' ? 'Р' : participants[0] ? `${participants[0].name[0]}${participants[0].last_name[0]}` : '?';
+    type === 'broadcast'
+      ? 'Р'
+      : directPeer
+        ? `${directPeer.name[0] ?? ''}${directPeer.last_name[0] ?? ''}`
+        : participants[0]
+          ? `${participants[0].name[0]}${participants[0].last_name[0]}`
+          : '?';
 
   return (
     <ListItemButton

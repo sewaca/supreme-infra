@@ -22,6 +22,28 @@ from app.services.user_cache_service import get_cached_users_batch
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
 
+async def _ensure_peer_display_names_direct(conv: Conversation, db: AsyncSession) -> None:
+    """Заполняет peer_display_name для direct, если в БД ещё пусто (миграция / старые данные)."""
+    if conv.type != "direct":
+        return
+    active = [p for p in conv.participants if not p.is_deleted]
+    if len(active) != 2:
+        return
+    if all(p.peer_display_name for p in active):
+        return
+    uids = [p.user_id for p in active]
+    users_map = await get_cached_users_batch(uids, db)
+    changed = False
+    for p in active:
+        peer_uid = next(uid for uid in uids if uid != p.user_id)
+        u = users_map.get(peer_uid)
+        if u and not p.peer_display_name:
+            p.peer_display_name = f"{u.name} {u.last_name}".strip() or None
+            changed = True
+    if changed:
+        await db.flush()
+
+
 async def _build_conversation_response(
     conv: Conversation,
     current_user_id: uuid.UUID,
@@ -57,6 +79,24 @@ async def _build_conversation_response(
         if not p.is_deleted
     ]
 
+    peer_display_name: str | None = None
+    if conv.type == "direct":
+        my_row = next(
+            (p for p in conv.participants if p.user_id == current_user_id and not p.is_deleted),
+            None,
+        )
+        if my_row and my_row.peer_display_name:
+            peer_display_name = my_row.peer_display_name.strip() or None
+        else:
+            other_id = next(
+                (p.user_id for p in conv.participants if p.user_id != current_user_id and not p.is_deleted),
+                None,
+            )
+            if other_id and other_id in users_map:
+                u = users_map[other_id]
+                peer_display_name = f"{u.name} {u.last_name}".strip() or None
+        participants_brief.sort(key=lambda pb: (pb.user_id == current_user_id, str(pb.user_id)))
+
     return ConversationResponse(
         id=conv.id,
         type=conv.type,
@@ -67,6 +107,7 @@ async def _build_conversation_response(
         unread_count=unread_count,
         participants=participants_brief,
         participant_count=len(participants_brief),
+        peer_display_name=peer_display_name,
     )
 
 
@@ -150,6 +191,7 @@ async def create_or_get_direct_conversation(
     existing = result.scalars().first()
 
     if existing:
+        await _ensure_peer_display_names_direct(existing, db)
         return await _build_conversation_response(existing, current_user_id, db)
 
     # Создать новый
@@ -159,6 +201,22 @@ async def create_or_get_direct_conversation(
 
     db.add(ConversationParticipant(conversation_id=conv.id, user_id=current_user_id, role="member", can_reply=True))
     db.add(ConversationParticipant(conversation_id=conv.id, user_id=body.recipient_id, role="member", can_reply=True))
+    await db.flush()
+
+    users_for_peer = await get_cached_users_batch([current_user_id, body.recipient_id], db)
+
+    def _peer_label(for_user_id: uuid.UUID) -> str:
+        peer_uid = body.recipient_id if for_user_id == current_user_id else current_user_id
+        u = users_for_peer.get(peer_uid)
+        if not u:
+            return ""
+        return f"{u.name} {u.last_name}".strip()
+
+    part_result = await db.execute(
+        select(ConversationParticipant).where(ConversationParticipant.conversation_id == conv.id)
+    )
+    for row in part_result.scalars().all():
+        row.peer_display_name = _peer_label(row.user_id) or None
     await db.flush()
 
     result = await db.execute(select(Conversation).where(Conversation.id == conv.id))
@@ -231,6 +289,7 @@ async def get_conversation(
     if not participant:
         raise HTTPException(status_code=403, detail="Not a participant")
 
+    await _ensure_peer_display_names_direct(conv, db)
     return await _build_conversation_response(conv, current_user_id, db)
 
 

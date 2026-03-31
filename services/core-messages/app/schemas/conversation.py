@@ -22,6 +22,8 @@ class ConversationResponse(BaseModel):
     unread_count: int = 0
     participants: list[ParticipantBrief] = []
     participant_count: int = 0  # полезно для broadcast
+    # Direct: имя собеседника для текущего пользователя (дублирует peer_display_name в БД или из кэша).
+    peer_display_name: str | None = None
 
 
 class ConversationListResponse(BaseModel):
