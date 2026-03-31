@@ -15,6 +15,7 @@ import {
 import type { Conversation } from '../../entities/Conversation/types';
 import type { Message } from '../../entities/Message/types';
 import type { WsClientEvent } from '../../shared/hooks/useWebSocket';
+import { messagesWsDebug } from '../../shared/lib/messagesWsDebug';
 import type { MessageAction } from '../../widgets/MessageContextMenu/MessageContextMenu';
 import { MessageInput } from '../../widgets/MessageInput/MessageInput';
 import { MessageList, type MessageListHandle } from '../../widgets/MessageList/MessageList';
@@ -137,19 +138,37 @@ export function ChatView({
       const wsEvent = (event as CustomEvent<WsClientEvent>).detail;
       const data = wsEvent.data;
       const cidRaw = data.conversation_id;
-      if (cidRaw == null) return;
-      if (String(cidRaw) !== conversation.id) return;
+      if (cidRaw == null) {
+        messagesWsDebug('ChatView', 'skip_no_conversation_id_in_payload', { userId, wsType: wsEvent.type });
+        return;
+      }
+      if (String(cidRaw) !== conversation.id) {
+        messagesWsDebug('ChatView', 'skip_wrong_conversation', {
+          userId,
+          wsType: wsEvent.type,
+          eventConvId: String(cidRaw),
+          openConvId: conversation.id,
+        });
+        return;
+      }
 
       if (wsEvent.type === 'new_message') {
         const senderRaw = data.sender_id;
-        if (senderRaw != null && String(senderRaw) === userId) return;
+        if (senderRaw != null && String(senderRaw) === userId) {
+          messagesWsDebug('ChatView', 'skip_own_new_message_echo', { userId, msgId: String(data.id ?? '') });
+          return;
+        }
         const raw = data as Record<string, unknown>;
         const incoming: Message = {
           ...(raw as unknown as Message),
           attachments: Array.isArray(raw.attachments) ? (raw.attachments as Message['attachments']) : [],
         };
         setMessages((prev) => {
-          if (prev.some((m) => m.id === incoming.id)) return prev;
+          if (prev.some((m) => m.id === incoming.id)) {
+            messagesWsDebug('ChatView', 'skip_duplicate_message_id', { userId, msgId: incoming.id });
+            return prev;
+          }
+          messagesWsDebug('ChatView', 'apply_new_message', { userId, msgId: incoming.id });
           return [incoming, ...prev];
         });
         const mid = data.id;
@@ -159,8 +178,12 @@ export function ChatView({
       if (wsEvent.type === 'message_edited') {
         const mid = data.message_id;
         const content = data.content;
-        if (mid == null || typeof content !== 'string') return;
+        if (mid == null || typeof content !== 'string') {
+          messagesWsDebug('ChatView', 'skip_edit_bad_payload', { userId });
+          return;
+        }
         const idStr = String(mid);
+        messagesWsDebug('ChatView', 'apply_edit', { userId, messageId: idStr });
         setMessages((prev) => prev.map((m) => (m.id === idStr ? { ...m, content, is_edited: true } : m)));
         return;
       }
@@ -168,6 +191,7 @@ export function ChatView({
         const mid = data.message_id;
         if (mid == null) return;
         const idStr = String(mid);
+        messagesWsDebug('ChatView', 'apply_delete', { userId, messageId: idStr });
         setMessages((prev) => prev.filter((m) => m.id !== idStr));
       }
     };

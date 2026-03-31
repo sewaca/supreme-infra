@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Conversation } from '../../entities/Conversation/types';
 import { useWebSocket, type WsClientEvent } from '../../shared/hooks/useWebSocket';
+import { messagesWsDebug } from '../../shared/lib/messagesWsDebug';
 import { ConversationListView } from '../ConversationListView/ConversationListView';
 import styles from './MessagesLayout.module.css';
 
@@ -52,11 +53,19 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
       const createdAt = event.data.created_at;
       const senderId = event.data.sender_id;
       const content = event.data.content;
-      if (cid == null || createdAt == null) return;
+      if (cid == null || createdAt == null) {
+        messagesWsDebug('MessagesLayout', 'sidebar_skip_new_message_missing_fields', {});
+        return;
+      }
       const cidStr = String(cid);
       const createdStr = String(createdAt);
       const isOwn = String(senderId) === String(userIdRef.current);
       const preview = typeof content === 'string' ? content.slice(0, 200) : '';
+      messagesWsDebug('MessagesLayout', 'sidebar_apply_new_message', {
+        convId: cidStr,
+        msgId: String(event.data.id ?? ''),
+        isOwn: String(isOwn),
+      });
       setConversations((prev) => {
         const updated = prev.map((c) =>
           c.id === cidStr

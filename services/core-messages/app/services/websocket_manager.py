@@ -7,6 +7,16 @@ from fastapi import WebSocket
 logger = logging.getLogger(__name__)
 
 
+def _event_summary(event: dict) -> str:
+    t = event.get("type")
+    d = event.get("data") or {}
+    if t == "new_message":
+        return f"msg_id={d.get('id')} conv={d.get('conversation_id')} sender={d.get('sender_id')}"
+    if t in ("message_edited", "message_deleted"):
+        return f"message_id={d.get('message_id')} conv={d.get('conversation_id')}"
+    return f"type={t}"
+
+
 class ConnectionManager:
     """Управление активными WebSocket-соединениями по user_id."""
 
@@ -32,11 +42,26 @@ class ConnectionManager:
     async def send_to_user(self, user_id: UUID, event: dict):
         """Отправить JSON-событие всем соединениям пользователя."""
         conns = self.active_connections.get(user_id, [])
+        ev_type = event.get("type", "?")
+        logger.info(
+            "WS send_to_user user=%s type=%s active_conns_for_user=%d summary=%s",
+            user_id,
+            ev_type,
+            len(conns),
+            _event_summary(event),
+        )
         dead = []
         for ws in conns:
             try:
                 await ws.send_text(json.dumps(event, default=str))
-            except Exception:
+            except Exception as exc:
+                logger.warning(
+                    "WS send_to_user failed user=%s type=%s: %s",
+                    user_id,
+                    ev_type,
+                    exc,
+                    exc_info=True,
+                )
                 dead.append(ws)
         for ws in dead:
             self.disconnect(ws, user_id)
@@ -45,6 +70,13 @@ class ConnectionManager:
         self, participant_ids: list[UUID], event: dict, exclude_user: UUID | None = None
     ):
         """Отправить событие всем участникам conversation."""
+        logger.info(
+            "WS broadcast_to_conversation type=%s participants=%s exclude=%s summary=%s",
+            event.get("type"),
+            [str(u) for u in participant_ids],
+            str(exclude_user) if exclude_user else None,
+            _event_summary(event),
+        )
         for uid in participant_ids:
             if uid != exclude_user:
                 await self.send_to_user(uid, event)
