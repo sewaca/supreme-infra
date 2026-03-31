@@ -17,7 +17,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { CalendarEvent } from '../../entities/Lesson/model/Lesson';
 import { useScheduleRange } from '../../shared/hooks/useScheduleRange';
 import { setCookie } from '../../shared/lib/cookies';
-import { getWeekRange } from '../../shared/lib/schedule.utils';
+import { addCalendarDays, getWeekRange, mondayOfCalendarWeek, toDateStr } from '../../shared/lib/schedule.utils';
 import { CaldavGuideDialog } from '../../widgets/CaldavGuideDialog/CaldavGuideDialog';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
@@ -72,19 +72,21 @@ export function CalendarPage({
   }, [viewMode]);
 
   const handleListPrevWeek = useCallback(() => {
-    const d = new Date(`${listWeekStart}T00:00:00`);
+    const anchor = listWeekStart ? mondayOfCalendarWeek(listWeekStart) : getWeekRange(new Date()).dateFrom;
+    const d = new Date(`${anchor}T12:00:00`);
     d.setDate(d.getDate() - 7);
-    const from = d.toISOString().slice(0, 10);
-    const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
+    const from = toDateStr(d);
+    const to = addCalendarDays(from, 6);
     setListWeekStart(from);
     ensureRange(from, to);
   }, [listWeekStart, ensureRange]);
 
   const handleListNextWeek = useCallback(() => {
-    const d = new Date(`${listWeekStart}T00:00:00`);
+    const anchor = listWeekStart ? mondayOfCalendarWeek(listWeekStart) : getWeekRange(new Date()).dateFrom;
+    const d = new Date(`${anchor}T12:00:00`);
     d.setDate(d.getDate() + 7);
-    const from = d.toISOString().slice(0, 10);
-    const to = new Date(d.getTime() + 5 * 86400000).toISOString().slice(0, 10);
+    const from = toDateStr(d);
+    const to = addCalendarDays(from, 6);
     setListWeekStart(from);
     ensureRange(from, to);
   }, [listWeekStart, ensureRange]);

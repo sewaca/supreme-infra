@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import { useMemo } from 'react';
 import type { CalendarEvent } from '../../../entities/Lesson/model/Lesson';
 import { getLessonChipColor } from '../../../entities/Lesson/model/Lesson';
+import { addCalendarDays, mondayOfCalendarWeek } from '../../../shared/lib/schedule.utils';
 import styles from './ScheduleListView.module.css';
 
 export type { CalendarEvent };
@@ -48,25 +49,6 @@ const MONTH_NAMES = [
   'декабря',
 ];
 
-function toLocalDateStr(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function addCalendarDays(isoDate: string, deltaDays: number): string {
-  const d = new Date(`${isoDate}T12:00:00`);
-  d.setDate(d.getDate() + deltaDays);
-  return toLocalDateStr(d);
-}
-
-/** Monday of the ISO-style calendar week (Mon–Sun) that contains `isoDate`. */
-function mondayOfWeekContaining(isoDate: string): string {
-  const d = new Date(`${isoDate}T12:00:00`);
-  const day = d.getDay();
-  const diffToMonday = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diffToMonday);
-  return toLocalDateStr(d);
-}
-
 function formatDayHeader(dateStr: string): string {
   const d = new Date(`${dateStr}T00:00:00`);
   const dayName = DAY_NAMES[d.getDay()];
@@ -83,7 +65,7 @@ function formatWeekRange(dateFrom: string): string {
 type DayGroup = { date: string; events: CalendarEvent[] };
 
 export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick, isFetching }: Props) {
-  const weekMonday = useMemo(() => (dateFrom ? mondayOfWeekContaining(dateFrom) : ''), [dateFrom]);
+  const weekMonday = useMemo(() => (dateFrom ? mondayOfCalendarWeek(dateFrom) : ''), [dateFrom]);
 
   const days = useMemo(() => {
     if (!weekMonday) return [];

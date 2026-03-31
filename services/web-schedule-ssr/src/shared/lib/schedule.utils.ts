@@ -1,6 +1,22 @@
 /** Format Date as YYYY-MM-DD in local timezone (avoids UTC shift from toISOString) */
-function toDateStr(d: Date): string {
+export function toDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Local calendar day arithmetic on YYYY-MM-DD (noon avoids DST edge cases). */
+export function addCalendarDays(isoDate: string, deltaDays: number): string {
+  const d = new Date(`${isoDate}T12:00:00`);
+  d.setDate(d.getDate() + deltaDays);
+  return toDateStr(d);
+}
+
+/** Monday of the Mon–Sun week that contains `isoDate`. */
+export function mondayOfCalendarWeek(isoDate: string): string {
+  const d = new Date(`${isoDate}T12:00:00`);
+  const day = d.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diffToMonday);
+  return toDateStr(d);
 }
 
 export function getWeekRange(date: Date): { dateFrom: string; dateTo: string } {
