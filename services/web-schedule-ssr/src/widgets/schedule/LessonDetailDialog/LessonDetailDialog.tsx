@@ -56,8 +56,7 @@ export function LessonDetailDialog({ event, onClose }: Props) {
   const date = event.start.slice(0, 10);
   const startTime = event.start.slice(11, 16);
   const endTime = event.end.slice(11, 16);
-  const { teacher_name, classroom_name, classroom_building, lesson_type, is_override, override_comment, group_name } =
-    event.extendedProps;
+  const { teacher_name, classroom_name, lesson_type, is_override, override_comment, group_name } = event.extendedProps;
   const chipColor = getLessonChipColor(lesson_type);
 
   return (

@@ -494,11 +494,11 @@ async function main() {
   const sessionSql = `${seedFileHeader('session_event')}${SESSION_EVENT_SQL}\n`;
 
   mkdirSync(MIGRATIONS_DIR, { recursive: true });
-  writeFileSync(join(MIGRATIONS_DIR, '001_seed_teachers.sql'), teachersSql + '\n', 'utf8');
-  writeFileSync(join(MIGRATIONS_DIR, '002_seed_semester.sql'), semesterSql + '\n', 'utf8');
-  writeFileSync(join(MIGRATIONS_DIR, '003_seed_classrooms.sql'), classroomsSql + '\n', 'utf8');
+  writeFileSync(join(MIGRATIONS_DIR, '001_seed_teachers.sql'), `${teachersSql}\n`, 'utf8');
+  writeFileSync(join(MIGRATIONS_DIR, '002_seed_semester.sql'), `${semesterSql}\n`, 'utf8');
+  writeFileSync(join(MIGRATIONS_DIR, '003_seed_classrooms.sql'), `${classroomsSql}\n`, 'utf8');
   writeScheduleTemplateMigrationFiles(templateRows);
-  writeFileSync(join(MIGRATIONS_DIR, '005_seed_session_event.sql'), sessionSql + '\n', 'utf8');
+  writeFileSync(join(MIGRATIONS_DIR, '005_seed_session_event.sql'), `${sessionSql}\n`, 'utf8');
   console.error(
     `Wrote ${MIGRATIONS_DIR}/001…003, 004_seed_schedule_template_*.sql, 005 (${templateRows.length} schedule_template rows)`,
   );
@@ -510,7 +510,7 @@ async function main() {
     csvLines.push(`${uuid}|${fullKey}`);
   }
   csvLines.sort();
-  writeFileSync(OUT_CSV, csvLines.join('\n') + '\n', 'utf8');
+  writeFileSync(OUT_CSV, `${csvLines.join('\n')}\n`, 'utf8');
   console.error(`Wrote ${OUT_CSV} (${csvLines.length} new teachers)`);
 }
 

@@ -21,6 +21,24 @@ catalogs:
     '@fastify/helmet':
       specifier: 12.0.1
       version: 12.0.1
+    '@fullcalendar/core':
+      specifier: 6.1.20
+      version: 6.1.20
+    '@fullcalendar/daygrid':
+      specifier: 6.1.20
+      version: 6.1.20
+    '@fullcalendar/interaction':
+      specifier: 6.1.20
+      version: 6.1.20
+    '@fullcalendar/list':
+      specifier: 6.1.20
+      version: 6.1.20
+    '@fullcalendar/react':
+      specifier: 6.1.20
+      version: 6.1.20
+    '@fullcalendar/timegrid':
+      specifier: 6.1.20
+      version: 6.1.20
     '@hey-api/client-fetch':
       specifier: 0.4.3
       version: 0.4.3
@@ -1550,22 +1568,22 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.1.0))(@types/react@19.2.2)(react@19.1.0)
       '@fullcalendar/core':
-        specifier: ^6.1.15
+        specifier: 'catalog:'
         version: 6.1.20
       '@fullcalendar/daygrid':
-        specifier: ^6.1.15
+        specifier: 'catalog:'
         version: 6.1.20(@fullcalendar/core@6.1.20)
       '@fullcalendar/interaction':
-        specifier: ^6.1.15
+        specifier: 'catalog:'
         version: 6.1.20(@fullcalendar/core@6.1.20)
       '@fullcalendar/list':
-        specifier: ^6.1.15
+        specifier: 'catalog:'
         version: 6.1.20(@fullcalendar/core@6.1.20)
       '@fullcalendar/react':
-        specifier: ^6.1.15
+        specifier: 'catalog:'
         version: 6.1.20(@fullcalendar/core@6.1.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fullcalendar/timegrid':
-        specifier: ^6.1.15
+        specifier: 'catalog:'
         version: 6.1.20(@fullcalendar/core@6.1.20)
       '@mui/icons-material':
         specifier: 'catalog:'
