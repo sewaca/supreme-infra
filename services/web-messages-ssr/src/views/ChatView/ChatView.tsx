@@ -135,29 +135,40 @@ export function ChatView({
   useEffect(() => {
     const handler = (event: Event) => {
       const wsEvent = (event as CustomEvent<WsClientEvent>).detail;
-      const cid = wsEvent.data.conversation_id;
-      if (typeof cid !== 'string' || cid !== conversation.id) return;
+      const data = wsEvent.data;
+      const cidRaw = data.conversation_id;
+      if (cidRaw == null) return;
+      if (String(cidRaw) !== conversation.id) return;
 
       if (wsEvent.type === 'new_message') {
-        const senderId = wsEvent.data.sender_id;
-        if (senderId === userId) return;
-        const incoming = wsEvent.data as unknown as Message;
-        setMessages((prev) => [incoming, ...prev]);
-        const mid = wsEvent.data.id;
-        if (typeof mid === 'string') markAsRead(conversation.id, mid);
+        const senderRaw = data.sender_id;
+        if (senderRaw != null && String(senderRaw) === userId) return;
+        const raw = data as Record<string, unknown>;
+        const incoming: Message = {
+          ...(raw as unknown as Message),
+          attachments: Array.isArray(raw.attachments) ? (raw.attachments as Message['attachments']) : [],
+        };
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === incoming.id)) return prev;
+          return [incoming, ...prev];
+        });
+        const mid = data.id;
+        if (mid != null) markAsRead(conversation.id, String(mid));
         return;
       }
       if (wsEvent.type === 'message_edited') {
-        const mid = wsEvent.data.message_id;
-        const content = wsEvent.data.content;
-        if (typeof mid !== 'string' || typeof content !== 'string') return;
-        setMessages((prev) => prev.map((m) => (m.id === mid ? { ...m, content, is_edited: true } : m)));
+        const mid = data.message_id;
+        const content = data.content;
+        if (mid == null || typeof content !== 'string') return;
+        const idStr = String(mid);
+        setMessages((prev) => prev.map((m) => (m.id === idStr ? { ...m, content, is_edited: true } : m)));
         return;
       }
       if (wsEvent.type === 'message_deleted') {
-        const mid = wsEvent.data.message_id;
-        if (typeof mid !== 'string') return;
-        setMessages((prev) => prev.filter((m) => m.id !== mid));
+        const mid = data.message_id;
+        if (mid == null) return;
+        const idStr = String(mid);
+        setMessages((prev) => prev.filter((m) => m.id !== idStr));
       }
     };
     window.addEventListener('ws-message', handler as EventListener);

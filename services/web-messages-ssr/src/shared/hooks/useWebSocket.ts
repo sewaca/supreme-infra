@@ -5,18 +5,20 @@ import { useCallback, useEffect, useRef } from 'react';
 export type WsClientEvent = { type: string; data: Record<string, unknown> };
 
 interface UseWebSocketProps {
+  /** Достаточно для подключения: JWT на handshake уходит из cookie auth_token (same-origin). */
+  userId: string | null;
   token: string | null;
   onMessage: (event: WsClientEvent) => void;
 }
 
-export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
+export function useWebSocket({ userId, token: _token, onMessage }: UseWebSocketProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const onMessageRef = useRef(onMessage);
   onMessageRef.current = onMessage;
 
   const connect = useCallback(() => {
-    if (!token) return;
+    if (!userId) return;
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     // Браузер не позволяет передать Authorization на WebSocket-handshake; тот же JWT уходит в cookie auth_token (same-origin).
@@ -56,7 +58,7 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
     };
 
     wsRef.current = ws;
-  }, [token]);
+  }, [userId]);
 
   useEffect(() => {
     connect();

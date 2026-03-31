@@ -52,15 +52,17 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
       const createdAt = event.data.created_at;
       const senderId = event.data.sender_id;
       const content = event.data.content;
-      if (typeof cid !== 'string' || typeof createdAt !== 'string') return;
-      const isOwn = senderId === userIdRef.current;
+      if (cid == null || createdAt == null) return;
+      const cidStr = String(cid);
+      const createdStr = String(createdAt);
+      const isOwn = String(senderId) === String(userIdRef.current);
       const preview = typeof content === 'string' ? content.slice(0, 200) : '';
       setConversations((prev) => {
         const updated = prev.map((c) =>
-          c.id === cid
+          c.id === cidStr
             ? {
                 ...c,
-                last_message_at: createdAt,
+                last_message_at: createdStr,
                 last_message_preview: preview,
                 unread_count: isOwn ? c.unread_count : c.unread_count + 1,
               }
@@ -68,6 +70,22 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
         );
         return updated.sort((a, b) => (b.last_message_at ?? '').localeCompare(a.last_message_at ?? ''));
       });
+    }
+    if (event.type === 'message_edited') {
+      const cid = event.data.conversation_id;
+      const content = event.data.content;
+      if (cid == null || typeof content !== 'string') return;
+      const cidStr = String(cid);
+      const preview = content.slice(0, 200);
+      setConversations((prev) => prev.map((c) => (c.id === cidStr ? { ...c, last_message_preview: preview } : c)));
+    }
+    if (event.type === 'message_deleted') {
+      const cid = event.data.conversation_id;
+      if (cid == null) return;
+      const cidStr = String(cid);
+      setConversations((prev) =>
+        prev.map((c) => (c.id === cidStr ? { ...c, last_message_preview: 'Сообщение удалено' } : c)),
+      );
     }
     if (event.type === 'new_conversation') {
       const d = event.data;
@@ -77,7 +95,7 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
     }
   }, []);
 
-  useWebSocket({ token, onMessage: handleWsMessage });
+  useWebSocket({ userId, token, onMessage: handleWsMessage });
 
   return (
     <div className={styles.container}>
