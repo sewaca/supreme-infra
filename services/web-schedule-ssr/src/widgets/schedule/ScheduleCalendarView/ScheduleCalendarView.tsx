@@ -81,6 +81,19 @@ function nextTimeGrid3DayTarget(activeEnd: Date, hidden: readonly number[]): Dat
   return firstVisibleOnOrAfter(activeEnd, hidden);
 }
 
+/** For timeGrid3Day: visible blocks are Mon–Wed and Thu–Sat (Sun hidden). Start of the block that contains `ref` (local). */
+function startOfThreeDayChunkContaining(ref: Date, hidden: readonly number[]): Date {
+  const d = firstVisibleOnOrAfter(startOfLocalDay(ref), hidden);
+  const weekday = d.getDay();
+  if (weekday >= 1 && weekday <= 3) {
+    return addLocalDays(d, 1 - weekday);
+  }
+  if (weekday >= 4 && weekday <= 6) {
+    return addLocalDays(d, 4 - weekday);
+  }
+  return d;
+}
+
 function navigateScheduleHorizontally(api: CalendarApi, dir: -1 | 1): void {
   if (api.view.type !== 'timeGrid3Day') {
     if (dir < 0) api.prev();
@@ -161,6 +174,16 @@ export function ScheduleCalendarView({
     if (api) navigateScheduleHorizontally(api, dir);
   }, []);
 
+  const handleTodayClick = useCallback(() => {
+    const api = calendarRef.current?.getApi();
+    if (!api) return;
+    if (api.view.type === 'timeGrid3Day') {
+      api.gotoDate(startOfThreeDayChunkContaining(new Date(), SCHEDULE_HIDDEN_WEEKDAYS));
+    } else {
+      api.today();
+    }
+  }, []);
+
   const customButtons = useMemo(
     () => ({
       schedulePrev: {
@@ -173,8 +196,13 @@ export function ScheduleCalendarView({
         hint: 'Вперёд',
         click: () => handleScheduleNav(1),
       },
+      today: {
+        text: 'Сегодня',
+        hint: 'Сегодня',
+        click: handleTodayClick,
+      },
     }),
-    [handleScheduleNav],
+    [handleScheduleNav, handleTodayClick],
   );
 
   const calendarRef = useRef<FullCalendar>(null);

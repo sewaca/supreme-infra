@@ -83,10 +83,7 @@ function formatWeekRange(dateFrom: string): string {
 type DayGroup = { date: string; events: CalendarEvent[] };
 
 export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onEventClick, isFetching }: Props) {
-  const weekMonday = useMemo(
-    () => (dateFrom ? mondayOfWeekContaining(dateFrom) : ''),
-    [dateFrom],
-  );
+  const weekMonday = useMemo(() => (dateFrom ? mondayOfWeekContaining(dateFrom) : ''), [dateFrom]);
 
   const days = useMemo(() => {
     if (!weekMonday) return [];
