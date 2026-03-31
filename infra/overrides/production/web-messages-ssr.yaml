@@ -11,15 +11,17 @@ fullnameOverride: web-messages-ssr
 service:
   type: ClusterIP
   port: 80
-  targetPort: 3001
+  targetPort: 3007
 metrics:
   enabled: true
   port: 9464
 env:
-  PORT: "3001"
+  PORT: "3007"
   NODE_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
-  BACKEND_SERVICE_NAMESPACE: default
+  CORE_MESSAGES_URL: http://core-messages.default.svc.cluster.local/core-messages
+  CORE_CLIENT_INFO_URL: http://core-client-info.default.svc.cluster.local/core-client-info
+  CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
 secrets: {}
 resources:
   limits:
@@ -50,9 +52,9 @@ affinity: {}
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 90

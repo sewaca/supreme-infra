@@ -8,13 +8,13 @@ import { Roboto } from 'next/font/google';
 import theme from '../src/shared/next/theme';
 
 const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin', 'cyrillic'],
   display: 'swap',
   variable: '--font-roboto',
 });
 
-export const metadata: Metadata = { title: 'Supreme Infra' };
+export const metadata: Metadata = { title: 'Сообщения — СПбГУТ' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

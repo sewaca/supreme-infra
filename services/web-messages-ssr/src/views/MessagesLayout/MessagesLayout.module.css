@@ -1,0 +1,28 @@
+.container {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.sidebar {
+  border-right: 1px solid var(--color-divider, #e0e0e0);
+  overflow-y: auto;
+  background: var(--color-background, #fff);
+}
+
+.main {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}

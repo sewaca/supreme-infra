@@ -876,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 4652,
+      "id": 4712,
       "panels": [
         {
-          "id": 4650,
+          "id": 4710,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -970,7 +970,7 @@
           }
         },
         {
-          "id": 4651,
+          "id": 4711,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1069,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 4653,
+      "id": 4713,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1080,7 +1080,7 @@
       }
     },
     {
-      "id": 4654,
+      "id": 4714,
       "title": "GET /core-applications/applications",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 4655,
+      "id": 4715,
       "title": "GET /core-applications/applications - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1212,7 +1212,7 @@
       }
     },
     {
-      "id": 4656,
+      "id": 4716,
       "title": "GET /core-applications/applications - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1303,7 +1303,7 @@
       }
     },
     {
-      "id": 4657,
+      "id": 4717,
       "title": "GET /core-applications/applications - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1398,7 +1398,7 @@
       }
     },
     {
-      "id": 4658,
+      "id": 4718,
       "title": "GET /core-applications/applications/notifications",
       "type": "row",
       "gridPos": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 4659,
+      "id": 4719,
       "title": "GET /core-applications/applications/notifications - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1530,7 +1530,7 @@
       }
     },
     {
-      "id": 4660,
+      "id": 4720,
       "title": "GET /core-applications/applications/notifications - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1621,7 +1621,7 @@
       }
     },
     {
-      "id": 4661,
+      "id": 4721,
       "title": "GET /core-applications/applications/notifications - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1716,7 +1716,7 @@
       }
     },
     {
-      "id": 4662,
+      "id": 4722,
       "title": "POST /core-applications/dormitory/applications",
       "type": "row",
       "gridPos": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 4663,
+      "id": 4723,
       "title": "POST /core-applications/dormitory/applications - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1848,7 +1848,7 @@
       }
     },
     {
-      "id": 4664,
+      "id": 4724,
       "title": "POST /core-applications/dormitory/applications - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1939,7 +1939,7 @@
       }
     },
     {
-      "id": 4665,
+      "id": 4725,
       "title": "POST /core-applications/dormitory/applications - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2034,7 +2034,7 @@
       }
     },
     {
-      "id": 4666,
+      "id": 4726,
       "title": "POST /core-applications/dormitory/parent-agreement",
       "type": "row",
       "gridPos": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 4667,
+      "id": 4727,
       "title": "POST /core-applications/dormitory/parent-agreement - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2166,7 +2166,7 @@
       }
     },
     {
-      "id": 4668,
+      "id": 4728,
       "title": "POST /core-applications/dormitory/parent-agreement - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2257,7 +2257,7 @@
       }
     },
     {
-      "id": 4669,
+      "id": 4729,
       "title": "POST /core-applications/dormitory/parent-agreement - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2352,7 +2352,7 @@
       }
     },
     {
-      "id": 4670,
+      "id": 4730,
       "title": "GET /core-applications/orders",
       "type": "row",
       "gridPos": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 4671,
+      "id": 4731,
       "title": "GET /core-applications/orders - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2484,7 +2484,7 @@
       }
     },
     {
-      "id": 4672,
+      "id": 4732,
       "title": "GET /core-applications/orders - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2575,7 +2575,7 @@
       }
     },
     {
-      "id": 4673,
+      "id": 4733,
       "title": "GET /core-applications/orders - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2670,7 +2670,7 @@
       }
     },
     {
-      "id": 4674,
+      "id": 4734,
       "title": "GET /core-applications/orders/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 4675,
+      "id": 4735,
       "title": "GET /core-applications/orders/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2802,7 +2802,7 @@
       }
     },
     {
-      "id": 4676,
+      "id": 4736,
       "title": "GET /core-applications/orders/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2893,7 +2893,7 @@
       }
     },
     {
-      "id": 4677,
+      "id": 4737,
       "title": "GET /core-applications/orders/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2988,7 +2988,7 @@
       }
     },
     {
-      "id": 4678,
+      "id": 4738,
       "title": "GET /core-applications/orders/[^/]+/pdf",
       "type": "row",
       "gridPos": {
@@ -2999,7 +2999,7 @@
       }
     },
     {
-      "id": 4679,
+      "id": 4739,
       "title": "GET /core-applications/orders/:id/pdf - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3120,7 +3120,7 @@
       }
     },
     {
-      "id": 4680,
+      "id": 4740,
       "title": "GET /core-applications/orders/:id/pdf - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3211,7 +3211,7 @@
       }
     },
     {
-      "id": 4681,
+      "id": 4741,
       "title": "GET /core-applications/orders/:id/pdf - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3306,7 +3306,7 @@
       }
     },
     {
-      "id": 4682,
+      "id": 4742,
       "title": "GET /core-applications/orders/counts",
       "type": "row",
       "gridPos": {
@@ -3317,7 +3317,7 @@
       }
     },
     {
-      "id": 4683,
+      "id": 4743,
       "title": "GET /core-applications/orders/counts - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3438,7 +3438,7 @@
       }
     },
     {
-      "id": 4684,
+      "id": 4744,
       "title": "GET /core-applications/orders/counts - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3529,7 +3529,7 @@
       }
     },
     {
-      "id": 4685,
+      "id": 4745,
       "title": "GET /core-applications/orders/counts - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3624,7 +3624,7 @@
       }
     },
     {
-      "id": 4686,
+      "id": 4746,
       "title": "GET /core-applications/references",
       "type": "row",
       "gridPos": {
@@ -3635,7 +3635,7 @@
       }
     },
     {
-      "id": 4687,
+      "id": 4747,
       "title": "GET /core-applications/references - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3756,7 +3756,7 @@
       }
     },
     {
-      "id": 4688,
+      "id": 4748,
       "title": "GET /core-applications/references - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3847,7 +3847,7 @@
       }
     },
     {
-      "id": 4689,
+      "id": 4749,
       "title": "GET /core-applications/references - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3942,7 +3942,7 @@
       }
     },
     {
-      "id": 4690,
+      "id": 4750,
       "title": "GET /core-applications/references/[^/]+",
       "type": "row",
       "gridPos": {
@@ -3953,7 +3953,7 @@
       }
     },
     {
-      "id": 4691,
+      "id": 4751,
       "title": "GET /core-applications/references/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4074,7 +4074,7 @@
       }
     },
     {
-      "id": 4692,
+      "id": 4752,
       "title": "GET /core-applications/references/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4165,7 +4165,7 @@
       }
     },
     {
-      "id": 4693,
+      "id": 4753,
       "title": "GET /core-applications/references/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4260,7 +4260,7 @@
       }
     },
     {
-      "id": 4694,
+      "id": 4754,
       "title": "POST /core-applications/references/[^/]+/cancel",
       "type": "row",
       "gridPos": {
@@ -4271,7 +4271,7 @@
       }
     },
     {
-      "id": 4695,
+      "id": 4755,
       "title": "POST /core-applications/references/:id/cancel - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4392,7 +4392,7 @@
       }
     },
     {
-      "id": 4696,
+      "id": 4756,
       "title": "POST /core-applications/references/:id/cancel - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4483,7 +4483,7 @@
       }
     },
     {
-      "id": 4697,
+      "id": 4757,
       "title": "POST /core-applications/references/:id/cancel - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4578,7 +4578,7 @@
       }
     },
     {
-      "id": 4698,
+      "id": 4758,
       "title": "POST /core-applications/references/[^/]+/extend-storage",
       "type": "row",
       "gridPos": {
@@ -4589,7 +4589,7 @@
       }
     },
     {
-      "id": 4699,
+      "id": 4759,
       "title": "POST /core-applications/references/:id/extend-storage - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4710,7 +4710,7 @@
       }
     },
     {
-      "id": 4700,
+      "id": 4760,
       "title": "POST /core-applications/references/:id/extend-storage - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4801,7 +4801,7 @@
       }
     },
     {
-      "id": 4701,
+      "id": 4761,
       "title": "POST /core-applications/references/:id/extend-storage - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4896,7 +4896,7 @@
       }
     },
     {
-      "id": 4702,
+      "id": 4762,
       "title": "GET /core-applications/references/[^/]+/pdf",
       "type": "row",
       "gridPos": {
@@ -4907,7 +4907,7 @@
       }
     },
     {
-      "id": 4703,
+      "id": 4763,
       "title": "GET /core-applications/references/:id/pdf - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5028,7 +5028,7 @@
       }
     },
     {
-      "id": 4704,
+      "id": 4764,
       "title": "GET /core-applications/references/:id/pdf - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5119,7 +5119,7 @@
       }
     },
     {
-      "id": 4705,
+      "id": 4765,
       "title": "GET /core-applications/references/:id/pdf - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5214,7 +5214,7 @@
       }
     },
     {
-      "id": 4706,
+      "id": 4766,
       "title": "POST /core-applications/references/order",
       "type": "row",
       "gridPos": {
@@ -5225,7 +5225,7 @@
       }
     },
     {
-      "id": 4707,
+      "id": 4767,
       "title": "POST /core-applications/references/order - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5346,7 +5346,7 @@
       }
     },
     {
-      "id": 4708,
+      "id": 4768,
       "title": "POST /core-applications/references/order - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5437,7 +5437,7 @@
       }
     },
     {
-      "id": 4709,
+      "id": 4769,
       "title": "POST /core-applications/references/order - Bad RPS",
       "type": "timeseries",
       "datasource": {

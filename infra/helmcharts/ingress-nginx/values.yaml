@@ -300,6 +300,20 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /api/messages/history
+          method: GET
+        - path: /messages
+          method: GET
+        - path: /messages/[^/]+
+          method: GET
+        - path: /messages/broadcast
+          method: GET
+        - path: /messages/broadcast/new
+          method: GET
+        - path: /messages/new
+          method: GET
+        - path: /messages/search
+          method: GET
         - path: /web-messages-ssr/.*
           method: GET
     - service: web-profile-ssr
