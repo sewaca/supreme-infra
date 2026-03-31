@@ -3,10 +3,18 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, IconButton, Typography } from '@mui/material';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { deleteMessage, editMessage, markAsRead, sendMessage } from '../../../app/messages/actions';
+import {
+  createDirectConversation,
+  deleteMessage,
+  editMessage,
+  markAsRead,
+  sendMessage,
+} from '../../../app/messages/actions';
 import type { Conversation } from '../../entities/Conversation/types';
 import type { Message } from '../../entities/Message/types';
+import type { WsClientEvent } from '../../shared/hooks/useWebSocket';
 import type { MessageAction } from '../../widgets/MessageContextMenu/MessageContextMenu';
 import { MessageInput } from '../../widgets/MessageInput/MessageInput';
 import { MessageList, type MessageListHandle } from '../../widgets/MessageList/MessageList';
@@ -30,6 +38,7 @@ export function ChatView({
   userId,
   userRole: _userRole,
 }: Props) {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [cursor, setCursor] = useState(initialCursor);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -79,11 +88,24 @@ export function ChatView({
 
       const res = await sendMessage(conversation.id, content, replyTo?.id ?? null);
       if (res.success && res.message) {
-        setMessages((prev) => [res.message!, ...prev]);
+        const base = res.message;
+        const withReply =
+          replyTo != null
+            ? {
+                ...base,
+                reply_to_message: {
+                  id: replyTo.id,
+                  sender_name: replyTo.sender_name,
+                  sender_last_name: replyTo.sender_last_name,
+                  content: replyTo.content,
+                },
+              }
+            : base;
+        setMessages((prev) => [withReply, ...prev]);
         setReplyTo(null);
         window.dispatchEvent(
           new CustomEvent('conversation-updated', {
-            detail: { conversationId: conversation.id, message: res.message },
+            detail: { conversationId: conversation.id, message: withReply },
           }),
         );
       }
@@ -111,29 +133,37 @@ export function ChatView({
   }, [loading, hasMore, cursor, conversation.id]);
 
   useEffect(() => {
-    const handler = (event: CustomEvent) => {
-      const wsEvent = event.detail;
-      if (
-        wsEvent.type === 'new_message' &&
-        wsEvent.data.conversation_id === conversation.id &&
-        wsEvent.data.sender_id !== userId
-      ) {
-        setMessages((prev) => [wsEvent.data, ...prev]);
-        markAsRead(conversation.id, wsEvent.data.id);
+    const handler = (event: Event) => {
+      const wsEvent = (event as CustomEvent<WsClientEvent>).detail;
+      const cid = wsEvent.data.conversation_id;
+      if (typeof cid !== 'string' || cid !== conversation.id) return;
+
+      if (wsEvent.type === 'new_message') {
+        const senderId = wsEvent.data.sender_id;
+        if (senderId === userId) return;
+        const incoming = wsEvent.data as unknown as Message;
+        setMessages((prev) => [incoming, ...prev]);
+        const mid = wsEvent.data.id;
+        if (typeof mid === 'string') markAsRead(conversation.id, mid);
+        return;
       }
-      if (wsEvent.type === 'message_edited' && wsEvent.data.conversation_id === conversation.id) {
+      if (wsEvent.type === 'message_edited') {
+        const mid = wsEvent.data.message_id;
+        const content = wsEvent.data.content;
+        if (typeof mid !== 'string' || typeof content !== 'string') return;
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === wsEvent.data.message_id ? { ...m, content: wsEvent.data.content, is_edited: true } : m,
-          ),
+          prev.map((m) => (m.id === mid ? { ...m, content, is_edited: true } : m)),
         );
+        return;
       }
-      if (wsEvent.type === 'message_deleted' && wsEvent.data.conversation_id === conversation.id) {
-        setMessages((prev) => prev.filter((m) => m.id !== wsEvent.data.message_id));
+      if (wsEvent.type === 'message_deleted') {
+        const mid = wsEvent.data.message_id;
+        if (typeof mid !== 'string') return;
+        setMessages((prev) => prev.filter((m) => m.id !== mid));
       }
     };
-    window.addEventListener('ws-message' as any, handler);
-    return () => window.removeEventListener('ws-message' as any, handler);
+    window.addEventListener('ws-message', handler as EventListener);
+    return () => window.removeEventListener('ws-message', handler as EventListener);
   }, [conversation.id, userId]);
 
   const handleAction = useCallback(
@@ -156,6 +186,10 @@ export function ChatView({
         setEditingMessage(message);
       }
       if (action === 'delete') {
+        const confirmed = window.confirm(
+          'Удалить это сообщение? Оно будет удалено у вас и у собеседника, восстановить его будет нельзя.',
+        );
+        if (!confirmed) return;
         deleteMessage(conversation.id, message.id).then((res) => {
           if (res.success) {
             setMessages((prev) => prev.filter((m) => m.id !== message.id));
@@ -164,6 +198,24 @@ export function ChatView({
       }
     },
     [conversation.id],
+  );
+
+  const handleMessageDoubleClick = useCallback(
+    (message: Message) => {
+      if (canReply) {
+        setEditingMessage(null);
+        setReplyTo(message);
+        return;
+      }
+      if (canReplyInDm && conversation.owner_id) {
+        void createDirectConversation(conversation.owner_id).then((result) => {
+          if (result.success && result.conversationId) {
+            router.push(`/messages/${result.conversationId}`);
+          }
+        });
+      }
+    },
+    [canReply, canReplyInDm, conversation.owner_id, router],
   );
 
   return (
@@ -193,6 +245,7 @@ export function ChatView({
         userId={userId}
         canReplyInDm={canReplyInDm}
         onAction={handleAction}
+        onMessageDoubleClick={canReply || canReplyInDm ? handleMessageDoubleClick : undefined}
       />
 
       {canReply ? (
@@ -204,9 +257,9 @@ export function ChatView({
           editingMessage={editingMessage}
           onCancelEdit={() => setEditingMessage(null)}
         />
-      ) : (
-        <ReplyInDmButton ownerId={conversation.owner_id!} />
-      )}
+      ) : conversation.owner_id ? (
+        <ReplyInDmButton ownerId={conversation.owner_id} />
+      ) : null}
     </Box>
   );
 }

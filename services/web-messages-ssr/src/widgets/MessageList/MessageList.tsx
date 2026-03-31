@@ -20,10 +20,11 @@ interface Props {
   userId: string;
   canReplyInDm?: boolean;
   onAction?: (action: MessageAction, message: Message) => void;
+  onMessageDoubleClick?: (message: Message) => void;
 }
 
 export const MessageList = forwardRef<MessageListHandle, Props>(function MessageList(
-  { messages, hasMore, loading, onLoadMore, userId, canReplyInDm = false, onAction },
+  { messages, hasMore, loading, onLoadMore, userId, canReplyInDm = false, onAction, onMessageDoubleClick },
   ref,
 ) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -134,6 +135,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
               canReplyInDm={canReplyInDm}
               onAction={onAction}
               onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
+              onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
             />
           </Box>
         );

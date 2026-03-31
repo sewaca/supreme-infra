@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 
+export type WsClientEvent = { type: string; data: Record<string, unknown> };
+
 interface UseWebSocketProps {
   token: string | null;
-  onMessage: (event: any) => void;
+  onMessage: (event: WsClientEvent) => void;
 }
 
 export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
@@ -27,9 +29,12 @@ export function useWebSocket({ token, onMessage }: UseWebSocketProps) {
 
     ws.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data);
+        const raw: unknown = JSON.parse(event.data);
+        if (typeof raw !== 'object' || raw === null || !('type' in raw) || !('data' in raw)) {
+          return;
+        }
+        const data = raw as WsClientEvent;
         onMessageRef.current(data);
-        // Также диспатчим кастомное событие для ChatView
         window.dispatchEvent(new CustomEvent('ws-message', { detail: data }));
       } catch {
         console.error('[ws] failed to parse message');

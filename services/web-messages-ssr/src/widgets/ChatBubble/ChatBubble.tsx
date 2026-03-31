@@ -14,9 +14,18 @@ interface Props {
   canReplyInDm?: boolean;
   onAction?: (action: MessageAction, message: Message) => void;
   onScrollToMessage?: (messageId: string) => void;
+  /** Двойной клик по телу сообщения — ответ (или ответ в ЛС в режиме рассылки) */
+  onDoubleClickReply?: () => void;
 }
 
-export function ChatBubble({ message, isOwn, canReplyInDm = false, onAction, onScrollToMessage }: Props) {
+export function ChatBubble({
+  message,
+  isOwn,
+  canReplyInDm = false,
+  onAction,
+  onScrollToMessage,
+  onDoubleClickReply,
+}: Props) {
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -66,7 +75,14 @@ export function ChatBubble({ message, isOwn, canReplyInDm = false, onAction, onS
         </Avatar>
       )}
 
-      <Box className={`${styles.bubble} ${isOwn ? styles.bubbleOwn : styles.bubbleOther}`}>
+      <Box
+        className={`${styles.bubble} ${isOwn ? styles.bubbleOwn : styles.bubbleOther}`}
+        onDoubleClick={(e) => {
+          if (!onDoubleClickReply) return;
+          e.preventDefault();
+          onDoubleClickReply();
+        }}
+      >
         {!isOwn && (
           <Typography variant="caption" fontWeight={600} color="primary.main" sx={{ display: 'block', mb: 0.25 }}>
             {message.sender_name} {message.sender_last_name}
@@ -76,7 +92,10 @@ export function ChatBubble({ message, isOwn, canReplyInDm = false, onAction, onS
         {/* Reply preview */}
         {message.reply_to_message && (
           <Box
-            onClick={() => onScrollToMessage?.(message.reply_to_message!.id)}
+            onClick={() => {
+              const id = message.reply_to_message?.id;
+              if (id) onScrollToMessage?.(id);
+            }}
             sx={{
               mb: 0.5,
               px: 1,

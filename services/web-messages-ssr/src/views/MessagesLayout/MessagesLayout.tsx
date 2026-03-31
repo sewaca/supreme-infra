@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Conversation } from '../../entities/Conversation/types';
-import { useWebSocket } from '../../shared/hooks/useWebSocket';
+import { type WsClientEvent, useWebSocket } from '../../shared/hooks/useWebSocket';
 import { ConversationListView } from '../ConversationListView/ConversationListView';
 import styles from './MessagesLayout.module.css';
 
@@ -42,20 +42,26 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
       const { conversationId, message } = e.detail;
       updateConversation(conversationId, message.content, message.created_at);
     };
-    window.addEventListener('conversation-updated' as any, handler);
-    return () => window.removeEventListener('conversation-updated' as any, handler);
+    window.addEventListener('conversation-updated', handler as EventListener);
+    return () => window.removeEventListener('conversation-updated', handler as EventListener);
   }, [updateConversation]);
 
-  const handleWsMessage = useCallback((event: any) => {
+  const handleWsMessage = useCallback((event: WsClientEvent) => {
     if (event.type === 'new_message') {
-      const isOwn = event.data.sender_id === userIdRef.current;
+      const cid = event.data.conversation_id;
+      const createdAt = event.data.created_at;
+      const senderId = event.data.sender_id;
+      const content = event.data.content;
+      if (typeof cid !== 'string' || typeof createdAt !== 'string') return;
+      const isOwn = senderId === userIdRef.current;
+      const preview = typeof content === 'string' ? content.slice(0, 200) : '';
       setConversations((prev) => {
         const updated = prev.map((c) =>
-          c.id === event.data.conversation_id
+          c.id === cid
             ? {
                 ...c,
-                last_message_at: event.data.created_at,
-                last_message_preview: event.data.content.slice(0, 200),
+                last_message_at: createdAt,
+                last_message_preview: preview,
                 unread_count: isOwn ? c.unread_count : c.unread_count + 1,
               }
             : c,
@@ -64,7 +70,10 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
       });
     }
     if (event.type === 'new_conversation') {
-      setConversations((prev) => [event.data, ...prev]);
+      const d = event.data;
+      if (typeof d === 'object' && d !== null && 'id' in d && typeof (d as { id: unknown }).id === 'string') {
+        setConversations((prev) => [d as unknown as Conversation, ...prev]);
+      }
     }
   }, []);
 
