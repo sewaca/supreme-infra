@@ -151,9 +151,7 @@ export function ChatView({
         const mid = wsEvent.data.message_id;
         const content = wsEvent.data.content;
         if (typeof mid !== 'string' || typeof content !== 'string') return;
-        setMessages((prev) =>
-          prev.map((m) => (m.id === mid ? { ...m, content, is_edited: true } : m)),
-        );
+        setMessages((prev) => prev.map((m) => (m.id === mid ? { ...m, content, is_edited: true } : m)));
         return;
       }
       if (wsEvent.type === 'message_deleted') {

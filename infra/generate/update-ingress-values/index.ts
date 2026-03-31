@@ -9,7 +9,7 @@ interface Route {
 
 interface RouterConfig {
   service: string;
-  type: 'nest' | 'next';
+  type: 'nest' | 'next' | 'fastapi';
   routes: Route[];
 }
 
@@ -21,8 +21,10 @@ interface IngressPath {
 interface IngressRule {
   service: string;
   port: number;
-  type: 'nest' | 'next';
+  type: 'nest' | 'next' | 'fastapi';
   paths: IngressPath[];
+  /** Не перезаписываются при generate — только из существующего values.yaml */
+  extraAnnotations?: Record<string, string>;
 }
 
 interface IngressValues {
@@ -70,9 +72,6 @@ export function updateIngressValues(): void {
 
   log(`Found ${services.length} service(s) with routers`, 'info');
 
-  const ingressRules = generateIngressRules(services);
-
-  // Read existing values.yaml or use defaults
   let existingValues: IngressValues = {};
 
   if (fs.existsSync(ingressValuesPath)) {
@@ -80,6 +79,9 @@ export function updateIngressValues(): void {
     existingValues = yaml.parse(existingContent) as IngressValues;
     log('Loaded existing values.yaml', 'info');
   }
+
+  const ingressRules = generateIngressRules(services);
+  const mergedRules = mergeIngressRulesWithExisting(ingressRules, existingValues.ingress?.rules);
 
   // Merge with defaults, preserving all existing values
   const ingressValues: IngressValues = {
@@ -99,8 +101,7 @@ export function updateIngressValues(): void {
       enabled: existingValues.ingress?.enabled ?? true,
       name: existingValues.ingress?.name ?? 'ingress-main',
       namespace: existingValues.ingress?.namespace ?? 'default',
-      // Only update rules, keep everything else (like tls)
-      rules: ingressRules,
+      rules: mergedRules,
     },
   };
 
@@ -109,8 +110,38 @@ export function updateIngressValues(): void {
 
   const relativePath = path.relative(process.cwd(), ingressValuesPath);
   log(`Generated: ${relativePath}`, 'success');
-  log(`  Total ingress rules: ${ingressRules.length}`, 'info');
-  log('  Preserved all existing values (including TLS config)', 'success');
+  log(`  Total ingress rules: ${mergedRules.length}`, 'info');
+  log('  Preserved manual ingress paths & extraAnnotations per service', 'success');
+}
+
+function ingressPathKey(p: IngressPath): string {
+  return `${p.path}::${p.method}`;
+}
+
+/** Сохраняет пути и extraAnnotations из values.yaml, которых нет в router.yaml (например /core-messages/ws). */
+function mergeIngressRulesWithExisting(generated: IngressRule[], existing: IngressRule[] | undefined): IngressRule[] {
+  if (!existing?.length) return generated;
+
+  return generated.map((rule) => {
+    const prev = existing.find((e) => e.service === rule.service);
+    if (!prev) return rule;
+
+    const seen = new Set(rule.paths.map(ingressPathKey));
+    const mergedPaths = [...rule.paths];
+    for (const p of prev.paths ?? []) {
+      const k = ingressPathKey(p);
+      if (!seen.has(k)) {
+        mergedPaths.push(p);
+        seen.add(k);
+      }
+    }
+
+    return {
+      ...rule,
+      paths: mergedPaths,
+      ...(prev.extraAnnotations ? { extraAnnotations: prev.extraAnnotations } : {}),
+    };
+  });
 }
 
 function findServicesWithRouters(servicesDir: string): RouterConfig[] {

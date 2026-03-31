@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Conversation } from '../../entities/Conversation/types';
-import { type WsClientEvent, useWebSocket } from '../../shared/hooks/useWebSocket';
+import { useWebSocket, type WsClientEvent } from '../../shared/hooks/useWebSocket';
 import { ConversationListView } from '../ConversationListView/ConversationListView';
 import styles from './MessagesLayout.module.css';
 
