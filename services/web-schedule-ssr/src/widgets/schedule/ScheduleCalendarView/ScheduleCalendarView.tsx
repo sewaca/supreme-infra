@@ -106,18 +106,11 @@ function navigateScheduleHorizontally(api: CalendarApi, dir: -1 | 1): void {
   api.gotoDate(target);
 }
 
-function formatRoom(classroom: string | null, building: string | null): string | null {
-  if (!classroom) return null;
-  return classroom;
-}
-
 function EventCard({ event }: { event: EventContentArg }) {
-  const { teacher_name, classroom_name, classroom_building } = event.event.extendedProps as {
+  const { teacher_name, classroom_name: room } = event.event.extendedProps as {
     teacher_name: string | null;
     classroom_name: string | null;
-    classroom_building: string | null;
   };
-  const room = formatRoom(classroom_name, classroom_building);
 
   return (
     <div className={styles.eventCard}>
