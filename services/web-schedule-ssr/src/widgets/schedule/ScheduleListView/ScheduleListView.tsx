@@ -125,54 +125,60 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
         const isToday = day.date === todayStr;
         const primary = theme.palette.primary.main;
         return (
-        <Paper
-          key={day.date}
-          className={styles.dayCard}
-          elevation={0}
-          sx={
-            isToday
-              ? {
-                  bgcolor: alpha(primary, 0.1),
-                  border: `1px solid ${alpha(primary, 0.22)}`,
-                }
-              : undefined
-          }
-        >
-          <Typography
-            className={styles.dayHeader}
-            sx={isToday ? { color: 'primary.dark', borderBottomColor: alpha(primary, 0.18) } : undefined}
+          <Paper
+            key={day.date}
+            className={styles.dayCard}
+            elevation={0}
+            sx={
+              isToday
+                ? {
+                    bgcolor: alpha(primary, 0.06),
+                    border: `1px solid ${alpha(primary, 0.22)}`,
+                  }
+                : undefined
+            }
           >
-            {formatDayHeader(day.date)}
-          </Typography>
+            <Typography
+              className={styles.dayHeader}
+              sx={isToday ? { color: 'primary.dark', borderBottomColor: alpha(primary, 0.22) } : undefined}
+            >
+              {formatDayHeader(day.date)}
+            </Typography>
 
-          {day.events.map((ev) => {
-            const startTime = ev.start.slice(11, 16);
-            const endTime = ev.end.slice(11, 16);
-            const chipColor = getLessonChipColor(ev.extendedProps.lesson_type);
+            {day.events.map((ev) => {
+              const startTime = ev.start.slice(11, 16);
+              const endTime = ev.end.slice(11, 16);
+              const chipColor = getLessonChipColor(ev.extendedProps.lesson_type);
 
-            return (
-              <div key={ev.id} className={styles.lessonRow} onClick={() => onEventClick(ev)} role="button" tabIndex={0}>
-                <div className={styles.lessonLeft}>
-                  <span className={styles.lessonTime}>
-                    {startTime}–{endTime}
-                  </span>
-                  {ev.extendedProps.classroom_name && (
-                    <span className={styles.lessonClassroom}>{ev.extendedProps.classroom_name}</span>
-                  )}
+              return (
+                <div
+                  key={ev.id}
+                  className={styles.lessonRow}
+                  onClick={() => onEventClick(ev)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <div className={styles.lessonLeft}>
+                    <span className={styles.lessonTime}>
+                      {startTime}–{endTime}
+                    </span>
+                    {ev.extendedProps.classroom_name && (
+                      <span className={styles.lessonClassroom}>{ev.extendedProps.classroom_name}</span>
+                    )}
+                  </div>
+                  <div className={styles.lessonRight}>
+                    <span className={styles.lessonSubject}>{ev.title}</span>
+                    <span className={styles.lessonType} style={{ color: chipColor }}>
+                      {ev.extendedProps.lesson_type}
+                    </span>
+                    {ev.extendedProps.teacher_name && (
+                      <span className={styles.lessonTeacher}>{ev.extendedProps.teacher_name}</span>
+                    )}
+                  </div>
                 </div>
-                <div className={styles.lessonRight}>
-                  <span className={styles.lessonSubject}>{ev.title}</span>
-                  <span className={styles.lessonType} style={{ color: chipColor }}>
-                    {ev.extendedProps.lesson_type}
-                  </span>
-                  {ev.extendedProps.teacher_name && (
-                    <span className={styles.lessonTeacher}>{ev.extendedProps.teacher_name}</span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </Paper>
+              );
+            })}
+          </Paper>
         );
       })}
     </div>
