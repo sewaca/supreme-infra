@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, Box, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 import type { Message } from '../../entities/Message/types';
 import { formatMessageTime } from '../../shared/lib/formatDate';
@@ -12,23 +12,12 @@ interface Props {
   message: Message;
   isOwn: boolean;
   canReplyInDm?: boolean;
-  isEditing?: boolean;
   onAction?: (action: MessageAction, message: Message) => void;
-  onEditSubmit?: (messageId: string, content: string) => void;
-  onCancelEdit?: () => void;
+  onScrollToMessage?: (messageId: string) => void;
 }
 
-export function ChatBubble({
-  message,
-  isOwn,
-  canReplyInDm = false,
-  isEditing = false,
-  onAction,
-  onEditSubmit,
-  onCancelEdit,
-}: Props) {
+export function ChatBubble({ message, isOwn, canReplyInDm = false, onAction, onScrollToMessage }: Props) {
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
-  const [editContent, setEditContent] = useState(message.content);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const openMenu = (top: number, left: number) => setMenuPos({ top, left });
@@ -41,31 +30,13 @@ export function ChatBubble({
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.pointerType === 'touch') {
-      longPressTimer.current = setTimeout(() => {
-        openMenu(e.clientY, e.clientX);
-      }, 500);
+      longPressTimer.current = setTimeout(() => openMenu(e.clientY, e.clientX), 500);
     }
   };
 
-  const handlePointerUp = () => {
-    clearTimeout(longPressTimer.current);
-  };
+  const handlePointerUp = () => clearTimeout(longPressTimer.current);
 
-  const handleAction = (action: MessageAction) => {
-    onAction?.(action, message);
-  };
-
-  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      if (editContent.trim()) {
-        onEditSubmit?.(message.id, editContent.trim());
-      }
-    }
-    if (e.key === 'Escape') {
-      onCancelEdit?.();
-    }
-  };
+  const handleAction = (action: MessageAction) => onAction?.(action, message);
 
   return (
     <Box
@@ -102,30 +73,47 @@ export function ChatBubble({
           </Typography>
         )}
 
-        {isEditing ? (
-          <TextField
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
-            onKeyDown={handleEditKeyDown}
-            multiline
-            fullWidth
-            autoFocus
-            size="small"
-            variant="standard"
-            slotProps={{
-              input: {
-                sx: { color: isOwn ? '#fff' : 'inherit', fontSize: '0.875rem' },
-              },
+        {/* Reply preview */}
+        {message.reply_to_message && (
+          <Box
+            onClick={() => onScrollToMessage?.(message.reply_to_message!.id)}
+            sx={{
+              mb: 0.5,
+              px: 1,
+              py: 0.375,
+              borderLeft: '3px solid',
+              borderColor: isOwn ? 'rgba(255,255,255,0.5)' : 'primary.main',
+              bgcolor: isOwn ? 'rgba(0,0,0,0.12)' : 'action.hover',
+              borderRadius: '0 4px 4px 0',
+              cursor: 'pointer',
+              maxWidth: '100%',
+              overflow: 'hidden',
             }}
-            sx={{ '& .MuiInput-underline:before': { borderColor: 'rgba(255,255,255,0.5)' } }}
-          />
-        ) : (
-          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-            {message.content}
-          </Typography>
+          >
+            <Typography
+              variant="caption"
+              fontWeight={600}
+              color={isOwn ? 'rgba(255,255,255,0.85)' : 'primary.main'}
+              sx={{ display: 'block' }}
+              noWrap
+            >
+              {message.reply_to_message.sender_name} {message.reply_to_message.sender_last_name}
+            </Typography>
+            <Typography
+              variant="caption"
+              color={isOwn ? 'rgba(255,255,255,0.65)' : 'text.secondary'}
+              sx={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+            >
+              {message.reply_to_message.content}
+            </Typography>
+          </Box>
         )}
 
-        {!isEditing && message.attachments.length > 0 && (
+        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+          {message.content}
+        </Typography>
+
+        {message.attachments.length > 0 && (
           <Box sx={{ mt: 0.75, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
             {message.attachments.map((att) => (
               <FileAttachment key={att.id} attachment={att} />

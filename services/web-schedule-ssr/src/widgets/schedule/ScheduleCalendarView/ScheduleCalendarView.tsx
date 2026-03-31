@@ -207,7 +207,7 @@ export function ScheduleCalendarView({
   useEffect(() => {
     if (!mounted || correctedRef.current) return;
     correctedRef.current = true;
-    
+
     const api = calendarRef.current?.getApi();
     if (api && api.view.type !== calendarView) {
       api.changeView(calendarView);

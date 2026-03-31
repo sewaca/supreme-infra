@@ -934,5 +934,10 @@ migrationConfigMapParts:
               FALSE, '2026-03-29 10:00:00+00'
           )
       ON CONFLICT (conversation_id, user_id) DO NOTHING;
+    004_reply_to_id.sql: >
+      -- Migration: add reply_to_id to message table
+
+      ALTER TABLE message ADD COLUMN IF NOT EXISTS reply_to_id UUID REFERENCES
+      message(id) ON DELETE SET NULL;
 migrations: {}
 skipMigrations: false

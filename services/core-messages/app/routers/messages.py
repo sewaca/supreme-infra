@@ -14,6 +14,7 @@ from app.schemas.message import (
     MarkReadRequest,
     MessageListResponse,
     MessageResponse,
+    ReplyToPreview,
     SendMessageRequest,
 )
 from app.services.cursor import decode_cursor, encode_cursor
@@ -45,8 +46,26 @@ async def _build_message_response(
     msg: Message,
     current_user_id: uuid.UUID,
     users_map: dict,
+    db: AsyncSession | None = None,
 ) -> MessageResponse:
     sender = users_map.get(msg.sender_id)
+
+    reply_to_data: ReplyToPreview | None = None
+    if msg.reply_to_id and db is not None:
+        reply_result = await db.execute(
+            select(Message).where(Message.id == msg.reply_to_id, Message.is_deleted.is_(False))
+        )
+        reply_msg = reply_result.scalar_one_or_none()
+        if reply_msg:
+            reply_users = await get_cached_users_batch([reply_msg.sender_id], db)
+            reply_sender = reply_users.get(reply_msg.sender_id)
+            reply_to_data = ReplyToPreview(
+                id=reply_msg.id,
+                sender_name=reply_sender.name if reply_sender else "",
+                sender_last_name=reply_sender.last_name if reply_sender else "",
+                content=reply_msg.content[:300],
+            )
+
     return MessageResponse(
         id=msg.id,
         conversation_id=msg.conversation_id,
@@ -70,6 +89,7 @@ async def _build_message_response(
         created_at=msg.created_at,
         is_own=(msg.sender_id == current_user_id),
         is_edited=(msg.updated_at is not None),
+        reply_to_message=reply_to_data,
     )
 
 
@@ -112,7 +132,7 @@ async def list_messages(
     sender_ids = list({m.sender_id for m in items})
     users_map = await get_cached_users_batch(sender_ids, db)
 
-    response_items = [await _build_message_response(msg, current_user_id, users_map) for msg in items]
+    response_items = [await _build_message_response(msg, current_user_id, users_map, db) for msg in items]
 
     return MessageListResponse(items=response_items, next_cursor=next_cursor, has_more=has_more)
 
@@ -135,6 +155,7 @@ async def send_message(
         sender_id=current_user_id,
         content=body.content,
         content_type=body.content_type,
+        reply_to_id=body.reply_to_id,
     )
     db.add(msg)
     await db.flush()

@@ -7,6 +7,13 @@ export interface Attachment {
   thumbnail_url: string | null;
 }
 
+export interface ReplyToMessage {
+  id: string;
+  sender_name: string;
+  sender_last_name: string;
+  content: string;
+}
+
 export interface Message {
   id: string;
   conversation_id: string;
@@ -20,6 +27,7 @@ export interface Message {
   created_at: string;
   is_own: boolean;
   is_edited?: boolean;
+  reply_to_message?: ReplyToMessage | null;
 }
 
 export interface MessageSearchResult {

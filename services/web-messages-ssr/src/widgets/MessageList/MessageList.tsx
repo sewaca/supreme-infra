@@ -1,12 +1,16 @@
 'use client';
 
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { Message } from '../../entities/Message/types';
 import { formatDateSeparator } from '../../shared/lib/formatDate';
 import { ChatBubble } from '../ChatBubble/ChatBubble';
 import type { MessageAction } from '../MessageContextMenu/MessageContextMenu';
 import styles from './MessageList.module.css';
+
+export interface MessageListHandle {
+  scrollToMessage: (messageId: string) => void;
+}
 
 interface Props {
   messages: Message[];
@@ -15,28 +19,32 @@ interface Props {
   onLoadMore: () => void;
   userId: string;
   canReplyInDm?: boolean;
-  editingMessageId?: string | null;
   onAction?: (action: MessageAction, message: Message) => void;
-  onEditSubmit?: (messageId: string, content: string) => void;
-  onCancelEdit?: () => void;
 }
 
-export function MessageList({
-  messages,
-  hasMore,
-  loading,
-  onLoadMore,
-  userId,
-  canReplyInDm = false,
-  editingMessageId,
-  onAction,
-  onEditSubmit,
-  onCancelEdit,
-}: Props) {
+export const MessageList = forwardRef<MessageListHandle, Props>(function MessageList(
+  { messages, hasMore, loading, onLoadMore, userId, canReplyInDm = false, onAction },
+  ref,
+) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef(0);
   const isInitialRef = useRef(true);
+  const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  useImperativeHandle(ref, () => ({
+    scrollToMessage: (messageId: string) => {
+      const el = messageRefs.current.get(messageId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.style.transition = 'background 0.3s';
+        el.style.background = 'rgba(26,35,126,0.12)';
+        setTimeout(() => {
+          el.style.background = '';
+        }, 1200);
+      }
+    },
+  }));
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -105,7 +113,14 @@ export function MessageList({
         lastDate = msgDate;
 
         return (
-          <Box key={msg.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box
+            key={msg.id}
+            ref={(el) => {
+              if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
+              else messageRefs.current.delete(msg.id);
+            }}
+            sx={{ display: 'flex', flexDirection: 'column', borderRadius: 1 }}
+          >
             {showDateSeparator && (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
                 <Typography variant="caption" sx={{ px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'action.hover' }}>
@@ -117,10 +132,8 @@ export function MessageList({
               message={msg}
               isOwn={msg.sender_id === userId}
               canReplyInDm={canReplyInDm}
-              isEditing={editingMessageId === msg.id}
               onAction={onAction}
-              onEditSubmit={onEditSubmit}
-              onCancelEdit={onCancelEdit}
+              onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
             />
           </Box>
         );
@@ -133,4 +146,4 @@ export function MessageList({
       )}
     </Box>
   );
-}
+});

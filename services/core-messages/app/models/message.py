@@ -29,6 +29,9 @@ class Message(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    reply_to_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("message.id", ondelete="SET NULL"), nullable=True
+    )
 
     attachments: Mapped[list["MessageAttachment"]] = relationship(back_populates="message", lazy="selectin")
 

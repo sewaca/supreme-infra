@@ -13,6 +13,13 @@ class AttachmentResponse(BaseModel):
     thumbnail_url: str | None = None
 
 
+class ReplyToPreview(BaseModel):
+    id: UUID
+    sender_name: str
+    sender_last_name: str
+    content: str
+
+
 class MessageResponse(BaseModel):
     id: UUID
     conversation_id: UUID
@@ -26,6 +33,7 @@ class MessageResponse(BaseModel):
     created_at: datetime
     is_own: bool = False
     is_edited: bool = False
+    reply_to_message: ReplyToPreview | None = None
 
 
 class MessageListResponse(BaseModel):
@@ -37,6 +45,7 @@ class MessageListResponse(BaseModel):
 class SendMessageRequest(BaseModel):
     content: str = Field(..., max_length=5000)
     content_type: str = "text"
+    reply_to_id: UUID | None = None
 
 
 class EditMessageRequest(BaseModel):

@@ -3,13 +3,13 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, IconButton, Typography } from '@mui/material';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { deleteMessage, editMessage, markAsRead, sendMessage } from '../../../app/messages/actions';
 import type { Conversation } from '../../entities/Conversation/types';
 import type { Message } from '../../entities/Message/types';
 import type { MessageAction } from '../../widgets/MessageContextMenu/MessageContextMenu';
 import { MessageInput } from '../../widgets/MessageInput/MessageInput';
-import { MessageList } from '../../widgets/MessageList/MessageList';
+import { MessageList, type MessageListHandle } from '../../widgets/MessageList/MessageList';
 import { ReplyInDmButton } from '../../widgets/ReplyInDmButton/ReplyInDmButton';
 import styles from './ChatView.module.css';
 
@@ -34,8 +34,9 @@ export function ChatView({
   const [cursor, setCursor] = useState(initialCursor);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [loading, setLoading] = useState(false);
-  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingMessage, setEditingMessage] = useState<Message | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const messageListRef = useRef<MessageListHandle>(null);
 
   const isBroadcast = conversation.type === 'broadcast';
   const isOwner = conversation.owner_id === userId;
@@ -56,7 +57,7 @@ export function ChatView({
         ? `Рассылка (${conversation.participant_count} студентов)`
         : undefined;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally runs only on conversation change (mark as read on open)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally runs only on conversation change
   useEffect(() => {
     if (messages.length > 0) {
       markAsRead(conversation.id, messages[0].id);
@@ -65,22 +66,30 @@ export function ChatView({
 
   const handleSend = useCallback(
     async (content: string, _files?: File[]) => {
-      const fullContent = replyTo
-        ? `> ${replyTo.sender_name} ${replyTo.sender_last_name}, ${new Date(replyTo.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}:\n> ${replyTo.content}\n\n${content}`
-        : content;
-      setReplyTo(null);
-      const result = await sendMessage(conversation.id, fullContent);
-      if (result.success && result.message) {
-        setMessages((prev) => [result.message!, ...prev]);
+      // If editing — patch message, don't send new
+      if (editingMessage) {
+        const res = await editMessage(conversation.id, editingMessage.id, content);
+        if (res.success && res.message) {
+          setMessages((prev) => prev.map((m) => (m.id === editingMessage.id ? { ...m, content, is_edited: true } : m)));
+          setEditingMessage(null);
+          return { success: true };
+        }
+        return { success: false, error: res.error };
+      }
+
+      const res = await sendMessage(conversation.id, content, replyTo?.id ?? null);
+      if (res.success && res.message) {
+        setMessages((prev) => [res.message!, ...prev]);
+        setReplyTo(null);
         window.dispatchEvent(
           new CustomEvent('conversation-updated', {
-            detail: { conversationId: conversation.id, message: result.message },
+            detail: { conversationId: conversation.id, message: res.message },
           }),
         );
       }
-      return result;
+      return res;
     },
-    [conversation.id, replyTo],
+    [conversation.id, editingMessage, replyTo],
   );
 
   const handleLoadMore = useCallback(async () => {
@@ -130,18 +139,21 @@ export function ChatView({
   const handleAction = useCallback(
     (action: MessageAction, message: Message) => {
       if (action === 'reply') {
+        setEditingMessage(null);
         setReplyTo(message);
       }
-      if (action === 'reply-dm') {
-        // handled by ReplyInDmButton
-      }
       if (action === 'copy') {
-        const time = new Date(message.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        const text = `${message.sender_name} ${message.sender_last_name} ${time}\n${message.content}`;
-        navigator.clipboard.writeText(text).catch(() => {});
+        const time = new Date(message.created_at).toLocaleTimeString('ru-RU', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        navigator.clipboard
+          .writeText(`${message.sender_name} ${message.sender_last_name} ${time}\n${message.content}`)
+          .catch(() => {});
       }
       if (action === 'edit') {
-        setEditingMessageId(message.id);
+        setReplyTo(null);
+        setEditingMessage(message);
       }
       if (action === 'delete') {
         deleteMessage(conversation.id, message.id).then((res) => {
@@ -150,17 +162,6 @@ export function ChatView({
           }
         });
       }
-    },
-    [conversation.id],
-  );
-
-  const handleEditSubmit = useCallback(
-    async (messageId: string, content: string) => {
-      const res = await editMessage(conversation.id, messageId, content);
-      if (res.success && res.message) {
-        setMessages((prev) => prev.map((m) => (m.id === messageId ? { ...m, content, is_edited: true } : m)));
-      }
-      setEditingMessageId(null);
     },
     [conversation.id],
   );
@@ -184,16 +185,14 @@ export function ChatView({
       </Box>
 
       <MessageList
+        ref={messageListRef}
         messages={messages}
         hasMore={hasMore}
         loading={loading}
         onLoadMore={handleLoadMore}
         userId={userId}
         canReplyInDm={canReplyInDm}
-        editingMessageId={editingMessageId}
         onAction={handleAction}
-        onEditSubmit={handleEditSubmit}
-        onCancelEdit={() => setEditingMessageId(null)}
       />
 
       {canReply ? (
@@ -202,6 +201,8 @@ export function ChatView({
           conversationId={conversation.id}
           replyTo={replyTo}
           onCancelReply={() => setReplyTo(null)}
+          editingMessage={editingMessage}
+          onCancelEdit={() => setEditingMessage(null)}
         />
       ) : (
         <ReplyInDmButton ownerId={conversation.owner_id!} />

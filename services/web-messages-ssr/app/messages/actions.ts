@@ -18,12 +18,13 @@ import { environment } from '../../src/shared/lib/environment';
 export async function sendMessage(
   conversationId: string,
   content: string,
+  replyToId?: string | null,
 ): Promise<{ success: boolean; message?: Message; error?: string }> {
   try {
     const res = await sendMessageConversationsConversationIdMessagesPost({
       client: coreMessagesClient,
       path: { conversation_id: conversationId },
-      body: { content, content_type: 'text' },
+      body: { content, content_type: 'text', ...(replyToId ? { reply_to_id: replyToId } : {}) } as any,
     });
 
     if (res.data) {
