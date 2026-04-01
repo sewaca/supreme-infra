@@ -15,6 +15,6 @@ export default defineConfig({
     './src/generated/core-applications',
     './src/generated/core-schedule',
     './src/generated/core-messages',
-    './src/system-files-storage',
+    './src/generated/system-files-storage',
   ],
 });

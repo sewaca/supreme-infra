@@ -435,6 +435,119 @@
         }
       }
     },
+    "/conversations/{conversation_id}/messages/{message_id}": {
+      "patch": {
+        "tags": ["messages"],
+        "summary": "Edit Message",
+        "operationId": "edit_message_conversations__conversation_id__messages__message_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Conversation Id"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Message Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["messages"],
+        "summary": "Delete Message",
+        "operationId": "delete_message_conversations__conversation_id__messages__message_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Conversation Id"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Message Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/messages/search": {
       "get": {
         "tags": ["messages"],
@@ -944,8 +1057,7 @@
                 "type": "null"
               }
             ],
-            "title": "Peer Display Name",
-            "description": "Direct: counterparty full name for the current user (sidebar title)."
+            "title": "Peer Display Name"
           }
         },
         "type": "object",
@@ -1043,6 +1155,18 @@
         "type": "object",
         "required": ["recipient_id"],
         "title": "CreateDirectConversationRequest"
+      },
+      "EditMessageRequest": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "maxLength": 5000,
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": ["content"],
+        "title": "EditMessageRequest"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1160,6 +1284,21 @@
             "type": "boolean",
             "title": "Is Own",
             "default": false
+          },
+          "is_edited": {
+            "type": "boolean",
+            "title": "Is Edited",
+            "default": false
+          },
+          "reply_to_message": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReplyToPreview"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -1251,6 +1390,30 @@
         "required": ["user_id", "name", "last_name"],
         "title": "ParticipantBrief"
       },
+      "ReplyToPreview": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "sender_name": {
+            "type": "string",
+            "title": "Sender Name"
+          },
+          "sender_last_name": {
+            "type": "string",
+            "title": "Sender Last Name"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": ["id", "sender_name", "sender_last_name", "content"],
+        "title": "ReplyToPreview"
+      },
       "SearchMessagesResponse": {
         "properties": {
           "items": {
@@ -1287,6 +1450,18 @@
             "type": "string",
             "title": "Content Type",
             "default": "text"
+          },
+          "reply_to_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reply To Id"
           }
         },
         "type": "object",

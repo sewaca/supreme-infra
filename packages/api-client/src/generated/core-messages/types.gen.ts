@@ -119,7 +119,7 @@ export type ConversationResponse = {
      */
     participant_count?: number;
     /**
-     * Direct: counterparty full name for the current user (sidebar title).
+     * Peer Display Name
      */
     peer_display_name?: string | null;
 };
@@ -176,6 +176,16 @@ export type CreateDirectConversationRequest = {
      * Recipient Id
      */
     recipient_id: string;
+};
+
+/**
+ * EditMessageRequest
+ */
+export type EditMessageRequest = {
+    /**
+     * Content
+     */
+    content: string;
 };
 
 /**
@@ -264,6 +274,11 @@ export type MessageResponse = {
      * Is Own
      */
     is_own?: boolean;
+    /**
+     * Is Edited
+     */
+    is_edited?: boolean;
+    reply_to_message?: ReplyToPreview | null;
 };
 
 /**
@@ -316,6 +331,28 @@ export type ParticipantBrief = {
 };
 
 /**
+ * ReplyToPreview
+ */
+export type ReplyToPreview = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Sender Name
+     */
+    sender_name: string;
+    /**
+     * Sender Last Name
+     */
+    sender_last_name: string;
+    /**
+     * Content
+     */
+    content: string;
+};
+
+/**
  * SearchMessagesResponse
  */
 export type SearchMessagesResponse = {
@@ -341,6 +378,10 @@ export type SendMessageRequest = {
      * Content Type
      */
     content_type?: string;
+    /**
+     * Reply To Id
+     */
+    reply_to_id?: string | null;
 };
 
 /**
@@ -686,6 +727,74 @@ export type MarkReadConversationsConversationIdMessagesReadPostResponses = {
 };
 
 export type MarkReadConversationsConversationIdMessagesReadPostResponse = MarkReadConversationsConversationIdMessagesReadPostResponses[keyof MarkReadConversationsConversationIdMessagesReadPostResponses];
+
+export type DeleteMessageConversationsConversationIdMessagesMessageIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+        /**
+         * Message Id
+         */
+        message_id: string;
+    };
+    query?: never;
+    url: '/conversations/{conversation_id}/messages/{message_id}';
+};
+
+export type DeleteMessageConversationsConversationIdMessagesMessageIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteMessageConversationsConversationIdMessagesMessageIdDeleteError = DeleteMessageConversationsConversationIdMessagesMessageIdDeleteErrors[keyof DeleteMessageConversationsConversationIdMessagesMessageIdDeleteErrors];
+
+export type DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponse = DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponses[keyof DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponses];
+
+export type EditMessageConversationsConversationIdMessagesMessageIdPatchData = {
+    body: EditMessageRequest;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+        /**
+         * Message Id
+         */
+        message_id: string;
+    };
+    query?: never;
+    url: '/conversations/{conversation_id}/messages/{message_id}';
+};
+
+export type EditMessageConversationsConversationIdMessagesMessageIdPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type EditMessageConversationsConversationIdMessagesMessageIdPatchError = EditMessageConversationsConversationIdMessagesMessageIdPatchErrors[keyof EditMessageConversationsConversationIdMessagesMessageIdPatchErrors];
+
+export type EditMessageConversationsConversationIdMessagesMessageIdPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: MessageResponse;
+};
+
+export type EditMessageConversationsConversationIdMessagesMessageIdPatchResponse = EditMessageConversationsConversationIdMessagesMessageIdPatchResponses[keyof EditMessageConversationsConversationIdMessagesMessageIdPatchResponses];
 
 export type SearchMessagesMessagesSearchGetData = {
     body?: never;

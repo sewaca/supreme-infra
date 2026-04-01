@@ -8,7 +8,9 @@
   "paths": {
     "/status": {
       "get": {
-        "tags": ["status"],
+        "tags": [
+          "status"
+        ],
         "summary": "Get Status",
         "operationId": "get_status_status_get",
         "responses": {
@@ -25,7 +27,9 @@
     },
     "/applications": {
       "get": {
-        "tags": ["applications"],
+        "tags": [
+          "applications"
+        ],
         "summary": "Get Applications",
         "operationId": "get_applications_applications_get",
         "parameters": [
@@ -103,7 +107,9 @@
     },
     "/applications/notifications": {
       "get": {
-        "tags": ["applications"],
+        "tags": [
+          "applications"
+        ],
         "summary": "Get Notifications",
         "operationId": "get_notifications_applications_notifications_get",
         "parameters": [
@@ -181,7 +187,9 @@
     },
     "/references": {
       "get": {
-        "tags": ["references"],
+        "tags": [
+          "references"
+        ],
         "summary": "Get References",
         "operationId": "get_references_references_get",
         "parameters": [
@@ -226,7 +234,9 @@
     },
     "/references/{reference_id}": {
       "get": {
-        "tags": ["references"],
+        "tags": [
+          "references"
+        ],
         "summary": "Get Reference",
         "operationId": "get_reference_references__reference_id__get",
         "parameters": [
@@ -277,7 +287,9 @@
     },
     "/references/order": {
       "post": {
-        "tags": ["references"],
+        "tags": [
+          "references"
+        ],
         "summary": "Create Reference",
         "operationId": "create_reference_references_order_post",
         "parameters": [
@@ -328,7 +340,9 @@
     },
     "/references/{reference_id}/cancel": {
       "post": {
-        "tags": ["references"],
+        "tags": [
+          "references"
+        ],
         "summary": "Cancel Reference",
         "operationId": "cancel_reference_references__reference_id__cancel_post",
         "parameters": [
@@ -377,7 +391,9 @@
     },
     "/references/{reference_id}/extend-storage": {
       "post": {
-        "tags": ["references"],
+        "tags": [
+          "references"
+        ],
         "summary": "Extend Storage",
         "operationId": "extend_storage_references__reference_id__extend_storage_post",
         "parameters": [
@@ -426,7 +442,9 @@
     },
     "/references/{reference_id}/pdf": {
       "get": {
-        "tags": ["references"],
+        "tags": [
+          "references"
+        ],
         "summary": "Get Reference Pdf",
         "operationId": "get_reference_pdf_references__reference_id__pdf_get",
         "parameters": [
@@ -475,7 +493,9 @@
     },
     "/orders": {
       "get": {
-        "tags": ["orders"],
+        "tags": [
+          "orders"
+        ],
         "summary": "Get Orders",
         "operationId": "get_orders_orders_get",
         "parameters": [
@@ -557,7 +577,9 @@
     },
     "/orders/counts": {
       "get": {
-        "tags": ["orders"],
+        "tags": [
+          "orders"
+        ],
         "summary": "Get Orders Counts",
         "operationId": "get_orders_counts_orders_counts_get",
         "parameters": [
@@ -598,7 +620,9 @@
     },
     "/orders/{order_id}": {
       "get": {
-        "tags": ["orders"],
+        "tags": [
+          "orders"
+        ],
         "summary": "Get Order",
         "operationId": "get_order_orders__order_id__get",
         "parameters": [
@@ -649,7 +673,9 @@
     },
     "/orders/{order_id}/pdf": {
       "get": {
-        "tags": ["orders"],
+        "tags": [
+          "orders"
+        ],
         "summary": "Get Order Pdf",
         "operationId": "get_order_pdf_orders__order_id__pdf_get",
         "parameters": [
@@ -698,7 +724,9 @@
     },
     "/dormitory/parent-agreement": {
       "post": {
-        "tags": ["dormitory"],
+        "tags": [
+          "dormitory"
+        ],
         "summary": "Upload Parent Agreement",
         "operationId": "upload_parent_agreement_dormitory_parent_agreement_post",
         "parameters": [
@@ -747,7 +775,9 @@
     },
     "/dormitory/applications": {
       "post": {
-        "tags": ["dormitory"],
+        "tags": [
+          "dormitory"
+        ],
         "summary": "Submit Dormitory Application",
         "operationId": "submit_dormitory_application_dormitory_applications_post",
         "parameters": [
@@ -837,7 +867,14 @@
           }
         },
         "type": "object",
-        "required": ["id", "application_id", "severity", "message", "action", "created_at"],
+        "required": [
+          "id",
+          "application_id",
+          "severity",
+          "message",
+          "action",
+          "created_at"
+        ],
         "title": "ApplicationNotificationResponse"
       },
       "ApplicationResponse": {
@@ -922,7 +959,9 @@
           }
         },
         "type": "object",
-        "required": ["file"],
+        "required": [
+          "file"
+        ],
         "title": "Body_upload_parent_agreement_dormitory_parent_agreement_post"
       },
       "CreateReferenceRequest": {
@@ -948,7 +987,9 @@
           }
         },
         "type": "object",
-        "required": ["reference_type"],
+        "required": [
+          "reference_type"
+        ],
         "title": "CreateReferenceRequest"
       },
       "DormitoryApplicationRequest": {
@@ -967,7 +1008,10 @@
           }
         },
         "type": "object",
-        "required": ["year_of_study", "reason"],
+        "required": [
+          "year_of_study",
+          "reason"
+        ],
         "title": "DormitoryApplicationRequest"
       },
       "DormitoryApplicationResponse": {
@@ -978,7 +1022,9 @@
           }
         },
         "type": "object",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "title": "DormitoryApplicationResponse"
       },
       "HTTPValidationError": {
@@ -1068,7 +1114,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "type", "number", "title", "date"],
+        "required": [
+          "id",
+          "type",
+          "number",
+          "title",
+          "date"
+        ],
         "title": "OrderDetailResponse"
       },
       "OrderNotificationResponse": {
@@ -1094,7 +1146,10 @@
           }
         },
         "type": "object",
-        "required": ["severity", "message"],
+        "required": [
+          "severity",
+          "message"
+        ],
         "title": "OrderNotificationResponse"
       },
       "OrderResponse": {
@@ -1163,7 +1218,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "type", "number", "title", "date"],
+        "required": [
+          "id",
+          "type",
+          "number",
+          "title",
+          "date"
+        ],
         "title": "OrderResponse"
       },
       "OrdersCountResponse": {
@@ -1211,7 +1272,11 @@
           }
         },
         "type": "object",
-        "required": ["orders", "total", "has_more"],
+        "required": [
+          "orders",
+          "total",
+          "has_more"
+        ],
         "title": "OrdersListResponse"
       },
       "ReferenceOrderResponse": {
@@ -1278,7 +1343,14 @@
           }
         },
         "type": "object",
-        "required": ["id", "reference_type", "type_label", "status", "order_date", "virtual_only"],
+        "required": [
+          "id",
+          "reference_type",
+          "type_label",
+          "status",
+          "order_date",
+          "virtual_only"
+        ],
         "title": "ReferenceOrderResponse"
       },
       "ReferenceType": {
@@ -1328,7 +1400,11 @@
           }
         },
         "type": "object",
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError"
       }
     }

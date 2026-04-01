@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddAttachmentFilesPostData, AddAttachmentFilesPostErrors, AddAttachmentFilesPostResponses, CreateBroadcastBroadcastsPostData, CreateBroadcastBroadcastsPostErrors, CreateBroadcastBroadcastsPostResponses, CreateOrGetDirectConversationConversationsDirectPostData, CreateOrGetDirectConversationConversationsDirectPostErrors, CreateOrGetDirectConversationConversationsDirectPostResponses, DeleteConversationConversationsConversationIdDeleteData, DeleteConversationConversationsConversationIdDeleteErrors, DeleteConversationConversationsConversationIdDeleteResponses, GetConversationConversationsConversationIdGetData, GetConversationConversationsConversationIdGetErrors, GetConversationConversationsConversationIdGetResponses, GetGroupsBroadcastsGroupsGetData, GetGroupsBroadcastsGroupsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetUpdatesConversationsUpdatesGetData, GetUpdatesConversationsUpdatesGetErrors, GetUpdatesConversationsUpdatesGetResponses, GetUserUsersUserIdGetData, GetUserUsersUserIdGetErrors, GetUserUsersUserIdGetResponses, ListBroadcastsBroadcastsGetData, ListBroadcastsBroadcastsGetResponses, ListConversationsConversationsGetData, ListConversationsConversationsGetErrors, ListConversationsConversationsGetResponses, ListMessagesConversationsConversationIdMessagesGetData, ListMessagesConversationsConversationIdMessagesGetErrors, ListMessagesConversationsConversationIdMessagesGetResponses, MarkReadConversationsConversationIdMessagesReadPostData, MarkReadConversationsConversationIdMessagesReadPostErrors, MarkReadConversationsConversationIdMessagesReadPostResponses, SearchMessagesMessagesSearchGetData, SearchMessagesMessagesSearchGetErrors, SearchMessagesMessagesSearchGetResponses, SearchUsersUsersSearchGetData, SearchUsersUsersSearchGetErrors, SearchUsersUsersSearchGetResponses, SendMessageConversationsConversationIdMessagesPostData, SendMessageConversationsConversationIdMessagesPostErrors, SendMessageConversationsConversationIdMessagesPostResponses } from './types.gen';
+import type { AddAttachmentFilesPostData, AddAttachmentFilesPostErrors, AddAttachmentFilesPostResponses, CreateBroadcastBroadcastsPostData, CreateBroadcastBroadcastsPostErrors, CreateBroadcastBroadcastsPostResponses, CreateOrGetDirectConversationConversationsDirectPostData, CreateOrGetDirectConversationConversationsDirectPostErrors, CreateOrGetDirectConversationConversationsDirectPostResponses, DeleteConversationConversationsConversationIdDeleteData, DeleteConversationConversationsConversationIdDeleteErrors, DeleteConversationConversationsConversationIdDeleteResponses, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteData, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteErrors, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponses, EditMessageConversationsConversationIdMessagesMessageIdPatchData, EditMessageConversationsConversationIdMessagesMessageIdPatchErrors, EditMessageConversationsConversationIdMessagesMessageIdPatchResponses, GetConversationConversationsConversationIdGetData, GetConversationConversationsConversationIdGetErrors, GetConversationConversationsConversationIdGetResponses, GetGroupsBroadcastsGroupsGetData, GetGroupsBroadcastsGroupsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetUpdatesConversationsUpdatesGetData, GetUpdatesConversationsUpdatesGetErrors, GetUpdatesConversationsUpdatesGetResponses, GetUserUsersUserIdGetData, GetUserUsersUserIdGetErrors, GetUserUsersUserIdGetResponses, ListBroadcastsBroadcastsGetData, ListBroadcastsBroadcastsGetResponses, ListConversationsConversationsGetData, ListConversationsConversationsGetErrors, ListConversationsConversationsGetResponses, ListMessagesConversationsConversationIdMessagesGetData, ListMessagesConversationsConversationIdMessagesGetErrors, ListMessagesConversationsConversationIdMessagesGetResponses, MarkReadConversationsConversationIdMessagesReadPostData, MarkReadConversationsConversationIdMessagesReadPostErrors, MarkReadConversationsConversationIdMessagesReadPostResponses, SearchMessagesMessagesSearchGetData, SearchMessagesMessagesSearchGetErrors, SearchMessagesMessagesSearchGetResponses, SearchUsersUsersSearchGetData, SearchUsersUsersSearchGetErrors, SearchUsersUsersSearchGetResponses, SendMessageConversationsConversationIdMessagesPostData, SendMessageConversationsConversationIdMessagesPostErrors, SendMessageConversationsConversationIdMessagesPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -100,6 +100,28 @@ export const sendMessageConversationsConversationIdMessagesPost = <ThrowOnError 
 export const markReadConversationsConversationIdMessagesReadPost = <ThrowOnError extends boolean = false>(options: Options<MarkReadConversationsConversationIdMessagesReadPostData, ThrowOnError>) => (options.client ?? client).post<MarkReadConversationsConversationIdMessagesReadPostResponses, MarkReadConversationsConversationIdMessagesReadPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/conversations/{conversation_id}/messages/read',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Message
+ */
+export const deleteMessageConversationsConversationIdMessagesMessageIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteMessageConversationsConversationIdMessagesMessageIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponses, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/conversations/{conversation_id}/messages/{message_id}',
+    ...options
+});
+
+/**
+ * Edit Message
+ */
+export const editMessageConversationsConversationIdMessagesMessageIdPatch = <ThrowOnError extends boolean = false>(options: Options<EditMessageConversationsConversationIdMessagesMessageIdPatchData, ThrowOnError>) => (options.client ?? client).patch<EditMessageConversationsConversationIdMessagesMessageIdPatchResponses, EditMessageConversationsConversationIdMessagesMessageIdPatchErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/conversations/{conversation_id}/messages/{message_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',

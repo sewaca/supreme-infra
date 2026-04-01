@@ -8,7 +8,9 @@
   "paths": {
     "/status": {
       "get": {
-        "tags": ["status"],
+        "tags": [
+          "status"
+        ],
         "summary": "Get Status",
         "operationId": "get_status_status_get",
         "responses": {
@@ -25,7 +27,9 @@
     },
     "/profile/user": {
       "get": {
-        "tags": ["profile"],
+        "tags": [
+          "profile"
+        ],
         "summary": "Get User",
         "operationId": "get_user_profile_user_get",
         "parameters": [
@@ -66,7 +70,9 @@
     },
     "/profile/personal-data": {
       "get": {
-        "tags": ["profile"],
+        "tags": [
+          "profile"
+        ],
         "summary": "Get Personal Data",
         "operationId": "get_personal_data_profile_personal_data_get",
         "parameters": [
@@ -107,7 +113,9 @@
     },
     "/settings": {
       "get": {
-        "tags": ["settings"],
+        "tags": [
+          "settings"
+        ],
         "summary": "Get Settings",
         "operationId": "get_settings_settings_get",
         "parameters": [
@@ -146,7 +154,9 @@
         }
       },
       "put": {
-        "tags": ["settings"],
+        "tags": [
+          "settings"
+        ],
         "summary": "Update Settings",
         "operationId": "update_settings_settings_put",
         "parameters": [
@@ -197,7 +207,9 @@
     },
     "/settings/email": {
       "post": {
-        "tags": ["settings"],
+        "tags": [
+          "settings"
+        ],
         "summary": "Change Email",
         "operationId": "change_email_settings_email_post",
         "parameters": [
@@ -248,7 +260,9 @@
     },
     "/settings/password": {
       "post": {
-        "tags": ["settings"],
+        "tags": [
+          "settings"
+        ],
         "summary": "Change Password",
         "operationId": "change_password_settings_password_post",
         "security": [
@@ -304,7 +318,9 @@
     },
     "/rating/stats": {
       "get": {
-        "tags": ["rating"],
+        "tags": [
+          "rating"
+        ],
         "summary": "Get Stats",
         "operationId": "get_stats_rating_stats_get",
         "parameters": [
@@ -345,7 +361,9 @@
     },
     "/rating/level": {
       "get": {
-        "tags": ["rating"],
+        "tags": [
+          "rating"
+        ],
         "summary": "Get Level",
         "operationId": "get_level_rating_level_get",
         "parameters": [
@@ -386,7 +404,9 @@
     },
     "/rating/rankings": {
       "get": {
-        "tags": ["rating"],
+        "tags": [
+          "rating"
+        ],
         "summary": "Get Rankings",
         "operationId": "get_rankings_rating_rankings_get",
         "parameters": [
@@ -431,7 +451,9 @@
     },
     "/rating/achievements": {
       "get": {
-        "tags": ["rating"],
+        "tags": [
+          "rating"
+        ],
         "summary": "Get Achievements",
         "operationId": "get_achievements_rating_achievements_get",
         "parameters": [
@@ -476,7 +498,9 @@
     },
     "/rating/streak": {
       "get": {
-        "tags": ["rating"],
+        "tags": [
+          "rating"
+        ],
         "summary": "Get Streak",
         "operationId": "get_streak_rating_streak_get",
         "parameters": [
@@ -517,7 +541,9 @@
     },
     "/rating/grades": {
       "get": {
-        "tags": ["rating"],
+        "tags": [
+          "rating"
+        ],
         "summary": "Get Grades",
         "operationId": "get_grades_rating_grades_get",
         "parameters": [
@@ -580,7 +606,9 @@
     },
     "/rating/grade-improvements": {
       "get": {
-        "tags": ["rating"],
+        "tags": [
+          "rating"
+        ],
         "summary": "Get Grade Improvements",
         "operationId": "get_grade_improvements_rating_grade_improvements_get",
         "parameters": [
@@ -625,7 +653,9 @@
     },
     "/subjects/choices": {
       "get": {
-        "tags": ["subjects"],
+        "tags": [
+          "subjects"
+        ],
         "summary": "Get Choices",
         "operationId": "get_choices_subjects_choices_get",
         "responses": {
@@ -648,7 +678,9 @@
     },
     "/subjects/user-priorities/{choice_id}": {
       "get": {
-        "tags": ["subjects"],
+        "tags": [
+          "subjects"
+        ],
         "summary": "Get User Priorities",
         "operationId": "get_user_priorities_subjects_user_priorities__choice_id__get",
         "parameters": [
@@ -702,7 +734,9 @@
     },
     "/subjects/save-priorities": {
       "post": {
-        "tags": ["subjects"],
+        "tags": [
+          "subjects"
+        ],
         "summary": "Save Priorities",
         "operationId": "save_priorities_subjects_save_priorities_post",
         "parameters": [
@@ -751,7 +785,9 @@
     },
     "/profile/users/batch": {
       "post": {
-        "tags": ["internal"],
+        "tags": [
+          "internal"
+        ],
         "summary": "Get Users Batch",
         "operationId": "get_users_batch_profile_users_batch_post",
         "requestBody": {
@@ -788,7 +824,9 @@
     },
     "/profile/groups": {
       "get": {
-        "tags": ["internal"],
+        "tags": [
+          "internal"
+        ],
         "summary": "Get Groups",
         "operationId": "get_groups_profile_groups_get",
         "responses": {
@@ -805,7 +843,9 @@
     },
     "/profile/users-by-group": {
       "get": {
-        "tags": ["internal"],
+        "tags": [
+          "internal"
+        ],
         "summary": "Get Users By Group",
         "operationId": "get_users_by_group_profile_users_by_group_get",
         "parameters": [
@@ -856,7 +896,10 @@
           }
         },
         "type": "object",
-        "required": ["label", "value"],
+        "required": [
+          "label",
+          "value"
+        ],
         "title": "AcademicInfoItem"
       },
       "BatchUsersRequest": {
@@ -872,7 +915,9 @@
           }
         },
         "type": "object",
-        "required": ["user_ids"],
+        "required": [
+          "user_ids"
+        ],
         "title": "BatchUsersRequest"
       },
       "ChangeEmailRequest": {
@@ -888,7 +933,10 @@
           }
         },
         "type": "object",
-        "required": ["new_email", "challenge_id"],
+        "required": [
+          "new_email",
+          "challenge_id"
+        ],
         "title": "ChangeEmailRequest"
       },
       "ChangePasswordRequest": {
@@ -904,7 +952,10 @@
           }
         },
         "type": "object",
-        "required": ["new_password", "challenge_id"],
+        "required": [
+          "new_password",
+          "challenge_id"
+        ],
         "title": "ChangePasswordRequest"
       },
       "GradeImprovementResponse": {
@@ -935,7 +986,13 @@
           }
         },
         "type": "object",
-        "required": ["subject", "old_grade", "new_grade", "improvement", "grade_date"],
+        "required": [
+          "subject",
+          "old_grade",
+          "new_grade",
+          "improvement",
+          "grade_date"
+        ],
         "title": "GradeImprovementResponse"
       },
       "HTTPValidationError": {
@@ -959,7 +1016,9 @@
           }
         },
         "type": "object",
-        "required": ["message"],
+        "required": [
+          "message"
+        ],
         "title": "MessageResponse"
       },
       "PersonalDataResponse": {
@@ -979,7 +1038,11 @@
           }
         },
         "type": "object",
-        "required": ["user", "academic_info", "stats"],
+        "required": [
+          "user",
+          "academic_info",
+          "stats"
+        ],
         "title": "PersonalDataResponse"
       },
       "RankingPositionResponse": {
@@ -1003,7 +1066,12 @@
           }
         },
         "type": "object",
-        "required": ["ranking_type", "position", "total", "percentile"],
+        "required": [
+          "ranking_type",
+          "position",
+          "total",
+          "percentile"
+        ],
         "title": "RankingPositionResponse"
       },
       "RatingLevelResponse": {
@@ -1051,7 +1119,10 @@
           }
         },
         "type": "object",
-        "required": ["level", "current_xp"],
+        "required": [
+          "level",
+          "current_xp"
+        ],
         "title": "RatingLevelResponse"
       },
       "SavePrioritiesRequest": {
@@ -1069,7 +1140,10 @@
           }
         },
         "type": "object",
-        "required": ["choice_id", "priorities"],
+        "required": [
+          "choice_id",
+          "priorities"
+        ],
         "title": "SavePrioritiesRequest"
       },
       "SettingsResponse": {
@@ -1106,7 +1180,10 @@
           }
         },
         "type": "object",
-        "required": ["is_new_message_notifications_enabled", "is_schedule_change_notifications_enabled"],
+        "required": [
+          "is_new_message_notifications_enabled",
+          "is_schedule_change_notifications_enabled"
+        ],
         "title": "SettingsResponse"
       },
       "StreakResponse": {
@@ -1126,7 +1203,11 @@
           }
         },
         "type": "object",
-        "required": ["current", "best", "last_updated"],
+        "required": [
+          "current",
+          "best",
+          "last_updated"
+        ],
         "title": "StreakResponse"
       },
       "StudentStatsResponse": {
@@ -1276,7 +1357,12 @@
           }
         },
         "type": "object",
-        "required": ["id", "choice_id", "deadline_date", "is_active"],
+        "required": [
+          "id",
+          "choice_id",
+          "deadline_date",
+          "is_active"
+        ],
         "title": "SubjectChoiceResponse"
       },
       "SubjectInfo": {
@@ -1295,7 +1381,11 @@
           }
         },
         "type": "object",
-        "required": ["id", "name", "teacher"],
+        "required": [
+          "id",
+          "name",
+          "teacher"
+        ],
         "title": "SubjectInfo"
       },
       "UpdateSettingsRequest": {
@@ -1384,7 +1474,13 @@
           }
         },
         "type": "object",
-        "required": ["achievement_id", "unlocked", "progress", "max_progress", "times_earned"],
+        "required": [
+          "achievement_id",
+          "unlocked",
+          "progress",
+          "max_progress",
+          "times_earned"
+        ],
         "title": "UserAchievementResponse"
       },
       "UserGradeResponse": {
@@ -1437,7 +1533,16 @@
           }
         },
         "type": "object",
-        "required": ["id", "subject", "grade_type", "grade_date", "course", "semester", "hours", "teacher"],
+        "required": [
+          "id",
+          "subject",
+          "grade_type",
+          "grade_date",
+          "course",
+          "semester",
+          "hours",
+          "teacher"
+        ],
         "title": "UserGradeResponse"
       },
       "UserResponse": {
@@ -1536,7 +1641,11 @@
           }
         },
         "type": "object",
-        "required": ["id", "name", "last_name"],
+        "required": [
+          "id",
+          "name",
+          "last_name"
+        ],
         "title": "UserResponse"
       },
       "UserSubjectPriorityResponse": {
@@ -1556,7 +1665,11 @@
           }
         },
         "type": "object",
-        "required": ["choice_id", "subject_id", "priority"],
+        "required": [
+          "choice_id",
+          "subject_id",
+          "priority"
+        ],
         "title": "UserSubjectPriorityResponse"
       },
       "ValidationError": {
@@ -1592,7 +1705,11 @@
           }
         },
         "type": "object",
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError"
       }
     },
