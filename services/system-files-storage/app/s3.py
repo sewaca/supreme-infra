@@ -1,6 +1,9 @@
 import asyncio
+import hashlib
 import json
 import logging
+import os
+import time
 import uuid
 from io import BytesIO
 
@@ -22,6 +25,19 @@ s3_client = boto3.client(
 )
 
 _bucket_ready = False
+
+
+def _uuid7() -> uuid.UUID:
+    ts_ms = int(time.time() * 1000)
+    rand = int.from_bytes(os.urandom(10), "big")
+    value = (
+        ((ts_ms & 0xFFFFFFFFFFFF) << 80)
+        | (0x7 << 76)
+        | (((rand >> 62) & 0xFFF) << 64)
+        | (0b10 << 62)
+        | (rand & 0x3FFFFFFFFFFFFFFF)
+    )
+    return uuid.UUID(int=value)
 
 
 def _ensure_bucket() -> None:
@@ -76,9 +92,15 @@ async def ensure_bucket() -> None:
     await asyncio.to_thread(_ensure_bucket)
 
 
-def make_key(conversation_id: uuid.UUID, filename: str) -> str:
+def make_key(folder: uuid.UUID, filename: str) -> str:
+    stem = filename.rsplit(".", 1)[0] if "." in filename else filename
     ext = filename.rsplit(".", 1)[-1] if "." in filename else "bin"
-    return f"{conversation_id}/{uuid.uuid4()}.{ext}"
+    stem_hash = hashlib.sha256(stem.encode()).hexdigest()
+    return f"{folder}/{stem_hash}.{ext}"
+
+
+def new_folder() -> uuid.UUID:
+    return _uuid7()
 
 
 def make_thumbnail_key(original_key: str) -> str:
@@ -103,7 +125,7 @@ def _put_object(content: bytes, key: str, mime_type: str) -> str:
         Body=content,
         ContentType=mime_type,
     )
-    return f"{settings.s3_endpoint}/{settings.s3_bucket}/{key}"
+    return key
 
 
 async def upload_file(content: bytes, key: str, mime_type: str) -> str:

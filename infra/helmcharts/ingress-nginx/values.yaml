@@ -285,6 +285,14 @@ ingress:
           method: GET
         - path: /submit-recipe
           method: GET
+    - service: minio
+      port: 9000
+      type: fastapi
+      paths:
+        - path: /storage/s3/(.*)
+          method: GET
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /messages-attachments/$1
     - service: system-files-storage
       port: 80
       type: fastapi

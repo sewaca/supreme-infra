@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     s3_region: str = "us-east-1"
     max_file_size_mb: int = 10
     max_image_size_mb: int = 5
-    core_messages_url: str = "http://core-messages.default.svc.cluster.local/core-messages"
+    public_base_url: str = "https://diploma.sewaca.ru"
 
 
 settings = Settings()

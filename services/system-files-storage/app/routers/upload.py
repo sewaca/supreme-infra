@@ -1,9 +1,9 @@
-import uuid
+import asyncio
 
 from fastapi import APIRouter, HTTPException, UploadFile
 
 from app.config import settings
-from app.s3 import make_key, upload_file, upload_thumbnail
+from app.s3 import make_key, new_folder, upload_file, upload_thumbnail
 
 router = APIRouter(tags=["upload"])
 
@@ -15,14 +15,13 @@ ALLOWED_MIME_TYPES = IMAGE_MIME_TYPES | {
     "text/plain",
 }
 
-_ANONYMOUS_FOLDER = uuid.UUID("00000000-0000-0000-0000-000000000000")
+MAX_FILES = 10
 
 
-@router.post("/upload", status_code=201)
-async def upload_attachment(file: UploadFile):
+async def _process_file(file: UploadFile, folder) -> dict:
     mime_type = file.content_type or "application/octet-stream"
     if mime_type not in ALLOWED_MIME_TYPES:
-        raise HTTPException(status_code=415, detail=f"Unsupported file type: {mime_type}")
+        raise HTTPException(status_code=415, detail=f"Unsupported file type: {mime_type} ({file.filename})")
 
     is_image = mime_type in IMAGE_MIME_TYPES
     max_bytes = (settings.max_image_size_mb if is_image else settings.max_file_size_mb) * 1024 * 1024
@@ -30,19 +29,33 @@ async def upload_attachment(file: UploadFile):
     content = await file.read()
     if len(content) > max_bytes:
         limit = settings.max_image_size_mb if is_image else settings.max_file_size_mb
-        raise HTTPException(status_code=413, detail=f"File too large (max {limit} MB)")
+        raise HTTPException(status_code=413, detail=f"File too large (max {limit} MB): {file.filename}")
 
-    key = make_key(_ANONYMOUS_FOLDER, file.filename or "file")
-    file_url = await upload_file(content, key, mime_type)
+    key = make_key(folder, file.filename or "file")
+    await upload_file(content, key, mime_type)
 
     thumbnail_url: str | None = None
     if is_image:
-        thumbnail_url = await upload_thumbnail(content, key, mime_type)
+        thumb_key = await upload_thumbnail(content, key, mime_type)
+        thumbnail_url = f"{settings.public_base_url}/storage/s3/{thumb_key}"
 
     return {
-        "file_url": file_url,
+        "file_url": f"{settings.public_base_url}/storage/s3/{key}",
         "thumbnail_url": thumbnail_url,
         "file_name": file.filename or key.split("/")[-1],
         "file_size": len(content),
         "mime_type": mime_type,
     }
+
+
+@router.post("/upload", status_code=201)
+async def upload_attachments(files: list[UploadFile]):
+    if not files:
+        raise HTTPException(status_code=422, detail="No files provided")
+    if len(files) > MAX_FILES:
+        raise HTTPException(status_code=422, detail=f"Too many files (max {MAX_FILES})")
+
+    folder = new_folder()
+    results = await asyncio.gather(*[_process_file(f, folder) for f in files])
+
+    return {"folder": str(folder), "files": results}
