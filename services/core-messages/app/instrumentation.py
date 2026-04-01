@@ -22,14 +22,24 @@ def setup_metrics() -> None:
 
 
 def setup_logging() -> None:
+    import logging
+    import sys
+
     exporter = OTLPLogExporter(endpoint=settings.loki_endpoint)
     provider = LoggerProvider(resource=_resource)
     provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
     handler = LoggingHandler(level=0, logger_provider=provider)
 
-    import logging
+    root = logging.getLogger()
+    root.addHandler(handler)
 
-    logging.getLogger().addHandler(handler)
+    # Ensure app-level logs are always visible in stdout (kubectl logs)
+    if not any(isinstance(h, logging.StreamHandler) and h.stream is sys.stdout for h in root.handlers):
+        stream_handler = logging.StreamHandler(sys.stdout)
+        stream_handler.setFormatter(logging.Formatter("%(levelname)s:     %(name)s: %(message)s"))
+        root.addHandler(stream_handler)
+    if root.level == logging.NOTSET:
+        root.setLevel(logging.INFO)
 
 
 def setup_instrumentation() -> None:
