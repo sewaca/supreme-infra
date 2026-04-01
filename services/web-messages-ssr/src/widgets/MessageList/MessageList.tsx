@@ -1,12 +1,55 @@
 'use client';
 
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, Typography } from '@mui/material';
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { Message } from '../../entities/Message/types';
 import { formatDateSeparator } from '../../shared/lib/formatDate';
 import { ChatBubble } from '../ChatBubble/ChatBubble';
 import type { MessageAction } from '../MessageContextMenu/MessageContextMenu';
 import styles from './MessageList.module.css';
+
+type MessageGroup =
+  | { type: 'separator'; date: string; key: string }
+  | { type: 'group'; messages: Message[]; isOwn: boolean; key: string };
+
+function buildGroups(messages: Message[], userId: string): MessageGroup[] {
+  const result: MessageGroup[] = [];
+  let lastDate = '';
+  let currentGroup: { messages: Message[]; isOwn: boolean; senderId: string } | null = null;
+
+  const flushGroup = () => {
+    if (currentGroup) {
+      result.push({
+        type: 'group',
+        messages: currentGroup.messages,
+        isOwn: currentGroup.isOwn,
+        key: currentGroup.messages[0].id,
+      });
+      currentGroup = null;
+    }
+  };
+
+  for (const msg of messages) {
+    const msgDate = new Date(msg.created_at).toDateString();
+    const isOwn = msg.sender_id === userId;
+
+    if (msgDate !== lastDate) {
+      flushGroup();
+      result.push({ type: 'separator', date: msg.created_at, key: `sep-${msg.id}` });
+      lastDate = msgDate;
+    }
+
+    if (!currentGroup || currentGroup.senderId !== msg.sender_id) {
+      flushGroup();
+      currentGroup = { messages: [msg], isOwn, senderId: msg.sender_id };
+    } else {
+      currentGroup.messages.push(msg);
+    }
+  }
+
+  flushGroup();
+  return result;
+}
 
 export interface MessageListHandle {
   scrollToMessage: (messageId: string) => void;
@@ -96,7 +139,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
   }, [messages.length]);
 
   const reversed = [...messages].reverse();
-  let lastDate = '';
+  const groups = buildGroups(reversed, userId);
 
   return (
     <Box ref={scrollRef} className={styles.messageList}>
@@ -108,35 +151,94 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
         )}
       </Box>
 
-      {reversed.map((msg) => {
-        const msgDate = new Date(msg.created_at).toDateString();
-        const showDateSeparator = msgDate !== lastDate;
-        lastDate = msgDate;
+      {groups.map((group) => {
+        if (group.type === 'separator') {
+          return (
+            <Box key={group.key} sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
+              <Typography variant="caption" sx={{ px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'action.hover' }}>
+                {formatDateSeparator(group.date)}
+              </Typography>
+            </Box>
+          );
+        }
 
+        const { messages: groupMsgs, isOwn } = group;
+        const firstMsg = groupMsgs[0];
+
+        if (isOwn) {
+          return (
+            <Box key={group.key} sx={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              {groupMsgs.map((msg) => (
+                <Box
+                  key={msg.id}
+                  ref={(el) => {
+                    if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
+                    else messageRefs.current.delete(msg.id);
+                  }}
+                  sx={{ borderRadius: 1 }}
+                >
+                  <ChatBubble
+                    message={msg}
+                    isOwn={true}
+                    canReplyInDm={canReplyInDm}
+                    onAction={onAction}
+                    onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
+                    onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
+                  />
+                </Box>
+              ))}
+            </Box>
+          );
+        }
+
+        // Other sender — sticky avatar beside the message group
         return (
           <Box
-            key={msg.id}
-            ref={(el) => {
-              if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
-              else messageRefs.current.delete(msg.id);
-            }}
-            sx={{ display: 'flex', flexDirection: 'column', borderRadius: 1 }}
+            key={group.key}
+            sx={{ display: 'flex', gap: '6px', alignSelf: 'flex-start', alignItems: 'flex-end', maxWidth: '75%' }}
           >
-            {showDateSeparator && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
-                <Typography variant="caption" sx={{ px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'action.hover' }}>
-                  {formatDateSeparator(msg.created_at)}
-                </Typography>
-              </Box>
-            )}
-            <ChatBubble
-              message={msg}
-              isOwn={msg.sender_id === userId}
-              canReplyInDm={canReplyInDm}
-              onAction={onAction}
-              onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
-              onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
-            />
+            <Avatar
+              src={firstMsg.sender_avatar ?? undefined}
+              sx={{
+                width: 30,
+                height: 30,
+                flexShrink: 0,
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                position: 'sticky',
+                bottom: 8,
+                alignSelf: 'flex-end',
+                ...(!firstMsg.sender_avatar && {
+                  background: 'linear-gradient(135deg, #2b4878 0%, #1a2e4a 100%)',
+                  color: 'rgba(255,255,255,0.9)',
+                }),
+              }}
+            >
+              {firstMsg.sender_name[0]}
+            </Avatar>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0, flex: 1 }}>
+              {groupMsgs.map((msg) => (
+                <Box
+                  key={msg.id}
+                  ref={(el) => {
+                    if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
+                    else messageRefs.current.delete(msg.id);
+                  }}
+                  sx={{ borderRadius: 1 }}
+                >
+                  <ChatBubble
+                    message={msg}
+                    isOwn={false}
+                    showAvatar={false}
+                    noMaxWidth={true}
+                    canReplyInDm={canReplyInDm}
+                    onAction={onAction}
+                    onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
+                    onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
+                  />
+                </Box>
+              ))}
+            </Box>
           </Box>
         );
       })}

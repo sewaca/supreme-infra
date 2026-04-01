@@ -30,3 +30,7 @@
   color: var(--color-text-primary, #1a1a1a);
   border-bottom-left-radius: 4px;
 }
+
+.noMaxWidth {
+  max-width: none;
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Alert, Box, IconButton, Snackbar, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -49,6 +49,7 @@ export function ChatView({
   const [editingMessage, setEditingMessage] = useState<Message | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const messageListRef = useRef<MessageListHandle>(null);
+  const [errorSnackbar, setErrorSnackbar] = useState<string | null>(null);
 
   const isBroadcast = conversation.type === 'broadcast';
   const isOwner = conversation.owner_id === userId;
@@ -182,6 +183,24 @@ export function ChatView({
           messagesWsDebug('ChatView', 'apply_new_message', { userId, msgId: incoming.id });
           return [incoming, ...prev];
         });
+
+        // If message has file content but no attachments yet (race: WS fires before attach),
+        // retry fetching the message after a short delay
+        if (incoming.content_type === 'file' && incoming.attachments.length === 0) {
+          setTimeout(async () => {
+            try {
+              const res = await fetch(`/api/messages/history?conversation_id=${conversation.id}&limit=10`);
+              if (res.ok) {
+                const histData = await res.json();
+                const updated = (histData.items as Message[]).find((m) => m.id === incoming.id);
+                if (updated && updated.attachments.length > 0) {
+                  setMessages((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+                }
+              }
+            } catch {}
+          }, 1500);
+        }
+
         const mid = data.id;
         if (mid != null) {
           markAsRead(conversation.id, String(mid));
@@ -303,10 +322,22 @@ export function ChatView({
           onCancelReply={() => setReplyTo(null)}
           editingMessage={editingMessage}
           onCancelEdit={() => setEditingMessage(null)}
+          onError={setErrorSnackbar}
         />
       ) : conversation.owner_id ? (
         <ReplyInDmButton ownerId={conversation.owner_id} />
       ) : null}
+
+      <Snackbar
+        open={!!errorSnackbar}
+        autoHideDuration={5000}
+        onClose={() => setErrorSnackbar(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="error" onClose={() => setErrorSnackbar(null)} sx={{ width: '100%' }}>
+          {errorSnackbar}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ReplyIcon from '@mui/icons-material/Reply';
 import SendIcon from '@mui/icons-material/Send';
-import { Box, Chip, IconButton, TextField, Typography } from '@mui/material';
+import { Box, Chip, CircularProgress, IconButton, LinearProgress, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UploadedFile } from '../../../app/messages/actions';
 import type { Message } from '../../entities/Message/types';
@@ -19,6 +19,7 @@ interface Props {
   onCancelReply?: () => void;
   editingMessage?: Message | null;
   onCancelEdit?: () => void;
+  onError?: (msg: string) => void;
 }
 
 function formatSize(bytes: number): string {
@@ -33,11 +34,11 @@ export function MessageInput({
   onCancelReply,
   editingMessage,
   onCancelEdit,
+  onError,
 }: Props) {
   const [content, setContent] = useState('');
   const [sending, setSending] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textFieldRef = useRef<HTMLInputElement>(null);
 
@@ -57,7 +58,6 @@ export function MessageInput({
     if ((!trimmed && pendingFiles.length === 0) || sending) return;
 
     setSending(true);
-    setUploadError(null);
 
     let uploadedFiles: UploadedFile[] | undefined;
     if (!editingMessage && pendingFiles.length > 0) {
@@ -69,11 +69,10 @@ export function MessageInput({
 
       if (!res.ok) {
         const retryAfter = res.headers.get('Retry-After');
-        setUploadError(
-          retryAfter
-            ? `Слишком много загрузок. Повторите через ${retryAfter} сек.`
-            : (data.detail ?? 'Ошибка загрузки файла'),
-        );
+        const errMsg = retryAfter
+          ? `Слишком много загрузок. Повторите через ${retryAfter} сек.`
+          : (data.detail ?? 'Ошибка загрузки файла');
+        onError?.(errMsg);
         setSending(false);
         return;
       }
@@ -86,10 +85,12 @@ export function MessageInput({
       setContent('');
       setPendingFiles([]);
       if (fileInputRef.current) fileInputRef.current.value = '';
+    } else if (result.error) {
+      onError?.(result.error);
     }
     setSending(false);
     textFieldRef.current?.focus();
-  }, [content, pendingFiles, sending, editingMessage, onSend]);
+  }, [content, pendingFiles, sending, editingMessage, onSend, onError]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -107,7 +108,6 @@ export function MessageInput({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
-    setUploadError(null);
     setPendingFiles((prev) => [...prev, ...files].slice(0, 10));
     e.target.value = '';
   };
@@ -119,7 +119,8 @@ export function MessageInput({
   const canSend = (content.trim().length > 0 || pendingFiles.length > 0) && !sending;
 
   return (
-    <Box sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+    <Box sx={{ borderTop: '1px solid', borderColor: 'divider', position: 'relative' }}>
+      {sending && <LinearProgress sx={{ position: 'absolute', top: 0, left: 0, right: 0 }} />}
       {/* Editing bar */}
       {editingMessage && (
         <Box
@@ -194,13 +195,6 @@ export function MessageInput({
         </Box>
       )}
 
-      {/* Upload error */}
-      {uploadError && (
-        <Typography variant="caption" color="error" sx={{ px: 1.5, pt: 0.5, display: 'block' }}>
-          {uploadError}
-        </Typography>
-      )}
-
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, p: 1 }}>
         {!editingMessage && (
           <>
@@ -229,7 +223,7 @@ export function MessageInput({
           onKeyDown={handleKeyDown}
         />
         <IconButton color="primary" onClick={handleSend} disabled={!canSend}>
-          <SendIcon />
+          {sending ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
         </IconButton>
       </Box>
     </Box>

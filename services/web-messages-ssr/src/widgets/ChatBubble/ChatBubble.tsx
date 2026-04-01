@@ -16,6 +16,10 @@ interface Props {
   onScrollToMessage?: (messageId: string) => void;
   /** Двойной клик по телу сообщения — ответ (или ответ в ЛС в режиме рассылки) */
   onDoubleClickReply?: () => void;
+  /** Скрыть аватарку (для сгруппированных сообщений — аватар рендерится снаружи) */
+  showAvatar?: boolean;
+  /** Убрать max-width wrapper (когда ограничение задаётся снаружи группой) */
+  noMaxWidth?: boolean;
 }
 
 export function ChatBubble({
@@ -25,6 +29,8 @@ export function ChatBubble({
   onAction,
   onScrollToMessage,
   onDoubleClickReply,
+  showAvatar = true,
+  noMaxWidth = false,
 }: Props) {
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -49,13 +55,13 @@ export function ChatBubble({
 
   return (
     <Box
-      className={`${styles.wrapper} ${isOwn ? styles.own : styles.other}`}
+      className={`${styles.wrapper} ${isOwn ? styles.own : styles.other} ${noMaxWidth ? styles.noMaxWidth : ''}`}
       onContextMenu={handleContextMenu}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      {!isOwn && (
+      {!isOwn && showAvatar && (
         <Avatar
           src={message.sender_avatar ?? undefined}
           sx={{
