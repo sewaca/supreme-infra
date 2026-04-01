@@ -49,8 +49,8 @@ curl -s https://diploma.sewaca.ru/system-files-storage/api/status | jq .
 ```bash
 curl -s -X POST "https://diploma.sewaca.ru/system-files-storage/upload" \
   -H "Authorization: Bearer $JWT_TOKEN" \
-  -F "files=@./photo.png;type=image/png" \
-  -F "files=@./document.pdf;type=application/pdf" | jq .
+  -F "files=@./image.png;type=image/png" \
+  -F "files=@./image3.png;type=image/png" | jq .
 ```
 
 Ответ:
