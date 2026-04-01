@@ -156,7 +156,6 @@ export function MessageInput({
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={sending}
         />
         <IconButton color="primary" onClick={handleSend} disabled={!content.trim() || sending}>
           <SendIcon />
