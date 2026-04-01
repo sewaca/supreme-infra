@@ -15,4 +15,6 @@ class AuthRoute:
     auth_level: AuthLevel
 
 
-AUTH_ROUTES: list[AuthRoute] = []
+AUTH_ROUTES: list[AuthRoute] = [
+    AuthRoute(path=re.compile(r"^/system-files-storage/upload$"), method="POST", auth_level="valid"),
+]

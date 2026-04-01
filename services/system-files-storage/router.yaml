@@ -4,4 +4,7 @@
 
 service: system-files-storage
 type: fastapi
-routes: []
+routes:
+  - path: /system-files-storage/upload
+    method: POST
+    auth_level: valid
