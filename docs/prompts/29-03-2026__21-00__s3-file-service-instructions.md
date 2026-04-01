@@ -77,7 +77,7 @@ So the file service uploads to MinIO → gets back a URL → calls `POST /core-m
 
 ## What needs to be built — the file storage service
 
-### Service: `core-files` (or `core-storage`)
+### Service: `system-files-storage`
 
 Create via `pnpm generate:service` (mandatory — do NOT create manually).
 
