@@ -8,8 +8,8 @@ on:
         required: true
         type: choice
         options:
-          - upgrade
           - install
+          - upgrade
           - uninstall
         default: upgrade
 
