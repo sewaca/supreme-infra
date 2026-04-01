@@ -1,73 +1,73 @@
 # OPTIMISATION — core-auth
 
-## Ручка `GET /status`
-- Оптимизировать нечего: служебный health-check.
+## Что уже есть в БД (проверено по SQL)
+- `auth_user.email` — `UNIQUE` + индекс.
+- `user_session.jti` — `UNIQUE` + индекс, `user_session.user_id` — индекс.
+- `auth_challenge.user_id`, `auth_challenge.expiring_at` — индексы.
+- `caldav_token.token` — `UNIQUE` + partial index `token WHERE revoked_at IS NULL`, `caldav_token.user_id` — индекс.
+- Связи настроены корректно: `ON DELETE CASCADE` для зависимых сущностей.
 
-## Ручка `POST /auth/login`
-- Добавить индекс/уникальность на `auth_user.email` (если ещё нет).
-- Вынести внешнее geo lookup (`ipwho.is`) в фон или за фича-флаг: это I/O, который может добавлять хвост latency.
-- Снизить объём debug-логов с чувствительными полями, особенно при высоком RPS.
+## POST /auth/login
+- Индекс по email уже есть, БД часть ок.
+- Основная latency: bcrypt + внешняя geo lookup. Geo lookup лучше делать async/опционально.
 
-## Ручка `POST /auth/register`
-- Бизнес-логика уже простая; ускорение в основном через уменьшение стоимости bcrypt (только если это допустимо по security-политике).
-- Для массовой регистрации можно добавить отложенную синхронизацию профиля в `core-client-info` (сейчас TODO).
+## POST /auth/register
+- БД часть ок (email unique + insert).
+- Узкое место только bcrypt.
 
-## Ручка `GET /auth/me`
-- Оптимизировать нечего, тяжёлых операций нет.
+## GET /auth/me
+- Оптимизировать нечего (без SQL).
 
-## Ручка `GET /auth/sessions`
-- Сейчас 2 запроса (auth sessions + caldav tokens) и merge в Python — это ок.
-- Для роста данных добавить индекс `user_session(user_id, revoked_at, expires_at, created_at)`.
+## GET /auth/sessions
+- Нужен дополнительный составной индекс для активных сессий: `user_session(user_id, revoked_at, expires_at, created_at DESC)`.
+- Сейчас есть только `user_id`, поэтому фильтрация по revoked/expires может деградировать.
 
-## Ручка `DELETE /auth/sessions/{session_id}`
-- Проверка двух сущностей по очереди нормальна; можно ускорить объединением в один SQL/CTE, но прирост небольшой.
+## DELETE /auth/sessions/{session_id}
+- PK/индексы достаточные.
 
-## Ручка `POST /auth/validate-session`
-- Добавить индекс на `user_session.jti` (критично для частой валидации токенов).
-- Можно локально кешировать результат проверки revoked для короткого TTL (10–30с), если допустимо по security.
+## POST /auth/validate-session
+- Индекс `jti` уже есть — это правильно.
 
-## Ручка `GET /auth/caldav-tokens`
-- Добавить индекс `caldav_token(user_id, revoked_at, created_at)`.
-- В остальном оптимизировать почти нечего.
+## GET /auth/caldav-tokens
+- Индекс по `user_id` есть, но для сортировки/фильтра активных лучше добавить `(user_id, revoked_at, created_at DESC)`.
 
-## Ручка `POST /auth/caldav-tokens`
-- Запись лёгкая, существенных проблем не ожидается.
+## POST /auth/caldav-tokens
+- Схема ок.
 
-## Ручка `DELETE /auth/caldav-tokens/{token_id}`
-- Добавить индекс по `id`/`user_id` (обычно уже PK + secondary), иначе на росте данных latency увеличится.
+## DELETE /auth/caldav-tokens/{token_id}
+- Схема ок.
 
-## Ручка `POST /auth/challenge`
-- Сервис в основном write-bound; оптимизировать почти нечего.
-- Если появятся пики — добавить rate limit на пользователя.
+## POST /auth/challenge
+- Схема ок.
 
-## Ручка `POST /auth/challenge/{challenge_id}/verify`
-- Добавить индекс `(id, user_id)` для challenge lookup.
-- Можно сделать атомарный update с проверками, чтобы снизить гонки при конкурентных verify.
+## POST /auth/challenge/{challenge_id}/verify
+- PK по `id` уже покрывает поиск challenge.
+- Если endpoint станет hot-path, добавить `(id, user_id)` не обязательно, но может снизить cost при сложных планах.
 
-## Ручка `GET /auth/challenge/{challenge_id}/check`
-- Лёгкая операция; оптимизация минимальна.
+## GET /auth/challenge/{challenge_id}/check
+- Схема ок.
 
-## Ручка `POST /auth/forgot-password`
-- Потенциально дорогая часть — анти-абьюз/рассылки (когда будут подключены).
-- Добавить rate limiting и cooldown per email/IP.
+## POST /auth/forgot-password
+- Схема ок; нужен rate-limit на уровне приложения/API gateway.
 
-## Ручка `POST /auth/forgot-password/{challenge_id}/verify`
-- Аналогично verify challenge: индекс + атомарность попыток.
+## POST /auth/forgot-password/{challenge_id}/verify
+- Схема ок.
 
-## Ручка `POST /auth/forgot-password/{challenge_id}/reset`
-- Основная стоимость в bcrypt + массовый revoke сессий.
-- Нужен индекс на `user_session(user_id, revoked_at)` для быстрого revoke.
+## POST /auth/forgot-password/{challenge_id}/reset
+- Для массового revoke полезен тот же составной индекс по `user_session(user_id, revoked_at, expires_at)`.
 
-## Ручка `PATCH /auth/internal/users/{user_id}/email`
-- Проверка уникальности email + update уже оптимальны; прирост небольшой.
+## PATCH /auth/internal/users/{user_id}/email
+- Схема ок.
 
-## Ручка `PATCH /auth/internal/users/{user_id}/password`
-- Аналогично reset: индекс по user_session для revoke.
+## PATCH /auth/internal/users/{user_id}/password
+- Для revoke сессий — тот же составной индекс по user_session.
 
-## Ручка `GET /auth/internal/caldav-tokens/validate/{token}`
-- Критично добавить/проверить индекс на `caldav_token(token, revoked_at)`.
+## GET /auth/internal/caldav-tokens/validate/{token}
+- Partial index `token WHERE revoked_at IS NULL` уже есть — оптимально для этой ручки.
+
+## GET /status
+- Оптимизировать нечего.
 
 ## Настройка сервиса в целом
-- Поднять наблюдаемость на bcrypt/time-to-first-byte: p95 легко растёт при CPU contention.
-- Для security и скорости: ограничить brute-force (rate limits, progressive delays).
-- Проверить pool sizing PostgreSQL/pgbouncer и убедиться, что нет ожидания коннекта.
+- База в целом настроена хорошо; главный недостающий элемент — составные индексы для «активных сессий».
+- По latency основной вклад дают bcrypt и внешние вызовы, не SQL.

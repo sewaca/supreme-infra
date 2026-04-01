@@ -1,74 +1,65 @@
 # OPTIMISATION — core-client-info
 
-## Ручка `GET /status`
+## Что уже есть в БД (проверено по SQL)
+- Есть: `user(email)` unique+index, `user_grade(user_id)`, `user_grade(grade_date)`, `user_subject_priority(user_id)`.
+- Есть уникальности: `ranking_position(user_id, ranking_type)`, `user_achievement(user_id, achievement_id)`, `user_subject_priority(user_id, choice_id, subject_id)`.
+- Проблема: для большинства read-ручек индексы по рабочим полям отсутствуют (`group`, ranking filters, achievement filters, settings.user_id и т.д.).
+
+## GET /profile/user
+- PK lookup по `user.id` быстрый; оптимизация минимальна.
+
+## GET /profile/personal-data
+- PK lookup по `user.id` быстрый; оптимизация минимальна.
+
+## GET /settings / PUT /settings
+- В `user_settings` есть `UNIQUE(user_id)` (индекс создаётся автоматически), для этой ручки этого достаточно.
+
+## POST /settings/email
+- `user.email` unique+index уже есть, БД-часть корректная.
+
+## POST /settings/password
+- SQL-нагрузка небольшая; bottleneck обычно внешний вызов в auth.
+
+## GET /rating/stats / GET /rating/level / GET /rating/streak
+- В таблицах `rating_level` и `streak` есть `UNIQUE(user_id)` (индекс), для user-specific read достаточно.
+
+## GET /rating/rankings
+- Сейчас есть только уникальный индекс `(user_id, ranking_type)`.
+- Для leaderboard добавить индекс по `(ranking_type, position)` или `(ranking_type, percentile DESC)` в зависимости от запроса.
+
+## GET /rating/achievements
+- Для выборки всех ачивок пользователя уникальный `(user_id, achievement_id)` уже помогает.
+- Если часто фильтруется по `unlocked`, добавить `(user_id, unlocked)`.
+
+## GET /rating/grades / GET /rating/grade-improvements
+- Есть отдельные индексы по `user_id` и `grade_date`.
+- Для типового запроса «оценки пользователя по дате» лучше добавить составной `(user_id, grade_date DESC)`.
+
+## GET /subjects/choices
+- Сейчас нет индекса по `subject_choice.is_active`/`deadline_date`.
+- Добавить `(is_active, deadline_date)`.
+
+## GET /subjects/user-priorities/{choice_id}
+- Сейчас индекс только по `user_id`.
+- Добавить составной `(user_id, choice_id)`.
+
+## POST /subjects/save-priorities
+- Для upsert уникальность `(user_id, choice_id, subject_id)` уже есть — это корректно.
+
+## POST /profile/users/batch
+- PK lookup по `user.id` быстрый.
+- Критично ограничить выбираемые поля (не тянуть тяжёлые JSON/лишние колонки).
+
+## GET /profile/groups
+- Поле `user.group` без индекса; для DISTINCT/group list нужен индекс по `("group")`.
+
+## GET /profile/users-by-group
+- Сейчас по `group` индекса нет — это главный пропуск для этого endpoint.
+- Добавить индекс `user("group")`.
+
+## GET /status
 - Оптимизировать нечего.
 
-## Ручка `GET /profile/user`
-- Проверить, что выбираются только нужные поля (не `SELECT *`), если endpoint hot-path.
-- При частом использовании имеет смысл краткоживущий cache по user_id.
-
-## Ручка `GET /profile/personal-data`
-- Если ответ собирается из нескольких таблиц, объединить в один SQL с нужными join/индексами.
-- Если и так один простой запрос — прирост будет небольшой.
-
-## Ручка `GET /settings`
-- Оптимизировать в основном нечего; нужна только проверка индекса по user_id.
-
-## Ручка `PUT /settings`
-- Write endpoint, обычно быстрый. Ускорения минимальны.
-
-## Ручка `POST /settings/email`
-- Проверить уникальный индекс на email.
-- Если есть каскадные обновления в других сервисах — вынести в async workflow.
-
-## Ручка `POST /settings/password`
-- Основная стоимость в вызовах `core-auth`/bcrypt (если есть). Оптимизация здесь ограничена.
-
-## Ручка `GET /rating/stats`
-- Часто агрегационная ручка: нужен индекс по user_id и, при больших объёмах, pre-aggregation/materialized view.
-
-## Ручка `GET /rating/level`
-- Обычно дешёвая вычисляемая операция; оптимизировать нечего.
-
-## Ручка `GET /rating/rankings`
-- Потенциально тяжёлая сортировка/ранжирование: добавить индекс по score и limit top-N.
-- Для больших данных — хранить предварительно пересчитанный рейтинг.
-
-## Ручка `GET /rating/achievements`
-- Проверить индексы по user_id и типу достижения.
-- Если логика сложная, можно кэшировать итог на короткий TTL.
-
-## Ручка `GET /rating/streak`
-- Если расчёт идёт по сырым событиям, стоит хранить denormalized streak-state.
-
-## Ручка `GET /rating/grades`
-- Добавить составной индекс по (user_id, period/date).
-
-## Ручка `GET /rating/grade-improvements`
-- Для сравнения периодов заранее хранить computed deltas, иначе тяжёлые агрегации на лету.
-
-## Ручка `GET /subjects/choices`
-- Обычно простая выдача; оптимизировать нечего кроме индекса по user_id.
-
-## Ручка `GET /subjects/user-priorities/{choice_id}`
-- Проверить индекс `(choice_id, user_id)`.
-
-## Ручка `POST /subjects/save-priorities`
-- Batch upsert вместо серии одиночных update/insert.
-- Транзакция уже нужна; прирост обычно средний.
-
-## Ручка `POST /profile/users/batch`
-- **Высокий приоритет для соседних сервисов**: это ключевой endpoint для обогащения профилей, сделать максимально быстрым.
-- Использовать set-based `WHERE id IN (...)`, ограничить набор полей, добавить in-memory/redis cache.
-
-## Ручка `GET /profile/groups`
-- Кэшировать список групп на 30–300 секунд (если группы меняются редко).
-
-## Ручка `GET /profile/users-by-group`
-- **Высокий приоритет**: добавить индекс по `group`/`group_name`; endpoint часто вызывается из рассылок.
-- Если ответ большой — добавить пагинацию и/или минимальный DTO.
-
 ## Настройка сервиса в целом
-- Для `core-messages` критичны быстрые `/profile/users/batch` и `/profile/users-by-group`: именно они влияют на задержки соседних сервисов.
-- Включить метрики по endpoint + SQL (p50/p95/p99), чтобы видеть «дорогие» запросы.
-- Проверить размер пулов БД и наличие ожидания коннекта.
+- Основные недостающие индексы: `user("group")`, `user_grade(user_id, grade_date DESC)`, `ranking_position(ranking_type, position)`, `subject_choice(is_active, deadline_date)`, `user_subject_priority(user_id, choice_id)`.
+- Это напрямую ускорит API, которые активно дергает `core-messages`.

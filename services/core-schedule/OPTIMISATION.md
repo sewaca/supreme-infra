@@ -1,115 +1,52 @@
 # OPTIMISATION — core-schedule
 
-## Ручка `GET /api/status`
+## Что уже есть в БД (проверено по SQL)
+- Есть индексы: `semester(is_active)`, `schedule_template(semester_id, group_name)`, `schedule_template(semester_id, teacher_id)`, `schedule_override(semester_id, date, group_name)`, `session_event(semester_id, group_name)`, `session_event(semester_id, teacher_id)`.
+- Есть уникальности: `uq_template_slot` и `uq_override_slot` (защита от дублей расписания/override).
+- Связи `semester -> template/override/session_event` через FK с `ON DELETE CASCADE` настроены корректно.
+
+## GET /api/status
 - Оптимизировать нечего.
 
-## Ручка `GET /caldav/{token}/groups/{group_name}/calendar.ics`
-- Критично кэшировать сгенерированный ICS (по token/group + короткий TTL).
-- Валидацию token делать быстрым запросом с индексом на token в `core-auth`.
-- Для генерации повторяющихся событий использовать precomputed intervals.
+## GET /caldav/{token}/groups/{group_name}/calendar.ics
+- По данным расписания индексы есть.
+- Для session events по дате полезно добавить `(semester_id, group_name, date)`.
+- Критично кэшировать готовый ICS (без этого CPU сериализации доминирует).
 
-## Ручка `GET /caldav/{token}/teachers/{teacher_id}/calendar.ics`
-- Аналогично group ICS: кэш + минимизация CPU на сериализацию.
+## GET /caldav/{token}/teachers/{teacher_id}/calendar.ics
+- Добавить `(semester_id, teacher_id, date)` для `session_event`.
+- Для template уже есть `(semester_id, teacher_id)`.
 
-## Ручка `GET /groups`
-- Кэшировать список групп (обычно редко меняется).
+## GET /groups
+- Если запрашивается DISTINCT group_name из `schedule_template`, текущий индекс частично помогает.
+- Для частых выборок можно добавить отдельный индекс `schedule_template(group_name)`.
 
-## Ручка `GET /groups/{group_name}/schedule`
-- Индексы на `(group_name, date)` для session/template/override таблиц.
-- Рассмотреть pre-aggregation расписания на неделю/семестр.
+## GET /groups/{group_name}/schedule
+- Базовый индекс `(semester_id, group_name)` есть.
+- Для сортировки по дню/слоту добавить `(semester_id, group_name, day_of_week, slot_number)`.
 
-## Ручка `GET /groups/{group_name}/exams`
-- Индекс по `(group_name, exam_date)`.
-- Если данные редки — оптимизировать нечего кроме индекса.
+## GET /groups/{group_name}/exams
+- Сейчас нет отдельного индекса по `session_event.date` вместе с group.
+- Добавить `(semester_id, group_name, date)`.
 
-## Ручка `GET /groups/{group_name}/template`
-- Быстрый read; оптимизация минимальная.
+## GET /groups/{group_name}/template
+- Индекс `(semester_id, group_name)` уже покрывает базовый кейс.
 
-## Ручка `GET /teachers/{teacher_id}/schedule`
-- Индексы `(teacher_id, date)` + keyset pagination при больших диапазонах.
+## GET /teachers/{teacher_id}/schedule
+- Индекс `(semester_id, teacher_id)` есть.
+- Для сортировки добавить `(semester_id, teacher_id, day_of_week, slot_number)`.
 
-## Ручка `GET /teachers/{teacher_id}/exams`
-- Индекс `(teacher_id, exam_date)`.
+## GET /teachers/{teacher_id}/exams
+- Добавить `(semester_id, teacher_id, date)` для `session_event`.
 
-## Ручка `GET /teachers/{teacher_id}/template`
-- Оптимизировать почти нечего.
+## GET /teachers/{teacher_id}/template
+- Индекс `(semester_id, teacher_id)` уже есть.
 
-## Ручка `GET /admin/classrooms`
-- Для административных списков при росте данных добавить пагинацию/фильтры.
-
-## Ручка `POST /admin/classrooms`
-- Write endpoint, прирост небольшой.
-
-## Ручка `GET /admin/classrooms/{classroom_id}`
-- Single-row, оптимизировать нечего.
-
-## Ручка `PUT /admin/classrooms/{classroom_id}`
-- Single-row update, оптимизация минимальна.
-
-## Ручка `DELETE /admin/classrooms/{classroom_id}`
-- Проверить отсутствие дорогих каскадов.
-
-## Ручка `GET /admin/semesters`
-- Как и admin lists: пагинация при росте данных.
-
-## Ручка `POST /admin/semesters`
-- Значимой оптимизации нет.
-
-## Ручка `GET /admin/semesters/{semester_id}`
-- Значимой оптимизации нет.
-
-## Ручка `PUT /admin/semesters/{semester_id}`
-- Значимой оптимизации нет.
-
-## Ручка `DELETE /admin/semesters/{semester_id}`
-- Значимой оптимизации нет.
-
-## Ручка `GET /admin/teachers`
-- Если идёт синхронизация с внешним источником — кэшировать локальную teacher cache.
-
-## Ручка `POST /admin/teachers/sync`
-- Выполнять как фоновой job с прогрессом, чтобы не держать HTTP запрос долго.
-
-## Ручка `GET /admin/templates`
-- Индекс по `(group_name/teacher_id, weekday, lesson_number)` в зависимости от модели.
-
-## Ручка `POST /admin/templates`
-- Для bulk-похожих операций использовать batch insert.
-
-## Ручка `POST /admin/templates/bulk`
-- **Высокий приоритет**: upsert пачкой + ограничение размера батча.
-
-## Ручка `PUT /admin/templates/{template_id}`
-- Существенного ускорения обычно нет.
-
-## Ручка `DELETE /admin/templates/{template_id}`
-- Существенного ускорения обычно нет.
-
-## Ручка `GET /admin/overrides`
-- Индекс по `(date, group_name/teacher_id)` обязателен.
-
-## Ручка `POST /admin/overrides`
-- Write path, оптимизации небольшие.
-
-## Ручка `PUT /admin/overrides/{override_id}`
-- Существенного ускорения обычно нет.
-
-## Ручка `DELETE /admin/overrides/{override_id}`
-- Существенного ускорения обычно нет.
-
-## Ручка `GET /admin/session-events`
-- Индекс по `(date, group_name/teacher_id, event_type)`.
-
-## Ручка `POST /admin/session-events`
-- Write path, оптимизации небольшие.
-
-## Ручка `PUT /admin/session-events/{event_id}`
-- Существенного ускорения обычно нет.
-
-## Ручка `DELETE /admin/session-events/{event_id}`
-- Существенного ускорения обычно нет.
+## ADMIN ручки (`classrooms`, `semesters`, `templates`, `overrides`, `session-events`)
+- CRUD по PK уже быстрый.
+- Для списков с фильтрами по дате/группе/преподавателю нужны составные индексы, перечисленные выше.
+- Для bulk (`POST /admin/templates/bulk`) оптимизация в batched upsert + разумный размер пакета.
 
 ## Настройка сервиса в целом
-- Главные точки: выдача расписания/ICS и bulk админ-операции.
-- Полезно ввести слой кэширования для read-heavy ручек (`groups/*/schedule`, `teachers/*/schedule`, CalDAV).
-- Для sync/bulk задач — очереди и ограничение конкурентности.
+- Схема в целом хорошая; не хватает индексов с `date` и индексов под сортировку day/slot для шаблонов.
+- Для реального ускорения выдачи календарей важнее всего кеш ICS + кеш resolved расписания.
