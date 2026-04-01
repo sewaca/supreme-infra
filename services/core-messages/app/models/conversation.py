@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, UniqueConstraint, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, String, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -10,6 +10,7 @@ from app.database import Base
 
 class Conversation(Base):
     __tablename__ = "conversation"
+    __table_args__ = (Index("ix_conversation_lma_id", "last_message_at", "id"),)
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     type: Mapped[str] = mapped_column(String(20), nullable=False)  # 'direct' | 'broadcast'
@@ -32,7 +33,10 @@ class Conversation(Base):
 class ConversationParticipant(Base):
     __tablename__ = "conversation_participant"
 
-    __table_args__ = (UniqueConstraint("conversation_id", "user_id", name="uq_conv_participant"),)
+    __table_args__ = (
+        UniqueConstraint("conversation_id", "user_id", name="uq_conv_participant"),
+        Index("ix_cp_user_deleted_conv", "user_id", "is_deleted", "conversation_id"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     conversation_id: Mapped[uuid.UUID] = mapped_column(

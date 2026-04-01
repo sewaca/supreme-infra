@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 from datetime import UTC, datetime
 
@@ -11,8 +12,9 @@ from app.database import get_db
 from app.dependencies import ValidSession
 from app.models.conversation import Conversation, ConversationParticipant
 from app.models.message import Message
-from app.routers.conversations import _build_conversation_response
+from app.routers.conversations import _build_conversation_response, _get_unread_counts_batch
 from app.schemas.conversation import ConversationResponse, CreateBroadcastRequest
+from app.services.user_cache_service import get_cached_users_batch
 from app.services.websocket_manager import ws_manager
 
 router = APIRouter(prefix="/broadcasts", tags=["broadcasts"])
@@ -29,23 +31,31 @@ async def create_broadcast(
 
     teacher_id = uuid.UUID(current_user["sub"])
 
-    # Получить user_ids всех студентов из выбранных групп
+    # Получить user_ids всех студентов из выбранных групп (параллельные HTTP запросы)
     student_ids: list[uuid.UUID] = []
     async with httpx.AsyncClient(timeout=10.0) as client:
-        for group_name in body.group_names:
+
+        async def _fetch_group(group_name: str) -> list:
             try:
                 resp = await client.get(
                     f"{settings.core_client_info_url}/profile/users-by-group",
                     params={"group": group_name},
                 )
                 if resp.status_code == 200:
-                    users_data = resp.json()
-                    for u in users_data:
-                        uid = uuid.UUID(u["id"])
-                        if uid not in student_ids:
-                            student_ids.append(uid)
+                    return resp.json()
             except Exception:
                 pass
+            return []
+
+        results = await asyncio.gather(*[_fetch_group(g) for g in body.group_names])
+
+    seen_ids: set[uuid.UUID] = set()
+    for users_data in results:
+        for u in users_data:
+            uid = uuid.UUID(u["id"])
+            if uid not in seen_ids:
+                seen_ids.add(uid)
+                student_ids.append(uid)
 
     # Создать conversation
     conv = Conversation(type="broadcast", title=body.title, owner_id=teacher_id)
@@ -131,7 +141,23 @@ async def list_broadcasts(
     )
     convs = result.scalars().all()
 
-    return [await _build_conversation_response(conv, teacher_id, db) for conv in convs]
+    # Батч unread counts и user cache — по 1 запросу на весь список
+    conv_ids = [c.id for c in convs]
+    unread_map = await _get_unread_counts_batch(conv_ids, teacher_id, db) if conv_ids else {}
+
+    all_participant_ids = list({p.user_id for conv in convs for p in conv.participants if not p.is_deleted})
+    users_map = await get_cached_users_batch(all_participant_ids, db) if all_participant_ids else {}
+
+    return [
+        await _build_conversation_response(
+            conv,
+            teacher_id,
+            db,
+            unread_count=unread_map.get(conv.id, 0),
+            users_map=users_map,
+        )
+        for conv in convs
+    ]
 
 
 @router.get("/groups", response_model=list[str])

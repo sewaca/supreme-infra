@@ -22,6 +22,40 @@ from app.services.user_cache_service import get_cached_users_batch
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
 
+async def _get_unread_counts_batch(
+    conv_ids: list[uuid.UUID],
+    current_user_id: uuid.UUID,
+    db: AsyncSession,
+) -> dict[uuid.UUID, int]:
+    """Один SQL-запрос для unread count по всем диалогам текущей страницы."""
+    if not conv_ids:
+        return {}
+    result = await db.execute(
+        select(
+            Message.conversation_id,
+            func.count(Message.id).label("unread"),
+        )
+        .join(
+            ConversationParticipant,
+            and_(
+                ConversationParticipant.conversation_id == Message.conversation_id,
+                ConversationParticipant.user_id == current_user_id,
+                ConversationParticipant.is_deleted.is_(False),
+            ),
+        )
+        .where(
+            Message.conversation_id.in_(conv_ids),
+            Message.is_deleted.is_(False),
+            or_(
+                ConversationParticipant.last_read_at.is_(None),
+                Message.created_at > ConversationParticipant.last_read_at,
+            ),
+        )
+        .group_by(Message.conversation_id)
+    )
+    return {row.conversation_id: row.unread for row in result.all()}
+
+
 async def _ensure_peer_display_names_direct(conv: Conversation, db: AsyncSession) -> None:
     """Заполняет peer_display_name для direct, если в БД ещё пусто (миграция / старые данные)."""
     if conv.type != "direct":
@@ -48,24 +82,29 @@ async def _build_conversation_response(
     conv: Conversation,
     current_user_id: uuid.UUID,
     db: AsyncSession,
+    *,
+    unread_count: int | None = None,
+    users_map: dict | None = None,
 ) -> ConversationResponse:
     participant = next((p for p in conv.participants if p.user_id == current_user_id), None)
 
-    # Unread count
-    unread_count = 0
-    if participant:
-        count_query = select(func.count(Message.id)).where(
-            Message.conversation_id == conv.id,
-            Message.is_deleted.is_(False),
-        )
-        if participant.last_read_at:
-            count_query = count_query.where(Message.created_at > participant.last_read_at)
-        result = await db.execute(count_query)
-        unread_count = result.scalar_one() or 0
+    # Unread count: используем pre-computed если передан, иначе запрашиваем отдельно
+    if unread_count is None:
+        unread_count = 0
+        if participant:
+            count_query = select(func.count(Message.id)).where(
+                Message.conversation_id == conv.id,
+                Message.is_deleted.is_(False),
+            )
+            if participant.last_read_at:
+                count_query = count_query.where(Message.created_at > participant.last_read_at)
+            result = await db.execute(count_query)
+            unread_count = result.scalar_one() or 0
 
-    # Enrich participants from cache
-    participant_ids = [p.user_id for p in conv.participants if not p.is_deleted]
-    users_map = await get_cached_users_batch(participant_ids, db)
+    # Enrich participants from cache: используем pre-fetched map если передан
+    if users_map is None:
+        participant_ids = [p.user_id for p in conv.participants if not p.is_deleted]
+        users_map = await get_cached_users_batch(participant_ids, db)
 
     participants_brief = [
         ParticipantBrief(
@@ -157,7 +196,24 @@ async def list_conversations(
     if has_more and items and items[-1].last_message_at:
         next_cursor = encode_cursor(items[-1].last_message_at, items[-1].id)
 
-    response_items = [await _build_conversation_response(conv, current_user_id, db) for conv in items]
+    # Батч unread counts — 1 запрос вместо N
+    conv_ids = [c.id for c in items]
+    unread_map = await _get_unread_counts_batch(conv_ids, current_user_id, db)
+
+    # Батч user cache — 1 запрос вместо N
+    all_participant_ids = list({p.user_id for conv in items for p in conv.participants if not p.is_deleted})
+    users_map = await get_cached_users_batch(all_participant_ids, db)
+
+    response_items = [
+        await _build_conversation_response(
+            conv,
+            current_user_id,
+            db,
+            unread_count=unread_map.get(conv.id, 0),
+            users_map=users_map,
+        )
+        for conv in items
+    ]
 
     return ConversationListResponse(items=response_items, next_cursor=next_cursor)
 
@@ -247,27 +303,33 @@ async def get_updates(
     result = await db.execute(query)
     convs = result.scalars().all()
 
-    items = []
-    for conv in convs:
-        participant = next((p for p in conv.participants if p.user_id == current_user_id), None)
-        unread_count = 0
-        if participant:
-            count_query = select(func.count(Message.id)).where(
-                Message.conversation_id == conv.id,
+    # Батч unread counts — 1 запрос вместо N
+    conv_ids = [c.id for c in convs]
+    unread_map: dict[uuid.UUID, int] = {}
+    if conv_ids:
+        unread_result = await db.execute(
+            select(
+                Message.conversation_id,
+                func.count(Message.id).label("unread"),
+            )
+            .where(
+                Message.conversation_id.in_(conv_ids),
                 Message.is_deleted.is_(False),
                 Message.created_at > since,
             )
-            count_result = await db.execute(count_query)
-            unread_count = count_result.scalar_one() or 0
-
-        items.append(
-            ConversationUpdateItem(
-                conversation_id=conv.id,
-                last_message_at=conv.last_message_at,
-                last_message_preview=conv.last_message_preview,
-                unread_count=unread_count,
-            )
+            .group_by(Message.conversation_id)
         )
+        unread_map = {row.conversation_id: row.unread for row in unread_result.all()}
+
+    items = [
+        ConversationUpdateItem(
+            conversation_id=conv.id,
+            last_message_at=conv.last_message_at,
+            last_message_preview=conv.last_message_preview,
+            unread_count=unread_map.get(conv.id, 0),
+        )
+        for conv in convs
+    ]
 
     return UpdatesResponse(conversations=items, server_time=datetime.now(UTC))
 

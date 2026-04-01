@@ -13,6 +13,8 @@ class Message(Base):
 
     __table_args__ = (
         Index("ix_messages_conversation_created", "conversation_id", "created_at", "id", postgresql_using="btree"),
+        Index("ix_message_conv_deleted_created", "conversation_id", "is_deleted", "created_at", "id"),
+        Index("ix_message_reply_to_id", "reply_to_id"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

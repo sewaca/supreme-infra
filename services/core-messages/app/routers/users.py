@@ -2,7 +2,7 @@ import uuid
 
 import httpx
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -26,8 +26,8 @@ async def search_users(
         select(UserCache)
         .where(
             or_(
-                UserCache.name.ilike(f"{q}%"),
-                UserCache.last_name.ilike(f"{q}%"),
+                func.lower(UserCache.name).like(q.lower() + "%"),
+                func.lower(UserCache.last_name).like(q.lower() + "%"),
             )
         )
         .limit(limit)

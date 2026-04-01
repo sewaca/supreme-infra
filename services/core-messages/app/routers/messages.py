@@ -47,24 +47,40 @@ async def _build_message_response(
     current_user_id: uuid.UUID,
     users_map: dict,
     db: AsyncSession | None = None,
+    *,
+    reply_msgs_map: dict | None = None,
+    reply_users_map: dict | None = None,
 ) -> MessageResponse:
     sender = users_map.get(msg.sender_id)
 
     reply_to_data: ReplyToPreview | None = None
-    if msg.reply_to_id and db is not None:
-        reply_result = await db.execute(
-            select(Message).where(Message.id == msg.reply_to_id, Message.is_deleted.is_(False))
-        )
-        reply_msg = reply_result.scalar_one_or_none()
-        if reply_msg:
-            reply_users = await get_cached_users_batch([reply_msg.sender_id], db)
-            reply_sender = reply_users.get(reply_msg.sender_id)
-            reply_to_data = ReplyToPreview(
-                id=reply_msg.id,
-                sender_name=reply_sender.name if reply_sender else "",
-                sender_last_name=reply_sender.last_name if reply_sender else "",
-                content=reply_msg.content[:300],
+    if msg.reply_to_id:
+        if reply_msgs_map is not None:
+            # Pre-fetched batch path (no extra queries)
+            reply_msg = reply_msgs_map.get(msg.reply_to_id)
+            if reply_msg:
+                reply_sender = (reply_users_map or {}).get(reply_msg.sender_id)
+                reply_to_data = ReplyToPreview(
+                    id=reply_msg.id,
+                    sender_name=reply_sender.name if reply_sender else "",
+                    sender_last_name=reply_sender.last_name if reply_sender else "",
+                    content=reply_msg.content[:300],
+                )
+        elif db is not None:
+            # Fallback: individual fetch (for single-message endpoints)
+            reply_result = await db.execute(
+                select(Message).where(Message.id == msg.reply_to_id, Message.is_deleted.is_(False))
             )
+            reply_msg = reply_result.scalar_one_or_none()
+            if reply_msg:
+                reply_users = await get_cached_users_batch([reply_msg.sender_id], db)
+                reply_sender = reply_users.get(reply_msg.sender_id)
+                reply_to_data = ReplyToPreview(
+                    id=reply_msg.id,
+                    sender_name=reply_sender.name if reply_sender else "",
+                    sender_last_name=reply_sender.last_name if reply_sender else "",
+                    content=reply_msg.content[:300],
+                )
 
     return MessageResponse(
         id=msg.id,
@@ -132,7 +148,24 @@ async def list_messages(
     sender_ids = list({m.sender_id for m in items})
     users_map = await get_cached_users_batch(sender_ids, db)
 
-    response_items = [await _build_message_response(msg, current_user_id, users_map, db) for msg in items]
+    # Батч-загрузка reply_to — 1 запрос вместо N
+    reply_to_ids = list({m.reply_to_id for m in items if m.reply_to_id})
+    reply_msgs_map: dict = {}
+    reply_users_map: dict = {}
+    if reply_to_ids:
+        rr = await db.execute(select(Message).where(Message.id.in_(reply_to_ids), Message.is_deleted.is_(False)))
+        reply_msgs = rr.scalars().all()
+        reply_msgs_map = {m.id: m for m in reply_msgs}
+        reply_sender_ids = list({m.sender_id for m in reply_msgs})
+        if reply_sender_ids:
+            reply_users_map = await get_cached_users_batch(reply_sender_ids, db)
+
+    response_items = [
+        await _build_message_response(
+            msg, current_user_id, users_map, reply_msgs_map=reply_msgs_map, reply_users_map=reply_users_map
+        )
+        for msg in items
+    ]
 
     return MessageListResponse(items=response_items, next_cursor=next_cursor, has_more=has_more)
 
