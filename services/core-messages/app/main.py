@@ -13,6 +13,8 @@ from app.config import settings
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.routers import broadcasts, conversations, files, messages, messages_search, status, users, ws
+from app.services.redis_pubsub import RedisPubSub
+from app.services.websocket_manager import ws_manager
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +23,20 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    pubsub: RedisPubSub | None = None
+    if settings.redis_url:
+        pubsub = RedisPubSub(settings.redis_url)
+        pubsub.set_ws_manager(ws_manager)
+        ws_manager.set_pubsub(pubsub)
+        await pubsub.start()
+    else:
+        logger.warning("REDIS_URL not set — WS delivery is local-only (single-pod mode)")
+
     yield
+
+    if pubsub:
+        await pubsub.stop()
     await engine.dispose()
 
 

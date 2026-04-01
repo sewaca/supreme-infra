@@ -18,11 +18,23 @@ def _event_summary(event: dict) -> str:
 
 
 class ConnectionManager:
-    """Управление активными WebSocket-соединениями по user_id."""
+    """Управление активными WebSocket-соединениями по user_id.
+
+    При наличии Redis Pub/Sub (set_pubsub) все исходящие события идут через Redis,
+    чтобы гарантировать доставку при нескольких репликах (подах).
+    Каждый под получает сообщение из Redis и вызывает send_local — отправляет
+    только в свои локальные соединения.
+
+    Без Redis (REDIS_URL не задан) работает как раньше — только локальная доставка.
+    """
 
     def __init__(self):
         # user_id -> list[WebSocket]
         self.active_connections: dict[UUID, list[WebSocket]] = {}
+        self._pubsub = None
+
+    def set_pubsub(self, pubsub) -> None:
+        self._pubsub = pubsub
 
     async def connect(self, websocket: WebSocket, user_id: UUID):
         await websocket.accept()
@@ -40,23 +52,36 @@ class ConnectionManager:
         logger.info("WS disconnected: user=%s (total=%d)", user_id, self._total())
 
     async def send_to_user(self, user_id: UUID, event: dict):
-        """Отправить JSON-событие всем соединениям пользователя."""
+        """Доставить событие пользователю.
+
+        Если Redis настроен — публикует в канал; все поды (включая текущий)
+        получат сообщение и вызовут send_local.
+        Без Redis — отправляет напрямую в локальные соединения.
+        """
+        if self._pubsub is not None:
+            await self._pubsub.publish(user_id, event)
+        else:
+            await self.send_local(user_id, event)
+
+    async def send_local(self, user_id: UUID, event: dict):
+        """Отправить событие только в локальные WS-соединения этого пода."""
         conns = self.active_connections.get(user_id, [])
         ev_type = event.get("type", "?")
-        logger.info(
-            "WS send_to_user user=%s type=%s active_conns_for_user=%d summary=%s",
-            user_id,
-            ev_type,
-            len(conns),
-            _event_summary(event),
-        )
+        if conns:
+            logger.info(
+                "WS send_local user=%s type=%s conns=%d summary=%s",
+                user_id,
+                ev_type,
+                len(conns),
+                _event_summary(event),
+            )
         dead = []
         for ws in conns:
             try:
                 await ws.send_text(json.dumps(event, default=str))
             except Exception as exc:
                 logger.warning(
-                    "WS send_to_user failed user=%s type=%s: %s",
+                    "WS send_local failed user=%s type=%s: %s",
                     user_id,
                     ev_type,
                     exc,

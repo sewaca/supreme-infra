@@ -1,0 +1,244 @@
+name: Deploy Redis
+
+on:
+  workflow_dispatch:
+
+env:
+  HELM_VERSION: "v3.16.3"
+  REDIS_RELEASE_NAME: "redis"
+  REDIS_NAMESPACE: "default"
+
+jobs:
+  get-latest-version:
+    name: Get latest Redis release version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      release_tag: ${{ steps.get-version.outputs.release_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Get latest release version
+        id: get-version
+        run: |
+          ALL_TAGS=$(git tag -l "redis-v*" 2>/dev/null | grep -E "^redis-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
+
+          echo "All tags for redis:"
+          echo "$ALL_TAGS"
+
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+
+          if [ -z "$LATEST_TAG" ]; then
+            VERSION="0.0.0"
+            RELEASE_TAG=""
+            echo "No previous release found for redis, starting from version: $VERSION"
+          else
+            VERSION=$(echo "$LATEST_TAG" | sed "s/^redis-v//")
+            RELEASE_TAG="$LATEST_TAG"
+            echo "Latest release for redis: $LATEST_TAG, version: $VERSION"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+
+  calculate-new-version:
+    name: Calculate new Redis version
+    needs: get-latest-version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calculate-version.outputs.version }}
+    steps:
+      - name: Calculate new version
+        id: calculate-version
+        env:
+          CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
+        run: |
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+          NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+
+          echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+          echo "$NEW_VERSION" > "new_version.txt"
+
+      - name: Upload version file
+        uses: actions/upload-artifact@v5
+        with:
+          name: new-version
+          path: new_version.txt
+
+  create-release-branch:
+    name: Create release branch
+    needs: calculate-new-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "246592117+madara-robot@users.noreply.github.com"
+          git config --global user.name "madara-robot"
+
+      - name: Create release branch
+        run: |
+          VERSION=$(cat "new_version.txt")
+          BRANCH_NAME="releases/production/redis-${VERSION}"
+
+          git fetch origin
+
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists, skipping creation"
+          else
+            echo "Creating new branch $BRANCH_NAME from main"
+            git checkout main
+            git pull origin main
+            git checkout -b "$BRANCH_NAME"
+            git push -u origin "$BRANCH_NAME"
+            echo "Created branch $BRANCH_NAME"
+          fi
+
+  deploy-redis:
+    name: Deploy Redis
+    needs: [calculate-new-version, create-release-branch]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Yandex Cloud
+        uses: ./.github/workflows/jobs/setup-yandex-cloud
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
+          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
+          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Deploy Redis with Helm
+        run: |
+          echo "Deploying Redis..."
+          echo "Release: ${{ env.REDIS_RELEASE_NAME }}"
+          echo "Namespace: ${{ env.REDIS_NAMESPACE }}"
+
+          helm upgrade ${{ env.REDIS_RELEASE_NAME }} ./infra/helmcharts/redis \
+            --namespace ${{ env.REDIS_NAMESPACE }} \
+            --install \
+            --wait \
+            --timeout 3m
+
+          echo "Redis deployment completed"
+
+      - name: Verify Redis deployment
+        run: |
+          echo "Checking Redis pod..."
+          kubectl wait --for=condition=ready pod \
+            -l app.kubernetes.io/instance=${{ env.REDIS_RELEASE_NAME }} \
+            -n ${{ env.REDIS_NAMESPACE }} \
+            --timeout=120s
+
+          POD_NAME=$(kubectl get pods \
+            -l app.kubernetes.io/instance=${{ env.REDIS_RELEASE_NAME }} \
+            -n ${{ env.REDIS_NAMESPACE }} \
+            -o jsonpath='{.items[0].metadata.name}')
+
+          echo "Pod: $POD_NAME"
+
+          kubectl exec -n ${{ env.REDIS_NAMESPACE }} "$POD_NAME" -- redis-cli ping
+
+          echo ""
+          echo "Redis Information:"
+          echo "  Release: ${{ env.REDIS_RELEASE_NAME }}"
+          echo "  Namespace: ${{ env.REDIS_NAMESPACE }}"
+          echo "  DNS: ${{ env.REDIS_RELEASE_NAME }}.${{ env.REDIS_NAMESPACE }}.svc.cluster.local:6379"
+
+  create-github-release:
+    name: Create GitHub release
+    needs: [calculate-new-version, create-release-branch, deploy-redis]
+    if: |
+      always() &&
+      needs.deploy-redis.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Download version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version
+
+      - name: Install GitHub CLI
+        uses: ./.github/workflows/jobs/install-github-cli
+
+      - name: Prepare release info
+        id: get-release-info
+        run: |
+          VERSION=$(cat "new_version.txt")
+          TAG_NAME="redis-v${VERSION}"
+          RELEASE_NAME="Release Redis v${VERSION}"
+
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+
+          {
+            echo "# $RELEASE_NAME"
+            echo ""
+            echo "Redis deployment completed successfully."
+            echo ""
+            echo "## Deployment Details"
+            echo "- **Namespace**: \`${{ env.REDIS_NAMESPACE }}\`"
+            echo "- **Release Name**: \`${{ env.REDIS_RELEASE_NAME }}\`"
+            echo "- **Image**: \`redis:7-alpine\`"
+            echo "- **Persistence**: Enabled (2Gi)"
+            echo "- **maxmemory**: 256mb (allkeys-lru)"
+            echo ""
+            echo "## Connection"
+            echo "- **DNS**: \`redis.default.svc.cluster.local:6379\`"
+            echo "- **REDIS_URL**: \`redis://redis.default.svc.cluster.local:6379\`"
+          } > "release_body.txt"
+
+      - name: Create GitHub Release
+        env:
+          TAG_NAME: ${{ steps.get-release-info.outputs.tag_name }}
+          RELEASE_NAME: ${{ steps.get-release-info.outputs.release_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(cat "new_version.txt")
+          BRANCH_NAME="releases/production/redis-${VERSION}"
+          BODY_FILE="release_body.txt"
+
+          if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists, skipping"
+            exit 0
+          fi
+
+          echo "Creating release $TAG_NAME from branch $BRANCH_NAME"
+          gh release create "$TAG_NAME" \
+            --title "$RELEASE_NAME" \
+            --notes-file "$BODY_FILE" \
+            --target "$BRANCH_NAME" \
+            --repo "$GITHUB_REPOSITORY"

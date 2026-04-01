@@ -1,0 +1,6 @@
+apiVersion: v2
+name: redis
+description: Redis for WebSocket Pub/Sub and shared caching
+type: application
+version: 1.0.0
+appVersion: "7.4"
