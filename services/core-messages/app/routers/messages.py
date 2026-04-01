@@ -184,7 +184,7 @@ async def send_message(
 
     users_map = await get_cached_users_batch([current_user_id], db)
     await db.refresh(msg, attribute_names=["attachments"])
-    response = await _build_message_response(msg, current_user_id, users_map)
+    response = await _build_message_response(msg, current_user_id, users_map, db)
 
     await ws_manager.broadcast_to_conversation(
         participant_ids,
