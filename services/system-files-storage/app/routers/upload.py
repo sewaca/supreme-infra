@@ -1,6 +1,5 @@
 import uuid
 
-import httpx
 from fastapi import APIRouter, HTTPException, UploadFile
 
 from app.config import settings
@@ -16,13 +15,11 @@ ALLOWED_MIME_TYPES = IMAGE_MIME_TYPES | {
     "text/plain",
 }
 
+_ANONYMOUS_FOLDER = uuid.UUID("00000000-0000-0000-0000-000000000000")
+
 
 @router.post("/upload", status_code=201)
-async def upload_attachment(
-    file: UploadFile,
-    conversation_id: uuid.UUID,
-    message_id: uuid.UUID,
-):
+async def upload_attachment(file: UploadFile):
     mime_type = file.content_type or "application/octet-stream"
     if mime_type not in ALLOWED_MIME_TYPES:
         raise HTTPException(status_code=415, detail=f"Unsupported file type: {mime_type}")
@@ -35,27 +32,12 @@ async def upload_attachment(
         limit = settings.max_image_size_mb if is_image else settings.max_file_size_mb
         raise HTTPException(status_code=413, detail=f"File too large (max {limit} MB)")
 
-    key = make_key(conversation_id, file.filename or "file")
+    key = make_key(_ANONYMOUS_FOLDER, file.filename or "file")
     file_url = await upload_file(content, key, mime_type)
 
     thumbnail_url: str | None = None
     if is_image:
         thumbnail_url = await upload_thumbnail(content, key, mime_type)
-
-    async with httpx.AsyncClient() as client:
-        resp = await client.post(
-            f"{settings.core_messages_url}/files",
-            json={
-                "message_id": str(message_id),
-                "file_url": file_url,
-                "file_name": file.filename or key.split("/")[-1],
-                "file_size": len(content),
-                "mime_type": mime_type,
-                "thumbnail_url": thumbnail_url,
-            },
-        )
-        if resp.status_code not in (200, 201):
-            raise HTTPException(status_code=502, detail="Failed to register attachment with core-messages")
 
     return {
         "file_url": file_url,
