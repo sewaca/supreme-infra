@@ -118,11 +118,16 @@ function ingressPathKey(p: IngressPath): string {
   return `${p.path}::${p.method}`;
 }
 
-/** Сохраняет пути и extraAnnotations из values.yaml, которых нет в router.yaml (например /core-messages/ws). */
+/**
+ * Сохраняет пути и extraAnnotations из values.yaml, которых нет в router.yaml (например /core-messages/ws).
+ * Также сохраняет правила для сервисов, у которых нет router.yaml (например minio).
+ */
 function mergeIngressRulesWithExisting(generated: IngressRule[], existing: IngressRule[] | undefined): IngressRule[] {
   if (!existing?.length) return generated;
 
-  return generated.map((rule) => {
+  const generatedServices = new Set(generated.map((r) => r.service));
+
+  const merged = generated.map((rule) => {
     const prev = existing.find((e) => e.service === rule.service);
     if (!prev) return rule;
 
@@ -142,6 +147,15 @@ function mergeIngressRulesWithExisting(generated: IngressRule[], existing: Ingre
       ...(prev.extraAnnotations ? { extraAnnotations: prev.extraAnnotations } : {}),
     };
   });
+
+  // Preserve rules for services that have no router.yaml (e.g. minio)
+  for (const rule of existing) {
+    if (!generatedServices.has(rule.service)) {
+      merged.push(rule);
+    }
+  }
+
+  return merged;
 }
 
 function findServicesWithRouters(servicesDir: string): RouterConfig[] {

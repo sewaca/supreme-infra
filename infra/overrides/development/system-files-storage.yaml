@@ -23,7 +23,7 @@ env:
   S3_ACCESS_KEY: minioadmin
   S3_BUCKET: messages-attachments
   S3_REGION: us-east-1
-  CORE_MESSAGES_URL: http://core-messages.default.svc.cluster.local/core-messages
+  PUBLIC_BASE_URL: https://diploma.sewaca.ru
   CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
 secrets:
   S3_SECRET_KEY: MINIO_SECRET_KEY

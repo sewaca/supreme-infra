@@ -1,191 +1,150 @@
-# Quick Testing Guide
+# system-files-storage — Testing
 
 ## Prerequisites
 
-- **MinIO (or S3-compatible)** — bucket is created on startup via `ensure_bucket()`
-- **core-auth** — JWT validation and session check for `/system-files-storage/upload`
-- **core-messages** — после загрузки файла сервис регистрирует вложение через `POST {CORE_MESSAGES_URL}/files` (нужен ответ 200/201, иначе 502)
+- **MinIO** — bucket создаётся автоматически при старте (`ensure_bucket()`)
+- **core-auth** — JWT-валидация для `POST /system-files-storage/upload`
 
-Отдельной БД у сервиса нет.
+БД у сервиса нет.
 
-## Manual setup (for local development)
+## Local setup
 
 ```bash
 cd services/system-files-storage
 cp .env.example .env
-# при необходимости задайте S3_*, CORE_MESSAGES_URL, CORE_AUTH_URL (см. app/config.py и README.md)
 uv sync
 uv run uvicorn app.main:app --reload --port 8007
 ```
 
-Локально пути приложения без префикса ingress: **`GET /status`**, **`POST /upload`**. Правило auth из `_auth_routes_generated.py` сопоставляется с **`/system-files-storage/upload`** — при запросе на **`/upload`** middleware не требует Bearer (для быстрых проверок без JWT).
-
-## Quick Test Commands
-
-### 1. Set up base URL
-
-Публичный ingress для этого сервиса в репозитории объявлен для **`POST /system-files-storage/upload`**. Health-чек в Kubernetes бьёт во внутренний путь (см. `service.yaml`).
-
-**Локально (прямой uvicorn):**
-
-```bash
-export BASE_URL="http://127.0.0.1:8007"
-```
-
-**Через ingress (пример):**
-
-```bash
-export BASE_URL="https://diploma.sewaca.ru/system-files-storage"
-```
-
-**Port-forward к сервису в кластере (проверка без публичного маршрута на status):**
-
-```bash
-kubectl port-forward -n supreme-infra svc/system-files-storage 8007:80
-export BASE_URL="http://127.0.0.1:8007"
-```
+Локально auth-middleware не требует Bearer на `/upload` (путь матчится как `/system-files-storage/upload`, а локальный — `/upload`).
 
 ---
 
-### Status
+## Get JWT
 
 ```bash
-curl -s "$BASE_URL/status" | jq .
-```
-
-```json
-{
-  "status": "ok",
-  "service": "system-files-storage"
-}
-```
-
----
-
-### Получить JWT (через core-auth)
-
-Токен нужен для **`POST .../system-files-storage/upload`** за ingress (путь совпадает с `AuthMiddleware`).
-
-```bash
-export CORE_AUTH_URL="https://diploma.sewaca.ru/core-auth"
-export JWT_TOKEN=$(curl -s -X POST "$CORE_AUTH_URL/auth/login" \
+export JWT_TOKEN=$(curl -s -X POST "https://diploma.sewaca.ru/core-auth/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"email": "ivan.ivanov@example.com", "password": "ivan.ivanov@example.com"}' | jq -r '.access_token')
+  -d '{"email": "user@example.com", "password": "user@example.com"}' | jq -r '.access_token')
 ```
-
-Подставьте свой хост и тестового пользователя (см. `services/core-auth/TESTING.md`).
 
 ---
 
-### Upload (multipart, 201)
-
-Поля формы: **`file`**, **`conversation_id`**, **`message_id`** (оба UUID). Допустимые MIME: изображения (jpeg, png, gif, webp), PDF, doc/docx, plain text — см. `app/routers/upload.py`.
+## Status
 
 ```bash
-curl -s -X POST "$BASE_URL/upload" \
+curl -s https://diploma.sewaca.ru/system-files-storage/api/status | jq .
+```
+
+```json
+{ "status": "ok", "service": "system-files-storage" }
+```
+
+---
+
+## Upload (batch)
+
+Один запрос — одна папка `{uuidv7}`, все файлы в ней. Максимум 10 файлов.
+
+```bash
+curl -s -X POST "https://diploma.sewaca.ru/system-files-storage/upload" \
   -H "Authorization: Bearer $JWT_TOKEN" \
-  -F 'file=@./test.png;type=image/png' \
-  -F 'conversation_id=123e4567-e89b-12d3-a456-426614174000' \
-  -F 'message_id=223e4567-e89b-12d3-a456-426614174001' | jq .
+  -F "files=@./photo.png;type=image/png" \
+  -F "files=@./document.pdf;type=application/pdf" | jq .
 ```
 
-За ingress с полным путём:
+Ответ:
+
+```json
+{
+  "folder": "019600a1-e3b1-7c2d-a4f5-000000000000",
+  "files": [
+    {
+      "file_url": "https://diploma.sewaca.ru/storage/s3/019600a1-e3b1-7c2d-a4f5-000000000000/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824.png",
+      "thumbnail_url": "https://diploma.sewaca.ru/storage/s3/019600a1-e3b1-7c2d-a4f5-000000000000/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_thumb.png",
+      "file_name": "photo.png",
+      "file_size": 165113,
+      "mime_type": "image/png"
+    },
+    {
+      "file_url": "https://diploma.sewaca.ru/storage/s3/019600a1-e3b1-7c2d-a4f5-000000000000/486ea46224d1bb4fb680f34f7c9ad96a8f24ec88be73ea8e5a6c65260e9cb8a7.pdf",
+      "thumbnail_url": null,
+      "file_name": "document.pdf",
+      "file_size": 42300,
+      "mime_type": "application/pdf"
+    }
+  ]
+}
+```
+
+Один файл:
 
 ```bash
-curl -s -X POST 'https://diploma.sewaca.ru/system-files-storage/upload' \
+curl -s -X POST "https://diploma.sewaca.ru/system-files-storage/upload" \
   -H "Authorization: Bearer $JWT_TOKEN" \
-  -F 'file=@./test.png;type=image/png' \
-  -F 'conversation_id=123e4567-e89b-12d3-a456-426614174000' \
-  -F 'message_id=223e4567-e89b-12d3-a456-426614174001' | jq .
-```
-
-Пример успешного ответа:
-
-```json
-{
-  "file_url": "https://…",
-  "thumbnail_url": "https://…",
-  "file_name": "test.png",
-  "file_size": 1234,
-  "mime_type": "image/png"
-}
-```
-
-Чтобы получить **201**, сообщение с `message_id` должно существовать в **core-messages**, а пользователь из JWT — быть участником беседы; иначе регистрация вложения вернёт ошибку и этот сервис отдаст **502**.
-
----
-
-### Upload — без Bearer (401), путь как за ingress
-
-```bash
-curl -s -X POST 'https://diploma.sewaca.ru/system-files-storage/upload' \
-  -F 'file=@./test.png;type=image/png' \
-  -F 'conversation_id=123e4567-e89b-12d3-a456-426614174000' \
-  -F 'message_id=223e4567-e89b-12d3-a456-426614174001' | jq .
-```
-
-```json
-{
-  "detail": "Authentication required"
-}
+  -F "files=@./photo.jpg;type=image/jpeg" | jq .
 ```
 
 ---
 
-### Upload — неподдерживаемый тип (415)
+## Access uploaded file
+
+Файлы публично доступны через возвращённый `file_url`:
 
 ```bash
-curl -s -X POST "$BASE_URL/upload" \
-  -F 'file=@./test.bin;type=application/octet-stream' \
-  -F 'conversation_id=123e4567-e89b-12d3-a456-426614174000' \
-  -F 'message_id=223e4567-e89b-12d3-a456-426614174001' | jq .
+curl -O "https://diploma.sewaca.ru/storage/s3/<folder>/<sha256>.<ext>"
 ```
 
-```json
-{
-  "detail": "Unsupported file type: application/octet-stream"
-}
+---
+
+## Error cases
+
+**401 — нет токена:**
+
+```bash
+curl -s -X POST "https://diploma.sewaca.ru/system-files-storage/upload" \
+  -F "files=@./photo.png;type=image/png" | jq .
+# { "detail": "Authentication required" }
 ```
+
+**415 — неподдерживаемый тип:**
+
+```bash
+curl -s -X POST "https://diploma.sewaca.ru/system-files-storage/upload" \
+  -H "Authorization: Bearer $JWT_TOKEN" \
+  -F "files=@./archive.zip;type=application/zip" | jq .
+# { "detail": "Unsupported file type: application/zip (archive.zip)" }
+```
+
+**413 — файл слишком большой:**
+
+```bash
+# Изображения: макс 5 MB, остальное: макс 10 MB
+# { "detail": "File too large (max 5 MB): bigphoto.png" }
+```
+
+---
+
+## Allowed file types
+
+| MIME type                                    | Max size |
+| -------------------------------------------- | -------- |
+| image/jpeg, image/png, image/gif, image/webp | 5 MB     |
+| application/pdf                              | 10 MB    |
+| application/msword, .docx                    | 10 MB    |
+| text/plain                                   | 10 MB    |
+
+Изображения автоматически получают thumbnail 300×300 (`thumbnail_url`).
 
 ---
 
 ## Environment reference
 
-| Variable            | Role                                                  |
-| ------------------- | ----------------------------------------------------- |
-| `JWT_SECRET`        | Должен совпадать с core-auth и другими сервисами      |
-| `CORE_AUTH_URL`     | Проверка сессии для защищённых путей                  |
-| `CORE_MESSAGES_URL` | Регистрация вложения после загрузки в S3              |
-| `S3_*`              | Endpoint, ключи, bucket, регион — см. `app/config.py` |
-
----
-
-## Troubleshooting
-
-### 401 / «Session invalid»
-
-Проверьте `Authorization: Bearer`, срок JWT и доступность **core-auth** для проверки сессии.
-
-### 502 «Failed to register attachment with core-messages»
-
-- Доступен ли **core-messages** по `CORE_MESSAGES_URL`
-- Существует ли сообщение и участник беседы (см. `core-messages` `/files`)
-- Совпадает ли `JWT_SECRET` между сервисами, если цепочка завязана на токен
-
-### Ошибки MinIO / S3
-
-Проверьте `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_BUCKET` и сеть до хранилища.
-
-### JWT validation errors
-
-Убедитесь, что `JWT_SECRET` в `.env` совпадает с **core-auth**:
-
-```env
-JWT_SECRET=local-development-secret
-```
-
-## See Also
-
-- `README.md` — обзор сервиса и запуск
-- `router.yaml` — маршруты и `auth_level`
-- `services/core-auth/TESTING.md` — логин и тестовые пользователи
+| Variable                          | Role                                                               |
+| --------------------------------- | ------------------------------------------------------------------ |
+| `JWT_SECRET`                      | Должен совпадать с core-auth                                       |
+| `CORE_AUTH_URL`                   | Проверка сессии                                                    |
+| `S3_ENDPOINT`                     | Адрес MinIO (в K8s: `http://minio.default.svc.cluster.local:9000`) |
+| `S3_ACCESS_KEY` / `S3_SECRET_KEY` | Credentials MinIO                                                  |
+| `S3_BUCKET`                       | Имя bucket (`messages-attachments`)                                |
+| `PUBLIC_BASE_URL`                 | Публичный домен для генерации URL (`https://diploma.sewaca.ru`)    |

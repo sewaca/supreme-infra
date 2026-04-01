@@ -876,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 5348,
+      "id": 5424,
       "panels": [
         {
-          "id": 5346,
+          "id": 5422,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -970,7 +970,7 @@
           }
         },
         {
-          "id": 5347,
+          "id": 5423,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1069,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 5349,
+      "id": 5425,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1080,7 +1080,7 @@
       }
     },
     {
-      "id": 5350,
+      "id": 5426,
       "title": "GET /core-auth/auth/caldav-tokens",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 5351,
+      "id": 5427,
       "title": "GET /core-auth/auth/caldav-tokens - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1212,7 +1212,7 @@
       }
     },
     {
-      "id": 5352,
+      "id": 5428,
       "title": "GET /core-auth/auth/caldav-tokens - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1303,7 +1303,7 @@
       }
     },
     {
-      "id": 5353,
+      "id": 5429,
       "title": "GET /core-auth/auth/caldav-tokens - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1398,7 +1398,7 @@
       }
     },
     {
-      "id": 5354,
+      "id": 5430,
       "title": "POST /core-auth/auth/caldav-tokens",
       "type": "row",
       "gridPos": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 5355,
+      "id": 5431,
       "title": "POST /core-auth/auth/caldav-tokens - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1530,7 +1530,7 @@
       }
     },
     {
-      "id": 5356,
+      "id": 5432,
       "title": "POST /core-auth/auth/caldav-tokens - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1621,7 +1621,7 @@
       }
     },
     {
-      "id": 5357,
+      "id": 5433,
       "title": "POST /core-auth/auth/caldav-tokens - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1716,7 +1716,7 @@
       }
     },
     {
-      "id": 5358,
+      "id": 5434,
       "title": "DELETE /core-auth/auth/caldav-tokens/[^/]+",
       "type": "row",
       "gridPos": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 5359,
+      "id": 5435,
       "title": "DELETE /core-auth/auth/caldav-tokens/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1848,7 +1848,7 @@
       }
     },
     {
-      "id": 5360,
+      "id": 5436,
       "title": "DELETE /core-auth/auth/caldav-tokens/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1939,7 +1939,7 @@
       }
     },
     {
-      "id": 5361,
+      "id": 5437,
       "title": "DELETE /core-auth/auth/caldav-tokens/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2034,7 +2034,7 @@
       }
     },
     {
-      "id": 5362,
+      "id": 5438,
       "title": "POST /core-auth/auth/challenge",
       "type": "row",
       "gridPos": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 5363,
+      "id": 5439,
       "title": "POST /core-auth/auth/challenge - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2166,7 +2166,7 @@
       }
     },
     {
-      "id": 5364,
+      "id": 5440,
       "title": "POST /core-auth/auth/challenge - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2257,7 +2257,7 @@
       }
     },
     {
-      "id": 5365,
+      "id": 5441,
       "title": "POST /core-auth/auth/challenge - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2352,7 +2352,7 @@
       }
     },
     {
-      "id": 5366,
+      "id": 5442,
       "title": "GET /core-auth/auth/challenge/[^/]+/check",
       "type": "row",
       "gridPos": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 5367,
+      "id": 5443,
       "title": "GET /core-auth/auth/challenge/:id/check - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2484,7 +2484,7 @@
       }
     },
     {
-      "id": 5368,
+      "id": 5444,
       "title": "GET /core-auth/auth/challenge/:id/check - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2575,7 +2575,7 @@
       }
     },
     {
-      "id": 5369,
+      "id": 5445,
       "title": "GET /core-auth/auth/challenge/:id/check - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2670,7 +2670,7 @@
       }
     },
     {
-      "id": 5370,
+      "id": 5446,
       "title": "POST /core-auth/auth/challenge/[^/]+/verify",
       "type": "row",
       "gridPos": {
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 5371,
+      "id": 5447,
       "title": "POST /core-auth/auth/challenge/:id/verify - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2802,7 +2802,7 @@
       }
     },
     {
-      "id": 5372,
+      "id": 5448,
       "title": "POST /core-auth/auth/challenge/:id/verify - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2893,7 +2893,7 @@
       }
     },
     {
-      "id": 5373,
+      "id": 5449,
       "title": "POST /core-auth/auth/challenge/:id/verify - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2988,7 +2988,7 @@
       }
     },
     {
-      "id": 5374,
+      "id": 5450,
       "title": "POST /core-auth/auth/forgot-password",
       "type": "row",
       "gridPos": {
@@ -2999,7 +2999,7 @@
       }
     },
     {
-      "id": 5375,
+      "id": 5451,
       "title": "POST /core-auth/auth/forgot-password - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3120,7 +3120,7 @@
       }
     },
     {
-      "id": 5376,
+      "id": 5452,
       "title": "POST /core-auth/auth/forgot-password - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3211,7 +3211,7 @@
       }
     },
     {
-      "id": 5377,
+      "id": 5453,
       "title": "POST /core-auth/auth/forgot-password - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3306,7 +3306,7 @@
       }
     },
     {
-      "id": 5378,
+      "id": 5454,
       "title": "POST /core-auth/auth/forgot-password/[^/]+/reset",
       "type": "row",
       "gridPos": {
@@ -3317,7 +3317,7 @@
       }
     },
     {
-      "id": 5379,
+      "id": 5455,
       "title": "POST /core-auth/auth/forgot-password/:id/reset - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3438,7 +3438,7 @@
       }
     },
     {
-      "id": 5380,
+      "id": 5456,
       "title": "POST /core-auth/auth/forgot-password/:id/reset - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3529,7 +3529,7 @@
       }
     },
     {
-      "id": 5381,
+      "id": 5457,
       "title": "POST /core-auth/auth/forgot-password/:id/reset - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3624,7 +3624,7 @@
       }
     },
     {
-      "id": 5382,
+      "id": 5458,
       "title": "POST /core-auth/auth/forgot-password/[^/]+/verify",
       "type": "row",
       "gridPos": {
@@ -3635,7 +3635,7 @@
       }
     },
     {
-      "id": 5383,
+      "id": 5459,
       "title": "POST /core-auth/auth/forgot-password/:id/verify - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3756,7 +3756,7 @@
       }
     },
     {
-      "id": 5384,
+      "id": 5460,
       "title": "POST /core-auth/auth/forgot-password/:id/verify - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3847,7 +3847,7 @@
       }
     },
     {
-      "id": 5385,
+      "id": 5461,
       "title": "POST /core-auth/auth/forgot-password/:id/verify - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3942,7 +3942,7 @@
       }
     },
     {
-      "id": 5386,
+      "id": 5462,
       "title": "GET /core-auth/auth/internal/caldav-tokens/validate/[^/]+",
       "type": "row",
       "gridPos": {
@@ -3953,7 +3953,7 @@
       }
     },
     {
-      "id": 5387,
+      "id": 5463,
       "title": "GET /core-auth/auth/internal/caldav-tokens/validate/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4074,7 +4074,7 @@
       }
     },
     {
-      "id": 5388,
+      "id": 5464,
       "title": "GET /core-auth/auth/internal/caldav-tokens/validate/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4165,7 +4165,7 @@
       }
     },
     {
-      "id": 5389,
+      "id": 5465,
       "title": "GET /core-auth/auth/internal/caldav-tokens/validate/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4260,7 +4260,7 @@
       }
     },
     {
-      "id": 5390,
+      "id": 5466,
       "title": "PATCH /core-auth/auth/internal/users/[^/]+/email",
       "type": "row",
       "gridPos": {
@@ -4271,7 +4271,7 @@
       }
     },
     {
-      "id": 5391,
+      "id": 5467,
       "title": "PATCH /core-auth/auth/internal/users/:id/email - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4392,7 +4392,7 @@
       }
     },
     {
-      "id": 5392,
+      "id": 5468,
       "title": "PATCH /core-auth/auth/internal/users/:id/email - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4483,7 +4483,7 @@
       }
     },
     {
-      "id": 5393,
+      "id": 5469,
       "title": "PATCH /core-auth/auth/internal/users/:id/email - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4578,7 +4578,7 @@
       }
     },
     {
-      "id": 5394,
+      "id": 5470,
       "title": "PATCH /core-auth/auth/internal/users/[^/]+/password",
       "type": "row",
       "gridPos": {
@@ -4589,7 +4589,7 @@
       }
     },
     {
-      "id": 5395,
+      "id": 5471,
       "title": "PATCH /core-auth/auth/internal/users/:id/password - Timings",
       "type": "timeseries",
       "datasource": {
@@ -4710,7 +4710,7 @@
       }
     },
     {
-      "id": 5396,
+      "id": 5472,
       "title": "PATCH /core-auth/auth/internal/users/:id/password - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -4801,7 +4801,7 @@
       }
     },
     {
-      "id": 5397,
+      "id": 5473,
       "title": "PATCH /core-auth/auth/internal/users/:id/password - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -4896,7 +4896,7 @@
       }
     },
     {
-      "id": 5398,
+      "id": 5474,
       "title": "POST /core-auth/auth/login",
       "type": "row",
       "gridPos": {
@@ -4907,7 +4907,7 @@
       }
     },
     {
-      "id": 5399,
+      "id": 5475,
       "title": "POST /core-auth/auth/login - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5028,7 +5028,7 @@
       }
     },
     {
-      "id": 5400,
+      "id": 5476,
       "title": "POST /core-auth/auth/login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5119,7 +5119,7 @@
       }
     },
     {
-      "id": 5401,
+      "id": 5477,
       "title": "POST /core-auth/auth/login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5214,7 +5214,7 @@
       }
     },
     {
-      "id": 5402,
+      "id": 5478,
       "title": "GET /core-auth/auth/me",
       "type": "row",
       "gridPos": {
@@ -5225,7 +5225,7 @@
       }
     },
     {
-      "id": 5403,
+      "id": 5479,
       "title": "GET /core-auth/auth/me - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5346,7 +5346,7 @@
       }
     },
     {
-      "id": 5404,
+      "id": 5480,
       "title": "GET /core-auth/auth/me - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5437,7 +5437,7 @@
       }
     },
     {
-      "id": 5405,
+      "id": 5481,
       "title": "GET /core-auth/auth/me - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5532,7 +5532,7 @@
       }
     },
     {
-      "id": 5406,
+      "id": 5482,
       "title": "POST /core-auth/auth/register",
       "type": "row",
       "gridPos": {
@@ -5543,7 +5543,7 @@
       }
     },
     {
-      "id": 5407,
+      "id": 5483,
       "title": "POST /core-auth/auth/register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5664,7 +5664,7 @@
       }
     },
     {
-      "id": 5408,
+      "id": 5484,
       "title": "POST /core-auth/auth/register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5755,7 +5755,7 @@
       }
     },
     {
-      "id": 5409,
+      "id": 5485,
       "title": "POST /core-auth/auth/register - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5850,7 +5850,7 @@
       }
     },
     {
-      "id": 5410,
+      "id": 5486,
       "title": "GET /core-auth/auth/sessions",
       "type": "row",
       "gridPos": {
@@ -5861,7 +5861,7 @@
       }
     },
     {
-      "id": 5411,
+      "id": 5487,
       "title": "GET /core-auth/auth/sessions - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5982,7 +5982,7 @@
       }
     },
     {
-      "id": 5412,
+      "id": 5488,
       "title": "GET /core-auth/auth/sessions - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6073,7 +6073,7 @@
       }
     },
     {
-      "id": 5413,
+      "id": 5489,
       "title": "GET /core-auth/auth/sessions - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6168,7 +6168,7 @@
       }
     },
     {
-      "id": 5414,
+      "id": 5490,
       "title": "DELETE /core-auth/auth/sessions/[^/]+",
       "type": "row",
       "gridPos": {
@@ -6179,7 +6179,7 @@
       }
     },
     {
-      "id": 5415,
+      "id": 5491,
       "title": "DELETE /core-auth/auth/sessions/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -6300,7 +6300,7 @@
       }
     },
     {
-      "id": 5416,
+      "id": 5492,
       "title": "DELETE /core-auth/auth/sessions/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6391,7 +6391,7 @@
       }
     },
     {
-      "id": 5417,
+      "id": 5493,
       "title": "DELETE /core-auth/auth/sessions/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6486,7 +6486,7 @@
       }
     },
     {
-      "id": 5418,
+      "id": 5494,
       "title": "POST /core-auth/auth/validate-session",
       "type": "row",
       "gridPos": {
@@ -6497,7 +6497,7 @@
       }
     },
     {
-      "id": 5419,
+      "id": 5495,
       "title": "POST /core-auth/auth/validate-session - Timings",
       "type": "timeseries",
       "datasource": {
@@ -6618,7 +6618,7 @@
       }
     },
     {
-      "id": 5420,
+      "id": 5496,
       "title": "POST /core-auth/auth/validate-session - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6709,7 +6709,7 @@
       }
     },
     {
-      "id": 5421,
+      "id": 5497,
       "title": "POST /core-auth/auth/validate-session - Bad RPS",
       "type": "timeseries",
       "datasource": {

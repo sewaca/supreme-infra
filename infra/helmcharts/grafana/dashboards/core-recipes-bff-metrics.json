@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 2619,
+      "id": 2659,
       "panels": [
         {
-          "id": 2617,
+          "id": 2657,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 2618,
+          "id": 2658,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 2620,
+      "id": 2660,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 2621,
+      "id": 2661,
       "title": "GET /core-recipes-bff/api/status",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 2622,
+      "id": 2662,
       "title": "GET /core-recipes-bff/api/status - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 2623,
+      "id": 2663,
       "title": "GET /core-recipes-bff/api/status - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 2624,
+      "id": 2664,
       "title": "GET /core-recipes-bff/api/status - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 2625,
+      "id": 2665,
       "title": "GET /core-recipes-bff/recipes",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 2626,
+      "id": 2666,
       "title": "GET /core-recipes-bff/recipes - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 2627,
+      "id": 2667,
       "title": "GET /core-recipes-bff/recipes - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 2628,
+      "id": 2668,
       "title": "GET /core-recipes-bff/recipes - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 2629,
+      "id": 2669,
       "title": "DELETE /core-recipes-bff/recipes/[^/]+",
       "type": "row",
       "gridPos": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 2630,
+      "id": 2670,
       "title": "DELETE /core-recipes-bff/recipes/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1859,7 +1859,7 @@
       }
     },
     {
-      "id": 2631,
+      "id": 2671,
       "title": "DELETE /core-recipes-bff/recipes/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1950,7 +1950,7 @@
       }
     },
     {
-      "id": 2632,
+      "id": 2672,
       "title": "DELETE /core-recipes-bff/recipes/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 2633,
+      "id": 2673,
       "title": "GET /core-recipes-bff/recipes/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": 2634,
+      "id": 2674,
       "title": "GET /core-recipes-bff/recipes/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2177,7 +2177,7 @@
       }
     },
     {
-      "id": 2635,
+      "id": 2675,
       "title": "GET /core-recipes-bff/recipes/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2268,7 +2268,7 @@
       }
     },
     {
-      "id": 2636,
+      "id": 2676,
       "title": "GET /core-recipes-bff/recipes/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 2637,
+      "id": 2677,
       "title": "PUT /core-recipes-bff/recipes/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2374,7 +2374,7 @@
       }
     },
     {
-      "id": 2638,
+      "id": 2678,
       "title": "PUT /core-recipes-bff/recipes/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2495,7 +2495,7 @@
       }
     },
     {
-      "id": 2639,
+      "id": 2679,
       "title": "PUT /core-recipes-bff/recipes/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2586,7 +2586,7 @@
       }
     },
     {
-      "id": 2640,
+      "id": 2680,
       "title": "PUT /core-recipes-bff/recipes/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2681,7 +2681,7 @@
       }
     },
     {
-      "id": 2641,
+      "id": 2681,
       "title": "POST /core-recipes-bff/recipes/[^/]+/like",
       "type": "row",
       "gridPos": {
@@ -2692,7 +2692,7 @@
       }
     },
     {
-      "id": 2642,
+      "id": 2682,
       "title": "POST /core-recipes-bff/recipes/:id/like - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2813,7 +2813,7 @@
       }
     },
     {
-      "id": 2643,
+      "id": 2683,
       "title": "POST /core-recipes-bff/recipes/:id/like - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2904,7 +2904,7 @@
       }
     },
     {
-      "id": 2644,
+      "id": 2684,
       "title": "POST /core-recipes-bff/recipes/:id/like - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2999,7 +2999,7 @@
       }
     },
     {
-      "id": 2645,
+      "id": 2685,
       "title": "POST /core-recipes-bff/recipes/propose",
       "type": "row",
       "gridPos": {
@@ -3010,7 +3010,7 @@
       }
     },
     {
-      "id": 2646,
+      "id": 2686,
       "title": "POST /core-recipes-bff/recipes/propose - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3131,7 +3131,7 @@
       }
     },
     {
-      "id": 2647,
+      "id": 2687,
       "title": "POST /core-recipes-bff/recipes/propose - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3222,7 +3222,7 @@
       }
     },
     {
-      "id": 2648,
+      "id": 2688,
       "title": "POST /core-recipes-bff/recipes/propose - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3317,7 +3317,7 @@
       }
     },
     {
-      "id": 2649,
+      "id": 2689,
       "title": "POST /core-recipes-bff/recipes/proposed/[^/]+/publish",
       "type": "row",
       "gridPos": {
@@ -3328,7 +3328,7 @@
       }
     },
     {
-      "id": 2650,
+      "id": 2690,
       "title": "POST /core-recipes-bff/recipes/proposed/:id/publish - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3449,7 +3449,7 @@
       }
     },
     {
-      "id": 2651,
+      "id": 2691,
       "title": "POST /core-recipes-bff/recipes/proposed/:id/publish - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3540,7 +3540,7 @@
       }
     },
     {
-      "id": 2652,
+      "id": 2692,
       "title": "POST /core-recipes-bff/recipes/proposed/:id/publish - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3635,7 +3635,7 @@
       }
     },
     {
-      "id": 2653,
+      "id": 2693,
       "title": "GET /core-recipes-bff/recipes/proposed/all",
       "type": "row",
       "gridPos": {
@@ -3646,7 +3646,7 @@
       }
     },
     {
-      "id": 2654,
+      "id": 2694,
       "title": "GET /core-recipes-bff/recipes/proposed/all - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3767,7 +3767,7 @@
       }
     },
     {
-      "id": 2655,
+      "id": 2695,
       "title": "GET /core-recipes-bff/recipes/proposed/all - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3858,7 +3858,7 @@
       }
     },
     {
-      "id": 2656,
+      "id": 2696,
       "title": "GET /core-recipes-bff/recipes/proposed/all - Bad RPS",
       "type": "timeseries",
       "datasource": {
