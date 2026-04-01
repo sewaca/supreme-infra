@@ -71,6 +71,7 @@ export function ChatView({
   useEffect(() => {
     if (messages.length > 0) {
       markAsRead(conversation.id, messages[0].id);
+      window.dispatchEvent(new CustomEvent('conversation-read', { detail: { conversationId: conversation.id } }));
     }
   }, [conversation.id]);
 
@@ -172,7 +173,10 @@ export function ChatView({
           return [incoming, ...prev];
         });
         const mid = data.id;
-        if (mid != null) markAsRead(conversation.id, String(mid));
+        if (mid != null) {
+          markAsRead(conversation.id, String(mid));
+          window.dispatchEvent(new CustomEvent('conversation-read', { detail: { conversationId: conversation.id } }));
+        }
         return;
       }
       if (wsEvent.type === 'message_edited') {

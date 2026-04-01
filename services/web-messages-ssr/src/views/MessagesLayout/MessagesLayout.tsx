@@ -47,6 +47,16 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
     return () => window.removeEventListener('conversation-updated', handler as EventListener);
   }, [updateConversation]);
 
+  // Reset unread badge when the user reads a conversation
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      const { conversationId } = e.detail;
+      setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, unread_count: 0 } : c)));
+    };
+    window.addEventListener('conversation-read', handler as EventListener);
+    return () => window.removeEventListener('conversation-read', handler as EventListener);
+  }, []);
+
   const handleWsMessage = useCallback((event: WsClientEvent) => {
     if (event.type === 'new_message') {
       const cid = event.data.conversation_id;

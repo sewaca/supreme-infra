@@ -53,6 +53,7 @@ export function MessageInput({
       setContent('');
     }
     setSending(false);
+    textFieldRef.current?.focus();
   }, [content, sending, onSend]);
 
   const handleKeyDown = useCallback(
@@ -134,7 +135,7 @@ export function MessageInput({
         </Box>
       )}
 
-      <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5, p: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, p: 1 }}>
         <IconButton size="small" onClick={() => fileInputRef.current?.click()}>
           <AttachFileIcon fontSize="small" />
         </IconButton>
