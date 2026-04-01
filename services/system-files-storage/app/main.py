@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from _auth_routes_generated import AUTH_ROUTES
@@ -9,6 +10,8 @@ from app.config import settings
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.routers import status, upload
 from app.s3 import ensure_bucket
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager

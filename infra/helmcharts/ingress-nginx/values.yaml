@@ -292,7 +292,7 @@ ingress:
         - path: /system-files-storage/upload
           method: POST
       extraAnnotations:
-        nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+        nginx.ingress.kubernetes.io/proxy-body-size: 20m
     - service: web-auth-ssr
       port: 80
       type: next

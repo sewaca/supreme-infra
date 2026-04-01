@@ -876,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 51,
+      "id": 59,
       "panels": [
         {
-          "id": 49,
+          "id": 57,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -970,7 +970,7 @@
           }
         },
         {
-          "id": 50,
+          "id": 58,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1069,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 52,
+      "id": 60,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1080,7 +1080,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 61,
       "title": "POST /system-files-storage/upload",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 54,
+      "id": 62,
       "title": "POST /system-files-storage/upload - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1212,7 +1212,7 @@
       }
     },
     {
-      "id": 55,
+      "id": 63,
       "title": "POST /system-files-storage/upload - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1303,7 +1303,7 @@
       }
     },
     {
-      "id": 56,
+      "id": 64,
       "title": "POST /system-files-storage/upload - Bad RPS",
       "type": "timeseries",
       "datasource": {

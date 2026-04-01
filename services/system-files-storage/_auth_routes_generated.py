@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass
 from typing import Literal
 
-AuthLevel = Literal["none", "valid"]
+AuthLevel = Literal['none', 'valid']
 
 
 @dataclass
@@ -16,5 +16,5 @@ class AuthRoute:
 
 
 AUTH_ROUTES: list[AuthRoute] = [
-    AuthRoute(path=re.compile(r"^/system-files-storage/upload$"), method="POST", auth_level="valid"),
+    AuthRoute(path=re.compile(r'^/system-files-storage/upload$'), method='POST', auth_level='valid'),
 ]

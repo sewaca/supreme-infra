@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 799,
+      "id": 819,
       "panels": [
         {
-          "id": 797,
+          "id": 817,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 798,
+          "id": 818,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 800,
+      "id": 820,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 801,
+      "id": 821,
       "title": "POST /api/caldav-setup",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 802,
+      "id": 822,
       "title": "POST /api/caldav-setup - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 803,
+      "id": 823,
       "title": "POST /api/caldav-setup - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 804,
+      "id": 824,
       "title": "POST /api/caldav-setup - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 805,
+      "id": 825,
       "title": "GET /api/schedule",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 806,
+      "id": 826,
       "title": "GET /api/schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 807,
+      "id": 827,
       "title": "GET /api/schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 808,
+      "id": 828,
       "title": "GET /api/schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 809,
+      "id": 829,
       "title": "GET /schedule",
       "type": "row",
       "gridPos": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 810,
+      "id": 830,
       "title": "GET /schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1859,7 +1859,7 @@
       }
     },
     {
-      "id": 811,
+      "id": 831,
       "title": "GET /schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1950,7 +1950,7 @@
       }
     },
     {
-      "id": 812,
+      "id": 832,
       "title": "GET /schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 813,
+      "id": 833,
       "title": "GET /schedule/group",
       "type": "row",
       "gridPos": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": 814,
+      "id": 834,
       "title": "GET /schedule/group - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2177,7 +2177,7 @@
       }
     },
     {
-      "id": 815,
+      "id": 835,
       "title": "GET /schedule/group - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2268,7 +2268,7 @@
       }
     },
     {
-      "id": 816,
+      "id": 836,
       "title": "GET /schedule/group - Bad RPS",
       "type": "timeseries",
       "datasource": {

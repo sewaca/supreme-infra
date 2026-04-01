@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 1325,
+      "id": 1341,
       "panels": [
         {
-          "id": 1323,
+          "id": 1339,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 1324,
+          "id": 1340,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 1326,
+      "id": 1342,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 1327,
+      "id": 1343,
       "title": "GET /forgot-password",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 1328,
+      "id": 1344,
       "title": "GET /forgot-password - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 1329,
+      "id": 1345,
       "title": "GET /forgot-password - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 1330,
+      "id": 1346,
       "title": "GET /forgot-password - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 1331,
+      "id": 1347,
       "title": "GET /login",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 1332,
+      "id": 1348,
       "title": "GET /login - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 1333,
+      "id": 1349,
       "title": "GET /login - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 1334,
+      "id": 1350,
       "title": "GET /login - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 1335,
+      "id": 1351,
       "title": "GET /register",
       "type": "row",
       "gridPos": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 1336,
+      "id": 1352,
       "title": "GET /register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1859,7 +1859,7 @@
       }
     },
     {
-      "id": 1337,
+      "id": 1353,
       "title": "GET /register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1950,7 +1950,7 @@
       }
     },
     {
-      "id": 1338,
+      "id": 1354,
       "title": "GET /register - Bad RPS",
       "type": "timeseries",
       "datasource": {

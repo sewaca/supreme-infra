@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import uuid
 from io import BytesIO
 
@@ -8,6 +9,8 @@ from botocore.client import Config
 from PIL import Image
 
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 s3_client = boto3.client(
     "s3",
@@ -18,28 +21,55 @@ s3_client = boto3.client(
     region_name=settings.s3_region,
 )
 
+_bucket_ready = False
+
 
 def _ensure_bucket() -> None:
+    global _bucket_ready
+    if _bucket_ready:
+        return
     try:
         s3_client.head_bucket(Bucket=settings.s3_bucket)
-    except Exception:
-        s3_client.create_bucket(Bucket=settings.s3_bucket)
-        s3_client.put_bucket_policy(
-            Bucket=settings.s3_bucket,
-            Policy=json.dumps(
-                {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": "*",
-                            "Action": "s3:GetObject",
-                            "Resource": f"arn:aws:s3:::{settings.s3_bucket}/*",
-                        }
-                    ],
-                }
-            ),
-        )
+    except Exception as e:
+        from botocore.exceptions import EndpointConnectionError, NoCredentialsError
+
+        if isinstance(e, EndpointConnectionError):
+            raise RuntimeError(
+                f"Cannot connect to MinIO at {settings.s3_endpoint!r}. "
+                f"Check S3_ENDPOINT env var (current: {settings.s3_endpoint!r}). "
+                f"In Kubernetes the correct value is: http://minio.default.svc.cluster.local:9000"
+            ) from None
+        if isinstance(e, NoCredentialsError):
+            raise RuntimeError(
+                "MinIO credentials not set. "
+                "Check S3_ACCESS_KEY and S3_SECRET_KEY env vars."
+            ) from None
+
+        # Bucket doesn't exist — create it
+        try:
+            s3_client.create_bucket(Bucket=settings.s3_bucket)
+            s3_client.put_bucket_policy(
+                Bucket=settings.s3_bucket,
+                Policy=json.dumps(
+                    {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Principal": "*",
+                                "Action": "s3:GetObject",
+                                "Resource": f"arn:aws:s3:::{settings.s3_bucket}/*",
+                            }
+                        ],
+                    }
+                ),
+            )
+        except Exception as create_err:
+            raise RuntimeError(
+                f"MinIO reachable at {settings.s3_endpoint!r} but failed to create "
+                f"bucket {settings.s3_bucket!r}: {create_err}"
+            ) from None
+    _bucket_ready = True
 
 
 async def ensure_bucket() -> None:
@@ -66,6 +96,7 @@ def _generate_thumbnail(image_bytes: bytes, max_size: tuple = (300, 300)) -> byt
 
 
 def _put_object(content: bytes, key: str, mime_type: str) -> str:
+    _ensure_bucket()
     s3_client.put_object(
         Bucket=settings.s3_bucket,
         Key=key,
