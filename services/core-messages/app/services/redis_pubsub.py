@@ -57,7 +57,12 @@ class RedisPubSub:
         payload = json.dumps({"target_user_id": str(user_id), "event": event}, default=str)
         try:
             await self._pub.publish(CHANNEL, payload)
+            print(
+                f"[redis] publish user={user_id} type={event.get('type')} channel={CHANNEL}",
+                flush=True,
+            )
         except Exception as exc:
+            print(f"[redis] publish FAILED user={user_id}: {exc}", flush=True)
             logger.error("Redis publish failed user=%s: %s", user_id, exc, exc_info=True)
 
     async def _listener(self, pubsub) -> None:
@@ -69,9 +74,16 @@ class RedisPubSub:
                     data = json.loads(message["data"])
                     user_id = UUID(data["target_user_id"])
                     event = data["event"]
+                    local_conns = 0
                     if self._ws_manager is not None:
+                        local_conns = len(self._ws_manager.active_connections.get(user_id, []))
                         await self._ws_manager.send_local(user_id, event)
+                    print(
+                        f"[redis] received user={user_id} type={event.get('type')} local_conns={local_conns}",
+                        flush=True,
+                    )
                 except Exception as exc:
+                    print(f"[redis] listener parse error: {exc}", flush=True)
                     logger.warning("Redis listener parse error: %s", exc, exc_info=True)
         except asyncio.CancelledError:
             pass
