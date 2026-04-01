@@ -8,18 +8,23 @@ import { FileAttachment } from '../FileAttachment/FileAttachment';
 import { type MessageAction, MessageContextMenu } from '../MessageContextMenu/MessageContextMenu';
 import styles from './ChatBubble.module.css';
 
+const SWIPE_THRESHOLD = 50;
+const SWIPE_MAX = 68;
+
 interface Props {
   message: Message;
   isOwn: boolean;
   canReplyInDm?: boolean;
   onAction?: (action: MessageAction, message: Message) => void;
   onScrollToMessage?: (messageId: string) => void;
-  /** Двойной клик по телу сообщения — ответ (или ответ в ЛС в режиме рассылки) */
+  /** Ответ: двойной клик (desktop) или свайп влево (touch) */
   onDoubleClickReply?: () => void;
   /** Скрыть аватарку (для сгруппированных сообщений — аватар рендерится снаружи) */
   showAvatar?: boolean;
   /** Убрать max-width wrapper (когда ограничение задаётся снаружи группой) */
   noMaxWidth?: boolean;
+  /** Первое сообщение в группе — показывать имя отправителя */
+  isFirstInGroup?: boolean;
 }
 
 export function ChatBubble({
@@ -31,9 +36,15 @@ export function ChatBubble({
   onDoubleClickReply,
   showAvatar = true,
   noMaxWidth = false,
+  isFirstInGroup = true,
 }: Props) {
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+  const [swipeOffset, setSwipeOffset] = useState(0);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const isSwipingRef = useRef(false);
+  const swipeTriggeredRef = useRef(false);
 
   const openMenu = (top: number, left: number) => setMenuPos({ top, left });
   const closeMenu = () => setMenuPos(null);
@@ -51,7 +62,44 @@ export function ChatBubble({
 
   const handlePointerUp = () => clearTimeout(longPressTimer.current);
 
+  // Swipe-to-reply (touch only, left swipe)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    isSwipingRef.current = false;
+    swipeTriggeredRef.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (swipeTriggeredRef.current) return;
+    const dx = e.touches[0].clientX - touchStartX.current;
+    const dy = e.touches[0].clientY - touchStartY.current;
+
+    if (!isSwipingRef.current) {
+      // Ignore if primarily vertical (scroll) or rightward
+      if (Math.abs(dx) < Math.abs(dy) || dx >= 0) return;
+      isSwipingRef.current = true;
+      clearTimeout(longPressTimer.current);
+    }
+
+    const offset = Math.max(dx, -SWIPE_MAX);
+    setSwipeOffset(offset);
+
+    if (offset <= -SWIPE_THRESHOLD) {
+      swipeTriggeredRef.current = true;
+      onDoubleClickReply?.();
+      navigator.vibrate?.(8);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    isSwipingRef.current = false;
+    setSwipeOffset(0);
+  };
+
   const handleAction = (action: MessageAction) => onAction?.(action, message);
+
+  const isSwiping = swipeOffset !== 0;
 
   return (
     <Box
@@ -60,6 +108,15 @@ export function ChatBubble({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
+      onTouchStart={onDoubleClickReply ? handleTouchStart : undefined}
+      onTouchMove={onDoubleClickReply ? handleTouchMove : undefined}
+      onTouchEnd={onDoubleClickReply ? handleTouchEnd : undefined}
+      sx={{
+        transform: isSwiping ? `translateX(${swipeOffset}px)` : undefined,
+        transition: isSwiping ? 'none' : 'transform 0.22s ease-out',
+        willChange: isSwiping ? 'transform' : undefined,
+        position: 'relative',
+      }}
     >
       {!isOwn && showAvatar && (
         <Avatar
@@ -89,7 +146,7 @@ export function ChatBubble({
           onDoubleClickReply();
         }}
       >
-        {!isOwn && (
+        {!isOwn && isFirstInGroup && (
           <Typography variant="caption" fontWeight={600} color="primary.main" sx={{ display: 'block', mb: 0.25 }}>
             {message.sender_name} {message.sender_last_name}
           </Typography>

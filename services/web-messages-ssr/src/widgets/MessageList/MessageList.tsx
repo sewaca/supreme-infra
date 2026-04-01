@@ -167,8 +167,11 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
 
         if (isOwn) {
           return (
-            <Box key={group.key} sx={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              {groupMsgs.map((msg) => (
+            <Box
+              key={group.key}
+              sx={{ display: 'flex', flexDirection: 'column', gap: '2px', alignSelf: 'flex-end', maxWidth: '75%' }}
+            >
+              {groupMsgs.map((msg, idx) => (
                 <Box
                   key={msg.id}
                   ref={(el) => {
@@ -180,6 +183,8 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
                   <ChatBubble
                     message={msg}
                     isOwn={true}
+                    noMaxWidth={true}
+                    isFirstInGroup={idx === 0}
                     canReplyInDm={canReplyInDm}
                     onAction={onAction}
                     onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
@@ -217,7 +222,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
               {firstMsg.sender_name[0]}
             </Avatar>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0, flex: 1 }}>
-              {groupMsgs.map((msg) => (
+              {groupMsgs.map((msg, idx) => (
                 <Box
                   key={msg.id}
                   ref={(el) => {
@@ -231,6 +236,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
                     isOwn={false}
                     showAvatar={false}
                     noMaxWidth={true}
+                    isFirstInGroup={idx === 0}
                     canReplyInDm={canReplyInDm}
                     onAction={onAction}
                     onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}

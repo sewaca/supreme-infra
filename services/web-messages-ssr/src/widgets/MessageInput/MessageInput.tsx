@@ -245,6 +245,7 @@ export function MessageInput({
           sx={{ '& .MuiOutlinedInput-root fieldset': { border: 'none' } }}
         />
         <IconButton
+          onMouseDown={(e) => e.preventDefault()}
           onClick={handleSend}
           disabled={!canSend}
           sx={{
