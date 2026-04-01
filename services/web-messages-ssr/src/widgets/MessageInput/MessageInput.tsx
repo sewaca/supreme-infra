@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ReplyIcon from '@mui/icons-material/Reply';
 import SendIcon from '@mui/icons-material/Send';
-import { Box, Chip, CircularProgress, IconButton, LinearProgress, TextField, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, LinearProgress, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UploadedFile } from '../../../app/messages/actions';
 import type { Message } from '../../entities/Message/types';
@@ -181,25 +181,46 @@ export function MessageInput({
 
       {/* Pending files */}
       {pendingFiles.length > 0 && !editingMessage && (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, px: 1.5, pt: 0.75 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, px: 1.5, pt: 1 }}>
           {pendingFiles.map((f, i) => (
-            <Chip
+            <Box
               key={`${f.name}-${f.size}-${i.toString(16)}`}
-              icon={<InsertDriveFileIcon fontSize="small" />}
-              label={`${f.name} · ${formatSize(f.size)}`}
-              size="small"
-              onDelete={() => removeFile(i)}
-              sx={{ maxWidth: 240 }}
-            />
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.75,
+                pl: 1,
+                pr: 0.25,
+                py: 0.5,
+                bgcolor: 'action.selected',
+                borderRadius: 2,
+                maxWidth: 220,
+                minWidth: 0,
+              }}
+            >
+              <InsertDriveFileIcon sx={{ fontSize: 15, color: 'primary.main', flexShrink: 0 }} />
+              <Typography
+                variant="caption"
+                sx={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+              >
+                {f.name}
+              </Typography>
+              <Typography variant="caption" color="text.disabled" sx={{ flexShrink: 0, px: 0.5 }}>
+                {formatSize(f.size)}
+              </Typography>
+              <IconButton size="small" onClick={() => removeFile(i)} sx={{ p: 0.25, flexShrink: 0 }}>
+                <CloseIcon sx={{ fontSize: 13 }} />
+              </IconButton>
+            </Box>
           ))}
         </Box>
       )}
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, p: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5, px: 1, py: 0.75 }}>
         {!editingMessage && (
           <>
-            <IconButton size="small" onClick={() => fileInputRef.current?.click()} disabled={sending}>
-              <AttachFileIcon fontSize="small" />
+            <IconButton onClick={() => fileInputRef.current?.click()} disabled={sending} sx={{ flexShrink: 0 }}>
+              <AttachFileIcon />
             </IconButton>
             <input
               ref={fileInputRef}
@@ -221,8 +242,20 @@ export function MessageInput({
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
+          sx={{ '& .MuiOutlinedInput-root fieldset': { border: 'none' } }}
         />
-        <IconButton color="primary" onClick={handleSend} disabled={!canSend}>
+        <IconButton
+          onClick={handleSend}
+          disabled={!canSend}
+          sx={{
+            flexShrink: 0,
+            bgcolor: 'primary.main',
+            color: 'white',
+            '&:hover': { bgcolor: 'primary.dark' },
+            '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' },
+            transition: 'background-color 0.15s',
+          }}
+        >
           {sending ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
         </IconButton>
       </Box>
