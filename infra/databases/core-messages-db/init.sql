@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS conversation_participant (
     last_read_at TIMESTAMP WITH TIME ZONE,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     joined_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    peer_display_name VARCHAR(500),
     CONSTRAINT uq_conv_participant UNIQUE (conversation_id, user_id)
 );
 
