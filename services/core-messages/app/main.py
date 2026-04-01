@@ -25,17 +25,20 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
 
     pubsub: RedisPubSub | None = None
-    logger.info("Redis URL configured: %s", settings.redis_url or "<not set>")
+    print(f"[core-messages] REDIS_URL={settings.redis_url or '<not set>'}", flush=True)
     if settings.redis_url:
         try:
             pubsub = RedisPubSub(settings.redis_url)
             pubsub.set_ws_manager(ws_manager)
             ws_manager.set_pubsub(pubsub)
             await pubsub.start()
-        except Exception:
+            print("[core-messages] Redis Pub/Sub started OK", flush=True)
+        except Exception as exc:
+            print(f"[core-messages] Redis Pub/Sub FAILED: {exc}", flush=True)
             logger.exception("Failed to start Redis Pub/Sub — falling back to local-only WS delivery")
             pubsub = None
     else:
+        print("[core-messages] REDIS_URL not set — local-only WS delivery", flush=True)
         logger.warning("REDIS_URL not set — WS delivery is local-only (single-pod mode)")
 
     yield
