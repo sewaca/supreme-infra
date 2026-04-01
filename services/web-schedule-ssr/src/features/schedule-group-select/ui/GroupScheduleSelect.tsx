@@ -24,9 +24,7 @@ export function GroupScheduleSelect({ groups, value, onChange }: Props) {
       getOptionLabel={(option) => option}
       isOptionEqualToValue={(a, b) => a === b}
       noOptionsText="Нет совпадений"
-      renderInput={(params) => (
-        <TextField {...params} label="Группа" placeholder="Выберите или найдите группу..." />
-      )}
+      renderInput={(params) => <TextField {...params} label="Группа" placeholder="Выберите или найдите группу..." />}
       sx={{ flex: '1 1 auto', minWidth: 120, maxWidth: 320 }}
     />
   );

@@ -62,20 +62,20 @@ VALUES
      'text', '2026-03-31 14:18:00+00', FALSE)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at)
+INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at, peer_display_name)
 VALUES
     ('f1002001-0000-0000-0000-000000000001',
      'f1000001-0000-0000-0000-000000000001',
      'f1000000-0000-0000-0000-000000000001',
      'member', TRUE,
      'f1001005-0000-0000-0000-000000000001', '2026-03-31 14:19:00+00',
-     FALSE, '2026-03-31 13:45:00+00'),
+     FALSE, '2026-03-31 13:45:00+00', 'Иван Иванов'),
     ('f1002002-0000-0000-0000-000000000001',
      'f1000001-0000-0000-0000-000000000001',
      '550e8400-e29b-41d4-a716-446655440000',
      'member', TRUE,
      'f1001005-0000-0000-0000-000000000001', '2026-03-31 14:19:00+00',
-     FALSE, '2026-03-31 13:45:00+00')
+     FALSE, '2026-03-31 13:45:00+00', 'София Волкова')
 ON CONFLICT (conversation_id, user_id) DO NOTHING;
 
 -- ─── Direct: Иван ↔ Михаил — лабораторная ───────────────────────────────────────
@@ -115,20 +115,20 @@ VALUES
      'text', '2026-03-30 16:40:00+00', FALSE)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at)
+INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at, peer_display_name)
 VALUES
     ('f1002001-0000-0000-0000-000000000002',
      'f1000002-0000-0000-0000-000000000002',
      '550e8400-e29b-41d4-a716-446655440000',
      'member', TRUE,
      'f1001005-0000-0000-0000-000000000002', '2026-03-30 16:41:00+00',
-     FALSE, '2026-03-30 16:10:00+00'),
+     FALSE, '2026-03-30 16:10:00+00', 'Михаил Орлов'),
     ('f1002002-0000-0000-0000-000000000002',
      'f1000002-0000-0000-0000-000000000002',
      'f1000000-0000-0000-0000-000000000002',
      'member', TRUE,
      'f1001005-0000-0000-0000-000000000002', '2026-03-30 16:41:00+00',
-     FALSE, '2026-03-30 16:10:00+00')
+     FALSE, '2026-03-30 16:10:00+00', 'Иван Иванов')
 ON CONFLICT (conversation_id, user_id) DO NOTHING;
 
 -- ─── Direct: София ↔ Анна — подготовка к семинару ──────────────────────────────
@@ -164,25 +164,25 @@ VALUES
      'text', '2026-03-31 11:15:00+00', FALSE)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at)
+INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at, peer_display_name)
 VALUES
     ('f1002001-0000-0000-0000-000000000003',
      'f1000003-0000-0000-0000-000000000003',
      'f1000000-0000-0000-0000-000000000001',
      'member', TRUE,
      'f1001004-0000-0000-0000-000000000003', '2026-03-31 11:16:00+00',
-     FALSE, '2026-03-31 10:50:00+00'),
+     FALSE, '2026-03-31 10:50:00+00', 'Анна Жукова'),
     ('f1002002-0000-0000-0000-000000000003',
      'f1000003-0000-0000-0000-000000000003',
      'f1000000-0000-0000-0000-000000000003',
      'member', TRUE,
      'f1001004-0000-0000-0000-000000000003', '2026-03-31 11:16:00+00',
-     FALSE, '2026-03-31 10:50:00+00')
+     FALSE, '2026-03-31 10:50:00+00', 'София Волкова')
 ON CONFLICT (conversation_id, user_id) DO NOTHING;
 
 -- ─── Broadcast ИКПИ-25 (Мария Петрова): добавить троих студентов ─────────────────
 
-INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at)
+INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at, peer_display_name)
 VALUES
     (
         'f100200d-dddd-dddd-dddd-000000000001',
@@ -190,7 +190,8 @@ VALUES
         'f1000000-0000-0000-0000-000000000001',
         'member', FALSE,
         'dd100001-dddd-dddd-dddd-000000000001', '2026-03-29 10:05:00+00',
-        FALSE, '2026-03-29 10:00:00+00'
+        FALSE, '2026-03-29 10:00:00+00',
+        NULL
     ),
     (
         'f100200d-dddd-dddd-dddd-000000000002',
@@ -198,7 +199,8 @@ VALUES
         'f1000000-0000-0000-0000-000000000002',
         'member', FALSE,
         NULL, NULL,
-        FALSE, '2026-03-29 10:00:00+00'
+        FALSE, '2026-03-29 10:00:00+00',
+        NULL
     ),
     (
         'f100200d-dddd-dddd-dddd-000000000003',
@@ -206,6 +208,7 @@ VALUES
         'f1000000-0000-0000-0000-000000000003',
         'member', FALSE,
         'dd100001-dddd-dddd-dddd-000000000001', '2026-03-29 10:02:00+00',
-        FALSE, '2026-03-29 10:00:00+00'
+        FALSE, '2026-03-29 10:00:00+00',
+        NULL
     )
 ON CONFLICT (conversation_id, user_id) DO NOTHING;

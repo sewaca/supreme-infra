@@ -81,7 +81,7 @@ VALUES
     )
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at)
+INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at, peer_display_name)
 VALUES
     (
         'cc200001-cccc-cccc-cccc-000000000001',
@@ -91,7 +91,8 @@ VALUES
         'cc100003-cccc-cccc-cccc-000000000003',
         '2026-03-29 18:31:00+00',
         FALSE,
-        '2026-03-29 18:00:00+00'
+        '2026-03-29 18:00:00+00',
+        'Мария Петрова'
     ),
     (
         'cc200002-cccc-cccc-cccc-000000000002',
@@ -101,7 +102,8 @@ VALUES
         'cc100003-cccc-cccc-cccc-000000000003',
         '2026-03-29 18:31:00+00',
         FALSE,
-        '2026-03-29 18:00:00+00'
+        '2026-03-29 18:00:00+00',
+        'Иван Иванов'
     )
 ON CONFLICT (conversation_id, user_id) DO NOTHING;
 
@@ -136,7 +138,7 @@ VALUES (
 )
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at)
+INSERT INTO conversation_participant (id, conversation_id, user_id, role, can_reply, last_read_message_id, last_read_at, is_deleted, joined_at, peer_display_name)
 VALUES
     (
         'dd200001-dddd-dddd-dddd-000000000001',
@@ -146,7 +148,8 @@ VALUES
         'dd100001-dddd-dddd-dddd-000000000001',
         '2026-03-29 10:00:00+00',
         FALSE,
-        '2026-03-29 10:00:00+00'
+        '2026-03-29 10:00:00+00',
+        NULL
     ),
     (
         'dd200002-dddd-dddd-dddd-000000000002',
@@ -154,7 +157,8 @@ VALUES
         '550e8400-e29b-41d4-a716-446655440000',
         'member', FALSE,
         NULL, NULL, FALSE,
-        '2026-03-29 10:00:00+00'
+        '2026-03-29 10:00:00+00',
+        NULL
     ),
     (
         'dd200003-dddd-dddd-dddd-000000000003',
@@ -162,6 +166,7 @@ VALUES
         'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
         'member', FALSE,
         NULL, NULL, FALSE,
-        '2026-03-29 10:00:00+00'
+        '2026-03-29 10:00:00+00',
+        NULL
     )
 ON CONFLICT (conversation_id, user_id) DO NOTHING;
