@@ -15,16 +15,49 @@ import type { Message } from '../../src/entities/Message/types';
 import { coreMessagesClient } from '../../src/shared/api/clients';
 import { environment } from '../../src/shared/lib/environment';
 
+export interface UploadedFile {
+  file_url: string;
+  thumbnail_url: string | null;
+  file_name: string;
+  file_size: number;
+  mime_type: string;
+}
+
+export async function attachFilesToMessage(
+  messageId: string,
+  files: UploadedFile[],
+): Promise<import('../../src/entities/Message/types').Attachment[]> {
+  const fetchWithAuth = createServerFetch();
+  const results = await Promise.all(
+    files.map((f) =>
+      fetchWithAuth(`${environment.coreMessagesUrl}/files`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message_id: messageId,
+          file_url: f.file_url,
+          file_name: f.file_name,
+          file_size: f.file_size,
+          mime_type: f.mime_type,
+          thumbnail_url: f.thumbnail_url,
+        }),
+      }).then((r) => r.json()),
+    ),
+  );
+  return results;
+}
+
 export async function sendMessage(
   conversationId: string,
   content: string,
   replyToId?: string | null,
+  contentType: string = 'text',
 ): Promise<{ success: boolean; message?: Message; error?: string }> {
   try {
     const res = await sendMessageConversationsConversationIdMessagesPost({
       client: coreMessagesClient,
       path: { conversation_id: conversationId },
-      body: { content, content_type: 'text', ...(replyToId ? { reply_to_id: replyToId } : {}) } as any,
+      body: { content, content_type: contentType, ...(replyToId ? { reply_to_id: replyToId } : {}) } as any,
     });
 
     if (res.data) {

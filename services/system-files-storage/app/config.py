@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     s3_bucket: str = "messages-attachments"
     s3_region: str = "us-east-1"
     max_file_size_mb: int = 10
-    max_image_size_mb: int = 5
+    max_image_size_mb: int = 10
     public_base_url: str = "https://diploma.sewaca.ru"
 
 

@@ -7,4 +7,6 @@ export const environment = {
   coreClientInfoUrl:
     process.env.CORE_CLIENT_INFO_URL || 'http://core-client-info.default.svc.cluster.local/core-client-info',
   coreAuthUrl: process.env.CORE_AUTH_URL || 'http://core-auth.default.svc.cluster.local/core-auth',
+  filesStorageUrl:
+    process.env.FILES_STORAGE_URL || 'http://system-files-storage.default.svc.cluster.local/system-files-storage',
 };

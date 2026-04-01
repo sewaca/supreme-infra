@@ -10,6 +10,7 @@ export interface AuthRoute {
 
 export const authRoutes: AuthRoute[] = [
   { path: /^\/api\/messages\/history$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/api\/upload$/, method: 'POST', auth_level: 'none' },
   { path: /^\/messages$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/messages\/[^/]+$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/messages\/broadcast$/, method: 'GET', auth_level: 'valid' },

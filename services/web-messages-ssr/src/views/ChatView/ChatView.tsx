@@ -6,11 +6,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  attachFilesToMessage,
   createDirectConversation,
   deleteMessage,
   editMessage,
   markAsRead,
   sendMessage,
+  type UploadedFile,
 } from '../../../app/messages/actions';
 import type { Conversation } from '../../entities/Conversation/types';
 import type { Message } from '../../entities/Message/types';
@@ -76,8 +78,8 @@ export function ChatView({
   }, [conversation.id]);
 
   const handleSend = useCallback(
-    async (content: string, _files?: File[]) => {
-      // If editing — patch message, don't send new
+    async (content: string, uploadedFiles?: UploadedFile[]) => {
+      // If editing — patch message, ignore files
       if (editingMessage) {
         const res = await editMessage(conversation.id, editingMessage.id, content);
         if (res.success && res.message) {
@@ -88,13 +90,21 @@ export function ChatView({
         return { success: false, error: res.error };
       }
 
-      const res = await sendMessage(conversation.id, content, replyTo?.id ?? null);
+      const hasFiles = uploadedFiles && uploadedFiles.length > 0;
+      const contentType = hasFiles && !content ? 'file' : 'text';
+      const res = await sendMessage(conversation.id, content, replyTo?.id ?? null, contentType);
       if (res.success && res.message) {
-        const base = res.message;
+        let message = res.message;
+
+        if (hasFiles) {
+          const attachments = await attachFilesToMessage(message.id, uploadedFiles);
+          message = { ...message, attachments };
+        }
+
         const withReply =
           replyTo != null
             ? {
-                ...base,
+                ...message,
                 reply_to_message: {
                   id: replyTo.id,
                   sender_name: replyTo.sender_name,
@@ -102,7 +112,7 @@ export function ChatView({
                   content: replyTo.content,
                 },
               }
-            : base;
+            : message;
         setMessages((prev) => [withReply, ...prev]);
         setReplyTo(null);
         window.dispatchEvent(

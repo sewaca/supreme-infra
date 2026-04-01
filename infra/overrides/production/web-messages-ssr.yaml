@@ -22,6 +22,7 @@ env:
   CORE_MESSAGES_URL: http://core-messages.default.svc.cluster.local/core-messages
   CORE_CLIENT_INFO_URL: http://core-client-info.default.svc.cluster.local/core-client-info
   CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
+  FILES_STORAGE_URL: http://system-files-storage.default.svc.cluster.local/system-files-storage
 secrets: {}
 resources:
   limits:

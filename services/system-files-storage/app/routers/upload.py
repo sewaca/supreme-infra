@@ -1,8 +1,12 @@
 import asyncio
+import math
 
-from fastapi import APIRouter, HTTPException, UploadFile
+from authorization_py.dependencies import get_current_user
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
 
 from app.config import settings
+from app.rate_limit import check_rate_limit
 from app.s3 import make_key, new_folder, upload_file, upload_thumbnail
 
 router = APIRouter(tags=["upload"])
@@ -49,11 +53,23 @@ async def _process_file(file: UploadFile, folder) -> dict:
 
 
 @router.post("/upload", status_code=201)
-async def upload_attachments(files: list[UploadFile]):
+async def upload_attachments(
+    files: list[UploadFile],
+    current_user: dict = Depends(get_current_user),
+):
     if not files:
         raise HTTPException(status_code=422, detail="No files provided")
     if len(files) > MAX_FILES:
         raise HTTPException(status_code=422, detail=f"Too many files (max {MAX_FILES})")
+
+    user_id: str = current_user["sub"]
+    allowed, retry_after = check_rate_limit(user_id, len(files))
+    if not allowed:
+        return JSONResponse(
+            status_code=429,
+            content={"detail": f"Too many uploads. Retry after {math.ceil(retry_after)} seconds."},
+            headers={"Retry-After": str(math.ceil(retry_after))},
+        )
 
     folder = new_folder()
     results = await asyncio.gather(*[_process_file(f, folder) for f in files])
