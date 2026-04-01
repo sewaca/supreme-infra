@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route!=\"/api/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\", http_status_code=~\"2..|3..\", http_route!=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -337,13 +337,13 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\", http_status_code=~\"[45]..\", http_route!=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Bad RPS ",
+      "title": "Bad RPS",
       "type": "timeseries"
     },
     {
@@ -446,7 +446,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -457,7 +457,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -468,7 +468,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route!=\"/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -564,13 +564,13 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\", http_status_code=~\"2..|3..\", http_route!=\"/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "OR PRS by pod",
+      "title": "OR RPS by pod",
       "type": "timeseries"
     },
     {
@@ -660,7 +660,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\", http_status_code=~\"[45]..\", http_route!=\"/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -679,101 +679,8 @@
       },
       "id": 12,
       "panels": [],
-      "title": "Node JS",
+      "title": "Python Runtime",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "percentunit"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 51
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(nodejs_eventloop_utilization{service=\"web-schedule-ssr\"}) by (pod) or on() vector(0)",
-          "legendFormat": "Event Loop Utilization {{pod}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Event Loop Utilization",
-      "type": "timeseries"
     },
     {
       "datasource": {
@@ -835,6 +742,99 @@
       "gridPos": {
         "h": 8,
         "w": 12,
+        "x": 0,
+        "y": 51
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "process_resident_memory_bytes{service=\"system-files-storage\"}",
+          "legendFormat": "RSS {{pod}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Memory (RSS)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
         "x": 12,
         "y": 59
       },
@@ -859,24 +859,13 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(v8js_memory_heap_used{service=\"web-schedule-ssr\"}) by (pod) or on() vector(0)",
-          "legendFormat": "Heap Used {{pod}}",
+          "expr": "rate(process_cpu_seconds_total{service=\"system-files-storage\"}[1m])",
+          "legendFormat": "CPU {{pod}}",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(v8js_memory_heap_limit{service=\"web-schedule-ssr\"}) by (pod) or on() vector(0)",
-          "legendFormat": "Heap Limit {{pod}}",
-          "range": true,
-          "refId": "B"
         }
       ],
-      "title": "Memory Usage",
+      "title": "CPU Usage",
       "type": "timeseries"
     },
     {
@@ -887,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 739,
+      "id": 35,
       "panels": [
         {
-          "id": 737,
+          "id": 33,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -910,7 +899,7 @@
                 "uid": "VictoriaMetrics"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\", http_status_code=~\"2..|3..\", http_route=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
               "legendFormat": "{{http_status_code}}",
               "range": true,
               "refId": "A"
@@ -981,7 +970,7 @@
           }
         },
         {
-          "id": 738,
+          "id": 34,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1001,7 +990,7 @@
                 "uid": "VictoriaMetrics"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\", http_status_code=~\"[45]..\", http_route=\"/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -1080,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 740,
+      "id": 36,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,8 +1080,8 @@
       }
     },
     {
-      "id": 741,
-      "title": "POST /api/caldav-setup",
+      "id": 37,
+      "title": "POST /system-files-storage/upload",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1102,8 +1091,8 @@
       }
     },
     {
-      "id": 742,
-      "title": "POST /api/caldav-setup - Timings",
+      "id": 38,
+      "title": "POST /system-files-storage/upload - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1122,7 +1111,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/api/caldav-setup\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P50",
           "range": true,
           "refId": "A"
@@ -1133,7 +1122,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/api/caldav-setup\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -1144,7 +1133,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/api/caldav-setup\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -1223,8 +1212,8 @@
       }
     },
     {
-      "id": 743,
-      "title": "POST /api/caldav-setup - OK RPS",
+      "id": 39,
+      "title": "POST /system-files-storage/upload - OK RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1243,7 +1232,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/api/caldav-setup\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
           "legendFormat": "OK (2xx/3xx)",
           "range": true,
           "refId": "A"
@@ -1314,8 +1303,8 @@
       }
     },
     {
-      "id": 744,
-      "title": "POST /api/caldav-setup - Bad RPS",
+      "id": 40,
+      "title": "POST /system-files-storage/upload - Bad RPS",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1334,961 +1323,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/api/caldav-setup\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 745,
-      "title": "GET /api/schedule",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 78
-      }
-    },
-    {
-      "id": 746,
-      "title": "GET /api/schedule - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/api/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/api/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/api/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 747,
-      "title": "GET /api/schedule - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/api/schedule\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 748,
-      "title": "GET /api/schedule - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/api/schedule\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 749,
-      "title": "GET /schedule",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 87
-      }
-    },
-    {
-      "id": 750,
-      "title": "GET /schedule - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 88
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 751,
-      "title": "GET /schedule - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 88
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 752,
-      "title": "GET /schedule - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 88
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/schedule\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 753,
-      "title": "GET /schedule/group",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 96
-      }
-    },
-    {
-      "id": 754,
-      "title": "GET /schedule/group - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 97
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule/group\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule/group\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/schedule/group\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 755,
-      "title": "GET /schedule/group - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 97
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/schedule/group\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 756,
-      "title": "GET /schedule/group - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 97
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/schedule/group\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
           "legendFormat": "Errors (4xx/5xx)",
           "range": true,
           "refId": "A"
@@ -2366,7 +1401,7 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["web-schedule-ssr", "opentelemetry"],
+  "tags": ["system-files-storage", "opentelemetry", "fastapi", "python"],
   "templating": {
     "list": []
   },
@@ -2376,8 +1411,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "web-schedule-ssr Service Metrics",
-  "uid": "web-schedule-ssr-metrics",
+  "title": "system-files-storage Service Metrics",
+  "uid": "system-files-storage-metrics",
   "version": 2,
   "weekStart": ""
 }

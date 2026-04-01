@@ -53,6 +53,7 @@ jobs:
           - core-applications
           - core-schedule
           - core-messages
+          - system-files-storage
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

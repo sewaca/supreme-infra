@@ -1,0 +1,57 @@
+image:
+  repository: system-files-storage
+
+nameOverride: "system-files-storage"
+fullnameOverride: "system-files-storage"
+
+replicas: 1
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8007
+
+metrics:
+  enabled: true
+  port: 9464
+
+secrets:
+  S3_ACCESS_KEY: MINIO_ACCESS_KEY
+  S3_SECRET_KEY: MINIO_SECRET_KEY
+
+env:
+  PORT: "8007"
+  PYTHON_ENV: "production"
+  S3_ENDPOINT: "http://minio.default.svc.cluster.local:9000"
+  S3_BUCKET: "messages-attachments"
+  S3_REGION: "us-east-1"
+  CORE_MESSAGES_URL: "http://core-messages.default.svc.cluster.local/core-messages"
+  CORE_AUTH_URL: "http://core-auth.default.svc.cluster.local/core-auth"
+
+livenessProbe:
+  httpGet:
+    path: /system-files-storage/api/status
+
+readinessProbe:
+  httpGet:
+    path: /system-files-storage/api/status
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 300Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+overrides:
+  production:
+    canary:
+      enabled: true

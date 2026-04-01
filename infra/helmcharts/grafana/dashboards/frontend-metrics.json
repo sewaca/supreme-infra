@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 3244,
+      "id": 3316,
       "panels": [
         {
-          "id": 3242,
+          "id": 3314,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 3243,
+          "id": 3315,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 3245,
+      "id": 3317,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 3246,
+      "id": 3318,
       "title": "GET /",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 3247,
+      "id": 3319,
       "title": "GET / - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 3248,
+      "id": 3320,
       "title": "GET / - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 3249,
+      "id": 3321,
       "title": "GET / - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 3250,
+      "id": 3322,
       "title": "GET /profile-old",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 3251,
+      "id": 3323,
       "title": "GET /profile-old - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 3252,
+      "id": 3324,
       "title": "GET /profile-old - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 3253,
+      "id": 3325,
       "title": "GET /profile-old - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 3254,
+      "id": 3326,
       "title": "GET /proposed-recipes",
       "type": "row",
       "gridPos": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 3255,
+      "id": 3327,
       "title": "GET /proposed-recipes - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1859,7 +1859,7 @@
       }
     },
     {
-      "id": 3256,
+      "id": 3328,
       "title": "GET /proposed-recipes - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1950,7 +1950,7 @@
       }
     },
     {
-      "id": 3257,
+      "id": 3329,
       "title": "GET /proposed-recipes - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 3258,
+      "id": 3330,
       "title": "GET /recipes/[^/]+",
       "type": "row",
       "gridPos": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": 3259,
+      "id": 3331,
       "title": "GET /recipes/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2177,7 +2177,7 @@
       }
     },
     {
-      "id": 3260,
+      "id": 3332,
       "title": "GET /recipes/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2268,7 +2268,7 @@
       }
     },
     {
-      "id": 3261,
+      "id": 3333,
       "title": "GET /recipes/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 3262,
+      "id": 3334,
       "title": "GET /submit-recipe",
       "type": "row",
       "gridPos": {
@@ -2374,7 +2374,7 @@
       }
     },
     {
-      "id": 3263,
+      "id": 3335,
       "title": "GET /submit-recipe - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2495,7 +2495,7 @@
       }
     },
     {
-      "id": 3264,
+      "id": 3336,
       "title": "GET /submit-recipe - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2586,7 +2586,7 @@
       }
     },
     {
-      "id": 3265,
+      "id": 3337,
       "title": "GET /submit-recipe - Bad RPS",
       "type": "timeseries",
       "datasource": {

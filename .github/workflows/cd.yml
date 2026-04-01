@@ -16,6 +16,7 @@ on:
           - core-recipes-bff
           - core-schedule
           - frontend
+          - system-files-storage
           - web-auth-ssr
           - web-documents-ssr
           - web-messages-ssr

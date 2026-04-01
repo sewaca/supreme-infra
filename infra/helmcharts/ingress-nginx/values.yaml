@@ -285,6 +285,14 @@ ingress:
           method: GET
         - path: /submit-recipe
           method: GET
+    - service: system-files-storage
+      port: 80
+      type: fastapi
+      paths:
+        - path: /system-files-storage/upload
+          method: POST
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: 20m
     - service: web-auth-ssr
       port: 80
       type: next

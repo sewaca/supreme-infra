@@ -56,3 +56,5 @@ services:
         name: core_messages_db
         user: core_messages_user
         passwordSecret: DB_PASSWORD
+    - name: system-files-storage
+      description: File storage service — upload files to MinIO, generate thumbnails

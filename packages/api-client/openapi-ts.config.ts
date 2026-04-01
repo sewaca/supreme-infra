@@ -7,6 +7,7 @@ export default defineConfig({
     './schemas/core-applications.json',
     './schemas/core-schedule.json',
     './schemas/core-messages.json',
+    './schemas/system-files-storage.json',
   ],
   output: [
     './src/generated/core-auth',
@@ -14,5 +15,6 @@ export default defineConfig({
     './src/generated/core-applications',
     './src/generated/core-schedule',
     './src/generated/core-messages',
+    './src/system-files-storage',
   ],
 });
