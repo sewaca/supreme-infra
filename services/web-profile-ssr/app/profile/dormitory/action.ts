@@ -2,7 +2,7 @@
 
 import { CoreApplications } from '@supreme-int/api-client/src/index';
 import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export const submitParentAgreement = async ({
   applicationId: _applicationId,
@@ -13,7 +13,7 @@ export const submitParentAgreement = async ({
 }): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
   try {
     await CoreApplications.uploadParentAgreementDormitoryParentAgreementPost({
       client: coreApplicationsClient,

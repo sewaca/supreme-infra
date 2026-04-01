@@ -2,14 +2,14 @@
 
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 type Choice = { id: string; priorities: string[] };
 
 export const saveChoices = async (choices: Choice[]): Promise<boolean> => {
   'use server';
 
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
 
   await Promise.all(
     choices.map((choice) =>

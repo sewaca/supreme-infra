@@ -1,12 +1,12 @@
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { ProfileDataPage } from 'services/web-profile-ssr/src/views/ProfileDataPage/ProfileDataPage';
 
 export const dynamic = 'force-dynamic';
 
 export default async () => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
 
   const res = await CoreClientInfo.getPersonalDataProfilePersonalDataGet({
     client: coreClientInfoClient,

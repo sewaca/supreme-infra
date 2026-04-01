@@ -8,7 +8,6 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { coreAuthClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 async function getAuthUserId(): Promise<string> {
   const token = await getServerAuthToken();
@@ -24,7 +23,7 @@ export const updateSettings = async (settings: {
 }): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
-  const userId = getMockedUserId();
+  const userId = await getAuthUserId();
   try {
     await CoreClientInfo.updateSettingsSettingsPut({
       client: coreClientInfoClient,

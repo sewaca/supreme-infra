@@ -1,14 +1,14 @@
 import { CoreApplications, CoreClientInfo } from '@supreme-int/api-client/src/index';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import { coreApplicationsClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { ScholarshipEmptyPage } from 'services/web-profile-ssr/src/views/ScholarshipEmptyPage/ScholarshipEmptyPage';
 import { ScholarshipPage } from 'services/web-profile-ssr/src/views/ScholarshipPage/ScholarshipPage';
 
 export const dynamic = 'force-dynamic';
 
 export default async () => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
 
   const [userRes, appRes, notificationsRes] = await Promise.all([
     CoreClientInfo.getUserProfileUserGet({

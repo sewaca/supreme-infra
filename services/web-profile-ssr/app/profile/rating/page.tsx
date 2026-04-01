@@ -8,13 +8,13 @@ import type {
   StudentLevel,
 } from 'services/web-profile-ssr/src/entities/Rating/RatingData';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { RatingPage } from 'services/web-profile-ssr/src/views/RatingPage/RatingPage';
 
 export const dynamic = 'force-dynamic';
 
 export default async () => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
 
   const [statsRes, levelRes, rankingsRes, achievementsRes, streakRes, improvementsRes] = await Promise.all([
     CoreClientInfo.getStatsRatingStatsGet({ client: coreClientInfoClient, query: { user_id: userId } }),

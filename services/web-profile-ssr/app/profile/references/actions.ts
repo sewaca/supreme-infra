@@ -10,7 +10,7 @@ import { format, parseISO } from 'date-fns';
 import { PICKUP_POINTS } from 'services/web-profile-ssr/src/entities/Reference/pickupPoints';
 import type { OrderedReference, ReferenceStatus } from 'services/web-profile-ssr/src/entities/Reference/Reference';
 import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export type ReferenceTypeOption = { id: string; label: string };
 
@@ -75,7 +75,7 @@ export const getReferenceOrderOptions = async (): Promise<ReferenceOrderOptions>
 };
 
 export const getReferences = async (): Promise<OrderedReference[]> => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
   const res = await CoreApplications.getReferencesReferencesGet({
     client: coreApplicationsClient,
     query: { user_id: userId },
@@ -90,7 +90,7 @@ export const orderReference = async (params: {
   pickupPointId?: string;
   virtualOnly: boolean;
 }): Promise<{ success: boolean; error?: string }> => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
   try {
     await CoreApplications.createReferenceReferencesOrderPost({
       client: coreApplicationsClient,
@@ -108,7 +108,7 @@ export const orderReference = async (params: {
 };
 
 export const cancelReference = async (referenceId: string): Promise<{ success: boolean; error?: string }> => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
   try {
     await CoreApplications.cancelReferenceReferencesReferenceIdCancelPost({
       client: coreApplicationsClient,
@@ -122,7 +122,7 @@ export const cancelReference = async (referenceId: string): Promise<{ success: b
 };
 
 export const extendStorage = async (referenceId: string): Promise<{ success: boolean; error?: string }> => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
   try {
     await CoreApplications.extendStorageReferencesReferenceIdExtendStoragePost({
       client: coreApplicationsClient,

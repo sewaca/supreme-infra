@@ -1,9 +1,9 @@
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export const getUserPriorities = async (): Promise<Record<string, string[]>> => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
 
   const choicesRes = await CoreClientInfo.getChoicesSubjectsChoicesGet({
     client: coreClientInfoClient,

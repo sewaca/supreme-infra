@@ -1,6 +1,14 @@
-// TODO: extract from JWT token when auth middleware is enabled
-const DEV_USER_ID = '550e8400-e29b-41d4-a716-446655440000';
+import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { cookies } from 'next/headers';
 
-export const getUserId = (): string => {
-  return DEV_USER_ID;
-};
+export async function getAuthInfo() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(TOKEN_KEY)?.value ?? null;
+  const decoded = token ? decodeJwt(token) : null;
+  return {
+    userId: decoded?.sub ?? null,
+    role: decoded?.role ?? null,
+    name: decoded?.name ?? null,
+    token,
+  };
+}

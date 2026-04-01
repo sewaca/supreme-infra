@@ -1,13 +1,13 @@
 import { CoreAuth, CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { coreAuthClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
-import { getMockedUserId } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import type { SessionInfo } from 'services/web-profile-ssr/src/views/SettingsPage/SessionsSection';
 import { SettingsPage } from 'services/web-profile-ssr/src/views/SettingsPage/SettingsPage';
 
 export const dynamic = 'force-dynamic';
 
 export default async () => {
-  const userId = getMockedUserId();
+  const { userId } = await getAuthInfo();
 
   const [settingsRes, sessionsRes] = await Promise.all([
     CoreClientInfo.getSettingsSettingsGet({

@@ -1,12 +1,12 @@
 import { CoreClientInfo } from '@supreme-int/api-client/src/index';
 import { coreClientInfoClient } from 'services/web-documents-ssr/src/shared/api/clients';
-import { getUserId } from 'services/web-documents-ssr/src/shared/api/getUserId';
+import { getAuthInfo } from 'services/web-documents-ssr/src/shared/api/getUserId';
 import { StudentIdBookPage } from 'services/web-documents-ssr/src/views/StudentIdBookPage/StudentIdBookPage';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const userId = getUserId();
+  const { userId } = await getAuthInfo();
 
   const personalDataRes = await CoreClientInfo.getPersonalDataProfilePersonalDataGet({
     client: coreClientInfoClient,
