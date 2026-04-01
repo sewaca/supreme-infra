@@ -18,8 +18,6 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi>=0.49b0",
     "opentelemetry-instrumentation-httpx>=0.49b0",
     "prometheus-client>=0.21.0",
-    "boto3>=1.35.0",
-    "Pillow>=10.0.0",
 ]
 
 [tool.uv]

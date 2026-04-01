@@ -126,7 +126,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/core-files/api/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P80",
           "range": true,
           "refId": "A"
@@ -137,7 +137,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/core-files/api/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P95",
           "range": true,
           "refId": "B"
@@ -148,7 +148,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/core-files/api/status\"}[5m])) by (le)) or on() vector(0)",
           "legendFormat": "P99",
           "range": true,
           "refId": "C"
@@ -241,7 +241,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target!=\"/core-files/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "{{http_status_code}}",
           "range": true,
           "refId": "A"
@@ -337,7 +337,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target!=\"/core-files/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -446,7 +446,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.80, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/core-files/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P80 {{pod}}",
           "range": true,
           "refId": "A"
@@ -457,7 +457,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/core-files/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P95 {{pod}}",
           "range": true,
           "refId": "B"
@@ -468,7 +468,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/system-files-storage/status\"}[5m])) by (le, pod)) or on() vector(0)",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target!=\"/core-files/api/status\"}[5m])) by (le, pod)) or on() vector(0)",
           "legendFormat": "P99 {{pod}}",
           "range": true,
           "refId": "C"
@@ -564,7 +564,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target!=\"/core-files/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} from {{pod}}",
           "range": true,
           "refId": "A"
@@ -660,7 +660,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target!=\"/system-files-storage/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target!=\"/core-files/api/status\"}[1m])) by (http_status_code, pod) or on() vector(0)",
           "legendFormat": "{{http_status_code}} by {{pod}}",
           "range": true,
           "refId": "A"
@@ -876,10 +876,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 35,
+      "id": 47,
       "panels": [
         {
-          "id": 33,
+          "id": 45,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -899,7 +899,7 @@
                 "uid": "VictoriaMetrics"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"2..|3..\", http_target=\"/core-files/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
               "legendFormat": "{{http_status_code}}",
               "range": true,
               "refId": "A"
@@ -970,7 +970,7 @@
           }
         },
         {
-          "id": 34,
+          "id": 46,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -990,7 +990,7 @@
                 "uid": "VictoriaMetrics"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target=\"/system-files-storage/status\"}[1m])) by (http_status_code) or on() vector(0)",
+              "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\", http_status_code=~\"[45]..\", http_target=\"/core-files/api/status\"}[1m])) by (http_status_code) or on() vector(0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -1069,7 +1069,7 @@
       "type": "row"
     },
     {
-      "id": 36,
+      "id": 48,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1077,324 +1077,6 @@
         "w": 24,
         "x": 0,
         "y": 68
-      }
-    },
-    {
-      "id": 37,
-      "title": "POST /system-files-storage/upload",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 69
-      }
-    },
-    {
-      "id": 38,
-      "title": "POST /system-files-storage/upload - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 39,
-      "title": "POST /system-files-storage/upload - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 40,
-      "title": "POST /system-files-storage/upload - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"system-files-storage\",http_target=\"/system-files-storage/upload\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
       }
     }
   ],

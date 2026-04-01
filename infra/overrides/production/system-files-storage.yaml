@@ -19,14 +19,7 @@ env:
   PORT: "8007"
   PYTHON_ENV: production
   LOKI_ENDPOINT: http://loki-gateway.monitoring.svc.cluster.local/otlp/v1/logs
-  S3_ENDPOINT: http://minio.default.svc.cluster.local:9000
-  S3_BUCKET: messages-attachments
-  S3_REGION: us-east-1
-  CORE_MESSAGES_URL: http://core-messages.default.svc.cluster.local/core-messages
-  CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
-secrets:
-  S3_ACCESS_KEY: MINIO_ACCESS_KEY
-  S3_SECRET_KEY: MINIO_SECRET_KEY
+secrets: {}
 resources:
   limits:
     cpu: 300m
@@ -36,7 +29,7 @@ resources:
     memory: 300Mi
 livenessProbe:
   httpGet:
-    path: /system-files-storage/api/status
+    path: /core-files/api/status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 20
@@ -44,7 +37,7 @@ livenessProbe:
   failureThreshold: 5
 readinessProbe:
   httpGet:
-    path: /system-files-storage/api/status
+    path: /core-files/api/status
     port: http
   initialDelaySeconds: 30
   periodSeconds: 20

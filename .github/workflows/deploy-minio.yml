@@ -1,0 +1,274 @@
+name: Deploy MinIO
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Deployment action
+        required: true
+        type: choice
+        options:
+          - upgrade
+          - install
+          - uninstall
+        default: upgrade
+
+env:
+  HELM_VERSION: "v3.16.3"
+  MINIO_RELEASE_NAME: "minio"
+  MINIO_NAMESPACE: "default"
+
+jobs:
+  get-latest-version:
+    name: Get latest MinIO release version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      release_tag: ${{ steps.get-version.outputs.release_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Get latest release version
+        id: get-version
+        run: |
+          ALL_TAGS=$(git tag -l "minio-v*" 2>/dev/null | grep -E "^minio-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
+
+          echo "All tags for minio:"
+          echo "$ALL_TAGS"
+
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+
+          if [ -z "$LATEST_TAG" ]; then
+            VERSION="0.0.0"
+            RELEASE_TAG=""
+            echo "No previous release found for minio, starting from version: $VERSION"
+          else
+            VERSION=$(echo "$LATEST_TAG" | sed "s/^minio-v//")
+            RELEASE_TAG="$LATEST_TAG"
+            echo "Latest release for minio: $LATEST_TAG, version: $VERSION"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+
+  calculate-new-version:
+    name: Calculate new MinIO version
+    needs: get-latest-version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calculate-version.outputs.version }}
+    steps:
+      - name: Calculate new version
+        id: calculate-version
+        env:
+          CURRENT_VERSION: ${{ needs.get-latest-version.outputs.version }}
+        run: |
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "$NEW_VERSION" > new_version.txt
+
+      - name: Upload version file
+        uses: actions/upload-artifact@v5
+        with:
+          name: new-version
+          path: new_version.txt
+
+  create-release-branch:
+    name: Create release branch
+    needs: calculate-new-version
+    if: github.event.inputs.action != 'uninstall'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "246592117+madara-robot@users.noreply.github.com"
+          git config --global user.name "madara-robot"
+
+      - name: Create release branch
+        run: |
+          VERSION=$(cat new_version.txt)
+          BRANCH_NAME="releases/production/minio-${VERSION}"
+
+          git fetch origin
+
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists, skipping creation"
+          else
+            echo "Creating new branch $BRANCH_NAME from main"
+            git checkout main
+            git pull origin main
+            git checkout -b "$BRANCH_NAME"
+            git push -u origin "$BRANCH_NAME"
+            echo "Created branch $BRANCH_NAME"
+          fi
+
+  deploy-minio:
+    name: Deploy MinIO
+    needs: [calculate-new-version, create-release-branch]
+    if: always() && needs.calculate-new-version.result == 'success' && (needs.create-release-branch.result == 'success' || needs.create-release-branch.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Yandex Cloud
+        uses: ./.github/workflows/jobs/setup-yandex-cloud
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
+          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
+          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Check if release exists
+        id: check-release
+        run: |
+          if helm list -n "${{ env.MINIO_NAMESPACE }}" | grep -q "^${{ env.MINIO_RELEASE_NAME }}"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install MinIO
+        if: github.event.inputs.action == 'install' && steps.check-release.outputs.exists == 'false'
+        run: |
+          echo "Installing MinIO..."
+          helm install ${{ env.MINIO_RELEASE_NAME }} ./infra/helmcharts/minio \
+            --namespace ${{ env.MINIO_NAMESPACE }} \
+            --set "secrets.MINIO_ROOT_PASSWORD=${{ secrets.MINIO_SECRET_KEY }}" \
+            --wait \
+            --timeout 3m
+          echo "MinIO installed successfully"
+
+      - name: Upgrade MinIO
+        if: github.event.inputs.action == 'upgrade'
+        run: |
+          echo "Upgrading MinIO..."
+          helm upgrade ${{ env.MINIO_RELEASE_NAME }} ./infra/helmcharts/minio \
+            --namespace ${{ env.MINIO_NAMESPACE }} \
+            --install \
+            --set "secrets.MINIO_ROOT_PASSWORD=${{ secrets.MINIO_SECRET_KEY }}" \
+            --wait \
+            --timeout 3m
+          echo "MinIO upgraded successfully"
+
+      - name: Uninstall MinIO
+        if: github.event.inputs.action == 'uninstall'
+        run: |
+          if [ "${{ steps.check-release.outputs.exists }}" = "false" ]; then
+            echo "Release ${{ env.MINIO_RELEASE_NAME }} does not exist, nothing to uninstall"
+            exit 0
+          fi
+
+          echo "Uninstalling MinIO..."
+          helm uninstall ${{ env.MINIO_RELEASE_NAME }} \
+            --namespace ${{ env.MINIO_NAMESPACE }} \
+            --wait
+
+          echo "MinIO uninstalled"
+          echo "Note: PersistentVolumeClaim may still exist:"
+          echo "  kubectl delete pvc minio-pvc -n ${{ env.MINIO_NAMESPACE }}"
+
+      - name: Verify MinIO deployment
+        if: github.event.inputs.action != 'uninstall'
+        run: |
+          echo "Verifying MinIO..."
+          kubectl wait --for=condition=ready pod \
+            -l app=minio \
+            -n ${{ env.MINIO_NAMESPACE }} \
+            --timeout=120s
+
+          POD_NAME=$(kubectl get pods \
+            -l app=minio \
+            -n ${{ env.MINIO_NAMESPACE }} \
+            -o jsonpath='{.items[0].metadata.name}')
+
+          echo "Pod: $POD_NAME"
+          echo ""
+          echo "MinIO Information:"
+          echo "  Release: ${{ env.MINIO_RELEASE_NAME }}"
+          echo "  Namespace: ${{ env.MINIO_NAMESPACE }}"
+          echo "  API: minio.default.svc.cluster.local:9000"
+          echo "  Console: minio.default.svc.cluster.local:9001"
+
+  create-github-release:
+    name: Create GitHub release
+    needs: [calculate-new-version, create-release-branch, deploy-minio]
+    if: |
+      always() &&
+      needs.deploy-minio.result == 'success' &&
+      github.event.inputs.action != 'uninstall'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Download version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version
+
+      - name: Install GitHub CLI
+        uses: ./.github/workflows/jobs/install-github-cli
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          VERSION=$(cat new_version.txt)
+          TAG_NAME="minio-v${VERSION}"
+          BRANCH_NAME="releases/production/minio-${VERSION}"
+
+          if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists, skipping"
+            exit 0
+          fi
+
+          gh release create "$TAG_NAME" \
+            --title "Release MinIO v${VERSION}" \
+            --notes "$(cat <<EOF
+          # Release MinIO v${VERSION}
+
+          MinIO deployment completed successfully.
+
+          ## Deployment Details
+          - **Namespace**: \`${{ env.MINIO_NAMESPACE }}\`
+          - **Release Name**: \`${{ env.MINIO_RELEASE_NAME }}\`
+          - **Image**: \`minio/minio:latest\`
+          - **Persistence**: Enabled (10Gi)
+
+          ## Connection
+          - **S3 API**: \`http://minio.default.svc.cluster.local:9000\`
+          - **Console**: \`http://minio.default.svc.cluster.local:9001\`
+          - **Root User**: \`minioadmin\`
+          EOF
+          )" \
+            --target "$BRANCH_NAME" \
+            --repo "$GITHUB_REPOSITORY"

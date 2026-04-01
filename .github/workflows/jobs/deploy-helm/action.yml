@@ -34,6 +34,10 @@ inputs:
     description: "Database password"
     required: false
     default: ""
+  minio-secret-key:
+    description: "MinIO root password (used as S3_SECRET_KEY)"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -50,6 +54,7 @@ runs:
         USE_ATOMIC="${{ inputs.atomic }}"
         JWT_SECRET="${{ inputs.jwt-secret }}"
         DB_PASSWORD="${{ inputs.db-password }}"
+        MINIO_SECRET_KEY="${{ inputs.minio-secret-key }}"
 
         # Determine Helm chart path
         if [ "$SERVICE_TYPE" = "nest" ]; then
@@ -88,6 +93,7 @@ runs:
               --set canary.image.repository="$DOCKER_HUB_USERNAME/supreme" \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
+              --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
               --wait --timeout 5m
           else
             # First deploy: need full values
@@ -100,13 +106,14 @@ runs:
               --set canary.image.repository="$DOCKER_HUB_USERNAME/supreme" \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
+              --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
               --install \
               --wait --timeout 5m
           fi
         else
           # PRODUCTION mode: update stable deployment, disable canary
           echo "Deploying to PRODUCTION (canary disabled)"
-          
+
           if [ "$USE_ATOMIC" = "true" ]; then
             helm upgrade "$SERVICE_NAME" "$CHART_PATH" \
               -f "$OVERRIDES_FILE" \
@@ -115,6 +122,7 @@ runs:
               --set canary.enabled=false \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
+              --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
               --install \
               --wait --timeout 5m \
               --atomic
@@ -126,6 +134,7 @@ runs:
               --set canary.enabled=false \
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
+              --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
               --install \
               --wait --timeout 5m
           fi

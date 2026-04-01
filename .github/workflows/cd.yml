@@ -640,6 +640,7 @@ jobs:
           canary-replicas: ${{ steps.get-replicas.outputs.canary_replicas }}
           jwt-secret: ${{ secrets.JWT_SECRET }}
           db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}
+          minio-secret-key: ${{ secrets.MINIO_SECRET_KEY }}
 
   approve-canary:
     name: Approve canary promotion to production
@@ -782,3 +783,4 @@ jobs:
           atomic: "true"
           jwt-secret: ${{ secrets.JWT_SECRET }}
           db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}
+          minio-secret-key: ${{ secrets.MINIO_SECRET_KEY }}
