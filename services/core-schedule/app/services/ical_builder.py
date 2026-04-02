@@ -31,7 +31,8 @@ def build_ical(days: list[DaySchedule], calendar_name: str, uid_suffix: str) -> 
             summary = f"{_escape(lesson.subject_name)} [{_escape(lesson.lesson_type)}]"
             teacher = lesson.teacher_name or "-"
             classroom = lesson.classroom_name or "-"
-            description = _escape(f"Преподаватель: {teacher}\nАудитория: {classroom}")  # noqa: RUF001
+            group = lesson.group_name or "-"
+            description = _escape(f"Преподаватель: {teacher}\nАудитория: {classroom}\nГруппа: {group}")  # noqa: RUF001
             location = _escape(lesson.classroom_name or "")
 
             lines += [

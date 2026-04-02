@@ -143,6 +143,41 @@ async def resolve_group_schedule(
     )
 
 
+def _merge_parallel_lessons(days: list[DaySchedule]) -> list[DaySchedule]:
+    """Merge same-slot lessons for different groups into one entry (teacher view only)."""
+    merged_days: list[DaySchedule] = []
+    for day in days:
+        seen: dict[tuple, LessonSlot] = {}
+        merged_lessons: list[LessonSlot] = []
+        for lesson in day.lessons:
+            key = (
+                lesson.slot_number,
+                lesson.start_time,
+                lesson.end_time,
+                lesson.subject_name,
+                lesson.lesson_type,
+                lesson.classroom_name,
+                str(lesson.teacher_id),
+                lesson.is_override,
+                lesson.override_comment,
+            )
+            if key in seen:
+                existing = seen[key]
+                existing.group_name = existing.group_name + ", " + lesson.group_name
+            else:
+                seen[key] = lesson
+                merged_lessons.append(lesson)
+        merged_days.append(
+            DaySchedule(
+                date=day.date,
+                day_of_week=day.day_of_week,
+                day_name=day.day_name,
+                lessons=merged_lessons,
+            )
+        )
+    return merged_days
+
+
 async def resolve_teacher_schedule(
     db: AsyncSession, teacher_id: UUID, date_from: date, date_to: date, semester: Semester
 ) -> list[DaySchedule]:
@@ -196,9 +231,10 @@ async def resolve_teacher_schedule(
         .all()
     )
 
-    return _assemble_calendar(
+    days = _assemble_calendar(
         templates, relevant_overrides, session_events, date_from, date_to, semester, teacher_cache, building_cache
     )
+    return _merge_parallel_lessons(days)
 
 
 def _assemble_calendar(
