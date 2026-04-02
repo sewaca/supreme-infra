@@ -13,6 +13,7 @@ export type ScheduleCalendarPageStateParams = {
   initialDate: string | undefined;
   initialViewMode: 'list' | 'calendar';
   scheduleGroupName?: string;
+  scheduleTeacherId?: string;
 };
 
 export function useScheduleCalendarPageState({
@@ -22,12 +23,14 @@ export function useScheduleCalendarPageState({
   initialDate,
   initialViewMode,
   scheduleGroupName,
+  scheduleTeacherId,
 }: ScheduleCalendarPageStateParams) {
   const { allEvents, isFetching, ensureRange } = useScheduleRange(
     initialEvents,
     initialLoadedFrom,
     initialLoadedTo,
     scheduleGroupName,
+    scheduleTeacherId,
   );
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>(initialViewMode);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);

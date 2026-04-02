@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
   const dateFrom = request.nextUrl.searchParams.get('date_from');
   const dateTo = request.nextUrl.searchParams.get('date_to');
   const explicitGroupName = request.nextUrl.searchParams.get('group_name');
+  const explicitTeacherId = request.nextUrl.searchParams.get('teacher_id');
 
   if (!dateFrom || !dateTo) {
     return NextResponse.json({ error: 'date_from and date_to required' }, { status: 400 });
@@ -53,6 +54,11 @@ export async function GET(request: NextRequest) {
 
       scheduleRes = await groupScheduleGroupsGroupNameScheduleGet({
         path: { group_name: explicitGroupName },
+        query: { date_from: dateFrom, date_to: dateTo },
+      });
+    } else if (explicitTeacherId) {
+      scheduleRes = await teacherScheduleTeachersTeacherIdScheduleGet({
+        path: { teacher_id: explicitTeacherId },
         query: { date_from: dateFrom, date_to: dateTo },
       });
     } else if (decoded.role === 'teacher') {

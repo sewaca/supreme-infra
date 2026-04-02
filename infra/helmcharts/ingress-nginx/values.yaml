@@ -379,6 +379,8 @@ ingress:
           method: GET
         - path: /schedule/group
           method: GET
+        - path: /schedule/teacher
+          method: GET
         - path: /web-schedule-ssr/.*
           method: GET
     - service: minio

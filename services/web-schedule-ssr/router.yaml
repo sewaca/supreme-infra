@@ -17,6 +17,9 @@ routes:
   - path: /schedule/group
     method: GET
     auth_level: valid
+  - path: /schedule/teacher
+    method: GET
+    auth_level: valid
   - path: /web-schedule-ssr/.*
     method: GET
     auth_level: none

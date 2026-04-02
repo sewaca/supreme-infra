@@ -2,32 +2,34 @@
 
 import { Autocomplete, TextField } from '@mui/material';
 
+export type Teacher = { id: string; name: string };
+
 type Props = {
-  groups: string[];
+  teachers: Teacher[];
   value: string;
-  onChange: (groupName: string) => void;
+  onChange: (teacherId: string) => void;
 };
 
-export function GroupScheduleSelect({ groups, value, onChange }: Props) {
-  const selected: string | undefined = value && groups.includes(value) ? value : undefined;
+export function TeacherScheduleSelect({ teachers, value, onChange }: Props) {
+  const selected = teachers.find((t) => t.id === value) ?? undefined;
 
   return (
     <Autocomplete
       fullWidth
       size="small"
-      options={groups}
+      options={teachers}
       value={selected}
       onChange={(_, newValue) => {
-        if (newValue !== null) onChange(newValue);
+        if (newValue !== null) onChange(newValue.id);
       }}
       disableClearable
-      getOptionLabel={(option) => option}
-      isOptionEqualToValue={(a, b) => a === b}
+      getOptionLabel={(option) => option.name}
+      isOptionEqualToValue={(a, b) => a.id === b.id}
       noOptionsText="Нет совпадений"
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder="Группа..."
+          placeholder="Преподаватель..."
           sx={{
             '& .MuiInputBase-root': { borderRadius: '20px', fontSize: '0.8125rem', py: '3px' },
             '& .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
@@ -35,7 +37,7 @@ export function GroupScheduleSelect({ groups, value, onChange }: Props) {
           }}
         />
       )}
-      sx={{ flex: '1 1 auto', minWidth: 100, maxWidth: 220 }}
+      sx={{ flex: '1 1 auto', minWidth: 160, maxWidth: 320 }}
     />
   );
 }

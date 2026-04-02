@@ -13,5 +13,6 @@ export const authRoutes: AuthRoute[] = [
   { path: /^\/api\/schedule$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/schedule$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/schedule\/group$/, method: 'GET', auth_level: 'valid' },
+  { path: /^\/schedule\/teacher$/, method: 'GET', auth_level: 'valid' },
   { path: /^\/web-schedule-ssr\/.*$/, method: 'GET', auth_level: 'none' },
 ];
