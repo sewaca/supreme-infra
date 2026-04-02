@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 943,
+      "id": 19,
       "panels": [
         {
-          "id": 941,
+          "id": 17,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 942,
+          "id": 18,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 944,
+      "id": 20,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 945,
+      "id": 21,
       "title": "POST /api/caldav-setup",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 946,
+      "id": 22,
       "title": "POST /api/caldav-setup - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 947,
+      "id": 23,
       "title": "POST /api/caldav-setup - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 948,
+      "id": 24,
       "title": "POST /api/caldav-setup - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,7 +1409,7 @@
       }
     },
     {
-      "id": 949,
+      "id": 25,
       "title": "GET /api/schedule",
       "type": "row",
       "gridPos": {
@@ -1420,7 +1420,7 @@
       }
     },
     {
-      "id": 950,
+      "id": 26,
       "title": "GET /api/schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": 951,
+      "id": 27,
       "title": "GET /api/schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1632,7 +1632,7 @@
       }
     },
     {
-      "id": 952,
+      "id": 28,
       "title": "GET /api/schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1727,7 +1727,7 @@
       }
     },
     {
-      "id": 953,
+      "id": 29,
       "title": "GET /schedule",
       "type": "row",
       "gridPos": {
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "id": 954,
+      "id": 30,
       "title": "GET /schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1859,7 +1859,7 @@
       }
     },
     {
-      "id": 955,
+      "id": 31,
       "title": "GET /schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1950,7 +1950,7 @@
       }
     },
     {
-      "id": 956,
+      "id": 32,
       "title": "GET /schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2045,7 +2045,7 @@
       }
     },
     {
-      "id": 957,
+      "id": 33,
       "title": "GET /schedule/group",
       "type": "row",
       "gridPos": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": 958,
+      "id": 34,
       "title": "GET /schedule/group - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2177,7 +2177,7 @@
       }
     },
     {
-      "id": 959,
+      "id": 35,
       "title": "GET /schedule/group - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2268,7 +2268,7 @@
       }
     },
     {
-      "id": 960,
+      "id": 36,
       "title": "GET /schedule/group - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2363,7 +2363,7 @@
       }
     },
     {
-      "id": 961,
+      "id": 37,
       "title": "GET /schedule/teacher",
       "type": "row",
       "gridPos": {
@@ -2374,7 +2374,7 @@
       }
     },
     {
-      "id": 962,
+      "id": 38,
       "title": "GET /schedule/teacher - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2495,7 +2495,7 @@
       }
     },
     {
-      "id": 963,
+      "id": 39,
       "title": "GET /schedule/teacher - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2586,7 +2586,7 @@
       }
     },
     {
-      "id": 964,
+      "id": 40,
       "title": "GET /schedule/teacher - Bad RPS",
       "type": "timeseries",
       "datasource": {

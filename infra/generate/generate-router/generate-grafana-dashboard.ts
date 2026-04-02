@@ -588,6 +588,24 @@ export function generateRoutePanels(
 }
 
 /**
+ * Максимальный id среди панелей и вложенных панелей (collapsed row и т.д.).
+ * Нужен для стабильной нумерации: id для генерируемых секций считаем только от сохраняемых панелей,
+ * иначе при каждом прогоне max брался бы и со старых route/status панелей и «уползал» вверх.
+ */
+function maxPanelIdRecursive(panels: GrafanaPanel[]): number {
+  let max = 0;
+  for (const p of panels) {
+    if (typeof p.id === 'number') {
+      max = Math.max(max, p.id);
+    }
+    if (p.panels && p.panels.length > 0) {
+      max = Math.max(max, maxPanelIdRecursive(p.panels));
+    }
+  }
+  return max;
+}
+
+/**
  * Обновляет Grafana дашборд для сервиса на основе router.yaml
  */
 export function updateGrafanaDashboard(serviceName: string): void {
@@ -691,8 +709,9 @@ export function updateGrafanaDashboard(serviceName: string): void {
     }
   }
 
-  // 4. Генерируем свёрнутую секцию Status Checks
-  let nextPanelId = Math.max(...dashboard.panels.map((p: GrafanaPanel) => p.id || 0)) + 1;
+  // 4. Генерируем свёрнутую секцию Status Checks (id сразу после сохранённых секций — без учёта старых route/status)
+  const preservedPanels: GrafanaPanel[] = [...mainPanels, ...byPodPanels, ...nodejsPanels];
+  let nextPanelId = maxPanelIdRecursive(preservedPanels) + 1;
 
   const statusChecksResult = createStatusChecksRowPanel(
     serviceName,
