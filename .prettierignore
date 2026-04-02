@@ -17,6 +17,8 @@ __reports
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+packages/api-client/src/generated/**/*
+**/*.generated.*
 
 # Cache
 .cache

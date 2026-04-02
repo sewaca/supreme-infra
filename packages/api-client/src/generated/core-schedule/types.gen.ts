@@ -1436,6 +1436,19 @@ export type UpdateSemesterAdminSemestersSemesterIdPutResponses = {
 
 export type UpdateSemesterAdminSemestersSemesterIdPutResponse = UpdateSemesterAdminSemestersSemesterIdPutResponses[keyof UpdateSemesterAdminSemestersSemesterIdPutResponses];
 
+export type ListTeachersTeachersGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/teachers';
+};
+
+export type ListTeachersTeachersGetResponses = {
+    200: Array<TeacherCacheResponse>;
+};
+
+export type ListTeachersTeachersGetResponse = ListTeachersTeachersGetResponses[keyof ListTeachersTeachersGetResponses];
+
 export type ListTeachersAdminTeachersGetData = {
     body?: never;
     path?: never;

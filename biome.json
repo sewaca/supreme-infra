@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!packages/api-client/src/generated", "!packages/api-client/schemas", "!__reports"]
+    "includes": [
+      "**",
+      "!packages/api-client/src/generated",
+      "!packages/api-client/schemas",
+      "!__reports",
+      "!**/*.generated.*",
+      "infra/helmcharts/grafana/dashboards/*"
+    ]
   },
   "formatter": {
     "enabled": true,

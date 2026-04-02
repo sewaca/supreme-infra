@@ -1,7 +1,7 @@
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
-import type { DaySchedule } from '@supreme-int/api-client/src/generated/core-schedule';
+import type { DaySchedule, TeacherCacheResponse } from '@supreme-int/api-client/src/generated/core-schedule';
 import {
-  listTeachersAdminTeachersGet,
+  listTeachersTeachersGet,
   teacherScheduleTeachersTeacherIdScheduleGet,
 } from '@supreme-int/api-client/src/generated/core-schedule';
 import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
@@ -41,7 +41,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   if (decoded) {
     const [profileRes, teachersRes] = await Promise.all([
       getUserProfileUserGet({ query: { user_id: decoded.sub } }),
-      listTeachersAdminTeachersGet(),
+      listTeachersTeachersGet(),
     ]);
 
     if (profileRes.data) {
@@ -52,7 +52,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     }
 
     if (teachersRes.data && teachersRes.data.length > 0) {
-      teachers = teachersRes.data
+      teachers = (teachersRes.data as TeacherCacheResponse[])
         .map((t) => ({ id: t.id, name: t.name }))
         .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
     } else {

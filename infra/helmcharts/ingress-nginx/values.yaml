@@ -263,6 +263,8 @@ ingress:
           method: GET
         - path: /core-schedule/groups/[^/]+/template
           method: GET
+        - path: /core-schedule/teachers
+          method: GET
         - path: /core-schedule/teachers/[^/]+/exams
           method: GET
         - path: /core-schedule/teachers/[^/]+/schedule

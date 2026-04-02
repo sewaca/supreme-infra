@@ -47,6 +47,7 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r'^/core-schedule/groups/[^/]+/exams$'), method='GET', auth_level='valid'),
     AuthRoute(path=re.compile(r'^/core-schedule/groups/[^/]+/schedule$'), method='GET', auth_level='valid'),
     AuthRoute(path=re.compile(r'^/core-schedule/groups/[^/]+/template$'), method='GET', auth_level='valid'),
+    AuthRoute(path=re.compile(r'^/core-schedule/teachers$'), method='GET', auth_level='none'),
     AuthRoute(path=re.compile(r'^/core-schedule/teachers/[^/]+/exams$'), method='GET', auth_level='valid'),
     AuthRoute(path=re.compile(r'^/core-schedule/teachers/[^/]+/schedule$'), method='GET', auth_level='valid'),
     AuthRoute(path=re.compile(r'^/core-schedule/teachers/[^/]+/template$'), method='GET', auth_level='valid'),

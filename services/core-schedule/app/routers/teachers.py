@@ -2,11 +2,14 @@ from datetime import date
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.models.teacher_cache import TeacherCache
 from app.schemas.schedule import DaySchedule
 from app.schemas.session_event import SessionEventResponse
+from app.schemas.teacher import TeacherCacheResponse
 from app.schemas.template import TemplateResponse
 from app.services.schedule_resolver import (
     get_active_semester,
@@ -17,6 +20,12 @@ from app.services.schedule_resolver import (
 )
 
 router = APIRouter(prefix="/teachers", tags=["teachers"])
+
+
+@router.get("", response_model=list[TeacherCacheResponse])
+async def list_teachers(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(TeacherCache).order_by(TeacherCache.name))
+    return [TeacherCacheResponse(id=t.id, name=t.name) for t in result.scalars().all()]
 
 
 @router.get("/{teacher_id}/schedule", response_model=list[DaySchedule])

@@ -98,6 +98,9 @@ routes:
   - path: /core-schedule/groups/[^/]+/template
     method: GET
     auth_level: valid
+  - path: /core-schedule/teachers
+    method: GET
+    auth_level: none
   - path: /core-schedule/teachers/[^/]+/exams
     method: GET
     auth_level: valid
