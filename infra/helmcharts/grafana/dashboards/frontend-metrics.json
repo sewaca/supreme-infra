@@ -2684,7 +2684,10 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["frontend", "opentelemetry"],
+  "tags": [
+    "frontend",
+    "opentelemetry"
+  ],
   "templating": {
     "list": []
   },
@@ -2694,7 +2697,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Frontend Service Metrics",
+  "title": "frontend Service Metrics",
   "uid": "frontend-metrics",
   "version": 2,
   "weekStart": ""

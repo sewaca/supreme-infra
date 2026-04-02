@@ -6807,7 +6807,12 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["core-auth", "opentelemetry", "fastapi", "python"],
+  "tags": [
+    "core-auth",
+    "opentelemetry",
+    "fastapi",
+    "python"
+  ],
   "templating": {
     "list": []
   },

@@ -3956,7 +3956,10 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["core-recipes-bff", "opentelemetry"],
+  "tags": [
+    "core-recipes-bff",
+    "opentelemetry"
+  ],
   "templating": {
     "list": []
   },

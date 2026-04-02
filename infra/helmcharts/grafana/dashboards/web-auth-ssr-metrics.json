@@ -2048,7 +2048,10 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["web-auth-ssr", "opentelemetry"],
+  "tags": [
+    "web-auth-ssr",
+    "opentelemetry"
+  ],
   "templating": {
     "list": []
   },

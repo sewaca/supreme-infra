@@ -5535,7 +5535,12 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["core-applications", "opentelemetry", "fastapi", "python"],
+  "tags": [
+    "core-applications",
+    "opentelemetry",
+    "fastapi",
+    "python"
+  ],
   "templating": {
     "list": []
   },

@@ -605,6 +605,36 @@ function maxPanelIdRecursive(panels: GrafanaPanel[]): number {
   return max;
 }
 
+const GRAFANA_DASHBOARD_TEMPLATE_DIR = path.join(__dirname, '../generate-service/templates/common');
+
+/**
+ * Создаёт JSON дашборда из hbs-шаблона (как в generate-service).
+ * Нельзя использовать Handlebars.compile целиком — в JSON есть легенды Grafana вида {{pod}}.
+ */
+function createDashboardFromTemplate(
+  serviceName: string,
+  serviceType: RouterConfig['type'],
+  dashboardPath: string,
+): void {
+  const templatePath = path.join(GRAFANA_DASHBOARD_TEMPLATE_DIR, serviceType, 'grafana-dashboard.json.hbs');
+  if (!fs.existsSync(templatePath)) {
+    console.log(`⚠ Grafana dashboard template not found: ${templatePath}`);
+    return;
+  }
+
+  const dashboardsDir = path.dirname(dashboardPath);
+  if (!fs.existsSync(dashboardsDir)) {
+    fs.mkdirSync(dashboardsDir, { recursive: true });
+  }
+
+  const content = fs.readFileSync(templatePath, 'utf-8');
+  const rendered = content.replace(/\{\{serviceName\}\}/g, serviceName);
+  fs.writeFileSync(dashboardPath, rendered, 'utf-8');
+
+  const relativePath = path.relative(process.cwd(), dashboardPath);
+  console.log(`✓ Created Grafana dashboard from template: ${relativePath}`);
+}
+
 /**
  * Обновляет Grafana дашборд для сервиса на основе router.yaml
  */
@@ -621,10 +651,12 @@ export function updateGrafanaDashboard(serviceName: string): void {
   const routerContent = fs.readFileSync(routerPath, 'utf-8');
   const routerConfig: RouterConfig = yaml.parse(routerContent);
 
-  // Читаем существующий дашборд
+  // Нет файла дашборда — создаём из шаблона по типу сервиса из router.yaml
   if (!fs.existsSync(dashboardPath)) {
-    console.log(`⚠ Dashboard not found: ${dashboardPath}`);
-    return;
+    createDashboardFromTemplate(serviceName, routerConfig.type, dashboardPath);
+    if (!fs.existsSync(dashboardPath)) {
+      return;
+    }
   }
 
   const dashboard = JSON.parse(fs.readFileSync(dashboardPath, 'utf-8'));

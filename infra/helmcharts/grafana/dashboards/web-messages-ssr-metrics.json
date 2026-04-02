@@ -3320,7 +3320,10 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["web-messages-ssr", "opentelemetry"],
+  "tags": [
+    "web-messages-ssr",
+    "opentelemetry"
+  ],
   "templating": {
     "list": []
   },

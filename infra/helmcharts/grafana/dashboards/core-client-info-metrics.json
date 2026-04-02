@@ -7125,7 +7125,12 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["core-client-info", "opentelemetry", "fastapi", "python"],
+  "tags": [
+    "core-client-info",
+    "opentelemetry",
+    "fastapi",
+    "python"
+  ],
   "templating": {
     "list": []
   },

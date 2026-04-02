@@ -85,15 +85,15 @@ function generateAuthRoutesPy(servicePath: string, routes: Route[]): void {
     '',
     'import re',
     'from dataclasses import dataclass',
-    'from typing import Literal, Optional',
+    'from typing import Literal',
     '',
-    "AuthLevel = Literal['none', 'valid']",
+    'AuthLevel = Literal["none", "valid"]',
     '',
     '',
     '@dataclass',
     'class AuthRoute:',
     '    path: re.Pattern',
-    '    method: Optional[str]',
+    '    method: str | None',
     '    auth_level: AuthLevel',
     '',
     '',
@@ -104,7 +104,7 @@ function generateAuthRoutesPy(servicePath: string, routes: Route[]): void {
     const level = route.auth_level ?? 'none';
     const escapedPath = route.path.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     const methodStr = route.method ? `'${route.method}'` : 'None';
-    lines.push(`    AuthRoute(path=re.compile(r'^${escapedPath}$'), method=${methodStr}, auth_level='${level}'),`);
+    lines.push(`    AuthRoute(path=re.compile(r"^${escapedPath}$"), method=${methodStr}, auth_level="${level}"),`);
   }
 
   lines.push(']', '');

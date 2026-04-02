@@ -13,7 +13,7 @@
       "!packages/api-client/schemas",
       "!__reports",
       "!**/*.generated.*",
-      "infra/helmcharts/grafana/dashboards/*"
+      "!infra/helmcharts/grafana/dashboards/*"
     ]
   },
   "formatter": {

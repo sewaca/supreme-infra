@@ -1401,7 +1401,12 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["system-files-storage", "opentelemetry", "fastapi", "python"],
+  "tags": [
+    "system-files-storage",
+    "opentelemetry",
+    "fastapi",
+    "python"
+  ],
   "templating": {
     "list": []
   },

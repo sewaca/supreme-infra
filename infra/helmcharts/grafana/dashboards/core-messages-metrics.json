@@ -6807,7 +6807,12 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["core-messages", "opentelemetry", "fastapi", "python"],
+  "tags": [
+    "core-messages",
+    "opentelemetry",
+    "fastapi",
+    "python"
+  ],
   "templating": {
     "list": []
   },

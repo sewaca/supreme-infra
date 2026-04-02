@@ -2684,7 +2684,10 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": ["web-schedule-ssr", "opentelemetry"],
+  "tags": [
+    "web-schedule-ssr",
+    "opentelemetry"
+  ],
   "templating": {
     "list": []
   },
