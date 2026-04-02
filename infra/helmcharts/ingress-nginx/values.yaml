@@ -321,8 +321,6 @@ ingress:
       paths:
         - path: /api/messages/history
           method: GET
-        - path: /api/upload
-          method: POST
         - path: /messages
           method: GET
         - path: /messages/[^/]+

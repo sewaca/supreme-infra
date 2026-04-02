@@ -12,6 +12,12 @@ import type { UploadedFile } from '../../../app/messages/actions';
 import type { Message } from '../../entities/Message/types';
 import { formatMessageTime } from '../../shared/lib/formatDate';
 
+function getAuthToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(/(?:^|;\s*)auth_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 interface Props {
   onSend: (content: string, uploadedFiles?: UploadedFile[]) => Promise<{ success: boolean; error?: string }>;
   conversationId: string;
@@ -61,11 +67,43 @@ export function MessageInput({
 
     let uploadedFiles: UploadedFile[] | undefined;
     if (!editingMessage && pendingFiles.length > 0) {
+      const totalSize = pendingFiles.reduce((sum, f) => sum + f.size, 0);
+      if (totalSize > 10 * 1024 * 1024) {
+        onError?.('Файл слишком большой. Максимальный размер — 10 МБ');
+        setSending(false);
+        return;
+      }
+
+      const token = getAuthToken();
+      if (!token) {
+        onError?.('Ошибка авторизации. Обновите страницу и попробуйте снова.');
+        setSending(false);
+        return;
+      }
+
       const formData = new FormData();
       for (const f of pendingFiles) formData.append('files', f);
 
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
+      const res = await fetch('/system-files-storage/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (res.status === 413) {
+        onError?.('Файл слишком большой. Максимальный размер — 10 МБ');
+        setSending(false);
+        return;
+      }
+
+      let data: { detail?: string; files?: UploadedFile[] };
+      try {
+        data = await res.json();
+      } catch {
+        onError?.('Ошибка загрузки файла');
+        setSending(false);
+        return;
+      }
 
       if (!res.ok) {
         const retryAfter = res.headers.get('Retry-After');
@@ -108,7 +146,14 @@ export function MessageInput({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
-    setPendingFiles((prev) => [...prev, ...files].slice(0, 10));
+    const next = [...pendingFiles, ...files].slice(0, 10);
+    const totalSize = next.reduce((sum, f) => sum + f.size, 0);
+    if (totalSize > 10 * 1024 * 1024) {
+      onError?.('Файл слишком большой. Максимальный размер — 10 МБ');
+      e.target.value = '';
+      return;
+    }
+    setPendingFiles(next);
     e.target.value = '';
   };
 

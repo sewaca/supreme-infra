@@ -887,10 +887,10 @@
         "x": 0,
         "y": 67
       },
-      "id": 907,
+      "id": 943,
       "panels": [
         {
-          "id": 905,
+          "id": 941,
           "title": "Status Checks - OK RPS",
           "type": "timeseries",
           "datasource": {
@@ -981,7 +981,7 @@
           }
         },
         {
-          "id": 906,
+          "id": 942,
           "title": "Status Checks - Bad RPS",
           "type": "timeseries",
           "datasource": {
@@ -1080,7 +1080,7 @@
       "type": "row"
     },
     {
-      "id": 908,
+      "id": 944,
       "title": "Routes Metrics",
       "type": "row",
       "gridPos": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "id": 909,
+      "id": 945,
       "title": "GET /api/messages/history",
       "type": "row",
       "gridPos": {
@@ -1102,7 +1102,7 @@
       }
     },
     {
-      "id": 910,
+      "id": 946,
       "title": "GET /api/messages/history - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1223,7 +1223,7 @@
       }
     },
     {
-      "id": 911,
+      "id": 947,
       "title": "GET /api/messages/history - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1314,7 +1314,7 @@
       }
     },
     {
-      "id": 912,
+      "id": 948,
       "title": "GET /api/messages/history - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1409,8 +1409,8 @@
       }
     },
     {
-      "id": 913,
-      "title": "POST /api/upload",
+      "id": 949,
+      "title": "GET /messages",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1420,325 +1420,7 @@
       }
     },
     {
-      "id": 914,
-      "title": "POST /api/upload - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route=\"/api/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route=\"/api/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-messages-ssr\",http_route=\"/api/upload\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 915,
-      "title": "POST /api/upload - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\",http_route=\"/api/upload\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 916,
-      "title": "POST /api/upload - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 79
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-messages-ssr\",http_route=\"/api/upload\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 917,
-      "title": "GET /messages",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 87
-      }
-    },
-    {
-      "id": 918,
+      "id": 950,
       "title": "GET /messages - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1749,7 +1431,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 88
+        "y": 79
       },
       "targets": [
         {
@@ -1859,7 +1541,7 @@
       }
     },
     {
-      "id": 919,
+      "id": 951,
       "title": "GET /messages - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1870,7 +1552,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 88
+        "y": 79
       },
       "targets": [
         {
@@ -1950,7 +1632,7 @@
       }
     },
     {
-      "id": 920,
+      "id": 952,
       "title": "GET /messages - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1961,7 +1643,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 88
+        "y": 79
       },
       "targets": [
         {
@@ -2045,18 +1727,18 @@
       }
     },
     {
-      "id": 921,
+      "id": 953,
       "title": "GET /messages/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 87
       }
     },
     {
-      "id": 922,
+      "id": 954,
       "title": "GET /messages/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2067,7 +1749,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 97
+        "y": 88
       },
       "targets": [
         {
@@ -2177,7 +1859,7 @@
       }
     },
     {
-      "id": 923,
+      "id": 955,
       "title": "GET /messages/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2188,7 +1870,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 97
+        "y": 88
       },
       "targets": [
         {
@@ -2268,7 +1950,7 @@
       }
     },
     {
-      "id": 924,
+      "id": 956,
       "title": "GET /messages/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2279,7 +1961,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 97
+        "y": 88
       },
       "targets": [
         {
@@ -2363,18 +2045,18 @@
       }
     },
     {
-      "id": 925,
+      "id": 957,
       "title": "GET /messages/broadcast",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 105
+        "y": 96
       }
     },
     {
-      "id": 926,
+      "id": 958,
       "title": "GET /messages/broadcast - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2385,7 +2067,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 106
+        "y": 97
       },
       "targets": [
         {
@@ -2495,7 +2177,7 @@
       }
     },
     {
-      "id": 927,
+      "id": 959,
       "title": "GET /messages/broadcast - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2506,7 +2188,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 106
+        "y": 97
       },
       "targets": [
         {
@@ -2586,7 +2268,7 @@
       }
     },
     {
-      "id": 928,
+      "id": 960,
       "title": "GET /messages/broadcast - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2597,7 +2279,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 106
+        "y": 97
       },
       "targets": [
         {
@@ -2681,18 +2363,18 @@
       }
     },
     {
-      "id": 929,
+      "id": 961,
       "title": "GET /messages/broadcast/new",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 105
       }
     },
     {
-      "id": 930,
+      "id": 962,
       "title": "GET /messages/broadcast/new - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2703,7 +2385,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 115
+        "y": 106
       },
       "targets": [
         {
@@ -2813,7 +2495,7 @@
       }
     },
     {
-      "id": 931,
+      "id": 963,
       "title": "GET /messages/broadcast/new - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2824,7 +2506,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 115
+        "y": 106
       },
       "targets": [
         {
@@ -2904,7 +2586,7 @@
       }
     },
     {
-      "id": 932,
+      "id": 964,
       "title": "GET /messages/broadcast/new - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2915,7 +2597,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 115
+        "y": 106
       },
       "targets": [
         {
@@ -2999,18 +2681,18 @@
       }
     },
     {
-      "id": 933,
+      "id": 965,
       "title": "GET /messages/new",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 123
+        "y": 114
       }
     },
     {
-      "id": 934,
+      "id": 966,
       "title": "GET /messages/new - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3021,7 +2703,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 124
+        "y": 115
       },
       "targets": [
         {
@@ -3131,7 +2813,7 @@
       }
     },
     {
-      "id": 935,
+      "id": 967,
       "title": "GET /messages/new - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3142,7 +2824,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 124
+        "y": 115
       },
       "targets": [
         {
@@ -3222,7 +2904,7 @@
       }
     },
     {
-      "id": 936,
+      "id": 968,
       "title": "GET /messages/new - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3233,7 +2915,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 124
+        "y": 115
       },
       "targets": [
         {
@@ -3317,18 +2999,18 @@
       }
     },
     {
-      "id": 937,
+      "id": 969,
       "title": "GET /messages/search",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 132
+        "y": 123
       }
     },
     {
-      "id": 938,
+      "id": 970,
       "title": "GET /messages/search - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3339,7 +3021,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 133
+        "y": 124
       },
       "targets": [
         {
@@ -3449,7 +3131,7 @@
       }
     },
     {
-      "id": 939,
+      "id": 971,
       "title": "GET /messages/search - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3460,7 +3142,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 133
+        "y": 124
       },
       "targets": [
         {
@@ -3540,7 +3222,7 @@
       }
     },
     {
-      "id": 940,
+      "id": 972,
       "title": "GET /messages/search - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3551,7 +3233,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 133
+        "y": 124
       },
       "targets": [
         {
