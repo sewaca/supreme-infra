@@ -55,7 +55,7 @@ Set up environment variables:
 
 ```bash
 export BASE_URL="https://diploma.sewaca.ru/core-client-info"
-export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW4gVXNlciIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3MjgwODI5OCwiZXhwIjoxNzczNDEzMDk4fQ.dbmj5JTdOWEiRBOGKVYm_GWCNZQi4bJKPPo4mdIc_zI"
+export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMTAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEiLCJqdGkiOiJlOTg3ZGViZS01YzFkLTQyNTAtYTJlMC1jYzMxODg1YzY0ZWEiLCJlbWFpbCI6ImEuc21pcm5vdjJAZXhhbXBsZS5jb20iLCJuYW1lIjoiXHUwNDIxXHUwNDNjXHUwNDM4XHUwNDQwXHUwNDNkXHUwNDNlXHUwNDMyIFx1MDQxMFx1MDQzYlx1MDQzNVx1MDQzYVx1MDQ0MVx1MDQzNVx1MDQzOSBcdTA0MThcdTA0MzNcdTA0M2VcdTA0NDBcdTA0MzVcdTA0MzJcdTA0MzhcdTA0NDciLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTc3NTE4MDAyNCwiZXhwIjoxNzc1Nzg0ODI0fQ.1JXU77RCR1MIbERd5MgMdZBmv18e06uZyYWSFgyt3K4"
 export USER_ID="550e8400-e29b-41d4-a716-446655440000"
 ```
 
@@ -362,7 +362,7 @@ curl -s "$BASE_URL/subjects/user-priorities/math_electives_2026?user_id=$USER_ID
 curl -s -X POST "$BASE_URL/subjects/save-priorities?user_id=$USER_ID" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"choice_id": "math_electives_2026", "priorities": ["advanced_calculus", "linear_algebra", "discrete_math"]}' | jq .
+  -d '{"choice_id": "math", "priorities": ["math-1", "math-3", "math-2"]}' | jq .
 ```
 
 ```json
