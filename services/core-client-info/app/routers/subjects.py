@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
@@ -64,7 +64,7 @@ async def save_priorities(user_id: UUID, body: SavePrioritiesRequest, db: AsyncS
         logger.warning("save_priorities: choice_id=%s not found", body.choice_id)
         raise HTTPException(status_code=404, detail="Subject choice not found")
 
-    if choice.deadline_date < datetime.now(timezone.utc):
+    if choice.deadline_date < datetime.now(UTC):
         from fastapi import HTTPException
 
         logger.warning("save_priorities: deadline passed for choice_id=%s", body.choice_id)
