@@ -11,6 +11,9 @@ routes:
   - path: /core-client-info/profile/personal-data
     method: GET
     auth_level: valid
+  - path: /core-client-info/profile/search-for-registration
+    method: POST
+    auth_level: none
   - path: /core-client-info/profile/user
     method: GET
     auth_level: valid

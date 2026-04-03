@@ -44,6 +44,9 @@ routes:
   - path: /core-auth/auth/login
     method: POST
     auth_level: none
+  - path: /core-auth/auth/lookup
+    method: POST
+    auth_level: none
   - path: /core-auth/auth/me
     method: GET
     auth_level: none

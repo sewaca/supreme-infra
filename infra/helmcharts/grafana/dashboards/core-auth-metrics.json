@@ -5215,7 +5215,7 @@
     },
     {
       "id": 73,
-      "title": "GET /core-auth/auth/me",
+      "title": "POST /core-auth/auth/lookup",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -5226,7 +5226,7 @@
     },
     {
       "id": 74,
-      "title": "GET /core-auth/auth/me - Timings",
+      "title": "POST /core-auth/auth/lookup - Timings",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -5237,6 +5237,324 @@
         "w": 8,
         "x": 0,
         "y": 187
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/lookup\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P50",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/lookup\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P95",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_milliseconds_bucket{service=\"core-auth\",http_target=\"/core-auth/auth/lookup\",http_method=\"POST\"}[5m])) by (le)) or on() vector(0)",
+          "legendFormat": "P99",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 75,
+      "title": "POST /core-auth/auth/lookup - OK RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 187
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/lookup\",http_method=\"POST\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
+          "legendFormat": "OK (2xx/3xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 76,
+      "title": "POST /core-auth/auth/lookup - Bad RPS",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 187
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_duration_milliseconds_count{service=\"core-auth\",http_target=\"/core-auth/auth/lookup\",http_method=\"POST\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
+          "legendFormat": "Errors (4xx/5xx)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 77,
+      "title": "GET /core-auth/auth/me",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 195
+      }
+    },
+    {
+      "id": 78,
+      "title": "GET /core-auth/auth/me - Timings",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 196
       },
       "targets": [
         {
@@ -5346,7 +5664,7 @@
       }
     },
     {
-      "id": 75,
+      "id": 79,
       "title": "GET /core-auth/auth/me - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5357,7 +5675,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 187
+        "y": 196
       },
       "targets": [
         {
@@ -5437,7 +5755,7 @@
       }
     },
     {
-      "id": 76,
+      "id": 80,
       "title": "GET /core-auth/auth/me - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5448,7 +5766,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 187
+        "y": 196
       },
       "targets": [
         {
@@ -5532,18 +5850,18 @@
       }
     },
     {
-      "id": 77,
+      "id": 81,
       "title": "POST /core-auth/auth/register",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 195
+        "y": 204
       }
     },
     {
-      "id": 78,
+      "id": 82,
       "title": "POST /core-auth/auth/register - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5554,7 +5872,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 196
+        "y": 205
       },
       "targets": [
         {
@@ -5664,7 +5982,7 @@
       }
     },
     {
-      "id": 79,
+      "id": 83,
       "title": "POST /core-auth/auth/register - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5675,7 +5993,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 196
+        "y": 205
       },
       "targets": [
         {
@@ -5755,7 +6073,7 @@
       }
     },
     {
-      "id": 80,
+      "id": 84,
       "title": "POST /core-auth/auth/register - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -5766,7 +6084,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 196
+        "y": 205
       },
       "targets": [
         {
@@ -5850,18 +6168,18 @@
       }
     },
     {
-      "id": 81,
+      "id": 85,
       "title": "GET /core-auth/auth/sessions",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 204
+        "y": 213
       }
     },
     {
-      "id": 82,
+      "id": 86,
       "title": "GET /core-auth/auth/sessions - Timings",
       "type": "timeseries",
       "datasource": {
@@ -5872,7 +6190,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 205
+        "y": 214
       },
       "targets": [
         {
@@ -5982,7 +6300,7 @@
       }
     },
     {
-      "id": 83,
+      "id": 87,
       "title": "GET /core-auth/auth/sessions - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -5993,7 +6311,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 205
+        "y": 214
       },
       "targets": [
         {
@@ -6073,7 +6391,7 @@
       }
     },
     {
-      "id": 84,
+      "id": 88,
       "title": "GET /core-auth/auth/sessions - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6084,7 +6402,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 205
+        "y": 214
       },
       "targets": [
         {
@@ -6168,18 +6486,18 @@
       }
     },
     {
-      "id": 85,
+      "id": 89,
       "title": "DELETE /core-auth/auth/sessions/[^/]+",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 213
+        "y": 222
       }
     },
     {
-      "id": 86,
+      "id": 90,
       "title": "DELETE /core-auth/auth/sessions/:id - Timings",
       "type": "timeseries",
       "datasource": {
@@ -6190,7 +6508,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 214
+        "y": 223
       },
       "targets": [
         {
@@ -6300,7 +6618,7 @@
       }
     },
     {
-      "id": 87,
+      "id": 91,
       "title": "DELETE /core-auth/auth/sessions/:id - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6311,7 +6629,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 214
+        "y": 223
       },
       "targets": [
         {
@@ -6391,7 +6709,7 @@
       }
     },
     {
-      "id": 88,
+      "id": 92,
       "title": "DELETE /core-auth/auth/sessions/:id - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6402,7 +6720,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 214
+        "y": 223
       },
       "targets": [
         {
@@ -6486,18 +6804,18 @@
       }
     },
     {
-      "id": 89,
+      "id": 93,
       "title": "POST /core-auth/auth/validate-session",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 222
+        "y": 231
       }
     },
     {
-      "id": 90,
+      "id": 94,
       "title": "POST /core-auth/auth/validate-session - Timings",
       "type": "timeseries",
       "datasource": {
@@ -6508,7 +6826,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 223
+        "y": 232
       },
       "targets": [
         {
@@ -6618,7 +6936,7 @@
       }
     },
     {
-      "id": 91,
+      "id": 95,
       "title": "POST /core-auth/auth/validate-session - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -6629,7 +6947,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 223
+        "y": 232
       },
       "targets": [
         {
@@ -6709,7 +7027,7 @@
       }
     },
     {
-      "id": 92,
+      "id": 96,
       "title": "POST /core-auth/auth/validate-session - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -6720,7 +7038,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 223
+        "y": 232
       },
       "targets": [
         {

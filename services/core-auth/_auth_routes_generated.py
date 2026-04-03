@@ -29,6 +29,7 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-auth/auth/internal/users/[^/]+/email$"), method='PATCH', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/internal/users/[^/]+/password$"), method='PATCH', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/login$"), method='POST', auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-auth/auth/lookup$"), method='POST', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/me$"), method='GET', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/register$"), method='POST', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-auth/auth/sessions$"), method='GET', auth_level="none"),

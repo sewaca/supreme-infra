@@ -69,9 +69,32 @@ export async function login(data: {
   return result;
 }
 
+export interface ClientInfoUser {
+  id: string;
+  name: string;
+  last_name: string;
+  middle_name: string | null;
+  email: string;
+  snils: string | null;
+  role: string;
+}
+
+export async function lookup(data: { snils: string; last_name: string }): Promise<ClientInfoUser> {
+  const response = await fetch('/core-auth/auth/lookup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error((payload as { detail?: string })?.detail ?? 'Request failed');
+  }
+  return payload as ClientInfoUser;
+}
+
 // Костыль для совместимости: core-auth register не возвращает токен,
 // поэтому после регистрации делаем auto-login.
-export async function register(data: { email: string; password: string; name: string }): Promise<AuthResponse> {
+export async function register(data: { email: string; password: string; snils: string }): Promise<AuthResponse> {
   const { response, error } = await CoreAuth.registerAuthRegisterPost({
     client: coreAuthBrowserClient,
     body: data,

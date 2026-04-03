@@ -1,5 +1,6 @@
 import ipaddress
 import logging
+import re
 import uuid
 from datetime import UTC, datetime, timedelta
 
@@ -10,10 +11,19 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import TOKEN_EXPIRE_DAYS, create_access_token, get_current_user
+from app.config import settings
 from app.database import get_db
 from app.models.session import UserSession
 from app.models.user import AuthUser
-from app.schemas.auth import AuthResponse, LoginRequest, MessageResponse, RegisterRequest, UserInfo
+from app.schemas.auth import (
+    AuthResponse,
+    ClientInfoUser,
+    LoginRequest,
+    LookupRequest,
+    MessageResponse,
+    RegisterRequest,
+    UserInfo,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -90,19 +100,56 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
     )
 
 
+@router.post("/lookup", response_model=ClientInfoUser)
+async def lookup(body: LookupRequest):
+    snils_digits = re.sub(r"\D", "", body.snils)
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.post(
+                f"{settings.core_client_info_url}/profile/search-for-registration",
+                json={"snils": snils_digits, "last_name": body.last_name},
+            )
+    except Exception as exc:
+        logger.error("[lookup] core-client-info unreachable: %s", exc)
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Identity service unavailable") from exc
+
+    if resp.status_code == 404:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found in system")
+    if resp.status_code != 200:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Identity service error")
+
+    return ClientInfoUser(**resp.json())
+
+
 @router.post("/register", response_model=MessageResponse)
 async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(AuthUser).where(AuthUser.email == body.email))
     if result.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
 
-    password_hash = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    snils_digits = re.sub(r"\D", "", body.snils)
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.post(
+                f"{settings.core_client_info_url}/profile/search-for-registration",
+                json={"snils": snils_digits},
+            )
+    except Exception as exc:
+        logger.error("[register] core-client-info unreachable: %s", exc)
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Identity service unavailable") from exc
 
-    user = AuthUser(email=body.email, password_hash=password_hash, name=body.name)
+    if resp.status_code != 200:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not verify identity via SNILS")
+
+    info = resp.json()
+    name_parts = [info.get("last_name"), info.get("name"), info.get("middle_name")]
+    full_name = " ".join(p for p in name_parts if p)
+    role = info.get("role", "student")
+
+    password_hash = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    user = AuthUser(email=body.email, password_hash=password_hash, name=full_name, role=role)
     db.add(user)
     await db.commit()
-
-    # TODO: sync new user profile with core-client-info service
 
     return MessageResponse(message="User created successfully")
 

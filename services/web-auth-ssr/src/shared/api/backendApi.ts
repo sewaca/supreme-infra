@@ -1,7 +1,8 @@
-import { deleteUser, getCurrentUser, login, register } from '../lib/auth.client';
+import { deleteUser, getCurrentUser, login, lookup, register } from '../lib/auth.client';
 
 export const backendApi = {
   login,
+  lookup,
   register,
   getCurrentUser,
   deleteUser,

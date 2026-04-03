@@ -16,7 +16,22 @@ class LoginRequest(BaseModel):
 class RegisterRequest(BaseModel):
     email: str
     password: str
+    snils: str
+
+
+class LookupRequest(BaseModel):
+    snils: str
+    last_name: str
+
+
+class ClientInfoUser(BaseModel):
+    id: UUID
     name: str
+    last_name: str
+    middle_name: str | None = None
+    email: str
+    snils: str | None = None
+    role: str
 
 
 class UserInfo(BaseModel):

@@ -80,6 +80,8 @@ ingress:
           method: PATCH
         - path: /core-auth/auth/login
           method: POST
+        - path: /core-auth/auth/lookup
+          method: POST
         - path: /core-auth/auth/me
           method: GET
         - path: /core-auth/auth/register
@@ -98,6 +100,8 @@ ingress:
           method: GET
         - path: /core-client-info/profile/personal-data
           method: GET
+        - path: /core-client-info/profile/search-for-registration
+          method: POST
         - path: /core-client-info/profile/user
           method: GET
         - path: /core-client-info/profile/users-by-group
