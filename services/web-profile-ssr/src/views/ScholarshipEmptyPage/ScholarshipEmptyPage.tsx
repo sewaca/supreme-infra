@@ -10,7 +10,7 @@ export const ScholarshipEmptyPage = () => {
       <DefaultNavbar position="absolute" center={<Typography variant="title1">{i18n('Стипендия')}</Typography>} />
       <Container
         sx={{
-          minHeight: '100dvh',
+          minHeight: 'var(--user-screen-height)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

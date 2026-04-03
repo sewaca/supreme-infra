@@ -36,7 +36,7 @@ export const ReferencesPage = ({ initialReferences, orderOptions }: Props) => {
   return (
     <>
       <DefaultNavbar />
-      <Container sx={{ minHeight: '100dvh', paddingBottom: 4 }}>
+      <Container sx={{ minHeight: 'var(--user-screen-height)', paddingBottom: 4 }}>
         <Spacer size={8} />
 
         <Stack spacing={1}>

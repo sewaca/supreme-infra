@@ -25,7 +25,7 @@ export const RatingPage = ({ data }: Props) => {
   const lockedAchievements = data.achievements.filter((a) => !a.unlocked);
 
   return (
-    <Paper sx={{ minHeight: '100dvh', backgroundColor: 'var(--color-background-primary)' }} elevation={0}>
+    <Paper sx={{ minHeight: 'var(--user-screen-height)', backgroundColor: 'var(--color-background-primary)' }} elevation={0}>
       <DefaultNavbar
         rightSlot={
           <IconButton onClick={startTour} aria-label={i18n('Показать обучение')}>

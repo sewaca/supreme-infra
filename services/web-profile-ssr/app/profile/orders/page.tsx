@@ -33,7 +33,7 @@ export default async ({ searchParams }: PageProps) => {
   return (
     <Suspense
       fallback={
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100dvh">
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="var(--user-screen-height)">
           <CircularProgress />
         </Box>
       }

@@ -189,7 +189,7 @@ export const OrdersPage = ({
           </IconButton>
         }
       />
-      <Container sx={{ minHeight: '100dvh', paddingBottom: 4 }}>
+      <Container sx={{ minHeight: 'var(--user-screen-height)', paddingBottom: 4 }}>
         <Spacer size={8} />
         <Box
           data-tour="orders-filters"

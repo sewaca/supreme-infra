@@ -52,7 +52,7 @@ export const ScholarshipPage = ({ studentName, amount, currency, order, notifica
           </IconButton>
         }
       />
-      <Container sx={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', paddingBottom: 3 }}>
+      <Container sx={{ minHeight: 'var(--user-screen-height)', display: 'flex', flexDirection: 'column', paddingBottom: 3 }}>
         <Spacer size={30} />
 
         <Paper

@@ -1,6 +1,6 @@
 .page {
   background: #edeff2;
-  min-height: 100dvh;
+  min-height: var(--user-screen-height);
   padding: 64px 16px 32 16px;
   display: flex;
   flex-direction: column;

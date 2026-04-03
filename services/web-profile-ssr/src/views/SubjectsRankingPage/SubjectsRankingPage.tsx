@@ -51,9 +51,14 @@ export const SubjectsRankingPage = ({ subjects, deadlineDate }: Props) => {
         {subjects?.length > 0 ? (
           <SubjectsRankingPageView subjects={subjects} deadlineDate={deadlineDate} />
         ) : (
-          <Typography variant="h6" textAlign="center">
-            {i18n('Пока что дисциплин для выбора нет')}
-          </Typography>
+          <Box display="flex" flexDirection="column" alignItems="center" gap={2} py={4}>
+            <Typography fontSize="4rem" lineHeight={1}>
+              😿
+            </Typography>
+            <Typography variant="h6" textAlign="center">
+              {i18n('Пока что дисциплин для выбора нет')}
+            </Typography>
+          </Box>
         )}
       </Container>
     </>

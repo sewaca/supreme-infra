@@ -20,7 +20,7 @@ export const metadata: Metadata = { title: 'Расписание' };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" className={roboto.variable}>
-      <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', margin: 0 }}>
+      <body style={{ display: 'flex', flexDirection: 'column', height: 'var(--user-screen-height)', margin: 0 }}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />

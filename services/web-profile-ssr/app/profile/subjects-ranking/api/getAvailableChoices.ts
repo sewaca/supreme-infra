@@ -16,8 +16,9 @@ export const getAvailableChoices = async (): Promise<ChoiceGroup[]> => {
 
   const choices = res.data ?? [];
 
+  const now = new Date();
   return choices
-    .filter((c) => c.is_active)
+    .filter((c) => c.is_active && new Date(c.deadline_date) > now)
     .map((c) => {
       const d = new Date(c.deadline_date);
       return {

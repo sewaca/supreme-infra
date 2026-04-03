@@ -98,6 +98,15 @@
   /** Controls */
   --controls-navbar-height-m: 48px;
   --controls-navbar-height-l: 65px;
+
+  /** Viewport */
+  --user-screen-height: 100vh;
+}
+
+@supports (height: 1dvh) {
+  :root {
+    --user-screen-height: 100dvh;
+  }
 }
 
 * {

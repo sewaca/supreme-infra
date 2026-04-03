@@ -16,7 +16,7 @@ type Props = {
 
 export const ProfileDataPage = ({ avatar, lastName, name, middleName, data }: Props) => {
   return (
-    <Paper sx={{ minHeight: '100dvh', background: '#edeff2', display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ minHeight: 'var(--user-screen-height)', background: '#edeff2', display: 'flex', flexDirection: 'column' }}>
       <DefaultNavbar center={<Typography variant="title1">{i18n('Личные данные')}</Typography>} />
       <Container>
         <Spacer size={3} />
