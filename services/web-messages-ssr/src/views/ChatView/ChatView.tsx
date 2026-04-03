@@ -116,6 +116,8 @@ export function ChatView({
             : message;
         setMessages((prev) => [withReply, ...prev]);
         setReplyTo(null);
+        setTimeout(() => messageListRef.current?.scrollToBottom(), 0);
+        markAsRead(conversation.id, withReply.id);
         window.dispatchEvent(
           new CustomEvent('conversation-updated', {
             detail: { conversationId: conversation.id, message: withReply },

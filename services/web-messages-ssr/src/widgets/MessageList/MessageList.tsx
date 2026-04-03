@@ -1,7 +1,8 @@
 'use client';
 
-import { Avatar, Box, CircularProgress, Typography } from '@mui/material';
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Avatar, Box, CircularProgress, Fab, Typography } from '@mui/material';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import type { Message } from '../../entities/Message/types';
 import { formatDateSeparator } from '../../shared/lib/formatDate';
 import { ChatBubble } from '../ChatBubble/ChatBubble';
@@ -53,6 +54,7 @@ function buildGroups(messages: Message[], userId: string): MessageGroup[] {
 
 export interface MessageListHandle {
   scrollToMessage: (messageId: string) => void;
+  scrollToBottom: () => void;
 }
 
 interface Props {
@@ -75,6 +77,19 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
   const prevScrollHeightRef = useRef(0);
   const isInitialRef = useRef(true);
   const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  const scrollToBottom = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  };
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    setShowScrollButton(scrollHeight - scrollTop - clientHeight > 100);
+  };
 
   useImperativeHandle(ref, () => ({
     scrollToMessage: (messageId: string) => {
@@ -88,6 +103,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
         }, 1200);
       }
     },
+    scrollToBottom,
   }));
 
   useEffect(() => {
@@ -142,117 +158,125 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
   const groups = buildGroups(reversed, userId);
 
   return (
-    <Box ref={scrollRef} className={styles.messageList}>
-      <Box ref={sentinelRef} sx={{ minHeight: 1 }}>
-        {loading && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 1.5 }}>
-            <CircularProgress size={20} />
+    <Box sx={{ position: 'relative', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <Box ref={scrollRef} className={styles.messageList} onScroll={handleScroll}>
+        <Box ref={sentinelRef} sx={{ minHeight: 1 }}>
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 1.5 }}>
+              <CircularProgress size={20} />
+            </Box>
+          )}
+        </Box>
+
+        {groups.map((group) => {
+          if (group.type === 'separator') {
+            return (
+              <Box key={group.key} sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
+                <Typography variant="caption" sx={{ px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'action.hover' }}>
+                  {formatDateSeparator(group.date)}
+                </Typography>
+              </Box>
+            );
+          }
+
+          const { messages: groupMsgs, isOwn } = group;
+          const firstMsg = groupMsgs[0];
+
+          if (isOwn) {
+            return (
+              <Box
+                key={group.key}
+                sx={{ display: 'flex', flexDirection: 'column', gap: '2px', alignSelf: 'flex-end', maxWidth: '75%' }}
+              >
+                {groupMsgs.map((msg, idx) => (
+                  <Box
+                    key={msg.id}
+                    ref={(el) => {
+                      if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
+                      else messageRefs.current.delete(msg.id);
+                    }}
+                    sx={{ borderRadius: 1 }}
+                  >
+                    <ChatBubble
+                      message={msg}
+                      isOwn={true}
+                      noMaxWidth={true}
+                      isFirstInGroup={idx === 0}
+                      canReplyInDm={canReplyInDm}
+                      onAction={onAction}
+                      onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
+                      onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
+                    />
+                  </Box>
+                ))}
+              </Box>
+            );
+          }
+
+          // Other sender — sticky avatar beside the message group
+          return (
+            <Box
+              key={group.key}
+              sx={{ display: 'flex', gap: '6px', alignSelf: 'flex-start', alignItems: 'flex-end', maxWidth: '75%' }}
+            >
+              <Avatar
+                src={firstMsg.sender_avatar ?? undefined}
+                sx={{
+                  width: 30,
+                  height: 30,
+                  flexShrink: 0,
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  position: 'sticky',
+                  bottom: 8,
+                  alignSelf: 'flex-end',
+                  ...(!firstMsg.sender_avatar && {
+                    background: 'linear-gradient(135deg, #2b4878 0%, #1a2e4a 100%)',
+                    color: 'rgba(255,255,255,0.9)',
+                  }),
+                }}
+              >
+                {firstMsg.sender_name[0]}
+              </Avatar>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0, flex: 1 }}>
+                {groupMsgs.map((msg, idx) => (
+                  <Box
+                    key={msg.id}
+                    ref={(el) => {
+                      if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
+                      else messageRefs.current.delete(msg.id);
+                    }}
+                    sx={{ borderRadius: 1 }}
+                  >
+                    <ChatBubble
+                      message={msg}
+                      isOwn={false}
+                      showAvatar={false}
+                      noMaxWidth={true}
+                      isFirstInGroup={idx === 0}
+                      canReplyInDm={canReplyInDm}
+                      onAction={onAction}
+                      onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
+                      onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          );
+        })}
+
+        {reversed.length === 0 && (
+          <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Typography color="text.secondary">Нет сообщений. Начните переписку!</Typography>
           </Box>
         )}
       </Box>
 
-      {groups.map((group) => {
-        if (group.type === 'separator') {
-          return (
-            <Box key={group.key} sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
-              <Typography variant="caption" sx={{ px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'action.hover' }}>
-                {formatDateSeparator(group.date)}
-              </Typography>
-            </Box>
-          );
-        }
-
-        const { messages: groupMsgs, isOwn } = group;
-        const firstMsg = groupMsgs[0];
-
-        if (isOwn) {
-          return (
-            <Box
-              key={group.key}
-              sx={{ display: 'flex', flexDirection: 'column', gap: '2px', alignSelf: 'flex-end', maxWidth: '75%' }}
-            >
-              {groupMsgs.map((msg, idx) => (
-                <Box
-                  key={msg.id}
-                  ref={(el) => {
-                    if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
-                    else messageRefs.current.delete(msg.id);
-                  }}
-                  sx={{ borderRadius: 1 }}
-                >
-                  <ChatBubble
-                    message={msg}
-                    isOwn={true}
-                    noMaxWidth={true}
-                    isFirstInGroup={idx === 0}
-                    canReplyInDm={canReplyInDm}
-                    onAction={onAction}
-                    onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
-                    onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
-                  />
-                </Box>
-              ))}
-            </Box>
-          );
-        }
-
-        // Other sender — sticky avatar beside the message group
-        return (
-          <Box
-            key={group.key}
-            sx={{ display: 'flex', gap: '6px', alignSelf: 'flex-start', alignItems: 'flex-end', maxWidth: '75%' }}
-          >
-            <Avatar
-              src={firstMsg.sender_avatar ?? undefined}
-              sx={{
-                width: 30,
-                height: 30,
-                flexShrink: 0,
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                position: 'sticky',
-                bottom: 8,
-                alignSelf: 'flex-end',
-                ...(!firstMsg.sender_avatar && {
-                  background: 'linear-gradient(135deg, #2b4878 0%, #1a2e4a 100%)',
-                  color: 'rgba(255,255,255,0.9)',
-                }),
-              }}
-            >
-              {firstMsg.sender_name[0]}
-            </Avatar>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0, flex: 1 }}>
-              {groupMsgs.map((msg, idx) => (
-                <Box
-                  key={msg.id}
-                  ref={(el) => {
-                    if (el) messageRefs.current.set(msg.id, el as HTMLDivElement);
-                    else messageRefs.current.delete(msg.id);
-                  }}
-                  sx={{ borderRadius: 1 }}
-                >
-                  <ChatBubble
-                    message={msg}
-                    isOwn={false}
-                    showAvatar={false}
-                    noMaxWidth={true}
-                    isFirstInGroup={idx === 0}
-                    canReplyInDm={canReplyInDm}
-                    onAction={onAction}
-                    onScrollToMessage={(id) => ref && 'current' in ref && ref.current?.scrollToMessage(id)}
-                    onDoubleClickReply={onMessageDoubleClick ? () => onMessageDoubleClick(msg) : undefined}
-                  />
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        );
-      })}
-
-      {reversed.length === 0 && (
-        <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Typography color="text.secondary">Нет сообщений. Начните переписку!</Typography>
-        </Box>
+      {showScrollButton && (
+        <Fab size="small" onClick={scrollToBottom} sx={{ position: 'absolute', bottom: 12, right: 12, zIndex: 10 }}>
+          <KeyboardArrowDownIcon />
+        </Fab>
       )}
     </Box>
   );
