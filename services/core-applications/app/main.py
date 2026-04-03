@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
-from app.routers import applications, dormitory, orders, references, status
+from app.routers import applications, dormitory, internal, orders, references, status
 
 
 @asynccontextmanager
@@ -51,3 +51,4 @@ app.include_router(applications.router)
 app.include_router(references.router)
 app.include_router(orders.router)
 app.include_router(dormitory.router)
+app.include_router(internal.router)

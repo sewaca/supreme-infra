@@ -138,18 +138,41 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
         logger.error("[register] core-client-info unreachable: %s", exc)
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Identity service unavailable") from exc
 
+    if resp.status_code == 404:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Identity not found or already registered")
     if resp.status_code != 200:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not verify identity via SNILS")
 
     info = resp.json()
+    client_info_id = uuid.UUID(info["id"])
     name_parts = [info.get("last_name"), info.get("name"), info.get("middle_name")]
     full_name = " ".join(p for p in name_parts if p)
     role = info.get("role", "student")
 
+    existing = await db.execute(select(AuthUser).where(AuthUser.id == client_info_id))
+    if existing.scalar_one_or_none():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Account already registered for this identity")
+
     password_hash = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-    user = AuthUser(email=body.email, password_hash=password_hash, name=full_name, role=role)
+    user = AuthUser(id=client_info_id, email=body.email, password_hash=password_hash, name=full_name, role=role)
     db.add(user)
     await db.commit()
+
+    async with httpx.AsyncClient(timeout=5.0) as client:
+        try:
+            await client.post(
+                f"{settings.core_client_info_url}/profile/init-user",
+                json={"user_id": str(client_info_id)},
+            )
+        except Exception as exc:
+            logger.error("[register] core-client-info init-user failed: %s", exc)
+        try:
+            await client.post(
+                f"{settings.core_applications_url}/applications/internal/init-user",
+                json={"user_id": str(client_info_id)},
+            )
+        except Exception as exc:
+            logger.error("[register] core-applications init-user failed: %s", exc)
 
     return MessageResponse(message="User created successfully")
 

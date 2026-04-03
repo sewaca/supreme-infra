@@ -9,7 +9,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models.user import User
+from app.models.rating import RatingLevel, Streak
+from app.models.user import User, UserSettings
 
 router = APIRouter(prefix="/profile", tags=["internal"])
 
@@ -75,7 +76,7 @@ async def search_for_registration(body: RegistrationSearchRequest, db: AsyncSess
     if not snils_digits:
         raise HTTPException(status_code=400, detail="Invalid SNILS")
 
-    result = await db.execute(select(User).where(User.snils.isnot(None)))
+    result = await db.execute(select(User).where(User.snils.isnot(None), User.is_registered == False))  # noqa: E712
     users = result.scalars().all()
 
     candidates: list[tuple[int, User]] = []
@@ -104,3 +105,28 @@ async def search_for_registration(body: RegistrationSearchRequest, db: AsyncSess
         "snils": user.snils,
         "role": "teacher" if user.qualification == "teacher" else "student",
     }
+
+
+class InitUserRequest(BaseModel):
+    user_id: UUID
+
+
+@router.post("/init-user")
+async def init_user(body: InitUserRequest, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).where(User.id == body.user_id))
+    user = result.scalar_one_or_none()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.is_registered = True
+
+    if not (await db.execute(select(UserSettings).where(UserSettings.user_id == body.user_id))).scalar_one_or_none():
+        db.add(UserSettings(user_id=body.user_id))
+
+    if not (await db.execute(select(RatingLevel).where(RatingLevel.user_id == body.user_id))).scalar_one_or_none():
+        db.add(RatingLevel(user_id=body.user_id, level="novice", current_xp=0))
+
+    if not (await db.execute(select(Streak).where(Streak.user_id == body.user_id))).scalar_one_or_none():
+        db.add(Streak(user_id=body.user_id, current=0, best=0))
+
+    return {"ok": True}

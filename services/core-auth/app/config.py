@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     db_user: str = "core_auth_user"
     db_password: str = ""
     core_client_info_url: str = "http://core-client-info.default.svc.cluster.local/core-client-info"
+    core_applications_url: str = "http://core-applications.default.svc.cluster.local/core-applications"
 
     @property
     def database_url(self) -> str:

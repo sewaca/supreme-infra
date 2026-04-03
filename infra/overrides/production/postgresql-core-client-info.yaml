@@ -947,5 +947,18 @@ migrationConfigMapParts:
           ('e3333333-3333-3333-3333-333333333305', 'e1000000-0000-0000-0000-000000000005', 'intermediate', 240),
           ('e3333333-3333-3333-3333-333333333306', 'e1000000-0000-0000-0000-000000000006', 'beginner', 0)
       ON CONFLICT (user_id) DO NOTHING;
+    007_add_is_registered.sql: >
+      -- Migration: Add is_registered flag to user table.
+
+      -- Users without a core-auth account have is_registered = FALSE
+
+      -- and are returned by the registration lookup endpoint.
+
+      -- After registration this is set to TRUE and they are excluded from
+      future lookups.
+
+
+      ALTER TABLE "user" ADD COLUMN IF NOT EXISTS is_registered BOOLEAN NOT NULL
+      DEFAULT FALSE;
 migrations: {}
 skipMigrations: false

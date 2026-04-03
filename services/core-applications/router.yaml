@@ -8,6 +8,9 @@ routes:
   - path: /core-applications/applications
     method: GET
     auth_level: valid
+  - path: /core-applications/applications/internal/init-user
+    method: POST
+    auth_level: none
   - path: /core-applications/applications/notifications
     method: GET
     auth_level: valid

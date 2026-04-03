@@ -24,6 +24,8 @@ ingress:
       paths:
         - path: /core-applications/applications
           method: GET
+        - path: /core-applications/applications/internal/init-user
+          method: POST
         - path: /core-applications/applications/notifications
           method: GET
         - path: /core-applications/dormitory/applications
@@ -98,6 +100,8 @@ ingress:
       paths:
         - path: /core-client-info/profile/groups
           method: GET
+        - path: /core-client-info/profile/init-user
+          method: POST
         - path: /core-client-info/profile/personal-data
           method: GET
         - path: /core-client-info/profile/search-for-registration
