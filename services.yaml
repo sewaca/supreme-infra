@@ -10,6 +10,8 @@ services:
   next:
     - name: frontend
       description: Frontend service (Next.js)
+    - name: auth-ssr
+      description: authorization-ssr-sservice
     - name: web-documents-ssr
       description: "documents presentation "
     - name: web-profile-ssr
@@ -22,21 +24,21 @@ services:
       description: Отображение сообщений
   fastapi:
     - name: core-auth
-      description: Authentication — login, JWT tokens, 2FA
+      description: "Authentication — login, JWT tokens, 2FA"
       database:
         enabled: true
         name: core_auth_db
         user: core_auth_user
         passwordSecret: DB_PASSWORD
     - name: core-client-info
-      description: Client information — profile, settings, ratings, achievements
+      description: "Client information — profile, settings, ratings, achievements"
       database:
         enabled: true
         name: core_client_info_db
         user: core_client_info_user
         passwordSecret: DB_PASSWORD
     - name: core-applications
-      description: Applications — user applications, references, orders, dormitory
+      description: "Applications — user applications, references, orders, dormitory"
       database:
         enabled: true
         name: core_applications_db

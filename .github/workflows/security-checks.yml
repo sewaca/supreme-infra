@@ -28,6 +28,7 @@ jobs:
       matrix:
         service-name:
           - frontend
+          - auth-ssr
           - web-documents-ssr
           - web-profile-ssr
           - web-auth-ssr

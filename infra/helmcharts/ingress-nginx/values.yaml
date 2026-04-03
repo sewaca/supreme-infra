@@ -18,6 +18,22 @@ ingress:
       - diploma.sewaca.ru
       - tastefood.sewaca.ru
   rules:
+    - service: auth-ssr
+      port: 80
+      type: next
+      paths:
+        - path: /auth-ssr/.*
+          method: GET
+        - path: /forgot-password-old
+          method: GET
+        - path: /login-old
+          method: GET
+        - path: /profile-old
+          method: GET
+        - path: /profile-old/[^/]+
+          method: GET
+        - path: /register-old
+          method: GET
     - service: core-applications
       port: 80
       type: fastapi
