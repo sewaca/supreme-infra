@@ -6,7 +6,7 @@ on:
 jobs:
   selective-checks:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    # if: github.event_name == 'pull_request'
     outputs:
       should-skip-service-checks: ${{ steps.check-files.outputs.should-skip-service-checks }}
     steps:
