@@ -1,8 +1,8 @@
 import { expect, test } from '../../fixtures';
 import { fillType, REFERENCES_URL } from './helpers';
 
-test.describe('5. Фильтрация списка типов', () => {
-  test('5.1 — ввод «По» показывает варианты, содержащие «По»', async ({ authenticatedPage: page }) => {
+test.describe('5. Фильтрация списка типов', { tag: ['@web-profile-ssr', '@core-applications'] }, () => {
+  test('5.1 — ввод «По» показывает варианты, содержащие «По» @smoke', async ({ authenticatedPage: page }) => {
     // Компонент возвращает все опции если хоть одна начинается с введённого текста,
     // поэтому проверяем что НУЖНЫЕ опции присутствуют, а не что список отфильтрован.
     await page.goto(REFERENCES_URL);
@@ -45,8 +45,8 @@ test.describe('5. Фильтрация списка типов', () => {
   });
 });
 
-test.describe('6. История заказов', () => {
-  test('6.1 — секция «История заказов» присутствует на странице', async ({ authenticatedPage: page }) => {
+test.describe('6. История заказов', { tag: ['@web-profile-ssr', '@core-applications'] }, () => {
+  test('6.1 — секция «История заказов» присутствует на странице @smoke', async ({ authenticatedPage: page }) => {
     await page.goto(REFERENCES_URL);
     await expect(page.getByTestId('reference-history')).toBeVisible();
     await expect(page.getByTestId('reference-history')).toContainText('История заказов');

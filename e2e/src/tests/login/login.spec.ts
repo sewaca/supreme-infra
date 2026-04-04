@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('Login page — unauthenticated', () => {
-  test('loads with correct heading and subtitle', async ({ page }) => {
+test.describe('Login page — unauthenticated', { tag: ['@web-auth-ssr', '@core-auth'] }, () => {
+  test('loads with correct heading and subtitle @smoke', async ({ page }) => {
     await page.goto('/login');
 
     await expect(page.locator('text=Вход в личный кабинет')).toBeVisible();
@@ -28,7 +28,7 @@ test.describe('Login page — unauthenticated', () => {
     await expect(page.locator('a[href="/forgot-password"]')).toBeVisible();
   });
 
-  test('logs in with correct credentials', async ({ page }) => {
+  test('logs in with correct credentials @smoke', async ({ page }) => {
     // Мокаем detectClientInfo() чтобы не ждать внешний запрос к ipregistry
     await page.route('https://api.ipregistry.co/**', (route) =>
       route.fulfill({

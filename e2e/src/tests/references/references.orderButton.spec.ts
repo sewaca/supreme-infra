@@ -1,8 +1,8 @@
 import { expect, test } from '../../fixtures';
 import { fillType, fillTypeAndSelect, REFERENCES_URL, submitBtn, togglePdf } from './helpers';
 
-test.describe('4. Кнопка «Заказать»', () => {
-  test('4.1 — disabled: тип не выбран, PDF выключен', async ({ authenticatedPage: page }) => {
+test.describe('4. Кнопка «Заказать»', { tag: ['@web-profile-ssr', '@core-applications'] }, () => {
+  test('4.1 — disabled: тип не выбран, PDF выключен @smoke', async ({ authenticatedPage: page }) => {
     await page.goto(REFERENCES_URL);
     await expect(submitBtn(page)).toBeDisabled();
   });

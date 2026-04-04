@@ -1,8 +1,8 @@
 import { expect, test } from '../../fixtures';
 import { pickupFormControl, REFERENCES_URL, togglePdf } from './helpers';
 
-test.describe('3. PDF-переключатель', () => {
-  test('3.1 — включение PDF скрывает поле выдачи', async ({ authenticatedPage: page }) => {
+test.describe('3. PDF-переключатель', { tag: ['@web-profile-ssr', '@core-applications'] }, () => {
+  test('3.1 — включение PDF скрывает поле выдачи @smoke', async ({ authenticatedPage: page }) => {
     await page.goto(REFERENCES_URL);
     await togglePdf(page);
     await expect(pickupFormControl(page)).not.toBeVisible();

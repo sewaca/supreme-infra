@@ -1,8 +1,8 @@
 import { expect, test } from '../../fixtures';
 import { fillType, fillTypeAndSelect, pickupFormControl, REFERENCES_URL, submitBtn, togglePdf } from './helpers';
 
-test.describe('1. Тип справки', () => {
-  test('1.1 — валидный тип «По месту работы родителей» разблокирует поле выдачи', async ({
+test.describe('1. Тип справки', { tag: ['@web-profile-ssr', '@core-applications'] }, () => {
+  test('1.1 — валидный тип «По месту работы родителей» разблокирует поле выдачи @smoke', async ({
     authenticatedPage: page,
   }) => {
     await page.goto(REFERENCES_URL);

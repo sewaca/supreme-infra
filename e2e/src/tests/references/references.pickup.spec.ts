@@ -1,8 +1,8 @@
 import { expect, test } from '../../fixtures';
 import { fillTypeAndSelect, pickupCombobox, pickupFormControl, REFERENCES_URL, submitBtn, togglePdf } from './helpers';
 
-test.describe('2. Где получить справку', () => {
-  test('2.1 — пункт «СПбГУТ» выбирается после указания типа', async ({ authenticatedPage: page }) => {
+test.describe('2. Где получить справку', { tag: ['@web-profile-ssr', '@core-applications'] }, () => {
+  test('2.1 — пункт «СПбГУТ» выбирается после указания типа @smoke', async ({ authenticatedPage: page }) => {
     await page.goto(REFERENCES_URL);
     await fillTypeAndSelect(page, 'По месту работы родителей');
     // Кликаем на видимый combobox, а не на скрытый input
