@@ -128,7 +128,7 @@ function RegisterForm() {
         <Button
           variant="contained"
           size="large"
-          onClick={() => router.push('/profile-old')}
+          onClick={() => router.push('/profile')}
           sx={{
             py: 1.5,
             px: 4,
@@ -351,7 +351,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       const { location, device, ip } = clientInfoRef.current ?? (await detectClientInfo());
       const response = await backendApi.login({ ...formData, location, device, ip_address: ip });
       setAuthToken(response.access_token);
-      router.push('/profile-old');
+      router.push('/profile');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {
