@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangeEmailSettingsEmailPostData, ChangeEmailSettingsEmailPostErrors, ChangeEmailSettingsEmailPostResponses, ChangePasswordSettingsPasswordPostData, ChangePasswordSettingsPasswordPostErrors, ChangePasswordSettingsPasswordPostResponses, GetAchievementsRatingAchievementsGetData, GetAchievementsRatingAchievementsGetErrors, GetAchievementsRatingAchievementsGetResponses, GetChoicesSubjectsChoicesGetData, GetChoicesSubjectsChoicesGetResponses, GetGradeImprovementsRatingGradeImprovementsGetData, GetGradeImprovementsRatingGradeImprovementsGetErrors, GetGradeImprovementsRatingGradeImprovementsGetResponses, GetGradesRatingGradesGetData, GetGradesRatingGradesGetErrors, GetGradesRatingGradesGetResponses, GetGroupsProfileGroupsGetData, GetGroupsProfileGroupsGetResponses, GetLevelRatingLevelGetData, GetLevelRatingLevelGetErrors, GetLevelRatingLevelGetResponses, GetPersonalDataProfilePersonalDataGetData, GetPersonalDataProfilePersonalDataGetErrors, GetPersonalDataProfilePersonalDataGetResponses, GetRankingsRatingRankingsGetData, GetRankingsRatingRankingsGetErrors, GetRankingsRatingRankingsGetResponses, GetSettingsSettingsGetData, GetSettingsSettingsGetErrors, GetSettingsSettingsGetResponses, GetStatsRatingStatsGetData, GetStatsRatingStatsGetErrors, GetStatsRatingStatsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetStreakRatingStreakGetData, GetStreakRatingStreakGetErrors, GetStreakRatingStreakGetResponses, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetData, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetErrors, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetResponses, GetUserProfileUserGetData, GetUserProfileUserGetErrors, GetUserProfileUserGetResponses, GetUsersBatchProfileUsersBatchPostData, GetUsersBatchProfileUsersBatchPostErrors, GetUsersBatchProfileUsersBatchPostResponses, GetUsersByGroupProfileUsersByGroupGetData, GetUsersByGroupProfileUsersByGroupGetErrors, GetUsersByGroupProfileUsersByGroupGetResponses, SavePrioritiesSubjectsSavePrioritiesPostData, SavePrioritiesSubjectsSavePrioritiesPostErrors, SavePrioritiesSubjectsSavePrioritiesPostResponses, UpdateSettingsSettingsPutData, UpdateSettingsSettingsPutErrors, UpdateSettingsSettingsPutResponses } from './types.gen';
+import type { ChangeEmailSettingsEmailPostData, ChangeEmailSettingsEmailPostErrors, ChangeEmailSettingsEmailPostResponses, ChangePasswordSettingsPasswordPostData, ChangePasswordSettingsPasswordPostErrors, ChangePasswordSettingsPasswordPostResponses, GetAchievementsRatingAchievementsGetData, GetAchievementsRatingAchievementsGetErrors, GetAchievementsRatingAchievementsGetResponses, GetChoicesSubjectsChoicesGetData, GetChoicesSubjectsChoicesGetResponses, GetGradeImprovementsRatingGradeImprovementsGetData, GetGradeImprovementsRatingGradeImprovementsGetErrors, GetGradeImprovementsRatingGradeImprovementsGetResponses, GetGradesRatingGradesGetData, GetGradesRatingGradesGetErrors, GetGradesRatingGradesGetResponses, GetGroupsProfileGroupsGetData, GetGroupsProfileGroupsGetResponses, GetLevelRatingLevelGetData, GetLevelRatingLevelGetErrors, GetLevelRatingLevelGetResponses, GetPersonalDataProfilePersonalDataGetData, GetPersonalDataProfilePersonalDataGetErrors, GetPersonalDataProfilePersonalDataGetResponses, GetRankingsRatingRankingsGetData, GetRankingsRatingRankingsGetErrors, GetRankingsRatingRankingsGetResponses, GetSettingsSettingsGetData, GetSettingsSettingsGetErrors, GetSettingsSettingsGetResponses, GetStatsRatingStatsGetData, GetStatsRatingStatsGetErrors, GetStatsRatingStatsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetStreakRatingStreakGetData, GetStreakRatingStreakGetErrors, GetStreakRatingStreakGetResponses, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetData, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetErrors, GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetResponses, GetUserProfileUserGetData, GetUserProfileUserGetErrors, GetUserProfileUserGetResponses, GetUsersBatchProfileUsersBatchPostData, GetUsersBatchProfileUsersBatchPostErrors, GetUsersBatchProfileUsersBatchPostResponses, GetUsersByGroupProfileUsersByGroupGetData, GetUsersByGroupProfileUsersByGroupGetErrors, GetUsersByGroupProfileUsersByGroupGetResponses, InitUserProfileInitUserPostData, InitUserProfileInitUserPostErrors, InitUserProfileInitUserPostResponses, SavePrioritiesSubjectsSavePrioritiesPostData, SavePrioritiesSubjectsSavePrioritiesPostErrors, SavePrioritiesSubjectsSavePrioritiesPostResponses, SearchForRegistrationProfileSearchForRegistrationPostData, SearchForRegistrationProfileSearchForRegistrationPostErrors, SearchForRegistrationProfileSearchForRegistrationPostResponses, UpdateSettingsSettingsPutData, UpdateSettingsSettingsPutErrors, UpdateSettingsSettingsPutResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -153,3 +153,27 @@ export const getGroupsProfileGroupsGet = <ThrowOnError extends boolean = false>(
  * Get Users By Group
  */
 export const getUsersByGroupProfileUsersByGroupGet = <ThrowOnError extends boolean = false>(options: Options<GetUsersByGroupProfileUsersByGroupGetData, ThrowOnError>) => (options.client ?? client).get<GetUsersByGroupProfileUsersByGroupGetResponses, GetUsersByGroupProfileUsersByGroupGetErrors, ThrowOnError>({ url: '/profile/users-by-group', ...options });
+
+/**
+ * Search For Registration
+ */
+export const searchForRegistrationProfileSearchForRegistrationPost = <ThrowOnError extends boolean = false>(options: Options<SearchForRegistrationProfileSearchForRegistrationPostData, ThrowOnError>) => (options.client ?? client).post<SearchForRegistrationProfileSearchForRegistrationPostResponses, SearchForRegistrationProfileSearchForRegistrationPostErrors, ThrowOnError>({
+    url: '/profile/search-for-registration',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Init User
+ */
+export const initUserProfileInitUserPost = <ThrowOnError extends boolean = false>(options: Options<InitUserProfileInitUserPostData, ThrowOnError>) => (options.client ?? client).post<InitUserProfileInitUserPostResponses, InitUserProfileInitUserPostErrors, ThrowOnError>({
+    url: '/profile/init-user',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

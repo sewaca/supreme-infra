@@ -825,6 +825,45 @@
           }
         }
       }
+    },
+    "/applications/internal/init-user": {
+      "post": {
+        "tags": [
+          "internal"
+        ],
+        "summary": "Init User",
+        "operationId": "init_user_applications_internal_init_user_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1039,6 +1078,20 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "InitUserRequest": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "title": "InitUserRequest"
       },
       "OrderDetailResponse": {
         "properties": {

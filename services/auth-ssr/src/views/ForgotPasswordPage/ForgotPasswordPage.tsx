@@ -126,7 +126,7 @@ export function ForgotPasswordPage() {
     <Box sx={{ bgcolor: 'background.paper', minHeight: '100vh' }}>
       <NavBar
         onBack={step !== 'success' ? handleBack : undefined}
-        center={<Typography variant="title1">{navTitle}</Typography>}
+        center={<Typography variant="h5">{navTitle}</Typography>}
         onClose={() => router.push('/login-old')}
       />
 

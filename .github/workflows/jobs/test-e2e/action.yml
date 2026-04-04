@@ -33,5 +33,5 @@ runs:
       shell: bash
 
     - name: Test E2E
-      run: pnpm --filter e2e run test --no-interactive
+      run: pnpm --filter e2e run test
       shell: bash

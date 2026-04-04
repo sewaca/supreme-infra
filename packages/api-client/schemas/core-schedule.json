@@ -345,6 +345,31 @@
         }
       }
     },
+    "/teachers": {
+      "get": {
+        "tags": [
+          "teachers"
+        ],
+        "summary": "List Teachers",
+        "operationId": "list_teachers_teachers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TeacherCacheResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Teachers Teachers Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/teachers/{teacher_id}/schedule": {
       "get": {
         "tags": [

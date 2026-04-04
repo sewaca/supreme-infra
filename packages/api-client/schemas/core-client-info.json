@@ -880,6 +880,84 @@
           }
         }
       }
+    },
+    "/profile/search-for-registration": {
+      "post": {
+        "tags": [
+          "internal"
+        ],
+        "summary": "Search For Registration",
+        "operationId": "search_for_registration_profile_search_for_registration_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/init-user": {
+      "post": {
+        "tags": [
+          "internal"
+        ],
+        "summary": "Init User",
+        "operationId": "init_user_profile_init_user_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1008,6 +1086,20 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "InitUserRequest": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "title": "InitUserRequest"
+      },
       "MessageResponse": {
         "properties": {
           "message": {
@@ -1124,6 +1216,30 @@
           "current_xp"
         ],
         "title": "RatingLevelResponse"
+      },
+      "RegistrationSearchRequest": {
+        "properties": {
+          "snils": {
+            "type": "string",
+            "title": "Snils"
+          },
+          "last_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "snils"
+        ],
+        "title": "RegistrationSearchRequest"
       },
       "SavePrioritiesRequest": {
         "properties": {

@@ -22,5 +22,5 @@ runs:
       run: pnpm install --frozen-lockfile
       shell: bash
     - name: Security check with nestjs-security-scan
-      run: pnpm nestjs-security-scan -p services/${{ inputs.service-name }} --no-interactive
+      run: pnpm nestjs-security-scan -p services/${{ inputs.service-name }}
       shell: bash

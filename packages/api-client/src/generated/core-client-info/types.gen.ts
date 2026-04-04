@@ -93,6 +93,16 @@ export type HttpValidationError = {
 };
 
 /**
+ * InitUserRequest
+ */
+export type InitUserRequest = {
+    /**
+     * User Id
+     */
+    user_id: string;
+};
+
+/**
  * MessageResponse
  */
 export type MessageResponse = {
@@ -160,6 +170,20 @@ export type RatingLevelResponse = {
      * Next Level Xp
      */
     next_level_xp?: number | null;
+};
+
+/**
+ * RegistrationSearchRequest
+ */
+export type RegistrationSearchRequest = {
+    /**
+     * Snils
+     */
+    snils: string;
+    /**
+     * Last Name
+     */
+    last_name?: string | null;
 };
 
 /**
@@ -1052,6 +1076,52 @@ export type GetUsersByGroupProfileUsersByGroupGetErrors = {
 export type GetUsersByGroupProfileUsersByGroupGetError = GetUsersByGroupProfileUsersByGroupGetErrors[keyof GetUsersByGroupProfileUsersByGroupGetErrors];
 
 export type GetUsersByGroupProfileUsersByGroupGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type SearchForRegistrationProfileSearchForRegistrationPostData = {
+    body: RegistrationSearchRequest;
+    path?: never;
+    query?: never;
+    url: '/profile/search-for-registration';
+};
+
+export type SearchForRegistrationProfileSearchForRegistrationPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SearchForRegistrationProfileSearchForRegistrationPostError = SearchForRegistrationProfileSearchForRegistrationPostErrors[keyof SearchForRegistrationProfileSearchForRegistrationPostErrors];
+
+export type SearchForRegistrationProfileSearchForRegistrationPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type InitUserProfileInitUserPostData = {
+    body: InitUserRequest;
+    path?: never;
+    query?: never;
+    url: '/profile/init-user';
+};
+
+export type InitUserProfileInitUserPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type InitUserProfileInitUserPostError = InitUserProfileInitUserPostErrors[keyof InitUserProfileInitUserPostErrors];
+
+export type InitUserProfileInitUserPostResponses = {
     /**
      * Successful Response
      */

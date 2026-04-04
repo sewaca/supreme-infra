@@ -66,6 +66,47 @@
         }
       }
     },
+    "/auth/lookup": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Lookup",
+        "operationId": "lookup_auth_lookup_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientInfoUser"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/register": {
       "post": {
         "tags": [
@@ -820,6 +861,62 @@
         ],
         "title": "CheckChallengeResponse"
       },
+      "ClientInfoUser": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "last_name": {
+            "type": "string",
+            "title": "Last Name"
+          },
+          "middle_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Middle Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "snils": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Snils"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "last_name",
+          "email",
+          "role"
+        ],
+        "title": "ClientInfoUser"
+      },
       "ForgotPasswordResetRequest": {
         "properties": {
           "new_password": {
@@ -956,6 +1053,24 @@
         ],
         "title": "LoginRequest"
       },
+      "LookupRequest": {
+        "properties": {
+          "snils": {
+            "type": "string",
+            "title": "Snils"
+          },
+          "last_name": {
+            "type": "string",
+            "title": "Last Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "snils",
+          "last_name"
+        ],
+        "title": "LookupRequest"
+      },
       "MessageResponse": {
         "properties": {
           "message": {
@@ -979,16 +1094,16 @@
             "type": "string",
             "title": "Password"
           },
-          "name": {
+          "snils": {
             "type": "string",
-            "title": "Name"
+            "title": "Snils"
           }
         },
         "type": "object",
         "required": [
           "email",
           "password",
-          "name"
+          "snils"
         ],
         "title": "RegisterRequest"
       },

@@ -134,6 +134,16 @@ export type HttpValidationError = {
 };
 
 /**
+ * InitUserRequest
+ */
+export type InitUserRequest = {
+    /**
+     * User Id
+     */
+    user_id: string;
+};
+
+/**
  * OrderDetailResponse
  */
 export type OrderDetailResponse = {
@@ -851,3 +861,26 @@ export type SubmitDormitoryApplicationDormitoryApplicationsPostResponses = {
 };
 
 export type SubmitDormitoryApplicationDormitoryApplicationsPostResponse = SubmitDormitoryApplicationDormitoryApplicationsPostResponses[keyof SubmitDormitoryApplicationDormitoryApplicationsPostResponses];
+
+export type InitUserApplicationsInternalInitUserPostData = {
+    body: InitUserRequest;
+    path?: never;
+    query?: never;
+    url: '/applications/internal/init-user';
+};
+
+export type InitUserApplicationsInternalInitUserPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type InitUserApplicationsInternalInitUserPostError = InitUserApplicationsInternalInitUserPostErrors[keyof InitUserApplicationsInternalInitUserPostErrors];
+
+export type InitUserApplicationsInternalInitUserPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};

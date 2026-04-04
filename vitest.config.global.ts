@@ -1,5 +1,9 @@
+import { dirname, join } from 'node:path';
 import { cwd } from 'node:process';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
+
+const repoRoot = dirname(fileURLToPath(import.meta.url));
 
 const collectCoverageFrom = [
   '**/*.{mjs,ts,tsx}',
@@ -39,6 +43,9 @@ const collectCoverageFrom = [
 ];
 
 export default defineConfig({
+  css: {
+    postcss: join(repoRoot, 'packages/nextjs-shared/vitest-postcss.config.cjs'),
+  },
   test: {
     globals: true,
     environment: 'node',

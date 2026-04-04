@@ -1021,6 +1021,24 @@ export type GroupTemplateGroupsGroupNameTemplateGetResponses = {
 
 export type GroupTemplateGroupsGroupNameTemplateGetResponse = GroupTemplateGroupsGroupNameTemplateGetResponses[keyof GroupTemplateGroupsGroupNameTemplateGetResponses];
 
+export type ListTeachersTeachersGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/teachers';
+};
+
+export type ListTeachersTeachersGetResponses = {
+    /**
+     * Response List Teachers Teachers Get
+     *
+     * Successful Response
+     */
+    200: Array<TeacherCacheResponse>;
+};
+
+export type ListTeachersTeachersGetResponse = ListTeachersTeachersGetResponses[keyof ListTeachersTeachersGetResponses];
+
 export type TeacherScheduleTeachersTeacherIdScheduleGetData = {
     body?: never;
     path: {
@@ -1435,19 +1453,6 @@ export type UpdateSemesterAdminSemestersSemesterIdPutResponses = {
 };
 
 export type UpdateSemesterAdminSemestersSemesterIdPutResponse = UpdateSemesterAdminSemestersSemesterIdPutResponses[keyof UpdateSemesterAdminSemestersSemesterIdPutResponses];
-
-export type ListTeachersTeachersGetData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/teachers';
-};
-
-export type ListTeachersTeachersGetResponses = {
-    200: Array<TeacherCacheResponse>;
-};
-
-export type ListTeachersTeachersGetResponse = ListTeachersTeachersGetResponses[keyof ListTeachersTeachersGetResponses];
 
 export type ListTeachersAdminTeachersGetData = {
     body?: never;

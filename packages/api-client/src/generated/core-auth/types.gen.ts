@@ -30,6 +30,40 @@ export type CheckChallengeResponse = {
 };
 
 /**
+ * ClientInfoUser
+ */
+export type ClientInfoUser = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Last Name
+     */
+    last_name: string;
+    /**
+     * Middle Name
+     */
+    middle_name?: string | null;
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Snils
+     */
+    snils?: string | null;
+    /**
+     * Role
+     */
+    role: string;
+};
+
+/**
  * ForgotPasswordResetRequest
  */
 export type ForgotPasswordResetRequest = {
@@ -120,6 +154,20 @@ export type LoginRequest = {
 };
 
 /**
+ * LookupRequest
+ */
+export type LookupRequest = {
+    /**
+     * Snils
+     */
+    snils: string;
+    /**
+     * Last Name
+     */
+    last_name: string;
+};
+
+/**
  * MessageResponse
  */
 export type MessageResponse = {
@@ -142,9 +190,9 @@ export type RegisterRequest = {
      */
     password: string;
     /**
-     * Name
+     * Snils
      */
-    name: string;
+    snils: string;
 };
 
 /**
@@ -429,6 +477,31 @@ export type LoginAuthLoginPostResponses = {
 };
 
 export type LoginAuthLoginPostResponse = LoginAuthLoginPostResponses[keyof LoginAuthLoginPostResponses];
+
+export type LookupAuthLookupPostData = {
+    body: LookupRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/lookup';
+};
+
+export type LookupAuthLookupPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LookupAuthLookupPostError = LookupAuthLookupPostErrors[keyof LookupAuthLookupPostErrors];
+
+export type LookupAuthLookupPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: ClientInfoUser;
+};
+
+export type LookupAuthLookupPostResponse = LookupAuthLookupPostResponses[keyof LookupAuthLookupPostResponses];
 
 export type RegisterAuthRegisterPostData = {
     body: RegisterRequest;

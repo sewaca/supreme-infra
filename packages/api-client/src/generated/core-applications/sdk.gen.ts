@@ -2,7 +2,7 @@
 
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { CancelReferenceReferencesReferenceIdCancelPostData, CancelReferenceReferencesReferenceIdCancelPostErrors, CancelReferenceReferencesReferenceIdCancelPostResponses, CreateReferenceReferencesOrderPostData, CreateReferenceReferencesOrderPostErrors, CreateReferenceReferencesOrderPostResponses, ExtendStorageReferencesReferenceIdExtendStoragePostData, ExtendStorageReferencesReferenceIdExtendStoragePostErrors, ExtendStorageReferencesReferenceIdExtendStoragePostResponses, GetApplicationsApplicationsGetData, GetApplicationsApplicationsGetErrors, GetApplicationsApplicationsGetResponses, GetNotificationsApplicationsNotificationsGetData, GetNotificationsApplicationsNotificationsGetErrors, GetNotificationsApplicationsNotificationsGetResponses, GetOrderOrdersOrderIdGetData, GetOrderOrdersOrderIdGetErrors, GetOrderOrdersOrderIdGetResponses, GetOrderPdfOrdersOrderIdPdfGetData, GetOrderPdfOrdersOrderIdPdfGetErrors, GetOrderPdfOrdersOrderIdPdfGetResponses, GetOrdersCountsOrdersCountsGetData, GetOrdersCountsOrdersCountsGetErrors, GetOrdersCountsOrdersCountsGetResponses, GetOrdersOrdersGetData, GetOrdersOrdersGetErrors, GetOrdersOrdersGetResponses, GetReferencePdfReferencesReferenceIdPdfGetData, GetReferencePdfReferencesReferenceIdPdfGetErrors, GetReferencePdfReferencesReferenceIdPdfGetResponses, GetReferenceReferencesReferenceIdGetData, GetReferenceReferencesReferenceIdGetErrors, GetReferenceReferencesReferenceIdGetResponses, GetReferencesReferencesGetData, GetReferencesReferencesGetErrors, GetReferencesReferencesGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, SubmitDormitoryApplicationDormitoryApplicationsPostData, SubmitDormitoryApplicationDormitoryApplicationsPostErrors, SubmitDormitoryApplicationDormitoryApplicationsPostResponses, UploadParentAgreementDormitoryParentAgreementPostData, UploadParentAgreementDormitoryParentAgreementPostErrors, UploadParentAgreementDormitoryParentAgreementPostResponses } from './types.gen';
+import type { CancelReferenceReferencesReferenceIdCancelPostData, CancelReferenceReferencesReferenceIdCancelPostErrors, CancelReferenceReferencesReferenceIdCancelPostResponses, CreateReferenceReferencesOrderPostData, CreateReferenceReferencesOrderPostErrors, CreateReferenceReferencesOrderPostResponses, ExtendStorageReferencesReferenceIdExtendStoragePostData, ExtendStorageReferencesReferenceIdExtendStoragePostErrors, ExtendStorageReferencesReferenceIdExtendStoragePostResponses, GetApplicationsApplicationsGetData, GetApplicationsApplicationsGetErrors, GetApplicationsApplicationsGetResponses, GetNotificationsApplicationsNotificationsGetData, GetNotificationsApplicationsNotificationsGetErrors, GetNotificationsApplicationsNotificationsGetResponses, GetOrderOrdersOrderIdGetData, GetOrderOrdersOrderIdGetErrors, GetOrderOrdersOrderIdGetResponses, GetOrderPdfOrdersOrderIdPdfGetData, GetOrderPdfOrdersOrderIdPdfGetErrors, GetOrderPdfOrdersOrderIdPdfGetResponses, GetOrdersCountsOrdersCountsGetData, GetOrdersCountsOrdersCountsGetErrors, GetOrdersCountsOrdersCountsGetResponses, GetOrdersOrdersGetData, GetOrdersOrdersGetErrors, GetOrdersOrdersGetResponses, GetReferencePdfReferencesReferenceIdPdfGetData, GetReferencePdfReferencesReferenceIdPdfGetErrors, GetReferencePdfReferencesReferenceIdPdfGetResponses, GetReferenceReferencesReferenceIdGetData, GetReferenceReferencesReferenceIdGetErrors, GetReferenceReferencesReferenceIdGetResponses, GetReferencesReferencesGetData, GetReferencesReferencesGetErrors, GetReferencesReferencesGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, InitUserApplicationsInternalInitUserPostData, InitUserApplicationsInternalInitUserPostErrors, InitUserApplicationsInternalInitUserPostResponses, SubmitDormitoryApplicationDormitoryApplicationsPostData, SubmitDormitoryApplicationDormitoryApplicationsPostErrors, SubmitDormitoryApplicationDormitoryApplicationsPostResponses, UploadParentAgreementDormitoryParentAgreementPostData, UploadParentAgreementDormitoryParentAgreementPostErrors, UploadParentAgreementDormitoryParentAgreementPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -108,6 +108,18 @@ export const uploadParentAgreementDormitoryParentAgreementPost = <ThrowOnError e
  */
 export const submitDormitoryApplicationDormitoryApplicationsPost = <ThrowOnError extends boolean = false>(options: Options<SubmitDormitoryApplicationDormitoryApplicationsPostData, ThrowOnError>) => (options.client ?? client).post<SubmitDormitoryApplicationDormitoryApplicationsPostResponses, SubmitDormitoryApplicationDormitoryApplicationsPostErrors, ThrowOnError>({
     url: '/dormitory/applications',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Init User
+ */
+export const initUserApplicationsInternalInitUserPost = <ThrowOnError extends boolean = false>(options: Options<InitUserApplicationsInternalInitUserPostData, ThrowOnError>) => (options.client ?? client).post<InitUserApplicationsInternalInitUserPostResponses, InitUserApplicationsInternalInitUserPostErrors, ThrowOnError>({
+    url: '/applications/internal/init-user',
     ...options,
     headers: {
         'Content-Type': 'application/json',

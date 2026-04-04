@@ -56,6 +56,11 @@ export const groupExamsGroupsGroupNameExamsGet = <ThrowOnError extends boolean =
 export const groupTemplateGroupsGroupNameTemplateGet = <ThrowOnError extends boolean = false>(options: Options<GroupTemplateGroupsGroupNameTemplateGetData, ThrowOnError>) => (options.client ?? client).get<GroupTemplateGroupsGroupNameTemplateGetResponses, GroupTemplateGroupsGroupNameTemplateGetErrors, ThrowOnError>({ url: '/groups/{group_name}/template', ...options });
 
 /**
+ * List Teachers
+ */
+export const listTeachersTeachersGet = <ThrowOnError extends boolean = false>(options?: Options<ListTeachersTeachersGetData, ThrowOnError>) => (options?.client ?? client).get<ListTeachersTeachersGetResponses, unknown, ThrowOnError>({ url: '/teachers', ...options });
+
+/**
  * Teacher Schedule
  */
 export const teacherScheduleTeachersTeacherIdScheduleGet = <ThrowOnError extends boolean = false>(options: Options<TeacherScheduleTeachersTeacherIdScheduleGetData, ThrowOnError>) => (options.client ?? client).get<TeacherScheduleTeachersTeacherIdScheduleGetResponses, TeacherScheduleTeachersTeacherIdScheduleGetErrors, ThrowOnError>({ url: '/teachers/{teacher_id}/schedule', ...options });
@@ -174,14 +179,6 @@ export const updateSemesterAdminSemestersSemesterIdPut = <ThrowOnError extends b
         'Content-Type': 'application/json',
         ...options.headers
     }
-});
-
-/**
- * List Teachers (public)
- */
-export const listTeachersTeachersGet = <ThrowOnError extends boolean = false>(options?: Options<ListTeachersTeachersGetData, ThrowOnError>) => (options?.client ?? client).get<ListTeachersTeachersGetResponses, unknown, ThrowOnError>({
-    url: '/teachers',
-    ...options
 });
 
 /**
