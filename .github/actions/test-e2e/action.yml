@@ -33,9 +33,5 @@ runs:
 
     - name: Test E2E
       run: |
-        if [ -n "${{ inputs.services }}" ]; then
-          pnpm --filter e2e run e2e ${{ inputs.services }}
-        else
-          pnpm --filter e2e run e2e
-        fi
+        pnpm --filter e2e run test --no-interactive
       shell: bash

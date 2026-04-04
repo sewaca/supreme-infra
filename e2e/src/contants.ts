@@ -1,0 +1,5 @@
+export const BASE_PATH = process.env.BASE_PATH || 'https://diploma.sewaca.ru/';
+export const AUTH_COOKIE_NAME = 'auth_token';
+export const AUTH_TOKEN =
+  process.env.AUTH_TOKEN ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJqdGkiOiJiYTY4OGMxMy05MmI0LTQyMzUtYTcyYS0zZGYwOWY1MjY2MjgiLCJlbWFpbCI6Iml2YW4uaXZhbm92QGV4YW1wbGUuY29tIiwibmFtZSI6Ilx1MDQxOFx1MDQzMlx1MDQzMFx1MDQzZCBcdTA0MThcdTA0MzJcdTA0MzBcdTA0M2RcdTA0M2VcdTA0MzIiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTc3NTI2MTMxMywiZXhwIjoxNzc1ODY2MTEzfQ.tsFTNp9LCatcurPHdh89ze31mpxLkw7zMkMscqrbyfM';

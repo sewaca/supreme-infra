@@ -132,7 +132,12 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
         />
 
         {!virtualOnly && (
-          <FormControl fullWidth disabled={!type} data-tour="reference-pickup-select" data-testid="reference-pickup-form-control">
+          <FormControl
+            fullWidth
+            disabled={!type}
+            data-tour="reference-pickup-select"
+            data-testid="reference-pickup-form-control"
+          >
             <InputLabel id={REFERENCE_PICKUP_SELECT_ID}>{i18n('Где получить справку')}</InputLabel>
             <Select
               labelId={REFERENCE_PICKUP_SELECT_ID}
@@ -158,13 +163,24 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
       </Stack>
 
       <FormControlLabel
-        control={<Checkbox checked={virtualOnly} onChange={handleVirtualOnlyChange} size="small" data-testid="reference-virtual-checkbox" />}
+        control={
+          <Checkbox
+            checked={virtualOnly}
+            onChange={handleVirtualOnlyChange}
+            size="small"
+            data-testid="reference-virtual-checkbox"
+          />
+        }
         label={<Typography variant="body2">{i18n('Только виртуальная справка (PDF)')}</Typography>}
         sx={{ marginTop: 1 }}
         data-tour="reference-virtual-checkbox"
       />
 
-      {error && <Typography color="error" data-testid="reference-form-error">{error}</Typography>}
+      {error && (
+        <Typography color="error" data-testid="reference-form-error">
+          {error}
+        </Typography>
+      )}
 
       <Button
         variant="outlined"
