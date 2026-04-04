@@ -134,10 +134,10 @@ jobs:
         shell: bash
       - name: unit
         run: pnpm -r unit
-        # run: pnpm -r unit:coverage # TODO: временно отключил проверку coverage
+        # run: pnpm -r unit:coverage # TODO: пока без проверки coverage
 
   test-e2e:
-    if: false
+    if: needs.selective-checks.outputs.should-skip-service-checks != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
