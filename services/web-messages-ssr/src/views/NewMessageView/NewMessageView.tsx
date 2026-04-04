@@ -4,7 +4,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Alert, Autocomplete, Box, CircularProgress, IconButton, Snackbar, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { type SyntheticEvent, useCallback, useState } from 'react';
 import { createDirectConversation, searchUsers } from '../../../app/messages/actions';
 
 interface UserOption {
@@ -45,7 +45,7 @@ export function NewMessageView({ currentUserId }: Props) {
   );
 
   const handleSelect = useCallback(
-    async (_: any, user: UserOption | null) => {
+    async (_event: SyntheticEvent, user: UserOption | null) => {
       if (!user) return;
       const result = await createDirectConversation(user.user_id);
       if (result.success && result.conversationId) {

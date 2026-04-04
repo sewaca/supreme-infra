@@ -2,6 +2,7 @@ import { listBroadcastsBroadcastsGet } from '@supreme-int/api-client/src/generat
 import { redirect } from 'next/navigation';
 import { coreMessagesClient } from '../../../src/shared/api/clients';
 import { getAuthInfo } from '../../../src/shared/api/getUserId';
+import { mapConversationResponseToConversation } from '../../../src/shared/api/mapCoreMessagesApi';
 import { BroadcastListView } from '../../../src/views/BroadcastListView/BroadcastListView';
 
 export const dynamic = 'force-dynamic';
@@ -14,5 +15,5 @@ export default async function BroadcastPage() {
     client: coreMessagesClient,
   });
 
-  return <BroadcastListView broadcasts={(res.data ?? []) as any} />;
+  return <BroadcastListView broadcasts={(res.data ?? []).map(mapConversationResponseToConversation)} />;
 }

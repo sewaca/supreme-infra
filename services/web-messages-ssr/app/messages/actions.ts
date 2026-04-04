@@ -6,6 +6,7 @@ import {
   deleteConversationConversationsConversationIdDelete,
   getGroupsBroadcastsGroupsGet,
   markReadConversationsConversationIdMessagesReadPost,
+  type SendMessageRequest,
   searchMessagesMessagesSearchGet,
   searchUsersUsersSearchGet,
   sendMessageConversationsConversationIdMessagesPost,
@@ -54,10 +55,14 @@ export async function sendMessage(
   contentType: string = 'text',
 ): Promise<{ success: boolean; message?: Message; error?: string }> {
   try {
+    const body: SendMessageRequest = { content, content_type: contentType };
+    if (replyToId) {
+      body.reply_to_id = replyToId;
+    }
     const res = await sendMessageConversationsConversationIdMessagesPost({
       client: coreMessagesClient,
       path: { conversation_id: conversationId },
-      body: { content, content_type: contentType, ...(replyToId ? { reply_to_id: replyToId } : {}) } as any,
+      body,
     });
 
     if (res.data) {

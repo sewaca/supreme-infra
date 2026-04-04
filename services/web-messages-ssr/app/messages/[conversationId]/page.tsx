@@ -5,6 +5,10 @@ import {
 import { redirect } from 'next/navigation';
 import { coreMessagesClient } from '../../../src/shared/api/clients';
 import { getAuthInfo } from '../../../src/shared/api/getUserId';
+import {
+  mapConversationResponseToConversation,
+  mapMessageResponseToMessage,
+} from '../../../src/shared/api/mapCoreMessagesApi';
 import { ChatView } from '../../../src/views/ChatView/ChatView';
 
 export const dynamic = 'force-dynamic';
@@ -38,8 +42,8 @@ export default async function Page({ params }: Props) {
 
   return (
     <ChatView
-      conversation={conversation as any}
-      initialMessages={(messagesData?.items ?? []) as any}
+      conversation={mapConversationResponseToConversation(conversation)}
+      initialMessages={(messagesData?.items ?? []).map(mapMessageResponseToMessage)}
       initialCursor={messagesData?.next_cursor ?? null}
       initialHasMore={messagesData?.has_more ?? false}
       userId={auth.userId}

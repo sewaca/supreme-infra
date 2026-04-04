@@ -24,7 +24,7 @@ s3_client = boto3.client(
     region_name=settings.s3_region,
 )
 
-_bucket_ready = False
+_bucket_ready: dict[str, bool] = {"v": False}
 
 
 def _uuid7() -> uuid.UUID:
@@ -41,8 +41,7 @@ def _uuid7() -> uuid.UUID:
 
 
 def _ensure_bucket() -> None:
-    global _bucket_ready
-    if _bucket_ready:
+    if _bucket_ready["v"]:
         return
     try:
         s3_client.head_bucket(Bucket=settings.s3_bucket)
@@ -56,10 +55,7 @@ def _ensure_bucket() -> None:
                 f"In Kubernetes the correct value is: http://minio.default.svc.cluster.local:9000"
             ) from None
         if isinstance(e, NoCredentialsError):
-            raise RuntimeError(
-                "MinIO credentials not set. "
-                "Check S3_ACCESS_KEY and S3_SECRET_KEY env vars."
-            ) from None
+            raise RuntimeError("MinIO credentials not set. Check S3_ACCESS_KEY and S3_SECRET_KEY env vars.") from None
 
         # Bucket doesn't exist — create it
         try:
@@ -85,7 +81,7 @@ def _ensure_bucket() -> None:
                 f"MinIO reachable at {settings.s3_endpoint!r} but failed to create "
                 f"bucket {settings.s3_bucket!r}: {create_err}"
             ) from None
-    _bucket_ready = True
+    _bucket_ready["v"] = True
 
 
 async def ensure_bucket() -> None:
