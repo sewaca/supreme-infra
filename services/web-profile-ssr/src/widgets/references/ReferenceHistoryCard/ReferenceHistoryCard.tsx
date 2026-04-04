@@ -20,7 +20,7 @@ export const ReferenceHistoryCard = ({ reference, onClick }: Props) => {
   const isReady = reference.status === REFERENCE_STATUS.READY;
 
   return (
-    <Card variant="outlined" sx={{ background: 'transparent' }}>
+    <Card variant="outlined" sx={{ background: 'transparent' }} data-testid="reference-history-card">
       <CardActionArea onClick={onClick} sx={{ p: 2 }}>
         <Row gap={1.5} alignItems="flex-start">
           <DescriptionIcon color="action" />

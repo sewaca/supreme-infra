@@ -96,10 +96,10 @@ export const ReferenceDetailModal = ({ reference, open, onClose, onSuccess }: Pr
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth data-testid="reference-detail-modal">
       <DialogTitle sx={{ paddingX: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {reference.typeLabel}
-        <IconButton aria-label={i18n('Закрыть')} onClick={onClose} size="small">
+        <IconButton aria-label={i18n('Закрыть')} onClick={onClose} size="small" data-testid="reference-modal-close">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -158,7 +158,7 @@ export const ReferenceDetailModal = ({ reference, open, onClose, onSuccess }: Pr
 
       {canCancel && (
         <DialogActions>
-          <Button color="error" onClick={handleCancel} disabled={loading}>
+          <Button color="error" onClick={handleCancel} disabled={loading} data-testid="reference-modal-cancel">
             {i18n('Отменить заказ')}
           </Button>
         </DialogActions>

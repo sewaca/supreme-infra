@@ -44,7 +44,7 @@ export const ReferenceHistory = ({ references, onCardClick }: Props) => {
   }, [references]);
 
   return (
-    <Box data-tour="reference-history">
+    <Box data-tour="reference-history" data-testid="reference-history">
       <Typography variant="h6">{i18n('История заказов')}</Typography>
       <Spacer size={2} />
       <Box
@@ -60,6 +60,7 @@ export const ReferenceHistory = ({ references, onCardClick }: Props) => {
         <ToggleButtonGroup
           value={statusFilter}
           exclusive
+          data-testid="reference-status-filter"
           onChange={(_, v) => v != null && setStatusFilter(v)}
           sx={{
             display: 'inline-flex',
@@ -73,7 +74,7 @@ export const ReferenceHistory = ({ references, onCardClick }: Props) => {
           }}
         >
           {STATUS_OPTIONS.map((opt) => (
-            <ToggleButton key={opt.value} value={opt.value}>
+            <ToggleButton key={opt.value} value={opt.value} data-testid={`status-btn-${opt.value}`}>
               {opt.label} ({statusCounts[opt.value]})
             </ToggleButton>
           ))}
@@ -82,9 +83,9 @@ export const ReferenceHistory = ({ references, onCardClick }: Props) => {
 
       <Spacer size={8} />
 
-      <Stack spacing={1}>
+      <Stack spacing={1} data-testid="reference-history-list">
         {filteredReferences.length === 0 ? (
-          <Typography variant="body2">
+          <Typography variant="body2" data-testid="reference-history-empty">
             {statusFilter === 'all' ? i18n('Пока нет заказанных справок') : i18n('Нет справок с выбранным статусом')}
           </Typography>
         ) : (

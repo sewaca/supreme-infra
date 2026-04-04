@@ -98,6 +98,7 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
         <Autocomplete<TypeOption, false, false, true>
           freeSolo
           data-tour="reference-type-input"
+          data-testid="reference-type-autocomplete"
           getOptionKey={(option) => (typeof option === 'string' ? `custom-${option}` : option.id)}
           options={currentOptions}
           disableClearable={false}
@@ -125,19 +126,20 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
                 id: `${REFERENCE_TYPE_INPUT_ID}-label`,
                 htmlFor: REFERENCE_TYPE_INPUT_ID,
               }}
-              inputProps={{ ...params.inputProps, id: REFERENCE_TYPE_INPUT_ID }}
+              inputProps={{ ...params.inputProps, id: REFERENCE_TYPE_INPUT_ID, 'data-testid': 'reference-type-input' }}
             />
           )}
         />
 
         {!virtualOnly && (
-          <FormControl fullWidth disabled={!type} data-tour="reference-pickup-select">
+          <FormControl fullWidth disabled={!type} data-tour="reference-pickup-select" data-testid="reference-pickup-form-control">
             <InputLabel id={REFERENCE_PICKUP_SELECT_ID}>{i18n('Где получить справку')}</InputLabel>
             <Select
               labelId={REFERENCE_PICKUP_SELECT_ID}
               value={type ? pickupPointId : ''}
               label={i18n('Где получить справку')}
               MenuProps={{ slotProps: { paper: { sx: { bgcolor: '#fff' } } } }}
+              inputProps={{ 'data-testid': 'reference-pickup-select' }}
               onChange={(e) => setFormState((prev) => ({ ...prev, pickupPointId: e.target.value }))}
               renderValue={(v) => {
                 if (!v || !type) return i18n('Сначала выберите тип справки');
@@ -156,13 +158,13 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
       </Stack>
 
       <FormControlLabel
-        control={<Checkbox checked={virtualOnly} onChange={handleVirtualOnlyChange} size="small" />}
+        control={<Checkbox checked={virtualOnly} onChange={handleVirtualOnlyChange} size="small" data-testid="reference-virtual-checkbox" />}
         label={<Typography variant="body2">{i18n('Только виртуальная справка (PDF)')}</Typography>}
         sx={{ marginTop: 1 }}
         data-tour="reference-virtual-checkbox"
       />
 
-      {error && <Typography color="error">{error}</Typography>}
+      {error && <Typography color="error" data-testid="reference-form-error">{error}</Typography>}
 
       <Button
         variant="outlined"
@@ -170,6 +172,7 @@ export const ReferenceOrderForm = ({ orderOptions, onSuccess }: Props) => {
         onClick={handleSubmit}
         disabled={!type || (!virtualOnly && !pickupPointId)}
         loading={loading}
+        data-testid="reference-submit-btn"
       >
         {i18n('Заказать')}
       </Button>
