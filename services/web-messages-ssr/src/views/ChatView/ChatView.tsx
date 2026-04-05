@@ -325,12 +325,7 @@ export function ChatView({
     <Box className={styles.chatContainer}>
       <NavBar
         leftSlot={
-          <IconButton
-            size="small"
-            component={Link}
-            href="/messages"
-            sx={{ color: 'text.primary', display: { xs: 'flex', md: 'none' } }}
-          >
+          <IconButton size="small" component={Link} href="/messages" sx={{ color: 'text.primary' }}>
             <ArrowBackIosNewRoundedIcon fontSize="small" />
           </IconButton>
         }
