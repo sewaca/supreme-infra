@@ -27,6 +27,7 @@ resources:
 config:
   maxmemory: "256mb"
   maxmemoryPolicy: "allkeys-lru"
+  loglevel: "verbose"
   # requirepass: ""  # leave empty for no auth (internal cluster only)
 
 livenessProbe:

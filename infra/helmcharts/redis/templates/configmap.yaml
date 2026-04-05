@@ -9,6 +9,7 @@ data:
   redis.conf: |
     maxmemory {{ .Values.config.maxmemory }}
     maxmemory-policy {{ .Values.config.maxmemoryPolicy }}
+    loglevel {{ .Values.config.loglevel | default "notice" }}
     {{- if .Values.config.requirepass }}
     requirepass {{ .Values.config.requirepass }}
     {{- end }}
