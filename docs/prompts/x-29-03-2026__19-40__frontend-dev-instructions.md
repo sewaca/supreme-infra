@@ -1854,7 +1854,7 @@ export const config = {
 ### proxy.ts
 
 ```typescript
-import { createRouteAuthMiddleware } from "@supreme-int/nextjs-shared/src/shared/middleware/create-route-auth-middleware";
+import { createRouteAuthMiddleware } from "@supreme-int/nextjs-shared/src/shared/middleware/createRouteAuthMiddleware";
 import { authRoutes } from "./_auth-routes.generated";
 
 export const proxy = createRouteAuthMiddleware({ routes: authRoutes });
