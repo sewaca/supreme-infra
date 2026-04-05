@@ -204,7 +204,18 @@ export function ChatBubble({
           </Box>
         )}
 
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5, mt: 0.25 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: 0.5,
+            mt: 0.25,
+            userSelect: 'none',
+            '-webkit-user-select': 'none',
+            '-webkit-touch-callout': 'none',
+          }}
+        >
           {message.is_edited && (
             <Typography variant="caption" color={isOwn ? 'rgba(255,255,255,0.6)' : 'text.disabled'}>
               изм.
