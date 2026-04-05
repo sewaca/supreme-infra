@@ -128,6 +128,7 @@ async function fetchUniversityNews(): Promise<void> {
     console.debug(`[news] parsed ${parsed.length} items`);
 
     global.newsCache = { items: [...parsed, ...global.newsCache.items].slice(0, 10), fetchedAt: Date.now() };
+    console.debug('saved to global.newsCache', global.newsCache);
   } catch (e) {
     console.error('[news] Failed to fetch news.', e);
   }
@@ -143,6 +144,10 @@ export const setupUniversityNewsFetching = () => {
 
 // just get from cache
 export async function getUniversityNews(): Promise<NewsItem[]> {
+  console.debug('global.newsCache', global.newsCache);
+  console.debug('Date.now() - global.newsCache.fetchedAt', Date.now() - global.newsCache.fetchedAt);
+  console.debug('CACHE_TTL_MS', CACHE_TTL_MS);
+
   if (global.newsCache && Date.now() - global.newsCache.fetchedAt > CACHE_TTL_MS) {
     console.warn('[news] Cache is stale. News was not refetched correctly.');
   } else {
