@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ReplyIcon from '@mui/icons-material/Reply';
-import SendIcon from '@mui/icons-material/Send';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { Box, CircularProgress, IconButton, LinearProgress, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UploadedFile } from '../../../app/messages/actions';
@@ -302,7 +302,7 @@ export function MessageInput({
             transition: 'background-color 0.15s',
           }}
         >
-          {sending ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
+          {sending ? <CircularProgress size={20} color="inherit" /> : <SendRoundedIcon />}
         </IconButton>
       </Box>
     </Box>
