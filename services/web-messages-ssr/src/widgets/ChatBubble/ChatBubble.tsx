@@ -1,13 +1,13 @@
 'use client';
 
 import { Avatar, Box, Typography } from '@mui/material';
+import cx from 'classnames';
 import { useRef, useState } from 'react';
 import type { Message } from '../../entities/Message/types';
 import { formatMessageTime } from '../../shared/lib/formatDate';
 import { FileAttachment } from '../FileAttachment/FileAttachment';
 import { type MessageAction, MessageContextMenu } from '../MessageContextMenu/MessageContextMenu';
 import styles from './ChatBubble.module.css';
-import cx from 'classnames';
 
 const SWIPE_THRESHOLD = 50;
 const SWIPE_MAX = 68;

@@ -128,9 +128,9 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
     <div className={styles.wrapper}>
       {showNavbar && (
         <DefaultNavbar
-          leftSlot={<></>}
+          leftSlot={null}
           center={
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography variant="title1" fontWeight={600}>
               Сообщения
             </Typography>
           }

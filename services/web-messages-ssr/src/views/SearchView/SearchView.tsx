@@ -1,8 +1,6 @@
 'use client';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, IconButton, List, ListItemButton, TextField, Typography } from '@mui/material';
-import Link from 'next/link';
+import { Box, List, ListItemButton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { searchMessages } from '../../../app/messages/actions';
@@ -36,9 +34,6 @@ export function SearchView() {
   return (
     <Box sx={{ p: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <IconButton component={Link} href="/messages">
-          <ArrowBackIcon />
-        </IconButton>
         <TextField
           fullWidth
           size="small"
@@ -71,6 +66,7 @@ export function SearchView() {
                 '& mark': { bgcolor: 'warning.light', borderRadius: 0.5, px: 0.25 },
               }}
             >
+              {/* TODO: это какая-то хуйня. надо переделать нормально на markdown */}
               {/* biome-ignore lint/security/noDangerouslySetInnerHtml: search highlight from trusted backend, contains only <mark> tags */}
               <span dangerouslySetInnerHTML={{ __html: r.highlight }} />
             </Typography>

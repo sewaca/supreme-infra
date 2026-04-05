@@ -1,8 +1,8 @@
 'use client';
 
+import cx from 'classnames';
 import { useState } from 'react';
 import styles from './LikeButton.module.css';
-import cx from 'classnames';
 
 interface LikeButtonProps {
   recipeId: number;

@@ -2,10 +2,10 @@
 
 import { Badge, Box, LinearProgress, Paper, Tooltip, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import cx from 'classnames';
 import { getAchievementProgress } from '../../entities/Rating/achievementsConfig';
 import { Achievement } from '../../entities/Rating/RatingData';
 import styles from './AchievementBadge.module.css';
-import cx from 'classnames';
 
 type Props = {
   achievement: Achievement;

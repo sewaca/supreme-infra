@@ -63,7 +63,7 @@ export function NewMessageView({ currentUserId }: Props) {
         <IconButton component={Link} href="/messages" size="small">
           <ArrowBackIcon />
         </IconButton>
-        <Typography variant="h6">Новое сообщение</Typography>
+        <Typography variant="title2">Новое сообщение</Typography>
       </Box>
 
       <Autocomplete
@@ -72,6 +72,7 @@ export function NewMessageView({ currentUserId }: Props) {
         onInputChange={(_, value) => handleSearch(value)}
         onChange={handleSelect}
         loading={loading}
+        size="small"
         noOptionsText="Введите имя для поиска"
         loadingText="Поиск..."
         renderInput={(params) => (

@@ -29,7 +29,9 @@ export const NavBar = ({
   return (
     <AppBar color={color} position={position} elevation={0}>
       <div className={styles.block}>
-        <div className={styles.leftSlot}>{leftSlot ? leftSlot : onBack ? <BackButton onBack={onBack} /> : null}</div>
+        <div className={styles.leftSlot}>
+          {leftSlot !== undefined ? leftSlot : onBack ? <BackButton onBack={onBack} /> : null}
+        </div>
 
         <div className={styles.center}>{center}</div>
 

@@ -31,9 +31,7 @@ export function ConversationListView({ conversations, userRole, currentPath, cur
           borderColor: 'divider',
         }}
       >
-        <Typography variant="subtitle1" fontWeight={600}>
-          Сообщения
-        </Typography>
+        <Typography variant="title2">Сообщения</Typography>
         <Box>
           <IconButton component={Link} href="/messages/search" size="small">
             <SearchIcon fontSize="small" />
