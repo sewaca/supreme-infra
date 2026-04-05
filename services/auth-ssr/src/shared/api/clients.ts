@@ -1,6 +1,6 @@
 import { jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
 import { client as coreAuthClient } from '@supreme-int/api-client/src/generated/core-auth/client.gen';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
+import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
 import { getCoreAuthUrl } from '../lib/environment';
 
 coreAuthClient.setConfig({

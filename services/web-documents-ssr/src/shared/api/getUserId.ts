@@ -1,4 +1,4 @@
-import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decodeJwt';
 import { cookies } from 'next/headers';
 
 export async function getAuthInfo() {

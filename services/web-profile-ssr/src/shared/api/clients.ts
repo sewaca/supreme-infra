@@ -2,7 +2,7 @@ import { client as coreApplicationsClient } from '@supreme-int/api-client/src/ge
 import { client as coreAuthClient } from '@supreme-int/api-client/src/generated/core-auth/client.gen';
 import { jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-client-info/client';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
+import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
 import { environment } from '../lib/environment';
 
 const sharedConfig = { fetch: createServerFetch(), ...jsonBodySerializer };

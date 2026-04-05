@@ -7,7 +7,7 @@ import {
   groupScheduleGroupsGroupNameScheduleGet,
   listGroupsWithScheduleGroupsGet,
 } from '@supreme-int/api-client/src/generated/core-schedule';
-import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decodeJwt';
 import { cookies } from 'next/headers';
 import '../../../src/shared/api/clients';
 import { scheduleToEvents } from '../../../src/entities/Lesson/model/Lesson';

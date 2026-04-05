@@ -1,6 +1,6 @@
 import type { UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
 import { RecipesApi, TOKEN_KEY } from '@supreme-int/api-client/src/index';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
+import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
 import { cookies } from 'next/headers';
 
 const isProd = process.env.NODE_ENV === 'production';
