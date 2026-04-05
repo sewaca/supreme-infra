@@ -26,13 +26,8 @@ const DATE_PREFIX_RE =
 
 const CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 3 hours
 
-interface NewsCache {
-  items: NewsItem[];
-  fetchedAt: number;
-}
-
-let cache: NewsCache = {
-  fetchedAt: 0, // fetchedAt: 0 — stale immediately, will be refreshed on first request
+global.newsCache = {
+  fetchedAt: 0, // fetchedAt: 0 — stale immediately
   items: [
     {
       title: 'СПбГУТ и ассоциация «Дрон-Безопасность» стали стратегическими партнерами',
@@ -100,7 +95,7 @@ function parseNewsFromHtml(html: string): NewsItem[] {
     const date = dateMatch[1];
     const title = text.slice(dateMatch[0].length).trim();
 
-    if (title.length < 10) continue;
+    if (title.length < 6) continue;
 
     items.push({ title, url: href, date, category });
   }
@@ -110,13 +105,12 @@ function parseNewsFromHtml(html: string): NewsItem[] {
 
 async function fetchUniversityNews(): Promise<void> {
   try {
-    console.debug(`[news] fetching news from server. date=${new Date().toISOString()}`);
-
     console.time('[news] fetch news request');
     const res = await fetch(`${BASE_URL}/bonchnews`, {
       cache: 'no-store',
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; web-auth-ssr/1.0)' },
     });
+    console.debug(`[news] fetching news from server. date=${new Date().toISOString()}`);
     console.timeEnd('[news] fetch news request');
 
     console.debug(`[news] fetch ended with "${res.status} ${res.statusText}"`);
@@ -133,7 +127,7 @@ async function fetchUniversityNews(): Promise<void> {
 
     console.debug(`[news] parsed ${parsed.length} items`);
 
-    cache = { items: [...parsed, ...cache.items].slice(0, 10), fetchedAt: Date.now() };
+    global.newsCache = { items: [...parsed, ...global.newsCache.items].slice(0, 10), fetchedAt: Date.now() };
   } catch (e) {
     console.error('[news] Failed to fetch news.', e);
   }
@@ -149,13 +143,13 @@ export const setupUniversityNewsFetching = () => {
 
 // just get from cache
 export async function getUniversityNews(): Promise<NewsItem[]> {
-  if (cache && Date.now() - cache.fetchedAt > CACHE_TTL_MS) {
+  if (global.newsCache && Date.now() - global.newsCache.fetchedAt > CACHE_TTL_MS) {
     console.warn('[news] Cache is stale. News was not refetched correctly.');
   } else {
     console.debug('[news] returning cached news');
   }
 
-  return cache.items.slice(0, 6);
+  return global.newsCache.items.slice(0, 6);
 }
 
 export function getNewsUrl(item: NewsItem): string {
