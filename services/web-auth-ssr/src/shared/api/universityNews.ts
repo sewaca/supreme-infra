@@ -141,6 +141,7 @@ async function fetchUniversityNews(): Promise<void> {
 
 // setting interval to fetch news every hour just to update cache
 if (!global.fetchingNewsInterval) {
+  fetchUniversityNews();
   setInterval(fetchUniversityNews, CACHE_TTL_MS / 2);
 }
 
