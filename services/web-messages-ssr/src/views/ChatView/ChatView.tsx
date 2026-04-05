@@ -1,7 +1,8 @@
 'use client';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import { Alert, Box, IconButton, Snackbar, Typography } from '@mui/material';
+import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -322,21 +323,30 @@ export function ChatView({
 
   return (
     <Box className={styles.chatContainer}>
-      <Box className={styles.header}>
-        <IconButton component={Link} href="/messages" sx={{ display: { xs: 'flex', md: 'none' } }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Box sx={{ flex: 1, ml: 1, display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="subtitle1" fontWeight={600} noWrap style={{ lineHeight: '1.2' }}>
-            {displayName}
-          </Typography>
-          {subtitle && (
-            <Typography variant="caption" color="text.secondary">
-              {subtitle}
+      <NavBar
+        leftSlot={
+          <IconButton
+            size="small"
+            component={Link}
+            href="/messages"
+            sx={{ color: 'text.primary', display: { xs: 'flex', md: 'none' } }}
+          >
+            <ArrowBackIosNewRoundedIcon fontSize="small" />
+          </IconButton>
+        }
+        center={
+          <Box sx={{ flex: 1, ml: 1, display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="title1" noWrap style={{ lineHeight: '1.2' }}>
+              {displayName}
             </Typography>
-          )}
-        </Box>
-      </Box>
+            {subtitle && (
+              <Typography variant="body2" color="text.secondary">
+                {subtitle}
+              </Typography>
+            )}
+          </Box>
+        }
+      />
 
       <MessageList
         ref={messageListRef}
