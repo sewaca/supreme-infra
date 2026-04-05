@@ -63,7 +63,7 @@ CORE_AUTH_URL=http://localhost:8002/core-auth
 
 ```typescript
 import { client as coreMessagesClient } from "@supreme-int/api-client/src/generated/core-messages/client.gen";
-import { createServerFetch } from "@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch";
+import { createServerFetch } from "@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch";
 import { environment } from "../lib/environment";
 
 coreMessagesClient.setConfig({
@@ -81,7 +81,7 @@ export { coreMessagesClient };
 Паттерн — `services/web-schedule-ssr/app/calendar/page.tsx`:
 
 ```typescript
-import { decodeJwt, TOKEN_KEY } from "@supreme-int/authorization-lib/src/jwt/decode-jwt";
+import { decodeJwt, TOKEN_KEY } from "@supreme-int/authorization-lib/src/jwt/decodeJwt";
 import { cookies } from "next/headers";
 
 export async function getAuthInfo() {
@@ -1854,7 +1854,7 @@ export const config = {
 ### proxy.ts
 
 ```typescript
-import { createRouteAuthMiddleware } from "@supreme-int/nextjs-shared/src/shared/middleware/create-route-auth-middleware";
+import { createRouteAuthMiddleware } from "@supreme-int/nextjs-shared/src/shared/middleware/createRouteAuthMiddleware";
 import { authRoutes } from "./_auth-routes.generated";
 
 export const proxy = createRouteAuthMiddleware({ routes: authRoutes });

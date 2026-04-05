@@ -11,7 +11,7 @@ import {
   searchUsersUsersSearchGet,
   sendMessageConversationsConversationIdMessagesPost,
 } from '@supreme-int/api-client/src/generated/core-messages';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/create-server-fetch';
+import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
 import type { Message } from '../../src/entities/Message/types';
 import { coreMessagesClient } from '../../src/shared/api/clients';
 import { environment } from '../../src/shared/lib/environment';

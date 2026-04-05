@@ -1,13 +1,13 @@
 'use client';
 
 import { Typography } from '@mui/material';
+import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import classNames from 'classnames';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Conversation } from '../../entities/Conversation/types';
 import { useWebSocket, type WsClientEvent } from '../../shared/hooks/useWebSocket';
 import { messagesWsDebug } from '../../shared/lib/messagesWsDebug';
-import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 import { ConversationListView } from '../ConversationListView/ConversationListView';
 import styles from './MessagesLayout.module.css';
@@ -127,7 +127,7 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
   return (
     <div className={styles.wrapper}>
       {showNavbar && (
-        <DefaultNavbar
+        <NavBar
           leftSlot={null}
           center={
             <Typography variant="title1" fontWeight={600}>
