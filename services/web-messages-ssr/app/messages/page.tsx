@@ -21,7 +21,7 @@ export default function MessagesPage() {
       <Typography variant="body2" color="text.secondary">
         Выберите чат или начните новую переписку
       </Typography>
-      <Button variant="outlined" component={Link} href="/messages/new">
+      <Button variant="outlined" component={Link} href="/messages/new" size="small">
         Написать
       </Button>
     </Box>
