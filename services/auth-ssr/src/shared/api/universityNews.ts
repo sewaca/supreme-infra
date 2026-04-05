@@ -24,7 +24,7 @@ const CATEGORY_MAP: Record<string, string> = {
 const DATE_PREFIX_RE =
   /^(\d{1,2}\s+(?:января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s+\d{4})\s+/i;
 
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 3 hours
 
 interface NewsCache {
   items: NewsItem[];
@@ -108,14 +108,10 @@ function parseNewsFromHtml(html: string): NewsItem[] {
   return items;
 }
 
-export async function fetchUniversityNews(): Promise<NewsItem[]> {
-  if (cache && Date.now() - cache.fetchedAt < CACHE_TTL_MS) {
-    console.debug('[news] returning cached news');
-    return cache.items;
-  }
-
+async function fetchUniversityNews(): Promise<void> {
   try {
-    console.debug('[news] fetching news from server');
+    console.debug(`[news] fetching news from server. date=${new Date().toISOString()}`);
+
     console.time('[news] fetch news request');
     const res = await fetch(`${BASE_URL}/bonchnews`, {
       cache: 'no-store',
@@ -126,7 +122,7 @@ export async function fetchUniversityNews(): Promise<NewsItem[]> {
     console.debug(`[news] fetch ended with "${res.status} ${res.statusText}"`);
 
     if (!res.ok) {
-      return cache.items;
+      return;
     }
 
     const html = await res.text();
@@ -137,15 +133,23 @@ export async function fetchUniversityNews(): Promise<NewsItem[]> {
 
     console.debug(`[news] parsed ${parsed.length} items`);
 
-    if (parsed.length >= 3) {
-      cache = { items: parsed, fetchedAt: Date.now() };
-    }
-
-    return cache.items;
+    cache = { items: [...parsed, ...cache.items].slice(0, 10), fetchedAt: Date.now() };
   } catch (e) {
-    console.error('[news] Failed to fetch news', e);
-    return cache.items;
+    console.error('[news] Failed to fetch news.', e);
   }
+}
+
+// setting interval to fetch news every hour just to update cache
+setInterval(fetchUniversityNews, CACHE_TTL_MS / 2);
+
+export async function getUniversityNews(): Promise<NewsItem[]> {
+  if (cache && Date.now() - cache.fetchedAt > CACHE_TTL_MS) {
+    console.warn('[news] Cache is stale. News was not refetched correctly.');
+  } else {
+    console.debug('[news] returning cached news');
+  }
+
+  return cache.items;
 }
 
 export function getNewsUrl(item: NewsItem): string {
