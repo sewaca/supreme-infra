@@ -140,11 +140,14 @@ async function fetchUniversityNews(): Promise<void> {
 }
 
 // setting interval to fetch news every hour just to update cache
-if (!global.fetchingNewsInterval) {
-  fetchUniversityNews();
-  setInterval(fetchUniversityNews, CACHE_TTL_MS / 2);
-}
+export const setupUniversityNewsFetching = () => {
+  if (!global.fetchingNewsInterval) {
+    fetchUniversityNews();
+    setInterval(fetchUniversityNews, CACHE_TTL_MS / 2);
+  }
+};
 
+// just get from cache
 export async function getUniversityNews(): Promise<NewsItem[]> {
   if (cache && Date.now() - cache.fetchedAt > CACHE_TTL_MS) {
     console.warn('[news] Cache is stale. News was not refetched correctly.');
@@ -152,7 +155,7 @@ export async function getUniversityNews(): Promise<NewsItem[]> {
     console.debug('[news] returning cached news');
   }
 
-  return cache.items;
+  return cache.items.slice(0, 6);
 }
 
 export function getNewsUrl(item: NewsItem): string {

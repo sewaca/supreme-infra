@@ -1,4 +1,8 @@
+import { setupUniversityNewsFetching } from './src/shared/api/universityNews';
+
 export async function register() {
+  setupUniversityNewsFetching();
+
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     await import('./instrumentation.nodejs');
   }
