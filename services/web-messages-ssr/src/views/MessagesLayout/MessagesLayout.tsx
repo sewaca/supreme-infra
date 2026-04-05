@@ -1,22 +1,29 @@
 'use client';
 
+import { Typography } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Conversation } from '../../entities/Conversation/types';
 import { useWebSocket, type WsClientEvent } from '../../shared/hooks/useWebSocket';
 import { messagesWsDebug } from '../../shared/lib/messagesWsDebug';
+import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
+import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 import { ConversationListView } from '../ConversationListView/ConversationListView';
 import styles from './MessagesLayout.module.css';
+
+const CONVERSATION_ROUTE_RE = /^\/messages\/[0-9a-f-]{8,}$/i;
 
 interface Props {
   initialConversations: Conversation[];
   userRole: string | null;
   userId: string | null;
   token: string | null;
+  avatar: string | null;
+  userName: string;
   children: React.ReactNode;
 }
 
-export function MessagesLayout({ initialConversations, userRole, userId, token, children }: Props) {
+export function MessagesLayout({ initialConversations, userRole, userId, token, avatar, userName, children }: Props) {
   const pathname = usePathname();
   const [conversations, setConversations] = useState(initialConversations);
   const userIdRef = useRef(userId);
@@ -25,6 +32,7 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
   // Show main panel on any path except the empty /messages root
   const showMain = pathname !== '/messages';
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 769;
+  const showNavbar = !CONVERSATION_ROUTE_RE.test(pathname);
 
   const updateConversation = useCallback((conversationId: string, preview: string, lastMessageAt: string) => {
     setConversations((prev) => {
@@ -117,16 +125,29 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
   useWebSocket({ userId, token, onMessage: handleWsMessage });
 
   return (
-    <div className={styles.container}>
-      <aside className={`${styles.sidebar} ${showMain && isMobile ? styles.hidden : ''}`}>
-        <ConversationListView
-          conversations={conversations}
-          userRole={userRole}
-          currentPath={pathname}
-          currentUserId={userId}
+    <div className={styles.wrapper}>
+      {showNavbar && (
+        <DefaultNavbar
+          leftSlot={<></>}
+          center={
+            <Typography variant="subtitle1" fontWeight={600}>
+              Сообщения
+            </Typography>
+          }
+          rightSlot={<ProfileButton avatar={avatar} name={userName} />}
         />
-      </aside>
-      <main className={`${styles.main} ${!showMain && isMobile ? styles.hidden : ''}`}>{children}</main>
+      )}
+      <div className={styles.container}>
+        <aside className={`${styles.sidebar} ${showMain && isMobile ? styles.hidden : ''}`}>
+          <ConversationListView
+            conversations={conversations}
+            userRole={userRole}
+            currentPath={pathname}
+            currentUserId={userId}
+          />
+        </aside>
+        <main className={`${styles.main} ${!showMain && isMobile ? styles.hidden : ''}`}>{children}</main>
+      </div>
     </div>
   );
 }

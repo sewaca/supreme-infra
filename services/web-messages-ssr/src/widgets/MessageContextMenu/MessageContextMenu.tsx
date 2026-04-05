@@ -30,12 +30,14 @@ export function MessageContextMenu({ anchorPosition, isOwn, canReplyInDm, onActi
       anchorPosition={anchorPosition ?? undefined}
       slotProps={{ paper: { sx: { minWidth: 180 } } }}
     >
-      <MenuItem onClick={handle('reply')} dense>
-        <ListItemIcon>
-          <ReplyIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText>Ответить</ListItemText>
-      </MenuItem>
+      {!canReplyInDm && (
+        <MenuItem onClick={handle('reply')} dense>
+          <ListItemIcon>
+            <ReplyIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Ответить</ListItemText>
+        </MenuItem>
+      )}
 
       {canReplyInDm && (
         <MenuItem onClick={handle('reply-dm')} dense>

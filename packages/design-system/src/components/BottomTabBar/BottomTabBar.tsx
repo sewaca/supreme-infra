@@ -38,6 +38,7 @@ export function BottomTabBar({ tabs, currentPath, onNavigate }: Props) {
         onChange={(_, newValue) => onNavigate(newValue)}
         showLabels
         sx={{
+          height: '48px',
           backgroundColor: '#fff',
           '& .MuiBottomNavigationAction-root': {
             color: 'var(--color-text-primary, #000)',

@@ -26,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <CssBaseline />
             <main
               style={{
-                height: 'calc(var(--user-screen-height) - 56px)',
+                height: 'calc(var(--user-screen-height, 100dvh) - 48px)',
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',

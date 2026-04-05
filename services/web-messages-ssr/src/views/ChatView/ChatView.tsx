@@ -3,7 +3,6 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Alert, Box, IconButton, Snackbar, Typography } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   attachFilesToMessage,
@@ -41,7 +40,6 @@ export function ChatView({
   userId,
   userRole: _userRole,
 }: Props) {
-  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [cursor, setCursor] = useState(initialCursor);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -50,6 +48,10 @@ export function ChatView({
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const messageListRef = useRef<MessageListHandle>(null);
   const [errorSnackbar, setErrorSnackbar] = useState<string | null>(null);
+  const atBottomRef = useRef(true);
+  const pendingUnreadRef = useRef(0);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [dmReplyTo, setDmReplyTo] = useState<Message | null>(null);
 
   const isBroadcast = conversation.type === 'broadcast';
   const isOwner = conversation.owner_id === userId;
@@ -75,6 +77,19 @@ export function ChatView({
     if (messages.length > 0) {
       markAsRead(conversation.id, messages[0].id);
       window.dispatchEvent(new CustomEvent('conversation-read', { detail: { conversationId: conversation.id } }));
+    }
+  }, [conversation.id]);
+
+  useEffect(() => {
+    const key = `pending_reply_${conversation.id}`;
+    const raw = sessionStorage.getItem(key);
+    if (raw) {
+      sessionStorage.removeItem(key);
+      try {
+        setReplyTo(JSON.parse(raw) as Message);
+      } catch {
+        /* ignore */
+      }
     }
   }, [conversation.id]);
 
@@ -127,6 +142,22 @@ export function ChatView({
       return res;
     },
     [conversation.id, editingMessage, replyTo],
+  );
+
+  const handleAtBottomChange = useCallback(
+    (isAtBottom: boolean) => {
+      atBottomRef.current = isAtBottom;
+      if (isAtBottom && pendingUnreadRef.current > 0) {
+        const latestMsg = messages[0];
+        if (latestMsg) {
+          markAsRead(conversation.id, latestMsg.id);
+          window.dispatchEvent(new CustomEvent('conversation-read', { detail: { conversationId: conversation.id } }));
+        }
+        pendingUnreadRef.current = 0;
+        setUnreadCount(0);
+      }
+    },
+    [messages, conversation.id],
   );
 
   const handleLoadMore = useCallback(async () => {
@@ -205,8 +236,13 @@ export function ChatView({
 
         const mid = data.id;
         if (mid != null) {
-          markAsRead(conversation.id, String(mid));
-          window.dispatchEvent(new CustomEvent('conversation-read', { detail: { conversationId: conversation.id } }));
+          if (atBottomRef.current) {
+            markAsRead(conversation.id, String(mid));
+            window.dispatchEvent(new CustomEvent('conversation-read', { detail: { conversationId: conversation.id } }));
+          } else {
+            pendingUnreadRef.current += 1;
+            setUnreadCount(pendingUnreadRef.current);
+          }
         }
         return;
       }
@@ -239,6 +275,9 @@ export function ChatView({
       if (action === 'reply') {
         setEditingMessage(null);
         setReplyTo(message);
+      }
+      if (action === 'reply-dm') {
+        setDmReplyTo(message);
       }
       if (action === 'copy') {
         const time = new Date(message.created_at).toLocaleTimeString('ru-RU', {
@@ -275,15 +314,11 @@ export function ChatView({
         setReplyTo(message);
         return;
       }
-      if (canReplyInDm && conversation.owner_id) {
-        void createDirectConversation(conversation.owner_id).then((result) => {
-          if (result.success && result.conversationId) {
-            router.push(`/messages/${result.conversationId}`);
-          }
-        });
+      if (canReplyInDm) {
+        setDmReplyTo(message);
       }
     },
-    [canReply, canReplyInDm, conversation.owner_id, router],
+    [canReply, canReplyInDm],
   );
 
   return (
@@ -292,8 +327,8 @@ export function ChatView({
         <IconButton component={Link} href="/messages" sx={{ display: { xs: 'flex', md: 'none' } }}>
           <ArrowBackIcon />
         </IconButton>
-        <Box sx={{ flex: 1, ml: 1 }}>
-          <Typography variant="subtitle1" fontWeight={600} noWrap>
+        <Box sx={{ flex: 1, ml: 1, display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="subtitle1" fontWeight={600} noWrap style={{ lineHeight: '1.2' }}>
             {displayName}
           </Typography>
           {subtitle && (
@@ -312,6 +347,8 @@ export function ChatView({
         onLoadMore={handleLoadMore}
         userId={userId}
         canReplyInDm={canReplyInDm}
+        unreadCount={unreadCount}
+        onAtBottomChange={handleAtBottomChange}
         onAction={handleAction}
         onMessageDoubleClick={canReply || canReplyInDm ? handleMessageDoubleClick : undefined}
       />
@@ -327,7 +364,7 @@ export function ChatView({
           onError={setErrorSnackbar}
         />
       ) : conversation.owner_id ? (
-        <ReplyInDmButton ownerId={conversation.owner_id} />
+        <ReplyInDmButton ownerId={conversation.owner_id} replyTo={dmReplyTo} onClearReply={() => setDmReplyTo(null)} />
       ) : null}
 
       <Snackbar

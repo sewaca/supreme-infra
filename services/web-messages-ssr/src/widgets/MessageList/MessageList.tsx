@@ -1,7 +1,7 @@
 'use client';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Avatar, Box, CircularProgress, Fab, Typography } from '@mui/material';
+import { Avatar, Badge, Box, CircularProgress, Fab, Typography } from '@mui/material';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import type { Message } from '../../entities/Message/types';
 import { formatDateSeparator } from '../../shared/lib/formatDate';
@@ -64,18 +64,32 @@ interface Props {
   onLoadMore: () => void;
   userId: string;
   canReplyInDm?: boolean;
+  unreadCount?: number;
+  onAtBottomChange?: (isAtBottom: boolean) => void;
   onAction?: (action: MessageAction, message: Message) => void;
   onMessageDoubleClick?: (message: Message) => void;
 }
 
 export const MessageList = forwardRef<MessageListHandle, Props>(function MessageList(
-  { messages, hasMore, loading, onLoadMore, userId, canReplyInDm = false, onAction, onMessageDoubleClick },
+  {
+    messages,
+    hasMore,
+    loading,
+    onLoadMore,
+    userId,
+    canReplyInDm = false,
+    unreadCount = 0,
+    onAtBottomChange,
+    onAction,
+    onMessageDoubleClick,
+  },
   ref,
 ) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef(0);
   const isInitialRef = useRef(true);
+  const atBottomRef = useRef(true);
   const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [showScrollButton, setShowScrollButton] = useState(false);
 
@@ -88,7 +102,12 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
   const handleScroll = () => {
     if (!scrollRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-    setShowScrollButton(scrollHeight - scrollTop - clientHeight > 100);
+    const atBottom = scrollHeight - scrollTop - clientHeight < 100;
+    setShowScrollButton(!atBottom);
+    if (atBottom !== atBottomRef.current) {
+      atBottomRef.current = atBottom;
+      onAtBottomChange?.(atBottom);
+    }
   };
 
   useImperativeHandle(ref, () => ({
@@ -160,7 +179,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
   return (
     <Box sx={{ position: 'relative', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <Box ref={scrollRef} className={styles.messageList} onScroll={handleScroll}>
-        <Box ref={sentinelRef} sx={{ minHeight: 1 }}>
+        <Box ref={sentinelRef} sx={{ maxHeight: '100%', flex: 1 }}>
           {loading && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 1.5 }}>
               <CircularProgress size={20} />
@@ -275,7 +294,9 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
 
       {showScrollButton && (
         <Fab size="small" onClick={scrollToBottom} sx={{ position: 'absolute', bottom: 12, right: 12, zIndex: 10 }}>
-          <KeyboardArrowDownIcon />
+          <Badge badgeContent={unreadCount > 0 ? unreadCount : null} color="primary" max={99}>
+            <KeyboardArrowDownIcon />
+          </Badge>
         </Fab>
       )}
     </Box>
