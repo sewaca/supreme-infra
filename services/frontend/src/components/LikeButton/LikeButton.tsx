@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styles from './LikeButton.module.css';
+import cx from 'classnames';
 
 interface LikeButtonProps {
   recipeId: number;
@@ -34,7 +35,7 @@ export function LikeButton({ recipeId, initialLikes, initialIsLiked = false, onL
   return (
     <button
       type="button"
-      className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
+      className={cx(styles.likeButton, { [styles.liked]: isLiked })}
       onClick={handleLike}
       disabled={isLoading}
       aria-label={isLiked ? 'Убрать лайк' : 'Поставить лайк'}

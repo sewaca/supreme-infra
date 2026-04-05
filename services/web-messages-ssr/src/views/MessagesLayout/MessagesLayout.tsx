@@ -1,6 +1,7 @@
 'use client';
 
 import { Typography } from '@mui/material';
+import classNames from 'classnames';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Conversation } from '../../entities/Conversation/types';
@@ -31,7 +32,6 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
 
   // Show main panel on any path except the empty /messages root
   const showMain = pathname !== '/messages';
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 769;
   const showNavbar = !CONVERSATION_ROUTE_RE.test(pathname);
 
   const updateConversation = useCallback((conversationId: string, preview: string, lastMessageAt: string) => {
@@ -138,7 +138,7 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
         />
       )}
       <div className={styles.container}>
-        <aside className={`${styles.sidebar} ${showMain && isMobile ? styles.hidden : ''}`}>
+        <aside className={classNames(styles.sidebar, { [styles.hiddenMobile]: showMain })}>
           <ConversationListView
             conversations={conversations}
             userRole={userRole}
@@ -146,7 +146,7 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
             currentUserId={userId}
           />
         </aside>
-        <main className={`${styles.main} ${!showMain && isMobile ? styles.hidden : ''}`}>{children}</main>
+        <main className={classNames(styles.main, { [styles.hiddenMobile]: !showMain })}>{children}</main>
       </div>
     </div>
   );

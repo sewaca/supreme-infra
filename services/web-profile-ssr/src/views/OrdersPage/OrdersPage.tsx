@@ -50,7 +50,6 @@ export const OrdersPage = ({
   initialSelectedOrder,
   initialSelectedTypes,
 }: Props) => {
-  const { startTour } = usePageTour({ page: 'orders' });
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialTypes: TypeFilter[] = initialSelectedTypes?.length ? initialSelectedTypes : ['all'];
@@ -61,6 +60,8 @@ export const OrdersPage = ({
   const [ordersCache, setOrdersCache] = useState<Map<string, Order[]>>(new Map([[initialCacheKey, initialOrders]]));
   const [currentOrders, setCurrentOrders] = useState<Order[]>(initialOrders);
   const [loading, setLoading] = useState(false);
+
+  const { startTour } = usePageTour({ page: 'orders', autoStart: !initialSelectedOrder });
 
   const getCacheKey = useCallback((types: TypeFilter[]): string => {
     if (types.includes('all')) return 'all';

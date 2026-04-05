@@ -7,6 +7,7 @@ import { formatMessageTime } from '../../shared/lib/formatDate';
 import { FileAttachment } from '../FileAttachment/FileAttachment';
 import { type MessageAction, MessageContextMenu } from '../MessageContextMenu/MessageContextMenu';
 import styles from './ChatBubble.module.css';
+import cx from 'classnames';
 
 const SWIPE_THRESHOLD = 50;
 const SWIPE_MAX = 68;
@@ -103,7 +104,7 @@ export function ChatBubble({
 
   return (
     <Box
-      className={`${styles.wrapper} ${isOwn ? styles.own : styles.other} ${noMaxWidth ? styles.noMaxWidth : ''}`}
+      className={cx(styles.wrapper, { [styles.own]: isOwn, [styles.other]: !isOwn, [styles.noMaxWidth]: noMaxWidth })}
       onContextMenu={handleContextMenu}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
@@ -139,7 +140,7 @@ export function ChatBubble({
       )}
 
       <Box
-        className={`${styles.bubble} ${isOwn ? styles.bubbleOwn : styles.bubbleOther}`}
+        className={cx(styles.bubble, isOwn ? styles.bubbleOwn : styles.bubbleOther)}
         onDoubleClick={(e) => {
           if (!onDoubleClickReply) return;
           e.preventDefault();

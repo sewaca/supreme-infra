@@ -15,6 +15,7 @@ import type { CalendarEvent } from '../../../entities/Lesson/model/Lesson';
 import { setCookie } from '../../../shared/lib/cookies';
 import styles from './ScheduleCalendarView.module.css';
 import './fullcalendar.css';
+import cx from 'classnames';
 
 export type CalType = 'timeGridWeek' | 'timeGrid3Day' | 'timeGridDay';
 
@@ -285,7 +286,7 @@ export function ScheduleCalendarView({
         </Box>
       )}
       <div
-        className={`${styles.calendarInner} schedule-fc-wrapper`}
+        className={cx(styles.calendarInner, 'schedule-fc-wrapper')}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >

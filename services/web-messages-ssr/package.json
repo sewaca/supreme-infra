@@ -46,6 +46,7 @@
     "postcss-flexbugs-fixes": "catalog:",
     "postcss-preset-env": "catalog:",
     "react-dom": "catalog:",
+    "classnames": "catalog:",
     "react-use": "catalog:",
     "react": "catalog:",
     "typescript": "catalog:"

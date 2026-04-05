@@ -5,6 +5,7 @@ import { alpha } from '@mui/material/styles';
 import { getAchievementProgress } from '../../entities/Rating/achievementsConfig';
 import { Achievement } from '../../entities/Rating/RatingData';
 import styles from './AchievementBadge.module.css';
+import cx from 'classnames';
 
 type Props = {
   achievement: Achievement;
@@ -24,7 +25,7 @@ export const AchievementBadge = ({ achievement }: Props) => {
         sx={{ '& .MuiBadge-badge': { fontSize: '0.65rem', minWidth: '18px', padding: '0 4px', fontWeight: 700 } }}
       >
         <Paper
-          className={`${styles.badge} ${isLocked ? styles.locked : ''}`}
+          className={cx(styles.badge, { [styles.locked]: isLocked })}
           elevation={isLocked ? 0 : 3}
           sx={{
             width: '100%',

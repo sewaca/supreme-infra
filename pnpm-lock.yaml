@@ -1488,6 +1488,9 @@ importers:
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.2
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
       next:
         specifier: 'catalog:'
         version: 16.1.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1636,6 +1639,9 @@ importers:
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.2
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
@@ -1808,6 +1814,9 @@ importers:
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.2
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
       next:
         specifier: 'catalog:'
         version: 16.1.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

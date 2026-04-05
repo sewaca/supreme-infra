@@ -109,7 +109,7 @@ export function RecipeFilters({ initialSearch = '', initialIngredients = [] }: R
           <span className={cx(styles.label, styles.collapseButtonText)}>
             Ингредиенты {selectedIngredients.length > 0 && `(${selectedIngredients.length})`}
           </span>
-          <span className={`${styles.collapseIcon} ${isIngredientsOpen ? styles.collapseIconOpen : ''}`}>▼</span>
+          <span className={cx(styles.collapseIcon, { [styles.collapseIconOpen]: isIngredientsOpen })}>▼</span>
         </button>
 
         {isIngredientsOpen && (

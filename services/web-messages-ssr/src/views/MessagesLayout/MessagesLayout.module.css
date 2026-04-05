@@ -11,6 +11,7 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  border-top: 1px solid #00000014;
 }
 
 .sidebar {
@@ -25,12 +26,16 @@
   flex-direction: column;
 }
 
-.hidden {
-  display: none;
-}
-
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar.hiddenMobile {
+    display: none;
+  }
+
+  .main.hiddenMobile {
+    display: none;
   }
 }
