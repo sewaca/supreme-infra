@@ -135,9 +135,11 @@ async function fetchUniversityNews(): Promise<void> {
 }
 
 // setting interval to fetch news every hour just to update cache
-export const setupUniversityNewsFetching = () => {
+export const setupUniversityNewsFetching = (fireImm = true) => {
   if (!global.fetchingNewsInterval) {
-    fetchUniversityNews();
+    if (fireImm) {
+      fetchUniversityNews();
+    }
     setInterval(fetchUniversityNews, CACHE_TTL_MS / 2);
   }
 };
@@ -150,10 +152,17 @@ export async function getUniversityNews(): Promise<NewsItem[]> {
 
   if (global.newsCache && Date.now() - global.newsCache.fetchedAt > CACHE_TTL_MS) {
     console.warn('[news] Cache is stale. News was not refetched correctly.');
+    try {
+      await fetchUniversityNews();
+      setupUniversityNewsFetching(false);
+    } catch (e) {
+      console.error('[news] Failed to fetch news.', e);
+    }
   } else {
     console.debug('[news] returning cached news');
   }
 
+  console.debug('[news] returning cached news');
   return global.newsCache.items.slice(0, 6);
 }
 
