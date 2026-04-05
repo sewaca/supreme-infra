@@ -3,6 +3,7 @@
 import Alert from '@mui/material/Alert';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import type { CalendarEvent } from '../../entities/Lesson/model/Lesson';
 import { useScheduleCalendarPageState } from '../../features/schedule-calendar/model/useScheduleCalendarPageState';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
@@ -14,7 +15,6 @@ import { ScheduleDestinationTabs } from '../../widgets/schedule/ScheduleDestinat
 import { ScheduleListView } from '../../widgets/schedule/ScheduleListView/ScheduleListView';
 import { SchedulePageContent, SchedulePageToolbar } from '../../widgets/schedule/SchedulePageLayout/SchedulePageLayout';
 import { ScheduleViewModeToggle } from '../../widgets/schedule/ScheduleViewModeToggle/ScheduleViewModeToggle';
-import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 
 type Props = {
   events: CalendarEvent[];
