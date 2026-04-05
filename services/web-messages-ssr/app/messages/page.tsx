@@ -18,10 +18,10 @@ export default function MessagesPage() {
       }}
     >
       <ChatIcon sx={{ fontSize: 64, color: 'text.secondary' }} />
-      <Typography variant="h6" color="text.secondary">
+      <Typography variant="body2" color="text.secondary">
         Выберите чат или начните новую переписку
       </Typography>
-      <Button variant="contained" component={Link} href="/messages/new">
+      <Button variant="outlined" component={Link} href="/messages/new">
         Написать
       </Button>
     </Box>

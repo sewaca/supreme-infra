@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   attachFilesToMessage,
-  createDirectConversation,
   deleteMessage,
   editMessage,
   markAsRead,
