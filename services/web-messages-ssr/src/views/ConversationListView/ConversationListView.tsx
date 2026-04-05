@@ -31,7 +31,7 @@ export function ConversationListView({ conversations, userRole, currentPath, cur
           borderColor: 'divider',
         }}
       >
-        <Typography variant="title2">Сообщения</Typography>
+        <Typography variant="title2">Чаты</Typography>
         <Box>
           <IconButton component={Link} href="/messages/search" size="small">
             <SearchIcon fontSize="small" />

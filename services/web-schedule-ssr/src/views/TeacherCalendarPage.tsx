@@ -79,7 +79,7 @@ export function TeacherCalendarPage({
     >
       <DefaultNavbar
         backPath="/schedule"
-        center={<Typography variant="title2">Расписание</Typography>}
+        center={<Typography variant="title1">Расписание преподавателя</Typography>}
         rightSlot={<ProfileButton avatar={avatar} name={userName} />}
       />
 

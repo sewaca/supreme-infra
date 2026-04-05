@@ -5,7 +5,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import type { CalendarEvent } from '../../entities/Lesson/model/Lesson';
 import { useScheduleCalendarPageState } from '../../features/schedule-calendar/model/useScheduleCalendarPageState';
-import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 import { LessonDetailDialog } from '../../widgets/schedule/LessonDetailDialog/LessonDetailDialog';
 import { ScheduleCaldavPromo } from '../../widgets/schedule/ScheduleCaldavPromo/ScheduleCaldavPromo';
@@ -15,6 +14,7 @@ import { ScheduleDestinationTabs } from '../../widgets/schedule/ScheduleDestinat
 import { ScheduleListView } from '../../widgets/schedule/ScheduleListView/ScheduleListView';
 import { SchedulePageContent, SchedulePageToolbar } from '../../widgets/schedule/SchedulePageLayout/SchedulePageLayout';
 import { ScheduleViewModeToggle } from '../../widgets/schedule/ScheduleViewModeToggle/ScheduleViewModeToggle';
+import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 
 type Props = {
   events: CalendarEvent[];
@@ -69,10 +69,8 @@ export function CalendarPage({
       }}
       elevation={0}
     >
-      <DefaultNavbar
-        // biome-ignore lint/complexity/noUselessFragments: нужен чтобы не показывать кнопку назад в навбаре
-        leftSlot={<></>}
-        center={<Typography variant="title2">Расписание</Typography>}
+      <NavBar
+        center={<Typography variant="title1">Расписание</Typography>}
         rightSlot={<ProfileButton avatar={avatar} name={userName} />}
       />
 

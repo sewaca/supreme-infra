@@ -336,7 +336,7 @@ export function ChatView({
         }
         center={
           <Box sx={{ flex: 1, ml: 1, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="title1" noWrap style={{ lineHeight: '1.2' }}>
+            <Typography variant="title2" noWrap style={{ lineHeight: '1.2' }}>
               {displayName}
             </Typography>
             {subtitle && (

@@ -12,8 +12,6 @@ import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 import { ConversationListView } from '../ConversationListView/ConversationListView';
 import styles from './MessagesLayout.module.css';
 
-const CONVERSATION_ROUTE_RE = /^\/messages\/[0-9a-f-]{8,}$/i;
-
 interface Props {
   initialConversations: Conversation[];
   userRole: string | null;
@@ -32,7 +30,6 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
 
   // Show main panel on any path except the empty /messages root
   const showMain = pathname !== '/messages';
-  const showNavbar = !CONVERSATION_ROUTE_RE.test(pathname);
 
   const updateConversation = useCallback((conversationId: string, preview: string, lastMessageAt: string) => {
     setConversations((prev) => {
@@ -126,17 +123,15 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
 
   return (
     <div className={styles.wrapper}>
-      {showNavbar && (
-        <NavBar
-          leftSlot={null}
-          center={
-            <Typography variant="title1" fontWeight={600}>
-              Сообщения
-            </Typography>
-          }
-          rightSlot={<ProfileButton avatar={avatar} name={userName} />}
-        />
-      )}
+      <NavBar
+        leftSlot={null}
+        center={
+          <Typography variant="title1" fontWeight={600}>
+            Сообщения
+          </Typography>
+        }
+        rightSlot={<ProfileButton avatar={avatar} name={userName} />}
+      />
       <div className={styles.container}>
         <aside className={classNames(styles.sidebar, { [styles.hiddenMobile]: showMain })}>
           <ConversationListView
