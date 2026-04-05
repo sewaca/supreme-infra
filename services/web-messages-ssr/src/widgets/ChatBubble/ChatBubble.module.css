@@ -17,9 +17,22 @@
   padding: 6px 10px;
   border-radius: 10px;
   min-width: 70px;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
+}
+
+@media (pointer: coarse) {
+  .bubble {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+@media (pointer: none) {
+  .bubble {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
 }
 
 .bubbleOwn {

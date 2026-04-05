@@ -1,6 +1,6 @@
 'use client';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import { Alert, Autocomplete, Box, CircularProgress, IconButton, Snackbar, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -61,7 +61,7 @@ export function NewMessageView({ currentUserId }: Props) {
     <Box sx={{ p: 1.5 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
         <IconButton component={Link} href="/messages" size="small">
-          <ArrowBackIcon />
+          <ArrowBackIosNewRoundedIcon fontSize="inherit" color="secondary" />
         </IconButton>
         <Typography variant="title2">Новое сообщение</Typography>
       </Box>
