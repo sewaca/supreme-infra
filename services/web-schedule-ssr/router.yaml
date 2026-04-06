@@ -14,6 +14,9 @@ routes:
   - path: /schedule
     method: GET
     auth_level: valid
+  - path: /schedule/exams
+    method: GET
+    auth_level: valid
   - path: /schedule/group
     method: GET
     auth_level: valid

@@ -15,6 +15,7 @@ service:
 metrics:
   enabled: true
   port: 9464
+configMapRef: ""
 env:
   PORT: "3006"
   NODE_ENV: production

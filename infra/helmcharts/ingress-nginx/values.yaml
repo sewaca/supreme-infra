@@ -408,6 +408,8 @@ ingress:
           method: GET
         - path: /schedule
           method: GET
+        - path: /schedule/exams
+          method: GET
         - path: /schedule/group
           method: GET
         - path: /schedule/teacher

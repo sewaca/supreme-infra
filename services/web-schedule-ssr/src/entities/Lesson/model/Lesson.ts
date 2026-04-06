@@ -1,4 +1,4 @@
-import type { DaySchedule } from '@supreme-int/api-client/src/generated/core-schedule';
+import type { DaySchedule, SessionEventResponse } from '@supreme-int/api-client/src/generated/core-schedule';
 
 export type CalendarEvent = {
   id: string;
@@ -54,6 +54,29 @@ export function getLessonChipColor(lessonType: string): string {
     if (key.includes(pattern)) return color;
   }
   return '#616161';
+}
+
+export function examsToEvents(exams: SessionEventResponse[]): CalendarEvent[] {
+  return exams.map((exam) => {
+    const colors = getLessonColor(exam.lesson_type);
+    return {
+      id: exam.id,
+      title: exam.subject_name,
+      start: `${exam.date}T${exam.start_time}`,
+      end: `${exam.date}T${exam.end_time}`,
+      backgroundColor: colors.bg,
+      borderColor: colors.border,
+      extendedProps: {
+        teacher_name: exam.teacher_name,
+        classroom_name: exam.classroom_name,
+        classroom_building: null,
+        lesson_type: exam.lesson_type,
+        is_override: false,
+        override_comment: null,
+        group_name: exam.group_name,
+      },
+    };
+  });
 }
 
 export function scheduleToEvents(schedule: DaySchedule[]): CalendarEvent[] {
