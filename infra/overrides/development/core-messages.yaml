@@ -15,7 +15,7 @@ service:
 metrics:
   enabled: true
   port: 9464
-configMapRef: ""
+configMapRef: services-config
 env:
   PORT: "8006"
   PYTHON_ENV: development
@@ -24,8 +24,6 @@ env:
   DB_PORT: "5432"
   DB_NAME: core_messages_db
   DB_USER: core_messages_user
-  CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
-  CORE_CLIENT_INFO_URL: http://core-client-info.default.svc.cluster.local/core-client-info
   S3_ENDPOINT: http://minio.default.svc.cluster.local:9000
   S3_BUCKET: messages-attachments
   REDIS_URL: redis://redis.default.svc.cluster.local:6379

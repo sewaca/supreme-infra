@@ -15,7 +15,7 @@ service:
 metrics:
   enabled: true
   port: 9464
-configMapRef: ""
+configMapRef: services-config
 env:
   PORT: "8003"
   PYTHON_ENV: development
@@ -24,7 +24,6 @@ env:
   DB_PORT: "5432"
   DB_NAME: core_schedule_db
   DB_USER: core_schedule_user
-  CORE_AUTH_URL: http://core-auth.default.svc.cluster.local/core-auth
 secrets: {}
 resources:
   limits:

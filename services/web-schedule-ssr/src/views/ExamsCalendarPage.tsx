@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useState } from 'react';
 import type { CalendarEvent } from '../entities/Lesson/model/Lesson';
-import { addCalendarDays, getWeekRange, mondayOfCalendarWeek, toDateStr } from '../shared/lib/schedule.utils';
+import { getWeekRange, mondayOfCalendarWeek, toDateStr } from '../shared/lib/schedule.utils';
 import { DefaultNavbar } from '../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../widgets/ProfileButton/ProfileButton';
 import { LessonDetailDialog } from '../widgets/schedule/LessonDetailDialog/LessonDetailDialog';
