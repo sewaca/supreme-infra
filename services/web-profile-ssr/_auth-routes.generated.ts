@@ -5,6 +5,7 @@ export type AuthLevel = 'none' | 'valid';
 export interface AuthRoute { path: RegExp; method?: string; auth_level: AuthLevel; }
 
 export const authRoutes: AuthRoute[] = [
+  { path: new RegExp('^/api/timeout-check$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/api/undefined-url$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/profile$'), method: 'GET', auth_level: 'valid' },
   { path: new RegExp('^/profile/data$'), method: 'GET', auth_level: 'valid' },
