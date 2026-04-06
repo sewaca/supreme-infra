@@ -45,6 +45,11 @@ spec:
           containerPort: {{ .Values.metrics.port }}
           protocol: TCP
         {{- end }}
+        {{- if .Values.configMapRef }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMapRef }}
+        {{- end }}
         env:
         - name: POD_NAMESPACE
           valueFrom:

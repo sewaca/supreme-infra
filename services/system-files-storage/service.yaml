@@ -18,6 +18,8 @@ metrics:
 secrets:
   S3_SECRET_KEY: MINIO_SECRET_KEY
 
+configMapRef: "services-config"
+
 env:
   PORT: "8007"
   PYTHON_ENV: "production"
@@ -26,7 +28,6 @@ env:
   S3_BUCKET: "messages-attachments"
   S3_REGION: "us-east-1"
   PUBLIC_BASE_URL: "https://diploma.sewaca.ru"
-  CORE_AUTH_URL: "http://core-auth.default.svc.cluster.local/core-auth"
 
 livenessProbe:
   httpGet:

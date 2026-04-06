@@ -1,0 +1,5 @@
+apiVersion: v2
+name: services-config
+description: Shared ConfigMap with backend service URLs for all services
+type: application
+version: 1.0.0

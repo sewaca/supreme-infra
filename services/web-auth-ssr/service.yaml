@@ -16,10 +16,11 @@ metrics:
   enabled: true
   port: 9464
 
+configMapRef: "services-config"
+
 env:
   PORT: "3002"
   NODE_ENV: "production"
-  BACKEND_SERVICE_NAMESPACE: "default"
 
 resources:
   limits:

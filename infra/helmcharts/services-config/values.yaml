@@ -1,0 +1,8 @@
+# Backend service URLs used by all services via ConfigMap.
+# Override individual values with --set or a custom values file.
+coreAuthUrl: "http://core-auth.default.svc.cluster.local/core-auth"
+coreClientInfoUrl: "http://core-client-info.default.svc.cluster.local/core-client-info"
+coreApplicationsUrl: "http://core-applications.default.svc.cluster.local/core-applications"
+coreScheduleUrl: "http://core-schedule.default.svc.cluster.local/core-schedule"
+coreMessagesUrl: "http://core-messages.default.svc.cluster.local/core-messages"
+filesStorageUrl: "http://system-files-storage.default.svc.cluster.local/system-files-storage"

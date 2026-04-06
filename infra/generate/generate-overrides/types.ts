@@ -1,4 +1,5 @@
 export interface ServiceConfig {
+  configMapRef?: string;
   image?: {
     repository?: string;
     tag?: string;

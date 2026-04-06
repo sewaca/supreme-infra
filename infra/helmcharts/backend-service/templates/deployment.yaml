@@ -39,6 +39,11 @@ spec:
           containerPort: {{ .Values.metrics.port }}
           protocol: TCP
         {{- end }}
+        {{- if .Values.configMapRef }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMapRef }}
+        {{- end }}
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key }}

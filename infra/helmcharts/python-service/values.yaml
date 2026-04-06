@@ -18,6 +18,11 @@ metrics:
   enabled: true
   port: 9464
 
+# Name of a ConfigMap to inject as environment variables via envFrom.
+# Set to "services-config" to load shared backend service URLs.
+# Individual env keys below take precedence over ConfigMap values.
+configMapRef: ""
+
 env:
   PORT: "8000"
   PYTHON_ENV: "production"
