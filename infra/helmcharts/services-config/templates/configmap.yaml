@@ -4,9 +4,6 @@ metadata:
   name: services-config
   namespace: {{ .Release.Namespace }}
 data:
-  CORE_AUTH_URL: {{ .Values.coreAuthUrl | quote }}
-  CORE_CLIENT_INFO_URL: {{ .Values.coreClientInfoUrl | quote }}
-  CORE_APPLICATIONS_URL: {{ .Values.coreApplicationsUrl | quote }}
-  CORE_SCHEDULE_URL: {{ .Values.coreScheduleUrl | quote }}
-  CORE_MESSAGES_URL: {{ .Values.coreMessagesUrl | quote }}
-  FILES_STORAGE_URL: {{ .Values.filesStorageUrl | quote }}
+  {{- range $key, $value := .Values }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
