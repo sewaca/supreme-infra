@@ -5,6 +5,9 @@
 service: web-profile-ssr
 type: next
 routes:
+  - path: /api/timeout-check
+    method: GET
+    auth_level: none
   - path: /api/undefined-url
     method: GET
     auth_level: none

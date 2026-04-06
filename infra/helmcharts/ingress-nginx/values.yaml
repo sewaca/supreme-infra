@@ -6,6 +6,9 @@ ingress-nginx:
       use-http2: "true"
       http2-max-field-size: 16k
       http2-max-header-size: 32k
+      proxy-connect-timeout: "3"
+      proxy-read-timeout: "3"
+      proxy-send-timeout: "3"
 ingress:
   enabled: true
   name: ingress-main
@@ -365,6 +368,8 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /api/timeout-check
+          method: GET
         - path: /api/undefined-url
           method: GET
         - path: /profile
