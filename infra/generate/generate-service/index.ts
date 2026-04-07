@@ -372,7 +372,7 @@ function updateOpenapiTsConfig(config: ServiceConfig): void {
 
   // Add new service
   inputEntries.push(`'./schemas/${config.serviceName}.json'`);
-  outputEntries.push(`'./src/${config.serviceName}'`);
+  outputEntries.push(`'./src/generated/${config.serviceName}'`);
 
   // Generate new config
   const newConfig = `import { defineConfig } from '@hey-api/openapi-ts';

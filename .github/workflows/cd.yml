@@ -14,6 +14,7 @@ on:
           - core-auth
           - core-client-info
           - core-messages
+          - core-news
           - core-recipes-bff
           - core-schedule
           - frontend

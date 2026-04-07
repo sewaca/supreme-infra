@@ -55,6 +55,7 @@ jobs:
           - core-schedule
           - core-messages
           - system-files-storage
+          - core-news
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

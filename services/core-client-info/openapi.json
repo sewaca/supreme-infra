@@ -646,6 +646,51 @@
         }
       }
     },
+    "/subjects/choices-with-priorities": {
+      "get": {
+        "tags": ["subjects"],
+        "summary": "Get Choices With Priorities",
+        "operationId": "get_choices_with_priorities_subjects_choices_with_priorities_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubjectChoiceWithPrioritiesResponse"
+                  },
+                  "title": "Response Get Choices With Priorities Subjects Choices With Priorities Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/subjects/user-priorities/{choice_id}": {
       "get": {
         "tags": ["subjects"],
@@ -727,6 +772,54 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/users/search": {
+      "get": {
+        "tags": ["internal"],
+        "summary": "Search Users",
+        "operationId": "search_users_profile_users_search_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Q"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1386,6 +1479,47 @@
         "type": "object",
         "required": ["id", "choice_id", "deadline_date", "is_active"],
         "title": "SubjectChoiceResponse"
+      },
+      "SubjectChoiceWithPrioritiesResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "choice_id": {
+            "type": "string",
+            "title": "Choice Id"
+          },
+          "deadline_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Deadline Date"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "subjects": {
+            "items": {
+              "$ref": "#/components/schemas/SubjectInfo"
+            },
+            "type": "array",
+            "title": "Subjects",
+            "default": []
+          },
+          "user_priorities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "User Priorities",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": ["id", "choice_id", "deadline_date", "is_active"],
+        "title": "SubjectChoiceWithPrioritiesResponse"
       },
       "SubjectInfo": {
         "properties": {

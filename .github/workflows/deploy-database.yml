@@ -13,6 +13,7 @@ on:
           - core-applications
           - core-schedule
           - core-messages
+          - core-news
         default: core-recipes-bff
       action:
         description: Deployment action
