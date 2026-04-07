@@ -16,7 +16,7 @@ metrics:
   enabled: true
   port: 9464
 
-configMapRef: "services-config"
+configMapRef: services-config
 
 env:
   PORT: "3002"
