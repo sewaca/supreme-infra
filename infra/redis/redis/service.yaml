@@ -1,0 +1,24 @@
+config:
+  maxmemory: "256mb"
+  maxmemoryPolicy: "allkeys-lru"
+  loglevel: "verbose"
+
+persistence:
+  enabled: true
+  size: 2Gi
+
+resources:
+  production:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  development:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi

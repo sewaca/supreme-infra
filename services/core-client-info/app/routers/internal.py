@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.rating import RatingLevel, Streak
 from app.models.user import User, UserSettings
+from app.redis_cache import cache_user
 
 router = APIRouter(prefix="/profile", tags=["internal"])
 
@@ -41,7 +42,7 @@ class BatchUsersRequest(BaseModel):
 async def get_users_batch(body: BatchUsersRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.id.in_(body.user_ids)))
     users = result.scalars().all()
-    return [
+    rows = [
         {
             "id": str(u.id),
             "name": u.name,
@@ -55,6 +56,9 @@ async def get_users_batch(body: BatchUsersRequest, db: AsyncSession = Depends(ge
         }
         for u in users
     ]
+    for row in rows:
+        await cache_user(UUID(row["id"]), row)
+    return rows
 
 
 @router.get("/groups")
@@ -128,5 +132,20 @@ async def init_user(body: InitUserRequest, db: AsyncSession = Depends(get_db)):
 
     if not (await db.execute(select(Streak).where(Streak.user_id == body.user_id))).scalar_one_or_none():
         db.add(Streak(user_id=body.user_id, current=0, best=0))
+
+    await cache_user(
+        body.user_id,
+        {
+            "id": str(user.id),
+            "name": user.name,
+            "last_name": user.last_name,
+            "middle_name": user.middle_name,
+            "email": user.email,
+            "avatar": user.avatar,
+            "group": user.group,
+            "faculty": user.faculty,
+            "role": "teacher" if user.qualification == "teacher" else "student",
+        },
+    )
 
     return {"ok": True}

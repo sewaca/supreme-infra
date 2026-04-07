@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings as app_settings
 from app.database import get_db
 from app.models.user import User, UserSettings
+from app.redis_cache import invalidate_user
 from app.schemas.settings import (
     ChangeEmailRequest,
     ChangePasswordRequest,
@@ -121,6 +122,8 @@ async def change_email(user_id: UUID, body: ChangeEmailRequest, db: AsyncSession
         user.email = body.new_email
         await db.commit()
         logger.info("[settings] email updated in profile: user=%s new=%s", user_id, body.new_email)
+
+    await invalidate_user(user_id)
 
     return MessageResponse(message="Email updated")
 

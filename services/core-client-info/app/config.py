@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     db_user: str = "core_client_info_user"
     db_password: str = ""
 
+    redis_cache_url: str = "redis://redis-client-info-cache.default.svc.cluster.local:6379"
+    user_cache_ttl: int = 1800
+
     @property
     def database_url(self) -> str:
         return f"postgresql+asyncpg://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"

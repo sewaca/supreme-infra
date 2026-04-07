@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
+from app.redis_cache import close_redis
 from app.routers import (
     internal,
     profile,
@@ -30,6 +31,7 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
     yield
     await engine.dispose()
+    await close_redis()
 
 
 setup_instrumentation()

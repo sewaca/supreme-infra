@@ -1,11 +1,13 @@
 import { generateDatabaseValues } from './generate-database-values/generate-database-values';
 import { generateValuesForAllServices } from './generate-overrides/generate-overrides';
 import { generatePgbouncerValues } from './generate-pgbouncer-values';
+import { generateRedisValues } from './generate-redis-values';
 import { generateRouterConfigs } from './generate-router';
 import { updateCdWorkflow } from './update-cd-workflow';
 import { updateDatabaseWorkflow } from './update-database-workflow';
 import { updateIngressValues } from './update-ingress-values';
 import { updatePgbouncerWorkflow } from './update-pgbouncer-workflow';
+import { updateRedisWorkflow } from './update-redis-workflow';
 import { updateSecurityChecks } from './update-security-checks';
 
 async function main() {
@@ -57,6 +59,16 @@ async function main() {
   console.log('📋 Step 9/9: Generating service values files...');
   console.log('───────────────────────────────────────────────────────────');
   generateValuesForAllServices();
+  console.log('');
+
+  console.log('📋 Step 10/11: Generating Redis values...');
+  console.log('───────────────────────────────────────────────────────────');
+  generateRedisValues();
+  console.log('');
+
+  console.log('📋 Step 11/11: Updating Redis workflow...');
+  console.log('───────────────────────────────────────────────────────────');
+  updateRedisWorkflow();
   console.log('');
 
   console.log('═══════════════════════════════════════════════════════════');

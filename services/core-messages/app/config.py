@@ -18,8 +18,11 @@ class Settings(BaseSettings):
     # Service-to-service
     core_client_info_url: str = "http://core-client-info.default.svc.cluster.local/core-client-info"
 
-    # Redis
+    # Redis pub/sub (WebSocket cross-pod)
     redis_url: str | None = None  # e.g. redis://redis.default.svc.cluster.local:6379
+
+    # Redis shared user profile cache
+    redis_cache_url: str | None = None  # e.g. redis://redis-client-info-cache.default.svc.cluster.local:6379
 
     # Cache
     user_cache_ttl_seconds: int = 3600  # 1 час

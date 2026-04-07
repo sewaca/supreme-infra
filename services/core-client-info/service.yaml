@@ -24,6 +24,7 @@ env:
   DB_PORT: "5432"
   DB_NAME: "core_client_info_db"
   DB_USER: "core_client_info_user"
+  REDIS_CACHE_URL: "redis://redis-client-info-cache.default.svc.cluster.local:6379"
 
 livenessProbe:
   httpGet:

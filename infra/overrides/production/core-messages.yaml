@@ -27,6 +27,7 @@ env:
   S3_ENDPOINT: http://minio.default.svc.cluster.local:9000
   S3_BUCKET: messages-attachments
   REDIS_URL: redis://redis.default.svc.cluster.local:6379
+  REDIS_CACHE_URL: redis://redis-client-info-cache.default.svc.cluster.local:6379
 secrets:
   DB_PASSWORD: DB_PASSWORD
   S3_ACCESS_KEY: MINIO_ACCESS_KEY

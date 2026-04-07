@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.user import User
+from app.redis_cache import cache_user
 from app.schemas.profile import AcademicInfoItem, PersonalDataResponse, StudentStatsResponse, UserResponse
 
 router = APIRouter(prefix="/profile", tags=["profile"])
@@ -18,6 +19,21 @@ async def get_user(user_id: UUID, db: AsyncSession = Depends(get_db)):
 
     if not user:
         raise HTTPException(status_code=404, detail="api.user.not_found")
+
+    await cache_user(
+        user_id,
+        {
+            "id": str(user.id),
+            "name": user.name,
+            "last_name": user.last_name,
+            "middle_name": user.middle_name,
+            "email": user.email,
+            "avatar": user.avatar,
+            "group": user.group,
+            "faculty": user.faculty,
+            "role": "teacher" if user.qualification == "teacher" else "student",
+        },
+    )
 
     return UserResponse(
         id=user.id,

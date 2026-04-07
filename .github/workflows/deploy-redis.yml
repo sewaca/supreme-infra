@@ -2,10 +2,18 @@ name: Deploy Redis
 
 on:
   workflow_dispatch:
+    inputs:
+      redis_target:
+        description: Which Redis instance to deploy
+        required: true
+        type: choice
+        options:
+          - redis
+          - redis-client-info-cache
+        default: redis
 
 env:
   HELM_VERSION: "v3.16.3"
-  REDIS_RELEASE_NAME: "redis"
   REDIS_NAMESPACE: "default"
 
 jobs:
@@ -23,10 +31,12 @@ jobs:
 
       - name: Get latest release version
         id: get-version
+        env:
+          TARGET: ${{ inputs.redis_target }}
         run: |
-          ALL_TAGS=$(git tag -l "redis-v*" 2>/dev/null | grep -E "^redis-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
+          ALL_TAGS=$(git tag -l "${TARGET}-v*" 2>/dev/null | grep -E "^${TARGET}-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
 
-          echo "All tags for redis:"
+          echo "All tags for ${TARGET}:"
           echo "$ALL_TAGS"
 
           LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
@@ -34,11 +44,11 @@ jobs:
           if [ -z "$LATEST_TAG" ]; then
             VERSION="0.0.0"
             RELEASE_TAG=""
-            echo "No previous release found for redis, starting from version: $VERSION"
+            echo "No previous release found for ${TARGET}, starting from version: $VERSION"
           else
-            VERSION=$(echo "$LATEST_TAG" | sed "s/^redis-v//")
+            VERSION=$(echo "$LATEST_TAG" | sed "s/^${TARGET}-v//")
             RELEASE_TAG="$LATEST_TAG"
-            echo "Latest release for redis: $LATEST_TAG, version: $VERSION"
+            echo "Latest release for ${TARGET}: $LATEST_TAG, version: $VERSION"
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -95,9 +105,11 @@ jobs:
           git config --global user.name "madara-robot"
 
       - name: Create release branch
+        env:
+          TARGET: ${{ inputs.redis_target }}
         run: |
           VERSION=$(cat "new_version.txt")
-          BRANCH_NAME="releases/production/redis-${VERSION}"
+          BRANCH_NAME="releases/production/${TARGET}-${VERSION}"
 
           git fetch origin
 
@@ -134,12 +146,15 @@ jobs:
           version: ${{ env.HELM_VERSION }}
 
       - name: Deploy Redis with Helm
+        env:
+          TARGET: ${{ inputs.redis_target }}
         run: |
-          echo "Deploying Redis..."
-          echo "Release: ${{ env.REDIS_RELEASE_NAME }}"
+          echo "Deploying Redis instance: ${TARGET}..."
           echo "Namespace: ${{ env.REDIS_NAMESPACE }}"
+          echo "Values: infra/overrides/production/redis-${TARGET}.yaml"
 
-          helm upgrade ${{ env.REDIS_RELEASE_NAME }} ./infra/helmcharts/redis \
+          helm upgrade "${TARGET}" ./infra/helmcharts/redis \
+            -f "infra/overrides/production/redis-${TARGET}.yaml" \
             --namespace ${{ env.REDIS_NAMESPACE }} \
             --install \
             --wait \
@@ -148,15 +163,17 @@ jobs:
           echo "Redis deployment completed"
 
       - name: Verify Redis deployment
+        env:
+          TARGET: ${{ inputs.redis_target }}
         run: |
           echo "Checking Redis pod..."
           kubectl wait --for=condition=ready pod \
-            -l app.kubernetes.io/instance=${{ env.REDIS_RELEASE_NAME }} \
+            -l app.kubernetes.io/instance="${TARGET}" \
             -n ${{ env.REDIS_NAMESPACE }} \
             --timeout=120s
 
           POD_NAME=$(kubectl get pods \
-            -l app.kubernetes.io/instance=${{ env.REDIS_RELEASE_NAME }} \
+            -l app.kubernetes.io/instance="${TARGET}" \
             -n ${{ env.REDIS_NAMESPACE }} \
             -o jsonpath='{.items[0].metadata.name}')
 
@@ -166,9 +183,9 @@ jobs:
 
           echo ""
           echo "Redis Information:"
-          echo "  Release: ${{ env.REDIS_RELEASE_NAME }}"
+          echo "  Instance: ${TARGET}"
           echo "  Namespace: ${{ env.REDIS_NAMESPACE }}"
-          echo "  DNS: ${{ env.REDIS_RELEASE_NAME }}.${{ env.REDIS_NAMESPACE }}.svc.cluster.local:6379"
+          echo "  DNS: ${TARGET}.${{ env.REDIS_NAMESPACE }}.svc.cluster.local:6379"
 
   create-github-release:
     name: Create GitHub release
@@ -195,10 +212,12 @@ jobs:
 
       - name: Prepare release info
         id: get-release-info
+        env:
+          TARGET: ${{ inputs.redis_target }}
         run: |
           VERSION=$(cat "new_version.txt")
-          TAG_NAME="redis-v${VERSION}"
-          RELEASE_NAME="Release Redis v${VERSION}"
+          TAG_NAME="${TARGET}-v${VERSION}"
+          RELEASE_NAME="Release ${TARGET} v${VERSION}"
 
           echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
@@ -206,29 +225,28 @@ jobs:
           {
             echo "# $RELEASE_NAME"
             echo ""
-            echo "Redis deployment completed successfully."
+            echo "Redis instance **${TARGET}** deployed successfully."
             echo ""
             echo "## Deployment Details"
+            echo "- **Instance**: \`${TARGET}\`"
             echo "- **Namespace**: \`${{ env.REDIS_NAMESPACE }}\`"
-            echo "- **Release Name**: \`${{ env.REDIS_RELEASE_NAME }}\`"
             echo "- **Image**: \`redis:7-alpine\`"
-            echo "- **Persistence**: Enabled (2Gi)"
-            echo "- **maxmemory**: 256mb (allkeys-lru)"
             echo ""
             echo "## Connection"
-            echo "- **DNS**: \`redis.default.svc.cluster.local:6379\`"
-            echo "- **REDIS_URL**: \`redis://redis.default.svc.cluster.local:6379\`"
+            echo "- **DNS**: \`${TARGET}.${{ env.REDIS_NAMESPACE }}.svc.cluster.local:6379\`"
+            echo "- **REDIS_URL**: \`redis://${TARGET}.${{ env.REDIS_NAMESPACE }}.svc.cluster.local:6379\`"
           } > "release_body.txt"
 
       - name: Create GitHub Release
         env:
           TAG_NAME: ${{ steps.get-release-info.outputs.tag_name }}
           RELEASE_NAME: ${{ steps.get-release-info.outputs.release_name }}
+          TARGET: ${{ inputs.redis_target }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(cat "new_version.txt")
-          BRANCH_NAME="releases/production/redis-${VERSION}"
+          BRANCH_NAME="releases/production/${TARGET}-${VERSION}"
           BODY_FILE="release_body.txt"
 
           if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
