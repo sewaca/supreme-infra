@@ -4,4 +4,7 @@
 
 service: core-news
 type: fastapi
-routes: []
+routes:
+  - path: /core-news/news
+    method: GET
+    auth_level: none

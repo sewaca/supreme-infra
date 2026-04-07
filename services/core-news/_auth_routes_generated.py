@@ -15,4 +15,6 @@ class AuthRoute:
     auth_level: AuthLevel
 
 
-AUTH_ROUTES: list[AuthRoute] = []
+AUTH_ROUTES: list[AuthRoute] = [
+    AuthRoute(path=re.compile(r"^/core-news/news$"), method="GET", auth_level="none"),
+]

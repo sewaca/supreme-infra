@@ -26,11 +26,11 @@ env:
 
 livenessProbe:
   httpGet:
-    path: /{{apiPrefix}}/api/status
+    path: /{{apiPrefix}}/status
 
 readinessProbe:
   httpGet:
-    path: /{{apiPrefix}}/api/status
+    path: /{{apiPrefix}}/status
 
 resources:
   limits:

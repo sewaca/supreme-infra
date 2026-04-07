@@ -26,11 +26,11 @@ env:
 
 livenessProbe:
   httpGet:
-    path: /core-news/api/status
+    path: /core-news/status
 
 readinessProbe:
   httpGet:
-    path: /core-news/api/status
+    path: /core-news/status
 
 resources:
   limits:

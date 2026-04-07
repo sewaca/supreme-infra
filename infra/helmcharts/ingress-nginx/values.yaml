@@ -209,7 +209,9 @@ ingress:
     - service: core-news
       port: 80
       type: fastapi
-      paths: []
+      paths:
+        - path: /core-news/news
+          method: GET
     - service: core-recipes-bff
       port: 80
       type: nest
