@@ -1,9 +1,10 @@
 # Backend service URLs used by all services via ConfigMap.
 # Override individual values with --set or a custom values file.
-coreAuthUrl: "http://core-auth.default.svc.cluster.local/core-auth"
-coreClientInfoUrl: "http://core-client-info.default.svc.cluster.local/core-client-info"
-coreApplicationsUrl: "http://core-applications.default.svc.cluster.local/core-applications"
-coreScheduleUrl: "http://core-schedule.default.svc.cluster.local/core-schedule"
-coreMessagesUrl: "http://core-messages.default.svc.cluster.local/core-messages"
-filesStorageUrl: "http://system-files-storage.default.svc.cluster.local/system-files-storage"
-coreNewsUrl: "http://core-news.default.svc.cluster.local/core-news"
+# Keys must be UPPERCASE_SNAKE_CASE — they are injected as-is as pod env vars via envFrom.
+CORE_AUTH_URL: "http://core-auth.default.svc.cluster.local/core-auth"
+CORE_CLIENT_INFO_URL: "http://core-client-info.default.svc.cluster.local/core-client-info"
+CORE_APPLICATIONS_URL: "http://core-applications.default.svc.cluster.local/core-applications"
+CORE_SCHEDULE_URL: "http://core-schedule.default.svc.cluster.local/core-schedule"
+CORE_MESSAGES_URL: "http://core-messages.default.svc.cluster.local/core-messages"
+FILES_STORAGE_URL: "http://system-files-storage.default.svc.cluster.local/system-files-storage"
+CORE_NEWS_URL: "http://core-news.default.svc.cluster.local/core-news"
