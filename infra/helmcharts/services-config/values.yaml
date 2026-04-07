@@ -6,3 +6,4 @@ coreApplicationsUrl: "http://core-applications.default.svc.cluster.local/core-ap
 coreScheduleUrl: "http://core-schedule.default.svc.cluster.local/core-schedule"
 coreMessagesUrl: "http://core-messages.default.svc.cluster.local/core-messages"
 filesStorageUrl: "http://system-files-storage.default.svc.cluster.local/system-files-storage"
+coreNewsUrl: "http://core-news.default.svc.cluster.local/core-news"

@@ -34,23 +34,124 @@ securityContext:
 initScript: >
   -- Initial schema and data for core-news database
 
-  -- This script is executed automatically when PostgreSQL starts for the first
-  time
+
+  CREATE TABLE IF NOT EXISTS news (
+      id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      title       TEXT NOT NULL,
+      url         TEXT NOT NULL,
+      date        TEXT NOT NULL,
+      category    TEXT NOT NULL,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+      CONSTRAINT uq_news_url UNIQUE (url)
+  );
 
 
-  -- Add your database schema here
+  INSERT INTO news (title, url, date, category) VALUES
 
-  -- Example:
+  (
+      'СПбГУТ и ассоциация «Дрон-Безопасность» стали стратегическими партнерами',
+      'https://www.sut.ru/bonchnews/industry/25-03-2026-spbgut-i-associaciya-dron-bezopasnost-stali-strategicheskimi-partnerami',
+      '25 марта 2026',
+      'Индустрия'
+  ),
 
-  -- CREATE TABLE IF NOT EXISTS example_table (
+  (
+      'Стань лидером: курс мини-лекций для студентов стартует 26 марта',
+      'https://www.sut.ru/bonchnews/education/25-03-2026-stan-liderom:-kurs-mini-lekciy-dlya-studentov-startuet-26-marta',
+      '25 марта 2026',
+      'Образование'
+  ),
 
-  --   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  (
+      'Преподаватели СПбГУТ стали победителями грантового конкурса Фонда Владимира Потанина',
+      'https://www.sut.ru/bonchnews/science/25-03-2026-prepodavateli-spbgut-stali-pobeditelyami-grantovogo-konkursa-blagotvoritelnogo-fonda-vladimira-potanina',
+      '25 марта 2026',
+      'Наука'
+  ),
 
-  --   name VARCHAR(255) NOT NULL,
+  (
+      'СПбГУТ представил потенциал на Российско-Китайском деловом форуме',
+      'https://www.sut.ru/bonchnews/international/25-03-2026-spbgut-predstavil-obrazovatelniy-i-nauchniy-potencial-na-rossiysko-kitayskom-delovom-forume',
+      '25 марта 2026',
+      'Международное'
+  ),
 
-  --   created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  (
+      'В СПбГУТ завершился первый день III Слёта разработчиков беспилотных систем',
+      'https://www.sut.ru/bonchnews/industry/25-03-2026-v-spbgut-zavershilsya-perviy-den-III-obscherossiyskogo-sleta-razrabotchikov-bespilotnih-sistem',
+      '25 марта 2026',
+      'Индустрия'
+  ),
 
-  -- );
-migrationConfigMapParts: []
+  (
+      'Студенты СПбГУТ стали призёрами Всероссийского форума «Неделя инноватики ЛЭТИ»',
+      'https://www.sut.ru/bonchnews/education/25-03-2026-studenti-spbgut-stali-prizerami-I-vserossiyskogo-nauchno-obrazovatelnogo-foruma-nedelya-innovatiki-leti',
+      '25 марта 2026',
+      'Образование'
+  )
+
+  ON CONFLICT (url) DO NOTHING;
+migrationConfigMapParts:
+  - 001_create_news_table.sql: |
+      -- Migration 001: create news table
+
+      CREATE TABLE IF NOT EXISTS news (
+          id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          title       TEXT NOT NULL,
+          url         TEXT NOT NULL,
+          date        TEXT NOT NULL,
+          category    TEXT NOT NULL,
+          created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CONSTRAINT uq_news_url UNIQUE (url)
+      );
+    002_initial_news_data.sql: >
+      -- Migration 002: initial seed news data
+
+
+      INSERT INTO news (title, url, date, category) VALUES
+
+      (
+          'СПбГУТ и ассоциация «Дрон-Безопасность» стали стратегическими партнерами',
+          'https://www.sut.ru/bonchnews/industry/25-03-2026-spbgut-i-associaciya-dron-bezopasnost-stali-strategicheskimi-partnerami',
+          '25 марта 2026',
+          'Индустрия'
+      ),
+
+      (
+          'Стань лидером: курс мини-лекций для студентов стартует 26 марта',
+          'https://www.sut.ru/bonchnews/education/25-03-2026-stan-liderom:-kurs-mini-lekciy-dlya-studentov-startuet-26-marta',
+          '25 марта 2026',
+          'Образование'
+      ),
+
+      (
+          'Преподаватели СПбГУТ стали победителями грантового конкурса Фонда Владимира Потанина',
+          'https://www.sut.ru/bonchnews/science/25-03-2026-prepodavateli-spbgut-stali-pobeditelyami-grantovogo-konkursa-blagotvoritelnogo-fonda-vladimira-potanina',
+          '25 марта 2026',
+          'Наука'
+      ),
+
+      (
+          'СПбГУТ представил потенциал на Российско-Китайском деловом форуме',
+          'https://www.sut.ru/bonchnews/international/25-03-2026-spbgut-predstavil-obrazovatelniy-i-nauchniy-potencial-na-rossiysko-kitayskom-delovom-forume',
+          '25 марта 2026',
+          'Международное'
+      ),
+
+      (
+          'В СПбГУТ завершился первый день III Слёта разработчиков беспилотных систем',
+          'https://www.sut.ru/bonchnews/industry/25-03-2026-v-spbgut-zavershilsya-perviy-den-III-obscherossiyskogo-sleta-razrabotchikov-bespilotnih-sistem',
+          '25 марта 2026',
+          'Индустрия'
+      ),
+
+      (
+          'Студенты СПбГУТ стали призёрами Всероссийского форума «Неделя инноватики ЛЭТИ»',
+          'https://www.sut.ru/bonchnews/education/25-03-2026-studenti-spbgut-stali-prizerami-I-vserossiyskogo-nauchno-obrazovatelnogo-foruma-nedelya-innovatiki-leti',
+          '25 марта 2026',
+          'Образование'
+      )
+
+      ON CONFLICT (url) DO NOTHING;
 migrations: {}
 skipMigrations: false

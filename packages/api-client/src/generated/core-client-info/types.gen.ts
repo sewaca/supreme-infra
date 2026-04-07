@@ -313,6 +313,36 @@ export type SubjectChoiceResponse = {
 };
 
 /**
+ * SubjectChoiceWithPrioritiesResponse
+ */
+export type SubjectChoiceWithPrioritiesResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Choice Id
+     */
+    choice_id: string;
+    /**
+     * Deadline Date
+     */
+    deadline_date: string;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+    /**
+     * Subjects
+     */
+    subjects?: Array<SubjectInfo>;
+    /**
+     * User Priorities
+     */
+    user_priorities?: Array<string>;
+};
+
+/**
  * SubjectInfo
  */
 export type SubjectInfo = {
@@ -952,6 +982,38 @@ export type GetChoicesSubjectsChoicesGetResponses = {
 
 export type GetChoicesSubjectsChoicesGetResponse = GetChoicesSubjectsChoicesGetResponses[keyof GetChoicesSubjectsChoicesGetResponses];
 
+export type GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    url: '/subjects/choices-with-priorities';
+};
+
+export type GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetError = GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetErrors[keyof GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetErrors];
+
+export type GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetResponses = {
+    /**
+     * Response Get Choices With Priorities Subjects Choices With Priorities Get
+     *
+     * Successful Response
+     */
+    200: Array<SubjectChoiceWithPrioritiesResponse>;
+};
+
+export type GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetResponse = GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetResponses[keyof GetChoicesWithPrioritiesSubjectsChoicesWithPrioritiesGetResponses];
+
 export type GetUserPrioritiesSubjectsUserPrioritiesChoiceIdGetData = {
     body?: never;
     path: {
@@ -1011,6 +1073,38 @@ export type SavePrioritiesSubjectsSavePrioritiesPostErrors = {
 export type SavePrioritiesSubjectsSavePrioritiesPostError = SavePrioritiesSubjectsSavePrioritiesPostErrors[keyof SavePrioritiesSubjectsSavePrioritiesPostErrors];
 
 export type SavePrioritiesSubjectsSavePrioritiesPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type SearchUsersProfileUsersSearchGetData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Q
+         */
+        q: string;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/profile/users/search';
+};
+
+export type SearchUsersProfileUsersSearchGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SearchUsersProfileUsersSearchGetError = SearchUsersProfileUsersSearchGetErrors[keyof SearchUsersProfileUsersSearchGetErrors];
+
+export type SearchUsersProfileUsersSearchGetResponses = {
     /**
      * Successful Response
      */

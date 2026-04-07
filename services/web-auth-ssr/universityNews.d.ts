@@ -1,13 +1,2 @@
-interface NewsItem {
-  title: string;
-  url: string;
-  date: string;
-  category: string;
-}
-type NewsCache = {
-  items: NewsItem[];
-  fetchedAt: number;
-};
-
-declare var fetchingNewsInterval: NodeJS.Timeout | undefined;
-declare var newsCache: NewsCache;
+// Legacy global declarations — kept for type compatibility during transition
+// The news fetching is now handled by core-news service

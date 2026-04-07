@@ -1,4 +1,5 @@
-from contextlib import asynccontextmanager
+import asyncio
+from contextlib import asynccontextmanager, suppress
 
 from _auth_routes_generated import AUTH_ROUTES
 from authorization_py.middleware import AuthMiddleware
@@ -8,15 +9,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
-from app.routers import status
+from app.routers import (
+    news as news_router,
+    status,
+)
+from app.services.scheduler import start_scheduler, stop_scheduler, sync_news
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    yield
-    await engine.dispose()
+    start_scheduler()
+    initial_sync_task = asyncio.create_task(sync_news())
+    try:
+        yield
+    finally:
+        stop_scheduler()
+        initial_sync_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await initial_sync_task
+        await engine.dispose()
 
 
 setup_instrumentation()
@@ -47,3 +60,4 @@ app.add_middleware(
 instrument_app(app)
 
 app.include_router(status.router)
+app.include_router(news_router.router)

@@ -8,7 +8,6 @@ export default defineConfig({
     './schemas/core-schedule.json',
     './schemas/core-messages.json',
     './schemas/system-files-storage.json',
-    './schemas/core-news.json',
   ],
   output: [
     './src/generated/core-auth',
@@ -17,6 +16,5 @@ export default defineConfig({
     './src/generated/core-schedule',
     './src/generated/core-messages',
     './src/generated/system-files-storage',
-    './src/generated/core-news',
   ],
 });
