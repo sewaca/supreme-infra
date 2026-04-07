@@ -332,7 +332,7 @@ export function ChatView({
           </IconButton>
         }
         center={
-          <Box sx={{ flex: 1, ml: 1, display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ flex: 1, ml: 1, display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
             <Typography variant="title2" noWrap style={{ lineHeight: '1.2' }}>
               {displayName}
             </Typography>
