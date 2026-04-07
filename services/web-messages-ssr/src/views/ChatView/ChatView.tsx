@@ -59,11 +59,13 @@ export function ChatView({
   const canReplyInDm = isBroadcast && !isOwner;
 
   const otherParticipant = conversation.participants.find((p) => p.user_id !== userId);
+  const otherName =
+    otherParticipant?.name || otherParticipant?.last_name
+      ? `${otherParticipant.name} ${otherParticipant.last_name}`.trim()
+      : null;
   const displayName = isBroadcast
     ? (conversation.title ?? 'Рассылка')
-    : otherParticipant
-      ? `${otherParticipant.name} ${otherParticipant.last_name}`
-      : 'Чат';
+    : (conversation.peer_display_name ?? otherName ?? 'Чат');
 
   const subtitle =
     isBroadcast && !isOwner
