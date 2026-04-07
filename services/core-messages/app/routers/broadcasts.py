@@ -146,7 +146,7 @@ async def list_broadcasts(
     unread_map = await _get_unread_counts_batch(conv_ids, teacher_id, db) if conv_ids else {}
 
     all_participant_ids = list({p.user_id for conv in convs for p in conv.participants if not p.is_deleted})
-    users_map = await get_cached_users_batch(all_participant_ids, db) if all_participant_ids else {}
+    users_map = await get_cached_users_batch(all_participant_ids) if all_participant_ids else {}
 
     return [
         await _build_conversation_response(

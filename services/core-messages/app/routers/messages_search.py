@@ -58,7 +58,7 @@ async def search_messages(
         return SearchMessagesResponse(items=[], next_cursor=None)
 
     sender_ids = list({row.sender_id for row in rows})
-    users_map = await get_cached_users_batch(sender_ids, db)
+    users_map = await get_cached_users_batch(sender_ids)
 
     items = []
     for row in rows:

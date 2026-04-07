@@ -66,7 +66,7 @@ async def _ensure_peer_display_names_direct(conv: Conversation, db: AsyncSession
     if all(p.peer_display_name for p in active):
         return
     uids = [p.user_id for p in active]
-    users_map = await get_cached_users_batch(uids, db)
+    users_map = await get_cached_users_batch(uids)
     changed = False
     for p in active:
         peer_uid = next(uid for uid in uids if uid != p.user_id)
@@ -104,7 +104,7 @@ async def _build_conversation_response(
     # Enrich participants from cache: используем pre-fetched map если передан
     if users_map is None:
         participant_ids = [p.user_id for p in conv.participants if not p.is_deleted]
-        users_map = await get_cached_users_batch(participant_ids, db)
+        users_map = await get_cached_users_batch(participant_ids)
 
     participants_brief = [
         ParticipantBrief(
@@ -202,7 +202,7 @@ async def list_conversations(
 
     # Батч user cache — 1 запрос вместо N
     all_participant_ids = list({p.user_id for conv in items for p in conv.participants if not p.is_deleted})
-    users_map = await get_cached_users_batch(all_participant_ids, db)
+    users_map = await get_cached_users_batch(all_participant_ids)
 
     response_items = [
         await _build_conversation_response(
@@ -259,7 +259,7 @@ async def create_or_get_direct_conversation(
     db.add(ConversationParticipant(conversation_id=conv.id, user_id=body.recipient_id, role="member", can_reply=True))
     await db.flush()
 
-    users_for_peer = await get_cached_users_batch([current_user_id, body.recipient_id], db)
+    users_for_peer = await get_cached_users_batch([current_user_id, body.recipient_id])
 
     def _peer_label(for_user_id: uuid.UUID) -> str:
         peer_uid = body.recipient_id if for_user_id == current_user_id else current_user_id

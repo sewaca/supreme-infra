@@ -73,7 +73,7 @@ async def _build_message_response(
             )
             reply_msg = reply_result.scalar_one_or_none()
             if reply_msg:
-                reply_users = await get_cached_users_batch([reply_msg.sender_id], db)
+                reply_users = await get_cached_users_batch([reply_msg.sender_id])
                 reply_sender = reply_users.get(reply_msg.sender_id)
                 reply_to_data = ReplyToPreview(
                     id=reply_msg.id,
@@ -146,7 +146,7 @@ async def list_messages(
         next_cursor = encode_cursor(items[-1].created_at, items[-1].id)
 
     sender_ids = list({m.sender_id for m in items})
-    users_map = await get_cached_users_batch(sender_ids, db)
+    users_map = await get_cached_users_batch(sender_ids)
 
     # Батч-загрузка reply_to — 1 запрос вместо N
     reply_to_ids = list({m.reply_to_id for m in items if m.reply_to_id})
@@ -158,7 +158,7 @@ async def list_messages(
         reply_msgs_map = {m.id: m for m in reply_msgs}
         reply_sender_ids = list({m.sender_id for m in reply_msgs})
         if reply_sender_ids:
-            reply_users_map = await get_cached_users_batch(reply_sender_ids, db)
+            reply_users_map = await get_cached_users_batch(reply_sender_ids)
 
     response_items = [
         await _build_message_response(
@@ -215,7 +215,7 @@ async def send_message(
     )
     participant_ids = [row[0] for row in result.all()]
 
-    users_map = await get_cached_users_batch([current_user_id], db)
+    users_map = await get_cached_users_batch([current_user_id])
     await db.refresh(msg, attribute_names=["attachments"])
     response = await _build_message_response(msg, current_user_id, users_map, db)
 
@@ -309,7 +309,7 @@ async def edit_message(
         },
     )
 
-    users_map = await get_cached_users_batch([msg.sender_id], db)
+    users_map = await get_cached_users_batch([msg.sender_id])
     await db.refresh(msg, attribute_names=["attachments"])
     return await _build_message_response(msg, current_user_id, users_map)
 
