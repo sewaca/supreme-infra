@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.auth_cache import close_redis
 from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.routers import auth, caldav_tokens, challenge, forgot_password, internal, sessions, status
@@ -20,6 +21,7 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
     yield
     await engine.dispose()
+    await close_redis()
 
 
 setup_instrumentation()

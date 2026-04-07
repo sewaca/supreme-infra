@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - redis
+          - redis-auth-cache
           - redis-client-info-cache
         default: redis
 

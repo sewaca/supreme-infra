@@ -1,4 +1,5 @@
 import logging
+import time
 import uuid
 from datetime import UTC, datetime
 
@@ -7,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import decode_token_safe, get_current_user
+from app.auth_cache import get_session_status, set_session_revoked, set_session_status
 from app.database import get_db
 from app.models.caldav_token import CaldavToken
 from app.models.session import UserSession
@@ -87,6 +89,8 @@ async def revoke_session(
         session.revoked_at = now
         await db.commit()
         logger.info("[revoke_session] session=%s revoked for user=%s", session_id, user_id)
+        remaining = max(0, int((session.expires_at - datetime.now(UTC)).total_seconds()))
+        await set_session_revoked(session.jti, remaining)
         return
 
     # Try caldav token
@@ -127,10 +131,25 @@ async def validate_session(body: ValidateSessionRequest, db: AsyncSession = Depe
     except ValueError:
         return ValidateSessionResponse(status="invalid")
 
+    cached = await get_session_status(jti)
+    if cached == "revoked":
+        return ValidateSessionResponse(status="revoked")
+    if cached == "valid":
+        return ValidateSessionResponse(
+            status="valid",
+            user_id=payload["sub"],
+            email=payload["email"],
+            name=payload["name"],
+            role=payload["role"],
+        )
+
     result = await db.execute(select(UserSession).where(UserSession.jti == jti))
     session = result.scalar_one_or_none()
 
+    ttl = max(0, int(payload.get("exp", 0) - time.time()))
+
     if session is None:
+        await set_session_status(jti, "valid", ttl)
         return ValidateSessionResponse(
             status="valid",
             user_id=payload["sub"],
@@ -140,8 +159,10 @@ async def validate_session(body: ValidateSessionRequest, db: AsyncSession = Depe
         )
 
     if session.revoked_at is not None:
+        await set_session_status(jti, "revoked", ttl)
         return ValidateSessionResponse(status="revoked")
 
+    await set_session_status(jti, "valid", ttl)
     return ValidateSessionResponse(
         status="valid",
         user_id=payload["sub"],

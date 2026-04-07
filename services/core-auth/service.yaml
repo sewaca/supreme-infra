@@ -23,6 +23,7 @@ env:
   DB_NAME: "core_auth_db"
   DB_USER: "core_auth_user"
   # DB_PASSWORD is passed from GitHub Secrets during deployment
+  REDIS_AUTH_CACHE_URL: "redis://redis-auth-cache.default.svc.cluster.local:6379"
 
 livenessProbe:
   httpGet:

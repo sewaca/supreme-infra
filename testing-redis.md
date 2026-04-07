@@ -98,12 +98,48 @@ SELECT * FROM information_schema.tables WHERE table_name = 'user_cache';
 
 ---
 
+---
+
+## redis-auth-cache (validate-session кэш)
+
+### Деплой
+
+Запустить `Deploy Redis` с `redis_target = redis-auth-cache`.
+
+```bash
+kubectl exec -n default redis-auth-cache-0 -- redis-cli ping
+# → PONG
+```
+
+### Что проверить
+
+**Кэш работает (cache miss → DB, cache hit → пропуск DB):**
+
+```bash
+# 1. POST /core-auth/auth/validate-session с токеном
+# 2. Проверить ключ в Redis
+kubectl exec -n default redis-auth-cache-0 -- \
+  redis-cli get "session:<jti-из-токена>"
+# → "valid"
+```
+
+**Инвалидация при logout:**
+
+```
+DELETE /core-auth/auth/sessions/{session_id}
+→ redis-cli get "session:<jti>" → "revoked"
+```
+
+---
+
 ## Локальная проверка (docker-compose)
 
 ```bash
-docker compose -f docker-compose.dev.yml up redis-client-info-cache -d
-redis-cli -p 6380 ping  # → PONG
+docker compose -f docker-compose.dev.yml up redis-client-info-cache redis-auth-cache -d
+redis-cli -p 6380 ping  # → PONG (redis-client-info-cache)
+redis-cli -p 6381 ping  # → PONG (redis-auth-cache)
 
 # Запустить core-client-info с REDIS_CACHE_URL=redis://localhost:6380
 # Запустить core-messages с REDIS_CACHE_URL=redis://localhost:6380
+# Запустить core-auth с REDIS_AUTH_CACHE_URL=redis://localhost:6381
 ```

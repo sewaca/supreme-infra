@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     db_password: str = ""
     core_client_info_url: str = "http://core-client-info.default.svc.cluster.local/core-client-info"
     core_applications_url: str = "http://core-applications.default.svc.cluster.local/core-applications"
+    redis_auth_cache_url: str = "redis://redis-auth-cache.default.svc.cluster.local:6379"
 
     @property
     def database_url(self) -> str:
