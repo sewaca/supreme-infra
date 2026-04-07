@@ -131,6 +131,8 @@ ingress:
           method: GET
         - path: /core-client-info/profile/users/batch
           method: POST
+        - path: /core-client-info/profile/users/search
+          method: GET
         - path: /core-client-info/rating/achievements
           method: GET
         - path: /core-client-info/rating/grade-improvements
@@ -154,6 +156,8 @@ ingress:
         - path: /core-client-info/settings/password
           method: POST
         - path: /core-client-info/subjects/choices
+          method: GET
+        - path: /core-client-info/subjects/choices-with-priorities
           method: GET
         - path: /core-client-info/subjects/save-priorities
           method: POST

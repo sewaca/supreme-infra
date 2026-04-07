@@ -8,7 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.subject import SubjectChoice, UserSubjectPriority
-from app.schemas.subject import SavePrioritiesRequest, SubjectChoiceResponse, SubjectInfo, UserSubjectPriorityResponse
+from app.schemas.subject import (
+    SavePrioritiesRequest,
+    SubjectChoiceResponse,
+    SubjectChoiceWithPrioritiesResponse,
+    SubjectInfo,
+    UserSubjectPriorityResponse,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/subjects", tags=["subjects"])
@@ -25,6 +31,42 @@ async def get_choices(db: AsyncSession = Depends(get_db)):
             deadline_date=c.deadline_date,
             is_active=c.is_active,
             subjects=[SubjectInfo(**s) for s in (c.subjects or [])],
+        )
+        for c in choices
+    ]
+
+
+@router.get("/choices-with-priorities", response_model=list[SubjectChoiceWithPrioritiesResponse])
+async def get_choices_with_priorities(user_id: UUID, db: AsyncSession = Depends(get_db)):
+    choices_result = await db.execute(select(SubjectChoice).where(SubjectChoice.is_active))
+    choices = choices_result.scalars().all()
+
+    if not choices:
+        return []
+
+    choice_ids = [c.id for c in choices]
+    priorities_result = await db.execute(
+        select(UserSubjectPriority)
+        .where(
+            UserSubjectPriority.user_id == user_id,
+            UserSubjectPriority.choice_id.in_(choice_ids),
+        )
+        .order_by(UserSubjectPriority.priority)
+    )
+    priorities = priorities_result.scalars().all()
+
+    priorities_by_choice: dict[UUID, list[str]] = {}
+    for p in priorities:
+        priorities_by_choice.setdefault(p.choice_id, []).append(p.subject_id)
+
+    return [
+        SubjectChoiceWithPrioritiesResponse(
+            id=c.id,
+            choice_id=c.choice_id,
+            deadline_date=c.deadline_date,
+            is_active=c.is_active,
+            subjects=[SubjectInfo(**s) for s in (c.subjects or [])],
+            user_priorities=priorities_by_choice.get(c.id, []),
         )
         for c in choices
     ]

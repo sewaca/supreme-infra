@@ -26,6 +26,9 @@ routes:
   - path: /core-client-info/profile/users/batch
     method: POST
     auth_level: none
+  - path: /core-client-info/profile/users/search
+    method: GET
+    auth_level: none
   - path: /core-client-info/rating/achievements
     method: GET
     auth_level: valid
@@ -60,6 +63,9 @@ routes:
     method: POST
     auth_level: valid
   - path: /core-client-info/subjects/choices
+    method: GET
+    auth_level: valid
+  - path: /core-client-info/subjects/choices-with-priorities
     method: GET
     auth_level: valid
   - path: /core-client-info/subjects/save-priorities

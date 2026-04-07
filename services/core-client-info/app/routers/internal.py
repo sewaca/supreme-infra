@@ -38,6 +38,38 @@ class BatchUsersRequest(BaseModel):
     user_ids: list[UUID] = Field(..., max_length=100)
 
 
+@router.get("/users/search")
+async def search_users(q: str, limit: int = 10, db: AsyncSession = Depends(get_db)):
+    from sqlalchemy import func, or_
+
+    q_lower = q.lower()
+    result = await db.execute(
+        select(User)
+        .where(
+            or_(
+                func.lower(User.name).like(q_lower + "%"),
+                func.lower(User.last_name).like(q_lower + "%"),
+            )
+        )
+        .limit(min(limit, 50))
+    )
+    users = result.scalars().all()
+    return [
+        {
+            "id": str(u.id),
+            "name": u.name,
+            "last_name": u.last_name,
+            "middle_name": u.middle_name,
+            "email": u.email,
+            "avatar": u.avatar,
+            "group": u.group,
+            "faculty": u.faculty,
+            "role": "teacher" if u.qualification == "teacher" else "student",
+        }
+        for u in users
+    ]
+
+
 @router.post("/users/batch")
 async def get_users_batch(body: BatchUsersRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.id.in_(body.user_ids)))

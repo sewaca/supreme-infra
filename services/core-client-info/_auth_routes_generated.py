@@ -23,6 +23,7 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-client-info/profile/user$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/users-by-group$"), method='GET', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/users/batch$"), method='POST', auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-client-info/profile/users/search$"), method='GET', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/rating/achievements$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/rating/grade-improvements$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/rating/grades$"), method='GET', auth_level="valid"),
@@ -35,6 +36,7 @@ AUTH_ROUTES: list[AuthRoute] = [
     AuthRoute(path=re.compile(r"^/core-client-info/settings/email$"), method='POST', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/settings/password$"), method='POST', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/subjects/choices$"), method='GET', auth_level="valid"),
+    AuthRoute(path=re.compile(r"^/core-client-info/subjects/choices-with-priorities$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/subjects/save-priorities$"), method='POST', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/subjects/user-priorities/[^/]+$"), method='GET', auth_level="valid"),
 ]

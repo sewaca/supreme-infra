@@ -27,3 +27,12 @@ class UserSubjectPriorityResponse(BaseModel):
 class SavePrioritiesRequest(BaseModel):
     choice_id: str
     priorities: list[str]
+
+
+class SubjectChoiceWithPrioritiesResponse(BaseModel):
+    id: UUID
+    choice_id: str
+    deadline_date: datetime
+    is_active: bool
+    subjects: list[SubjectInfo] = []
+    user_priorities: list[str] = []  # subject_ids sorted by priority

@@ -1000,5 +1000,10 @@ migrationConfigMapParts:
 
       CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_user_cache_last_name_lower
           ON user_cache (lower(last_name));
+    007_drop_user_cache.sql: >
+      -- Drop user_cache table: replaced by shared Redis cache
+      (redis-client-info-cache)
+
+      DROP TABLE IF EXISTS user_cache;
 migrations: {}
 skipMigrations: false

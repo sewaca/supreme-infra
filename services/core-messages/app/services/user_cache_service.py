@@ -1,16 +1,12 @@
 import json
 import logging
-from datetime import UTC, datetime
+from dataclasses import dataclass
 from uuid import UUID
 
 import httpx
 import redis.asyncio as aioredis
-from sqlalchemy import select
-from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.models.user_cache import UserCache
 
 logger = logging.getLogger(__name__)
 
@@ -30,174 +26,104 @@ def _cache_key(user_id: UUID) -> str:
     return f"user_profile:{user_id}"
 
 
-async def _read_from_redis(user_id: UUID) -> dict | None:
+@dataclass
+class CachedUser:
+    user_id: UUID
+    name: str
+    last_name: str
+    middle_name: str | None
+    email: str
+    avatar: str | None
+    group_name: str | None
+    faculty: str | None
+    role: str | None
+
+
+def _from_dict(data: dict) -> CachedUser:
+    return CachedUser(
+        user_id=UUID(data["id"]) if "id" in data else UUID(str(data.get("user_id", ""))),
+        name=data.get("name", ""),
+        last_name=data.get("last_name", ""),
+        middle_name=data.get("middle_name"),
+        email=data.get("email", ""),
+        avatar=data.get("avatar"),
+        group_name=data.get("group") or data.get("group_name"),
+        faculty=data.get("faculty"),
+        role=data.get("role"),
+    )
+
+
+async def _redis_get(user_id: UUID) -> CachedUser | None:
     r = _get_redis()
     if r is None:
         return None
     try:
         raw = await r.get(_cache_key(user_id))
-        return json.loads(raw) if raw else None
+        return _from_dict(json.loads(raw)) if raw else None
     except Exception:
         logger.debug("Redis read failed for user %s", user_id)
         return None
 
 
-async def _read_batch_from_redis(user_ids: list[UUID]) -> dict[UUID, dict]:
+async def _redis_get_batch(user_ids: list[UUID]) -> dict[UUID, CachedUser]:
     r = _get_redis()
     if r is None or not user_ids:
         return {}
     try:
-        keys = [_cache_key(uid) for uid in user_ids]
-        values = await r.mget(keys)
-        result: dict[UUID, dict] = {}
+        values = await r.mget([_cache_key(uid) for uid in user_ids])
+        result: dict[UUID, CachedUser] = {}
         for uid, raw in zip(user_ids, values):
             if raw:
-                result[uid] = json.loads(raw)
+                result[uid] = _from_dict(json.loads(raw))
         return result
     except Exception:
         logger.debug("Redis batch read failed")
         return {}
 
 
-def _redis_to_user_cache(user_id: UUID, data: dict) -> UserCache:
-    obj = UserCache()
-    obj.user_id = user_id
-    obj.name = data.get("name", "")
-    obj.last_name = data.get("last_name", "")
-    obj.middle_name = data.get("middle_name")
-    obj.email = data.get("email", "")
-    obj.avatar = data.get("avatar")
-    obj.group_name = data.get("group")
-    obj.faculty = data.get("faculty")
-    obj.role = data.get("role")
-    obj.cached_at = datetime.now(UTC)
-    return obj
+async def get_cached_user(user_id: UUID) -> CachedUser | None:
+    """Redis → HTTP to core-client-info (which populates Redis as side effect)."""
+    cached = await _redis_get(user_id)
+    if cached:
+        return cached
 
-
-async def get_cached_user(user_id: UUID, db: AsyncSession) -> UserCache | None:
-    """Get user from Redis cache, fall back to HTTP, then local DB."""
-    # 1. Redis hit
-    cached_data = await _read_from_redis(user_id)
-    if cached_data:
-        return _redis_to_user_cache(user_id, cached_data)
-
-    # 2. HTTP to core-client-info (which populates Redis as a side effect)
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.get(
                 f"{settings.core_client_info_url}/profile/user",
                 params={"user_id": str(user_id)},
             )
-            if resp.status_code != 200:
-                logger.warning("core-client-info returned %d for user %s", resp.status_code, user_id)
-            else:
-                data = resp.json()
-                now = datetime.now(UTC)
-                stmt = (
-                    insert(UserCache)
-                    .values(
-                        user_id=user_id,
-                        name=data.get("name", ""),
-                        last_name=data.get("last_name", ""),
-                        middle_name=data.get("middle_name"),
-                        email=data.get("email", ""),
-                        avatar=data.get("avatar"),
-                        group_name=data.get("group"),
-                        faculty=data.get("faculty"),
-                        role=data.get("role"),
-                        cached_at=now,
-                    )
-                    .on_conflict_do_update(
-                        index_elements=["user_id"],
-                        set_={
-                            "name": data.get("name", ""),
-                            "last_name": data.get("last_name", ""),
-                            "middle_name": data.get("middle_name"),
-                            "email": data.get("email", ""),
-                            "avatar": data.get("avatar"),
-                            "group_name": data.get("group"),
-                            "faculty": data.get("faculty"),
-                            "role": data.get("role"),
-                            "cached_at": now,
-                        },
-                    )
-                )
-                await db.execute(stmt)
-                await db.flush()
-
-                result = await db.execute(select(UserCache).where(UserCache.user_id == user_id))
-                return result.scalar_one_or_none()
+            if resp.status_code == 200:
+                return _from_dict(resp.json())
+            logger.warning("core-client-info returned %d for user %s", resp.status_code, user_id)
     except Exception:
         logger.exception("Failed to fetch user %s from core-client-info", user_id)
 
-    # 3. Local DB fallback
-    result = await db.execute(select(UserCache).where(UserCache.user_id == user_id))
-    return result.scalar_one_or_none()
+    return None
 
 
-async def get_cached_users_batch(user_ids: list[UUID], db: AsyncSession) -> dict[UUID, UserCache]:
-    """Get multiple users. Redis first, then batch HTTP for misses, then local DB fallback."""
+async def get_cached_users_batch(user_ids: list[UUID]) -> dict[UUID, CachedUser]:
+    """Redis batch → HTTP batch for misses."""
     if not user_ids:
         return {}
 
-    # 1. Check Redis for all IDs
-    redis_hits = await _read_batch_from_redis(user_ids)
-    result_map: dict[UUID, UserCache] = {uid: _redis_to_user_cache(uid, data) for uid, data in redis_hits.items()}
+    result = await _redis_get_batch(user_ids)
+    missing = [uid for uid in user_ids if uid not in result]
 
-    missing_ids = [uid for uid in user_ids if uid not in result_map]
-    if not missing_ids:
-        return result_map
+    if not missing:
+        return result
 
-    # 2. Batch HTTP for missing IDs (core-client-info populates Redis as side effect)
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.post(
                 f"{settings.core_client_info_url}/profile/users/batch",
-                json={"user_ids": [str(uid) for uid in missing_ids]},
+                json={"user_ids": [str(uid) for uid in missing]},
             )
             if resp.status_code == 200:
-                now = datetime.now(UTC)
                 for u in resp.json():
-                    uid = UUID(u["id"])
-                    stmt = (
-                        insert(UserCache)
-                        .values(
-                            user_id=uid,
-                            name=u.get("name", ""),
-                            last_name=u.get("last_name", ""),
-                            middle_name=u.get("middle_name"),
-                            email=u.get("email", ""),
-                            avatar=u.get("avatar"),
-                            group_name=u.get("group"),
-                            faculty=u.get("faculty"),
-                            role=u.get("role"),
-                            cached_at=now,
-                        )
-                        .on_conflict_do_update(
-                            index_elements=["user_id"],
-                            set_={
-                                "name": u.get("name", ""),
-                                "last_name": u.get("last_name", ""),
-                                "cached_at": now,
-                            },
-                        )
-                    )
-                    await db.execute(stmt)
-                await db.flush()
-
-                db_result = await db.execute(select(UserCache).where(UserCache.user_id.in_(missing_ids)))
-                for uc in db_result.scalars().all():
-                    result_map[uc.user_id] = uc
-
-                return result_map
+                    cached = _from_dict(u)
+                    result[cached.user_id] = cached
     except Exception:
         logger.exception("Failed batch fetch from core-client-info")
 
-    # 3. Local DB fallback for remaining missing IDs
-    still_missing = [uid for uid in missing_ids if uid not in result_map]
-    if still_missing:
-        db_result = await db.execute(select(UserCache).where(UserCache.user_id.in_(still_missing)))
-        for uc in db_result.scalars().all():
-            result_map[uc.user_id] = uc
-
-    return result_map
+    return result
