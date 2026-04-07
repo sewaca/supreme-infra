@@ -20,6 +20,10 @@ spec:
         - name: config
           configMap:
             name: {{ include "redis.fullname" . }}-config
+        {{- if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+        {{- end }}
       containers:
         - name: redis
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -69,8 +73,4 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size }}
-  {{- else }}
-      volumes:
-        - name: data
-          emptyDir: {}
   {{- end }}
