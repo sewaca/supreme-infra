@@ -130,6 +130,10 @@ DELETE /core-auth/auth/sessions/{session_id}
 → redis-cli get "session:<jti>" → "revoked"
 ```
 
+```bash
+sh -c 'for k in $(redis-cli keys "session:*"); do echo "$k → $(redis-cli get $k)"; done'
+```
+
 ---
 
 ## Локальная проверка (docker-compose)
