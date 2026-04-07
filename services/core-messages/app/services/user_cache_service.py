@@ -10,16 +10,15 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-_redis_client: aioredis.Redis | None = None
+_state: dict = {"client": None}
 
 
 def _get_redis() -> aioredis.Redis | None:
     if not settings.redis_cache_url:
         return None
-    global _redis_client
-    if _redis_client is None:
-        _redis_client = aioredis.from_url(settings.redis_cache_url, decode_responses=True)
-    return _redis_client
+    if _state["client"] is None:
+        _state["client"] = aioredis.from_url(settings.redis_cache_url, decode_responses=True)
+    return _state["client"]
 
 
 def _cache_key(user_id: UUID) -> str:
@@ -72,7 +71,7 @@ async def _redis_get_batch(user_ids: list[UUID]) -> dict[UUID, CachedUser]:
     try:
         values = await r.mget([_cache_key(uid) for uid in user_ids])
         result: dict[UUID, CachedUser] = {}
-        for uid, raw in zip(user_ids, values):
+        for uid, raw in zip(user_ids, values, strict=True):
             if raw:
                 result[uid] = _from_dict(json.loads(raw))
         return result

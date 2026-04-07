@@ -4,21 +4,19 @@ import redis.asyncio as aioredis
 
 from app.config import settings
 
-_client: aioredis.Redis | None = None
+_state: dict = {"client": None}
 
 
 def get_redis() -> aioredis.Redis:
-    global _client
-    if _client is None:
-        _client = aioredis.from_url(settings.redis_auth_cache_url, decode_responses=True)
-    return _client
+    if _state["client"] is None:
+        _state["client"] = aioredis.from_url(settings.redis_auth_cache_url, decode_responses=True)
+    return _state["client"]
 
 
 async def close_redis() -> None:
-    global _client
-    if _client is not None:
-        await _client.aclose()
-        _client = None
+    if _state["client"] is not None:
+        await _state["client"].aclose()
+        _state["client"] = None
 
 
 def _key(jti: UUID) -> str:

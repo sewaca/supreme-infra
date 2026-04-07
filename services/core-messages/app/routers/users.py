@@ -26,17 +26,17 @@ async def search_users(
                 params={"q": q, "limit": limit},
             )
             if resp.status_code == 200:
-                for u in resp.json():
-                    items.append(
-                        UserBrief(
-                            user_id=uuid.UUID(u["id"]),
-                            name=u.get("name", ""),
-                            last_name=u.get("last_name", ""),
-                            avatar=u.get("avatar"),
-                            group_name=u.get("group"),
-                            role=u.get("role"),
-                        )
+                items.extend(
+                    UserBrief(
+                        user_id=uuid.UUID(u["id"]),
+                        name=u.get("name", ""),
+                        last_name=u.get("last_name", ""),
+                        avatar=u.get("avatar"),
+                        group_name=u.get("group"),
+                        role=u.get("role"),
                     )
+                    for u in resp.json()
+                )
     except Exception:
         pass
 
