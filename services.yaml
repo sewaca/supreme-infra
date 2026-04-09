@@ -22,6 +22,8 @@ services:
       description: Сервис для просмотра расписания для студентов и преподавателей
     - name: web-messages-ssr
       description: Отображение сообщений
+    - name: web-news-ssr
+      description: news display
   fastapi:
     - name: core-auth
       description: Authentication — login, JWT tokens, 2FA

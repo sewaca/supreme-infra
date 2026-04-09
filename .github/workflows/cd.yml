@@ -22,6 +22,7 @@ on:
           - web-auth-ssr
           - web-documents-ssr
           - web-messages-ssr
+          - web-news-ssr
           - web-profile-ssr
           - web-schedule-ssr
         default: "auth-ssr"

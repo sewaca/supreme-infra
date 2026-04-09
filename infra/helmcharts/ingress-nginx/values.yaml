@@ -374,6 +374,12 @@ ingress:
           method: GET
         - path: /web-messages-ssr/.*
           method: GET
+    - service: web-news-ssr
+      port: 80
+      type: next
+      paths:
+        - path: /web-news-ssr/.*
+          method: GET
     - service: web-profile-ssr
       port: 80
       type: next
