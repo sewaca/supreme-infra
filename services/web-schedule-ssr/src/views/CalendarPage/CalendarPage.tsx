@@ -98,7 +98,7 @@ export function CalendarPage({
         )}
 
         <SchedulePageToolbar>
-          <Box data-tour="schedule-destination-tabs" sx={{ display: 'contents' }}>
+          <Box data-tour="schedule-destination-tabs" sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <ScheduleDestinationTabs />
           </Box>
           <ScheduleViewModeToggle viewMode={viewMode} onToggle={toggleView} />
