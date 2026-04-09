@@ -17,6 +17,9 @@ CATEGORY_MAP: dict[str, str] = {
     "culture": "Культура",
     "university": "Университет",
     "students": "Студентам",
+    "different": "Разное",
+    "public-life": "Общественная жизнь",
+    "abitur": "Абитуриентам",
 }
 
 # Date prefix pattern: "26 марта 2026 "

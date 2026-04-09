@@ -50,7 +50,7 @@ autoscaling:
 cronJob:
   enabled: true
   schedule: "0 */12 * * *"
-  url: "http://core-news/core-news/news/sync"
+  url: "http://core-news.default.svc.cluster.local/core-news/news/sync"
 
 overrides:
   production:
