@@ -17,7 +17,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: sync
-            image: curlimages/curl:8
+            image: curlimages/curl:latest
             command:
             - curl
             - --fail
