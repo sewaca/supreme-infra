@@ -9,7 +9,6 @@
 - OpenTelemetry instrumentation
 - Prometheus metrics
 - TypeScript
-- SVG imports as React components
 
 ## Prerequisites
 
