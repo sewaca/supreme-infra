@@ -1,6 +1,5 @@
 import logging
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.dialects.postgresql import insert
 
 from app.database import AsyncSessionLocal
@@ -8,8 +7,6 @@ from app.models.news import News
 from app.services.parser import fetch_university_news
 
 logger = logging.getLogger(__name__)
-
-scheduler = AsyncIOScheduler()
 
 
 async def sync_news() -> None:
@@ -38,14 +35,3 @@ async def sync_news() -> None:
         except Exception:
             await session.rollback()
             logger.exception("Failed to sync news to database")
-
-
-def start_scheduler() -> None:
-    scheduler.add_job(sync_news, "interval", hours=12, id="sync_news", replace_existing=True)
-    scheduler.start()
-    logger.info("News scheduler started (interval: 12h)")
-
-
-def stop_scheduler() -> None:
-    scheduler.shutdown(wait=False)
-    logger.info("News scheduler stopped")

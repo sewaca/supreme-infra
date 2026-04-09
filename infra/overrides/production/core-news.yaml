@@ -85,4 +85,8 @@ canary:
   image:
     repository: ""
     tag: ""
+cronJob:
+  enabled: true
+  schedule: 0 */12 * * *
+  url: http://core-news/core-news/news/sync
 replicas: 1

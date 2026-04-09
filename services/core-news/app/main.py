@@ -13,19 +13,17 @@ from app.routers import (
     news as news_router,
     status,
 )
-from app.services.scheduler import start_scheduler, stop_scheduler, sync_news
+from app.services.scheduler import sync_news
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    start_scheduler()
     initial_sync_task = asyncio.create_task(sync_news())
     try:
         yield
     finally:
-        stop_scheduler()
         initial_sync_task.cancel()
         with suppress(asyncio.CancelledError):
             await initial_sync_task

@@ -214,6 +214,8 @@ ingress:
       paths:
         - path: /core-news/news
           method: GET
+        - path: /core-news/news/sync
+          method: POST
     - service: core-recipes-bff
       port: 80
       type: nest

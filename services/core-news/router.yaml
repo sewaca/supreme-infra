@@ -8,3 +8,6 @@ routes:
   - path: /core-news/news
     method: GET
     auth_level: none
+  - path: /core-news/news/sync
+    method: POST
+    auth_level: none

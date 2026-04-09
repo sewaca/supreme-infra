@@ -36,17 +36,22 @@ export function NewsLayout({ avatar, userName, unreadMessagesCount, appNotificat
       />
       <Box sx={{ flex: 1, overflow: 'auto' }}>
         {unreadMessagesCount > 0 && (
-          <Box component="a" href="/messages" sx={{ display: 'block', textDecoration: 'none' }}>
-            <Alert severity="info" sx={{ borderRadius: 0 }}>
-              У вас {unreadMessagesCount} непрочитанных сообщений
+          <Box component="a" href="/messages" sx={{ display: 'block', textDecoration: 'none', mx: 2, mt: 1.5 }}>
+            <Alert severity="info" sx={{ borderRadius: 1 }}>
+              Есть непрочитанные сообщения
             </Alert>
           </Box>
         )}
         {appNotifications.map((notification) => {
           const href = notification.action ?? `/applications/${notification.application_id}`;
           return (
-            <Box key={notification.id} component="a" href={href} sx={{ display: 'block', textDecoration: 'none' }}>
-              <Alert severity={toAlertSeverity(notification.severity)} sx={{ borderRadius: 0 }}>
+            <Box
+              key={notification.id}
+              component="a"
+              href={href}
+              sx={{ display: 'block', textDecoration: 'none', mx: 2, mt: 1 }}
+            >
+              <Alert severity={toAlertSeverity(notification.severity)} sx={{ borderRadius: 1 }}>
                 {notification.message}
               </Alert>
             </Box>

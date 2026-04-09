@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.news import News
 from app.schemas.news import NewsResponse
+from app.services.scheduler import sync_news
 
 logger = logging.getLogger(__name__)
 
@@ -20,3 +21,9 @@ async def get_news(
 ):
     result = await db.execute(select(News).order_by(News.created_at.desc()).limit(limit))
     return result.scalars().all()
+
+
+@router.post("/sync", status_code=200)
+async def trigger_sync():
+    await sync_news()
+    return {"status": "ok"}

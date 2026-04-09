@@ -47,6 +47,11 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
+cronJob:
+  enabled: true
+  schedule: "0 */12 * * *"
+  url: "http://core-news/core-news/news/sync"
+
 overrides:
   production:
     canary:

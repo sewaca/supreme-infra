@@ -85,4 +85,8 @@ canary:
   image:
     repository: ""
     tag: ""
+cronJob:
+  enabled: false
+  schedule: 0 */12 * * *
+  url: ""
 replicas: 1

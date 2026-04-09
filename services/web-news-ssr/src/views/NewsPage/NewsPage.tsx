@@ -21,7 +21,14 @@ export function NewsPage({ news }: Props) {
   }
 
   return (
-    <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+    <Box
+      sx={{
+        p: 2,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+        gap: 1.5,
+      }}
+    >
       {news.map((item) => (
         <Card
           key={item.id}
@@ -29,16 +36,22 @@ export function NewsPage({ news }: Props) {
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
-          sx={{ textDecoration: 'none', display: 'block', color: 'inherit' }}
+          sx={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', color: 'inherit', height: '100%' }}
         >
-          <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1, mb: 0.5 }}>
-              <Chip label={item.category} size="small" color="primary" variant="outlined" />
-              <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
+          <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 0.5, p: '12px !important' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 0.5 }}>
+              <Chip
+                label={item.category}
+                size="small"
+                color="primary"
+                variant="outlined"
+                sx={{ fontSize: '0.625rem', height: 20 }}
+              />
+              <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0, fontSize: '0.625rem' }}>
                 {item.date}
               </Typography>
             </Box>
-            <Typography variant="body1" fontWeight={500} sx={{ mt: 0.5 }}>
+            <Typography variant="body2" fontWeight={500} sx={{ mt: 0.5, lineHeight: 1.35 }}>
               {item.title}
             </Typography>
           </CardContent>

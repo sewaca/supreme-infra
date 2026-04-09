@@ -1,0 +1,29 @@
+{{- if .Values.cronJob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "service.fullname" . }}-sync
+  labels:
+    {{- include "service.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronJob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: sync
+            image: curlimages/curl:8
+            command:
+            - curl
+            - --fail
+            - --silent
+            - --show-error
+            - -X
+            - POST
+            - {{ .Values.cronJob.url | quote }}
+{{- end }}
