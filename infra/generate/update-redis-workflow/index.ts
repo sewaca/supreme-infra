@@ -2,7 +2,9 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
 
-export function updateRedisWorkflow(): void {
+import { formatWorkflowYamlWithPrettier } from '../format-workflow-yaml-with-prettier';
+
+export async function updateRedisWorkflow(): Promise<void> {
   console.log('→ Starting Redis workflow update');
 
   const projectRoot = path.join(__dirname, '../../..');
@@ -46,6 +48,7 @@ export function updateRedisWorkflow(): void {
   }
 
   fs.writeFileSync(workflowPath, workflow.toString(), 'utf-8');
+  await formatWorkflowYamlWithPrettier(workflowPath);
 
   console.log('✓ Updated: .github/workflows/deploy-redis.yml');
   console.log(`→   Instances: ${instanceNames.join(', ')}`);

@@ -2,6 +2,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
 
+import { formatWorkflowYamlWithPrettier } from '../format-workflow-yaml-with-prettier';
+
 interface ServiceWithDatabase {
   name: string;
   database?: {
@@ -9,7 +11,7 @@ interface ServiceWithDatabase {
   };
 }
 
-export function updatePgbouncerWorkflow(): void {
+export async function updatePgbouncerWorkflow(): Promise<void> {
   console.log('→ Starting PgBouncer workflow update');
 
   // Load services configuration
@@ -55,6 +57,7 @@ export function updatePgbouncerWorkflow(): void {
   const updatedContent = workflow.toString();
 
   fs.writeFileSync(workflowPath, updatedContent, 'utf-8');
+  await formatWorkflowYamlWithPrettier(workflowPath);
 
   console.log('✓ Updated: .github/workflows/deploy-pgbouncer.yml');
   console.log(`→   Services: ${servicesWithDb.join(', ')}`);

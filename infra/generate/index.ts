@@ -28,22 +28,22 @@ async function main() {
 
   console.log('📋 Step 3/9: Updating security checks...');
   console.log('───────────────────────────────────────────────────────────');
-  updateSecurityChecks();
+  await updateSecurityChecks();
   console.log('');
 
   console.log('📋 Step 4/9: Updating CD workflow...');
   console.log('───────────────────────────────────────────────────────────');
-  updateCdWorkflow();
+  await updateCdWorkflow();
   console.log('');
 
   console.log('📋 Step 5/9: Updating database workflow...');
   console.log('───────────────────────────────────────────────────────────');
-  updateDatabaseWorkflow();
+  await updateDatabaseWorkflow();
   console.log('');
 
   console.log('📋 Step 6/9: Updating PgBouncer workflow...');
   console.log('───────────────────────────────────────────────────────────');
-  updatePgbouncerWorkflow();
+  await updatePgbouncerWorkflow();
   console.log('');
 
   console.log('📋 Step 7/9: Generating database values...');
@@ -68,7 +68,7 @@ async function main() {
 
   console.log('📋 Step 11/11: Updating Redis workflow...');
   console.log('───────────────────────────────────────────────────────────');
-  updateRedisWorkflow();
+  await updateRedisWorkflow();
   console.log('');
 
   console.log('═══════════════════════════════════════════════════════════');

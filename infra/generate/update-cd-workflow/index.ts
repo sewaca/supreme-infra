@@ -2,6 +2,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
 
+import { formatWorkflowYamlWithPrettier } from '../format-workflow-yaml-with-prettier';
+
 interface DatabaseConfig {
   enabled: boolean;
   name?: string;
@@ -23,7 +25,7 @@ interface ServicesYaml {
   };
 }
 
-export function updateCdWorkflow(): void {
+export async function updateCdWorkflow(): Promise<void> {
   console.log('\n🔄 Updating CD workflow...\n');
 
   const projectRoot = path.resolve(__dirname, '../../..');
@@ -81,6 +83,7 @@ export function updateCdWorkflow(): void {
     const updatedContent = cdWorkflow.toString();
 
     fs.writeFileSync(cdWorkflowPath, updatedContent, 'utf-8');
+    await formatWorkflowYamlWithPrettier(cdWorkflowPath);
     console.log(`\n✅ Updated: ${cdWorkflowPath}`);
     console.log(`  Services: ${allServices.join(', ')}`);
     console.log(`  Default: ${allServices[0]}`);

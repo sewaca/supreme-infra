@@ -2,6 +2,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
 
+import { formatWorkflowYamlWithPrettier } from '../format-workflow-yaml-with-prettier';
+
 interface ServiceWithDatabase {
   name: string;
   database?: {
@@ -9,7 +11,7 @@ interface ServiceWithDatabase {
   };
 }
 
-export function updateDatabaseWorkflow(): void {
+export async function updateDatabaseWorkflow(): Promise<void> {
   console.log('→ Starting database workflow update');
 
   // Load services configuration
@@ -55,6 +57,7 @@ export function updateDatabaseWorkflow(): void {
   const updatedContent = workflow.toString();
 
   fs.writeFileSync(workflowPath, updatedContent, 'utf-8');
+  await formatWorkflowYamlWithPrettier(workflowPath);
 
   console.log('✓ Updated: .github/workflows/deploy-database.yml');
   console.log(`→   Services: ${servicesWithDb.join(', ')}`);

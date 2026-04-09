@@ -1,9 +1,11 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as yaml from 'yaml';
+
+import { formatWorkflowYamlWithPrettier } from '../format-workflow-yaml-with-prettier';
 import { getServicesByType } from '../shared/load-services';
 
-export function updateSecurityChecks(): void {
+export async function updateSecurityChecks(): Promise<void> {
   // Путь к корню проекта (относительно текущего файла)
   const projectRoot = path.join(__dirname, '../../..');
 
@@ -54,6 +56,7 @@ export function updateSecurityChecks(): void {
 
   // Сохраняем обновленный файл
   fs.writeFileSync(securityChecksPath, workflow.toString(), 'utf-8');
+  await formatWorkflowYamlWithPrettier(securityChecksPath);
 
   console.log('✓ Security checks updated successfully!');
   console.log(`  Nest services: ${nestServices.join(', ') || 'none'}`);
