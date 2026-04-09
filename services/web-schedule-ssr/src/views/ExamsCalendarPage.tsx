@@ -12,6 +12,7 @@ import { DefaultNavbar } from '../widgets/DefaultNavbar/DefaultNavbar';
 import { ProfileButton } from '../widgets/ProfileButton/ProfileButton';
 import { LessonDetailDialog } from '../widgets/schedule/LessonDetailDialog/LessonDetailDialog';
 import { SchedulePageContent } from '../widgets/schedule/SchedulePageLayout/SchedulePageLayout';
+import styles from './ExamsCalendarPage.module.css';
 
 export type ExamsCalendarPageProps = {
   events: CalendarEvent[];
@@ -95,16 +96,9 @@ export function ExamsCalendarPage({ events, avatar, userName, error }: ExamsCale
           </Alert>
         )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 16, flex: 1 }}>
+        <div className={styles.container}>
           {dayGroups.length === 0 && !error && (
-            <Paper
-              elevation={0}
-              sx={{
-                background: 'var(--color-background-secondary)',
-                borderRadius: '16px',
-                padding: '32px 16px',
-              }}
-            >
+            <Paper className={styles.emptyCard} elevation={0}>
               <Typography variant="body1" color="text.secondary" textAlign="center">
                 Экзаменов не найдено
               </Typography>
@@ -117,26 +111,13 @@ export function ExamsCalendarPage({ events, avatar, userName, error }: ExamsCale
             return (
               <Paper
                 key={date}
+                className={styles.dayCard}
                 elevation={0}
-                sx={{
-                  background: 'var(--color-background-secondary)',
-                  borderRadius: '16px',
-                  padding: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  ...(isToday ? { bgcolor: alpha(primary, 0.06), border: `1px solid ${alpha(primary, 0.22)}` } : {}),
-                }}
+                sx={isToday ? { bgcolor: alpha(primary, 0.06), border: `1px solid ${alpha(primary, 0.22)}` } : undefined}
               >
                 <Typography
-                  sx={{
-                    fontSize: '0.9375rem',
-                    fontWeight: 600,
-                    textAlign: 'center',
-                    paddingBottom: '12px',
-                    borderBottom: '1px solid rgba(0,0,0,0.06)',
-                    marginBottom: '4px',
-                    ...(isToday ? { color: 'primary.dark', borderBottomColor: alpha(primary, 0.22) } : {}),
-                  }}
+                  className={styles.dayHeader}
+                  sx={isToday ? { color: 'primary.dark', borderBottomColor: alpha(primary, 0.22) } : undefined}
                 >
                   {formatDayHeader(date)}
                 </Typography>
@@ -148,37 +129,24 @@ export function ExamsCalendarPage({ events, avatar, userName, error }: ExamsCale
                   return (
                     <div
                       key={ev.id}
+                      className={styles.lessonRow}
+                      onClick={() => setSelectedEvent(ev)}
                       role="button"
                       tabIndex={0}
-                      onClick={() => setSelectedEvent(ev)}
-                      style={{
-                        display: 'flex',
-                        gap: 16,
-                        padding: '10px 0',
-                        borderBottom: '1px solid rgba(0,0,0,0.04)',
-                        cursor: 'pointer',
-                        borderRadius: 8,
-                      }}
                     >
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 80, flexShrink: 0 }}>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                          {startTime}–{endTime}
-                        </span>
+                      <div className={styles.lessonLeft}>
+                        <span className={styles.lessonTime}>{startTime}–{endTime}</span>
                         {ev.extendedProps.classroom_name && (
-                          <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-secondary)' }}>
-                            {ev.extendedProps.classroom_name}
-                          </span>
+                          <span className={styles.lessonClassroom}>{ev.extendedProps.classroom_name}</span>
                         )}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, flex: 1 }}>
-                        <span style={{ fontSize: '1rem', fontWeight: 500, lineHeight: 1.3 }}>{ev.title}</span>
-                        <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: chipColor }}>
+                      <div className={styles.lessonRight}>
+                        <span className={styles.lessonSubject}>{ev.title}</span>
+                        <span className={styles.lessonType} style={{ color: chipColor }}>
                           {ev.extendedProps.lesson_type}
                         </span>
                         {ev.extendedProps.teacher_name && (
-                          <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-secondary)' }}>
-                            {ev.extendedProps.teacher_name}
-                          </span>
+                          <span className={styles.lessonTeacher}>{ev.extendedProps.teacher_name}</span>
                         )}
                       </div>
                     </div>
