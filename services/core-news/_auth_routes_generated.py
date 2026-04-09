@@ -16,6 +16,6 @@ class AuthRoute:
 
 
 AUTH_ROUTES: list[AuthRoute] = [
-    AuthRoute(path=re.compile(r"^/core-news/news$"), method="GET", auth_level="none"),
-    AuthRoute(path=re.compile(r"^/core-news/news/sync$"), method="POST", auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-news/news$"), method='GET', auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-news/news/sync$"), method='POST', auth_level="none"),
 ]

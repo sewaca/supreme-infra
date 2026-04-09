@@ -10,6 +10,10 @@ dev-dependencies = [
 ]
 
 [tool.ruff]
+# Respect exclude patterns (including [tool.ruff.format] exclude) when paths are passed explicitly
+# (e.g. pre-commit, format-on-save with a single file).
+force-exclude = true
+
 # Exclude directories
 exclude = [
     ".git",
@@ -64,6 +68,9 @@ fixable = ["ALL"]
 unfixable = []
 
 [tool.ruff.format]
+# Generated auth route maps: keep generator indentation; still linted via [tool.ruff.lint]
+exclude = ["**/_auth_routes_generated.py"]
+
 # Use spaces for indentation (matching Biome's indentStyle)
 indent-style = "space"
 
