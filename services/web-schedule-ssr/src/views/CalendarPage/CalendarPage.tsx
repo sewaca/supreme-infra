@@ -77,15 +77,15 @@ export function CalendarPage({
       elevation={0}
     >
       <NavBar
-        center={<Typography variant="title1">Расписание</Typography>}
-        rightSlot={
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        center={
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Typography variant="title1">Расписание</Typography>
             <IconButton onClick={startTour} aria-label={i18n('Показать обучение')} size="small">
               <HelpOutlineIcon fontSize="small" color="inherit" />
             </IconButton>
-            <ProfileButton avatar={avatar} name={userName} />
           </Box>
         }
+        rightSlot={<ProfileButton avatar={avatar} name={userName} />}
       />
 
       <SchedulePageContent>

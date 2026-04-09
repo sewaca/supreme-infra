@@ -5,7 +5,7 @@ export const getScheduleTourSteps = (): DriveStep[] => [
   {
     popover: {
       title: i18n('Расписание'),
-      description: i18n('Давайте разберёмся, как пользоваться расписанием. Это займёт меньше минуты.'),
+      description: i18n('Давайте разберёмся, как пользоваться обновленным расписанием. Это займёт меньше минуты.'),
       side: 'bottom',
       align: 'center',
     },
