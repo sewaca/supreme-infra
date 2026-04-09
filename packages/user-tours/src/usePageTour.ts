@@ -6,11 +6,12 @@ import { getDormitoryTourSteps } from './configs/dormitory';
 import { getOrdersTourSteps } from './configs/orders';
 import { getRatingTourSteps } from './configs/rating';
 import { getReferencesTourSteps } from './configs/references';
+import { getScheduleTourSteps } from './configs/schedule';
 import { getScholarshipTourSteps } from './configs/scholarship';
 import { getSubjectsRankingTourSteps } from './configs/subjects-ranking';
 import { useProductTour } from './useProductTour';
 
-type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking' | 'scholarship' | 'dormitory';
+type PageTourType = 'orders' | 'rating' | 'references' | 'subjects-ranking' | 'scholarship' | 'dormitory' | 'schedule';
 
 type TourConfig = { key: string; steps: DriveStep[] };
 
@@ -33,6 +34,8 @@ const getTourConfig = (page: PageTourType, params?: Record<string, unknown>): To
       return { key: 'scholarship-tour-completed', steps: getScholarshipTourSteps() };
     case 'dormitory':
       return { key: 'dormitory-tour-completed', steps: getDormitoryTourSteps() };
+    case 'schedule':
+      return { key: 'schedule-tour-completed', steps: getScheduleTourSteps() };
     default:
       throw new Error(`Unknown page tour type: ${page}`);
   }

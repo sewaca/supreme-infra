@@ -1,9 +1,14 @@
 'use client';
 
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
+import { i18n } from '@supreme-int/i18n/src/i18n';
+import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
 import type { CalendarEvent } from '../../entities/Lesson/model/Lesson';
 import { useScheduleCalendarPageState } from '../../features/schedule-calendar/model/useScheduleCalendarPageState';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
@@ -40,6 +45,8 @@ export function CalendarPage({
   initialViewMode,
   initialCalType,
 }: Props) {
+  const { startTour } = usePageTour({ page: 'schedule' });
+
   const {
     allEvents,
     isFetching,
@@ -71,7 +78,14 @@ export function CalendarPage({
     >
       <NavBar
         center={<Typography variant="title1">Расписание</Typography>}
-        rightSlot={<ProfileButton avatar={avatar} name={userName} />}
+        rightSlot={
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton onClick={startTour} aria-label={i18n('Показать обучение')} size="small">
+              <HelpOutlineIcon fontSize="small" color="inherit" />
+            </IconButton>
+            <ProfileButton avatar={avatar} name={userName} />
+          </Box>
+        }
       />
 
       <SchedulePageContent>
@@ -84,7 +98,9 @@ export function CalendarPage({
         )}
 
         <SchedulePageToolbar>
-          <ScheduleDestinationTabs />
+          <Box data-tour="schedule-destination-tabs" sx={{ display: 'contents' }}>
+            <ScheduleDestinationTabs />
+          </Box>
           <ScheduleViewModeToggle viewMode={viewMode} onToggle={toggleView} />
         </SchedulePageToolbar>
 

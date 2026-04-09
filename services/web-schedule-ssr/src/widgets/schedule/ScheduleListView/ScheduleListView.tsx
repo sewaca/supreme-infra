@@ -97,7 +97,7 @@ export function ScheduleListView({ events, dateFrom, onPrevWeek, onNextWeek, onE
   }, [events, weekMonday]);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-tour="schedule-list-view">
       <Box className={styles.weekNav}>
         <IconButton onClick={onPrevWeek} size="small">
           <ChevronLeftIcon />

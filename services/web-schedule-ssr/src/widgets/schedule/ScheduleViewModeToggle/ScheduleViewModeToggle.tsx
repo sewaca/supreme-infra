@@ -12,7 +12,7 @@ type Props = {
 
 export function ScheduleViewModeToggle({ viewMode, onToggle }: Props) {
   return (
-    <Box sx={{ marginLeft: 'auto' }}>
+    <Box sx={{ marginLeft: 'auto' }} data-tour="schedule-view-toggle">
       <IconButton onClick={onToggle} size="small" title={viewMode === 'list' ? 'Календарь' : 'Список'}>
         {viewMode === 'list' ? <CalendarViewMonthIcon /> : <FormatListBulletedIcon />}
       </IconButton>

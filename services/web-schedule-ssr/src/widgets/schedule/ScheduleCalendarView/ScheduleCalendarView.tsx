@@ -261,7 +261,7 @@ export function ScheduleCalendarView({
   );
 
   return (
-    <Paper className={styles.calendarCard} elevation={0} sx={{ px: 0 }}>
+    <Paper className={styles.calendarCard} elevation={0} sx={{ px: 0 }} data-tour="schedule-calendar-view">
       {isFetching && (
         <Box
           sx={{

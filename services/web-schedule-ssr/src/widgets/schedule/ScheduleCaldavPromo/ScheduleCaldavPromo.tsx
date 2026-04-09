@@ -15,6 +15,7 @@ export function ScheduleCaldavPromo() {
         severity="info"
         onClick={() => setOpen(true)}
         sx={{ cursor: 'pointer', borderRadius: '12px', mb: 1, mt: 1 }}
+        data-tour="schedule-caldav-promo"
       >
         <strong>Привяжите CalDAV-календарь</strong> — расписание прямо в вашем телефоне!
       </Alert>
