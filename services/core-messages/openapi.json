@@ -176,6 +176,31 @@
         }
       }
     },
+    "/conversations/unread-count": {
+      "get": {
+        "tags": ["conversations"],
+        "summary": "Get Total Unread Count",
+        "description": "Лёгкий endpoint: суммарное число непрочитанных сообщений пользователя (1 SQL-запрос).",
+        "operationId": "get_total_unread_count_conversations_unread_count_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCountResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/conversations/{conversation_id}": {
       "get": {
         "tags": ["conversations"],
@@ -1467,6 +1492,17 @@
         "type": "object",
         "required": ["content"],
         "title": "SendMessageRequest"
+      },
+      "UnreadCountResponse": {
+        "properties": {
+          "total_unread_count": {
+            "type": "integer",
+            "title": "Total Unread Count"
+          }
+        },
+        "type": "object",
+        "required": ["total_unread_count"],
+        "title": "UnreadCountResponse"
       },
       "UpdatesResponse": {
         "properties": {

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddAttachmentFilesPostData, AddAttachmentFilesPostErrors, AddAttachmentFilesPostResponses, CreateBroadcastBroadcastsPostData, CreateBroadcastBroadcastsPostErrors, CreateBroadcastBroadcastsPostResponses, CreateOrGetDirectConversationConversationsDirectPostData, CreateOrGetDirectConversationConversationsDirectPostErrors, CreateOrGetDirectConversationConversationsDirectPostResponses, DeleteConversationConversationsConversationIdDeleteData, DeleteConversationConversationsConversationIdDeleteErrors, DeleteConversationConversationsConversationIdDeleteResponses, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteData, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteErrors, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponses, EditMessageConversationsConversationIdMessagesMessageIdPatchData, EditMessageConversationsConversationIdMessagesMessageIdPatchErrors, EditMessageConversationsConversationIdMessagesMessageIdPatchResponses, GetConversationConversationsConversationIdGetData, GetConversationConversationsConversationIdGetErrors, GetConversationConversationsConversationIdGetResponses, GetGroupsBroadcastsGroupsGetData, GetGroupsBroadcastsGroupsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetUnreadCountConversationsUnreadCountGetData, GetUnreadCountConversationsUnreadCountGetResponses, GetUpdatesConversationsUpdatesGetData, GetUpdatesConversationsUpdatesGetErrors, GetUpdatesConversationsUpdatesGetResponses, GetUserUsersUserIdGetData, GetUserUsersUserIdGetErrors, GetUserUsersUserIdGetResponses, ListBroadcastsBroadcastsGetData, ListBroadcastsBroadcastsGetResponses, ListConversationsConversationsGetData, ListConversationsConversationsGetErrors, ListConversationsConversationsGetResponses, ListMessagesConversationsConversationIdMessagesGetData, ListMessagesConversationsConversationIdMessagesGetErrors, ListMessagesConversationsConversationIdMessagesGetResponses, MarkReadConversationsConversationIdMessagesReadPostData, MarkReadConversationsConversationIdMessagesReadPostErrors, MarkReadConversationsConversationIdMessagesReadPostResponses, SearchMessagesMessagesSearchGetData, SearchMessagesMessagesSearchGetErrors, SearchMessagesMessagesSearchGetResponses, SearchUsersUsersSearchGetData, SearchUsersUsersSearchGetErrors, SearchUsersUsersSearchGetResponses, SendMessageConversationsConversationIdMessagesPostData, SendMessageConversationsConversationIdMessagesPostErrors, SendMessageConversationsConversationIdMessagesPostResponses } from './types.gen';
+import type { AddAttachmentFilesPostData, AddAttachmentFilesPostErrors, AddAttachmentFilesPostResponses, CreateBroadcastBroadcastsPostData, CreateBroadcastBroadcastsPostErrors, CreateBroadcastBroadcastsPostResponses, CreateOrGetDirectConversationConversationsDirectPostData, CreateOrGetDirectConversationConversationsDirectPostErrors, CreateOrGetDirectConversationConversationsDirectPostResponses, DeleteConversationConversationsConversationIdDeleteData, DeleteConversationConversationsConversationIdDeleteErrors, DeleteConversationConversationsConversationIdDeleteResponses, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteData, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteErrors, DeleteMessageConversationsConversationIdMessagesMessageIdDeleteResponses, EditMessageConversationsConversationIdMessagesMessageIdPatchData, EditMessageConversationsConversationIdMessagesMessageIdPatchErrors, EditMessageConversationsConversationIdMessagesMessageIdPatchResponses, GetConversationConversationsConversationIdGetData, GetConversationConversationsConversationIdGetErrors, GetConversationConversationsConversationIdGetResponses, GetGroupsBroadcastsGroupsGetData, GetGroupsBroadcastsGroupsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, GetTotalUnreadCountConversationsUnreadCountGetData, GetTotalUnreadCountConversationsUnreadCountGetResponses, GetUpdatesConversationsUpdatesGetData, GetUpdatesConversationsUpdatesGetErrors, GetUpdatesConversationsUpdatesGetResponses, GetUserUsersUserIdGetData, GetUserUsersUserIdGetErrors, GetUserUsersUserIdGetResponses, ListBroadcastsBroadcastsGetData, ListBroadcastsBroadcastsGetResponses, ListConversationsConversationsGetData, ListConversationsConversationsGetErrors, ListConversationsConversationsGetResponses, ListMessagesConversationsConversationIdMessagesGetData, ListMessagesConversationsConversationIdMessagesGetErrors, ListMessagesConversationsConversationIdMessagesGetResponses, MarkReadConversationsConversationIdMessagesReadPostData, MarkReadConversationsConversationIdMessagesReadPostErrors, MarkReadConversationsConversationIdMessagesReadPostResponses, SearchMessagesMessagesSearchGetData, SearchMessagesMessagesSearchGetErrors, SearchMessagesMessagesSearchGetResponses, SearchUsersUsersSearchGetData, SearchUsersUsersSearchGetErrors, SearchUsersUsersSearchGetResponses, SendMessageConversationsConversationIdMessagesPostData, SendMessageConversationsConversationIdMessagesPostErrors, SendMessageConversationsConversationIdMessagesPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -46,20 +46,22 @@ export const createOrGetDirectConversationConversationsDirectPost = <ThrowOnErro
 });
 
 /**
- * Get Total Unread Count
- */
-export const getUnreadCountConversationsUnreadCountGet = <ThrowOnError extends boolean = false>(options?: Options<GetUnreadCountConversationsUnreadCountGetData, ThrowOnError>) => (options?.client ?? client).get<GetUnreadCountConversationsUnreadCountGetResponses, unknown, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/conversations/unread-count',
-    ...options
-});
-
-/**
  * Get Updates
  */
 export const getUpdatesConversationsUpdatesGet = <ThrowOnError extends boolean = false>(options: Options<GetUpdatesConversationsUpdatesGetData, ThrowOnError>) => (options.client ?? client).get<GetUpdatesConversationsUpdatesGetResponses, GetUpdatesConversationsUpdatesGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/conversations/updates',
+    ...options
+});
+
+/**
+ * Get Total Unread Count
+ *
+ * Лёгкий endpoint: суммарное число непрочитанных сообщений пользователя (1 SQL-запрос).
+ */
+export const getTotalUnreadCountConversationsUnreadCountGet = <ThrowOnError extends boolean = false>(options?: Options<GetTotalUnreadCountConversationsUnreadCountGetData, ThrowOnError>) => (options?.client ?? client).get<GetTotalUnreadCountConversationsUnreadCountGetResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/conversations/unread-count',
     ...options
 });
 
