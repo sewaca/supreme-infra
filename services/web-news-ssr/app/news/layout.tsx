@@ -1,7 +1,7 @@
 import { getNotificationsApplicationsNotificationsGet } from '@supreme-int/api-client/src/generated/core-applications';
 import type { ApplicationNotificationResponse } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
-import { getUnreadCountConversationsUnreadCountGet } from '@supreme-int/api-client/src/generated/core-messages';
+import { getTotalUnreadCountConversationsUnreadCountGet } from '@supreme-int/api-client/src/generated/core-messages';
 import { coreApplicationsClient, coreClientInfoClient, coreMessagesClient } from '../../src/shared/api/clients';
 import { getAuthInfo } from '../../src/shared/api/getAuthInfo';
 import { NewsLayout } from '../../src/views/NewsLayout/NewsLayout';
@@ -19,7 +19,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   if (auth.userId) {
     const [profileRes, unreadRes, notificationsRes] = await Promise.all([
       getUserProfileUserGet({ client: coreClientInfoClient, query: { user_id: auth.userId } }),
-      getUnreadCountConversationsUnreadCountGet({ client: coreMessagesClient }),
+      getTotalUnreadCountConversationsUnreadCountGet({ client: coreMessagesClient }),
       getNotificationsApplicationsNotificationsGet({ client: coreApplicationsClient, query: { user_id: auth.userId } }),
     ]);
 

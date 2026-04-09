@@ -3,7 +3,7 @@ import '@supreme-int/design-system/variables.css';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
-import { getUnreadCountConversationsUnreadCountGet } from '@supreme-int/api-client/src/generated/core-messages';
+import { getTotalUnreadCountConversationsUnreadCountGet } from '@supreme-int/api-client/src/generated/core-messages';
 import { MainAppBottomTabBar } from '@supreme-int/design-system/src/components/BottomTabBar/MainAppBottomTabBar';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   let unreadMessagesCount = 0;
   if (auth.userId) {
     try {
-      const res = await getUnreadCountConversationsUnreadCountGet({ client: coreMessagesClient });
+      const res = await getTotalUnreadCountConversationsUnreadCountGet({ client: coreMessagesClient });
       unreadMessagesCount = res.data?.total_unread_count ?? 0;
     } catch {}
   }
