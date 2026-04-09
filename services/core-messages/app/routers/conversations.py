@@ -15,6 +15,7 @@ from app.schemas.conversation import (
     ConversationResponse,
     CreateDirectConversationRequest,
     ParticipantBrief,
+    UnreadCountResponse,
 )
 from app.services.cursor import decode_cursor, encode_cursor
 from app.services.user_cache_service import get_cached_users_batch
@@ -332,6 +333,35 @@ async def get_updates(
     ]
 
     return UpdatesResponse(conversations=items, server_time=datetime.now(UTC))
+
+
+@router.get("/unread-count", response_model=UnreadCountResponse)
+async def get_total_unread_count(
+    current_user: ValidSession,
+    db: AsyncSession = Depends(get_db),
+):
+    """Лёгкий endpoint: суммарное число непрочитанных сообщений пользователя (1 SQL-запрос)."""
+    current_user_id = uuid.UUID(current_user["sub"])
+    result = await db.execute(
+        select(func.count(Message.id).label("total"))
+        .join(
+            ConversationParticipant,
+            and_(
+                ConversationParticipant.conversation_id == Message.conversation_id,
+                ConversationParticipant.user_id == current_user_id,
+                ConversationParticipant.is_deleted.is_(False),
+            ),
+        )
+        .where(
+            Message.is_deleted.is_(False),
+            or_(
+                ConversationParticipant.last_read_at.is_(None),
+                Message.created_at > ConversationParticipant.last_read_at,
+            ),
+        )
+    )
+    total = result.scalar_one() or 0
+    return UnreadCountResponse(total_unread_count=total)
 
 
 @router.get("/{conversation_id}", response_model=ConversationResponse)

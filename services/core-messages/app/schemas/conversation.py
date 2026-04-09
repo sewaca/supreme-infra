@@ -39,3 +39,7 @@ class CreateBroadcastRequest(BaseModel):
     title: str
     group_names: list[str]
     initial_message: str | None = None
+
+
+class UnreadCountResponse(BaseModel):
+    total_unread_count: int

@@ -34,6 +34,7 @@ AUTH_ROUTES: list[AuthRoute] = [
         path=re.compile(r"^/core-messages/conversations/[^/]+/messages/read$"), method="POST", auth_level="valid"
     ),
     AuthRoute(path=re.compile(r"^/core-messages/conversations/direct$"), method="POST", auth_level="valid"),
+    AuthRoute(path=re.compile(r"^/core-messages/conversations/unread-count$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-messages/conversations/updates$"), method="GET", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-messages/files$"), method="POST", auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-messages/messages/search$"), method="GET", auth_level="valid"),

@@ -16,12 +16,18 @@ const MAIN_APP_TABS: TabItem[] = [
 type Props = {
   /** Путь для подсветки вкладки, когда приложение открыто с корня `/`. */
   homePath: string;
+  /** Количество непрочитанных сообщений — отображается бейджем на вкладке «Сообщения». */
+  unreadMessagesCount?: number;
 };
 
-export function MainAppBottomTabBar({ homePath }: Props) {
+export function MainAppBottomTabBar({ homePath, unreadMessagesCount }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const currentPath = pathname === '/' ? homePath : pathname;
 
-  return <BottomTabBar tabs={MAIN_APP_TABS} currentPath={currentPath} onNavigate={router.push} />;
+  const tabs: TabItem[] = MAIN_APP_TABS.map((tab) =>
+    tab.value === '/messages' && unreadMessagesCount ? { ...tab, badge: unreadMessagesCount } : tab,
+  );
+
+  return <BottomTabBar tabs={tabs} currentPath={currentPath} onNavigate={router.push} />;
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import Badge from '@mui/material/Badge';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Paper from '@mui/material/Paper';
@@ -9,6 +10,7 @@ export type TabItem = {
   label: string;
   value: string;
   icon: ReactNode;
+  badge?: number;
 };
 
 type Props = {
@@ -53,7 +55,20 @@ export function BottomTabBar({ tabs, currentPath, onNavigate }: Props) {
         }}
       >
         {tabs.map((tab) => (
-          <BottomNavigationAction key={tab.value} label={tab.label} value={tab.value} icon={tab.icon} />
+          <BottomNavigationAction
+            key={tab.value}
+            label={tab.label}
+            value={tab.value}
+            icon={
+              tab.badge ? (
+                <Badge badgeContent={tab.badge} color="error" max={99}>
+                  {tab.icon}
+                </Badge>
+              ) : (
+                tab.icon
+              )
+            }
+          />
         ))}
       </BottomNavigation>
     </Paper>

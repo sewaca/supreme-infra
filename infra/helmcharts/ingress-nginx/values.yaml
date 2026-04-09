@@ -191,6 +191,8 @@ ingress:
           method: POST
         - path: /core-messages/conversations/direct
           method: POST
+        - path: /core-messages/conversations/unread-count
+          method: GET
         - path: /core-messages/conversations/updates
           method: GET
         - path: /core-messages/files

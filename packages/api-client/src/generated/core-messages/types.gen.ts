@@ -539,6 +539,29 @@ export type CreateOrGetDirectConversationConversationsDirectPostResponses = {
 
 export type CreateOrGetDirectConversationConversationsDirectPostResponse = CreateOrGetDirectConversationConversationsDirectPostResponses[keyof CreateOrGetDirectConversationConversationsDirectPostResponses];
 
+export type UnreadCountResponse = {
+    /**
+     * Total Unread Count
+     */
+    total_unread_count: number;
+};
+
+export type GetUnreadCountConversationsUnreadCountGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/conversations/unread-count';
+};
+
+export type GetUnreadCountConversationsUnreadCountGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: UnreadCountResponse;
+};
+
+export type GetUnreadCountConversationsUnreadCountGetResponse = GetUnreadCountConversationsUnreadCountGetResponses[keyof GetUnreadCountConversationsUnreadCountGetResponses];
+
 export type GetUpdatesConversationsUpdatesGetData = {
     body?: never;
     path?: never;

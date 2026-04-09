@@ -41,6 +41,9 @@ routes:
   - path: /core-messages/conversations/direct
     method: POST
     auth_level: valid
+  - path: /core-messages/conversations/unread-count
+    method: GET
+    auth_level: valid
   - path: /core-messages/conversations/updates
     method: GET
     auth_level: valid
