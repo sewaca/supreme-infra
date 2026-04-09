@@ -25,7 +25,7 @@ export function NewsPage({ news }: Props) {
       sx={{
         p: 2,
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
         gap: 1.5,
       }}
     >
