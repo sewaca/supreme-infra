@@ -113,7 +113,9 @@ export function ExamsCalendarPage({ events, avatar, userName, error }: ExamsCale
                 key={date}
                 className={styles.dayCard}
                 elevation={0}
-                sx={isToday ? { bgcolor: alpha(primary, 0.06), border: `1px solid ${alpha(primary, 0.22)}` } : undefined}
+                sx={
+                  isToday ? { bgcolor: alpha(primary, 0.06), border: `1px solid ${alpha(primary, 0.22)}` } : undefined
+                }
               >
                 <Typography
                   className={styles.dayHeader}
@@ -135,7 +137,9 @@ export function ExamsCalendarPage({ events, avatar, userName, error }: ExamsCale
                       tabIndex={0}
                     >
                       <div className={styles.lessonLeft}>
-                        <span className={styles.lessonTime}>{startTime}–{endTime}</span>
+                        <span className={styles.lessonTime}>
+                          {startTime}–{endTime}
+                        </span>
                         {ev.extendedProps.classroom_name && (
                           <span className={styles.lessonClassroom}>{ev.extendedProps.classroom_name}</span>
                         )}
