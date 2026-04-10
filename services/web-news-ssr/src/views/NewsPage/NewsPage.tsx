@@ -37,12 +37,8 @@ function getDomain(url: string): string {
 }
 
 function formatDate(dateStr: string): string {
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-  } catch {
-    return dateStr;
-  }
+  // Date comes as Russian text: "26 марта 2026" — strip the year for compactness
+  return dateStr.replace(/\s+\d{4}$/, '');
 }
 
 export function NewsPage({ news }: Props) {
