@@ -31,7 +31,7 @@ export function BottomTabBar({ tabs, currentPath, onNavigate }: Props) {
         left: 0,
         right: 0,
         zIndex: 'var(--z-index-fixed, 1030)',
-        borderTop: '1px solid #00000014',
+        borderTop: '1px solid var(--color-border-light, #e8e9ea)',
       }}
       elevation={0}
     >
@@ -40,46 +40,31 @@ export function BottomTabBar({ tabs, currentPath, onNavigate }: Props) {
         onChange={(_, newValue) => onNavigate(newValue)}
         showLabels
         sx={{
-          height: 56,
+          height: '48px',
           backgroundColor: '#fff',
           '& .MuiBottomNavigationAction-root': {
-            color: '#00000066',
-            minWidth: 0,
-            padding: '8px 0 10px',
+            color: 'var(--color-text-primary, #000)',
             position: 'relative',
-            transition: 'color 0.15s ease',
             '& .MuiSvgIcon-root': {
               fontSize: 20,
-              transition: 'transform 0.15s ease',
             },
             '& .MuiBottomNavigationAction-label': {
+              fontWeight: 600,
               fontSize: '0.6875rem',
-              fontWeight: 400,
-              opacity: 1,
-              marginTop: 2,
-              transition: 'color 0.15s ease',
-              '&.Mui-selected': {
-                fontSize: '0.6875rem',
-                fontWeight: 500,
-              },
             },
-            '&.Mui-selected': {
-              color: '#1a237e',
-              '& .MuiSvgIcon-root': {
-                transform: 'translateY(-1px)',
-              },
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 24,
-                height: 2.5,
-                borderRadius: '0 0 3px 3px',
-                backgroundColor: '#1a237e',
-              },
+            '&.Mui-selected::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 2.5,
+              backgroundColor: '#1a237e',
+              borderRadius: '0 0 3px 3px',
             },
+          },
+          '& .Mui-selected': {
+            color: '#1a237e !important',
           },
         }}
       >
