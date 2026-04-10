@@ -29,6 +29,13 @@ interface IngressRule {
   extraAnnotations?: Record<string, string>;
 }
 
+interface RateLimit {
+  rps?: number;
+  connections?: number;
+  burstMultiplier?: number;
+  whitelist?: string;
+}
+
 interface IngressValues {
   'ingress-nginx'?: {
     controller?: {
@@ -38,6 +45,7 @@ interface IngressValues {
         'use-http2'?: string;
         'http2-max-field-size'?: string;
         'http2-max-header-size'?: string;
+        'limit-req-status-code'?: string;
       };
     };
   };
@@ -45,6 +53,7 @@ interface IngressValues {
     enabled?: boolean;
     name?: string;
     namespace?: string;
+    rateLimit?: RateLimit;
     tls?: {
       enabled?: boolean;
       secretName?: string;

@@ -9,10 +9,16 @@ ingress-nginx:
       proxy-connect-timeout: "3"
       proxy-read-timeout: "3"
       proxy-send-timeout: "3"
+      limit-req-status-code: "429"
 ingress:
   enabled: true
   name: ingress-main
   namespace: default
+  rateLimit:
+    rps: 30
+    connections: 20
+    burstMultiplier: 5
+    whitelist: ""
   tls:
     enabled: true
     secretName: supreme-tls-cert

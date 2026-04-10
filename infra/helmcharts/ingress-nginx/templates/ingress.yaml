@@ -10,6 +10,14 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
+{{- with $.Values.ingress.rateLimit }}
+    nginx.ingress.kubernetes.io/limit-rps: {{ .rps | quote }}
+    nginx.ingress.kubernetes.io/limit-connections: {{ .connections | quote }}
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: {{ .burstMultiplier | quote }}
+{{- if .whitelist }}
+    nginx.ingress.kubernetes.io/limit-whitelist: {{ .whitelist | quote }}
+{{- end }}
+{{- end }}
 {{- range $k, $v := ($rule.extraAnnotations | default dict) }}
     {{ $k }}: {{ $v | quote }}
 {{- end }}
