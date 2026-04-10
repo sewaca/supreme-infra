@@ -46,7 +46,7 @@ export function BottomTabBar({ tabs, currentPath, onNavigate }: Props) {
             color: 'var(--color-text-primary, #000)',
             position: 'relative',
             '& .MuiSvgIcon-root': {
-              fontSize: 20,
+              fontSize: 22,
             },
             '& .MuiBottomNavigationAction-label': {
               fontWeight: 600,
