@@ -1,12 +1,12 @@
 'use client';
 
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import { Box, IconButton, Link, List, ListItemButton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { searchMessages } from '../../../app/messages/actions';
 import type { MessageSearchResult } from '../../entities/Message/types';
 import { formatMessageDate } from '../../shared/lib/formatDate';
-import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 
 export function SearchView() {
   const router = useRouter();
