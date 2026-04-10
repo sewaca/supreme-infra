@@ -1,7 +1,10 @@
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
+import { createBackendFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/backend-qos';
 import { environment } from '../lib/environment';
 
-coreClientInfoClient.setConfig({ baseUrl: environment.coreClientInfoUrl, fetch: createServerFetch() });
+coreClientInfoClient.setConfig({
+  baseUrl: environment.coreClientInfoUrl,
+  fetch: createBackendFetch('core-client-info'),
+});
 
 export { coreClientInfoClient };
