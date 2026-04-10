@@ -5,6 +5,8 @@ import * as yaml from 'yaml';
 interface Route {
   path: string;
   method: string;
+  /** Открыт ли маршрут снаружи через ingress. По умолчанию: true */
+  public?: boolean;
 }
 
 interface RouterConfig {
@@ -192,10 +194,16 @@ function generateIngressRules(services: RouterConfig[]): IngressRule[] {
       continue;
     }
 
-    const paths: IngressPath[] = service.routes.map((route) => ({
-      path: route.path,
-      method: route.method,
-    }));
+    const paths: IngressPath[] = service.routes
+      .filter((route) => route.public !== false)
+      .map((route) => ({
+        path: route.path,
+        method: route.method,
+      }));
+
+    if (paths.length === 0) {
+      continue;
+    }
 
     rules.push({
       service: service.service,

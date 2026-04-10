@@ -41,10 +41,12 @@ ingress:
       port: 80
       type: fastapi
       paths:
+        - path: /core-applications/orders/[^/]+/pdf
+          method: GET
+        - path: /core-applications/references/[^/]+/pdf
+          method: GET
         - path: /core-applications/applications
           method: GET
-        - path: /core-applications/applications/internal/init-user
-          method: POST
         - path: /core-applications/applications/notifications
           method: GET
         - path: /core-applications/dormitory/applications
@@ -54,8 +56,6 @@ ingress:
         - path: /core-applications/orders
           method: GET
         - path: /core-applications/orders/[^/]+
-          method: GET
-        - path: /core-applications/orders/[^/]+/pdf
           method: GET
         - path: /core-applications/orders/counts
           method: GET
@@ -67,14 +67,16 @@ ingress:
           method: POST
         - path: /core-applications/references/[^/]+/extend-storage
           method: POST
-        - path: /core-applications/references/[^/]+/pdf
-          method: GET
         - path: /core-applications/references/order
+          method: POST
+        - path: /core-applications/applications/internal/init-user
           method: POST
     - service: core-auth
       port: 80
       type: fastapi
       paths:
+        - path: /core-auth/auth/validate-session
+          method: POST
         - path: /core-auth/auth/caldav-tokens
           method: GET
         - path: /core-auth/auth/caldav-tokens
@@ -93,12 +95,6 @@ ingress:
           method: POST
         - path: /core-auth/auth/forgot-password/[^/]+/verify
           method: POST
-        - path: /core-auth/auth/internal/caldav-tokens/validate/[^/]+
-          method: GET
-        - path: /core-auth/auth/internal/users/[^/]+/email
-          method: PATCH
-        - path: /core-auth/auth/internal/users/[^/]+/password
-          method: PATCH
         - path: /core-auth/auth/login
           method: POST
         - path: /core-auth/auth/lookup
@@ -111,27 +107,27 @@ ingress:
           method: GET
         - path: /core-auth/auth/sessions/[^/]+
           method: DELETE
-        - path: /core-auth/auth/validate-session
-          method: POST
+        - path: /core-auth/auth/internal/caldav-tokens/validate/[^/]+
+          method: GET
+        - path: /core-auth/auth/internal/users/[^/]+/email
+          method: PATCH
+        - path: /core-auth/auth/internal/users/[^/]+/password
+          method: PATCH
     - service: core-client-info
       port: 80
       type: fastapi
       paths:
+        - path: /core-client-info/profile/users-by-group
+          method: GET
+        - path: /core-client-info/profile/users/search
+          method: GET
         - path: /core-client-info/profile/groups
           method: GET
-        - path: /core-client-info/profile/init-user
-          method: POST
         - path: /core-client-info/profile/personal-data
           method: GET
         - path: /core-client-info/profile/search-for-registration
           method: POST
         - path: /core-client-info/profile/user
-          method: GET
-        - path: /core-client-info/profile/users-by-group
-          method: GET
-        - path: /core-client-info/profile/users/batch
-          method: POST
-        - path: /core-client-info/profile/users/search
           method: GET
         - path: /core-client-info/rating/achievements
           method: GET
@@ -163,10 +159,32 @@ ingress:
           method: POST
         - path: /core-client-info/subjects/user-priorities/[^/]+
           method: GET
+        - path: /core-client-info/profile/init-user
+          method: POST
+        - path: /core-client-info/profile/users/batch
+          method: POST
     - service: core-messages
       port: 80
       type: fastapi
       paths:
+        - path: /core-messages/conversations/[^/]+/messages
+          method: POST
+        - path: /core-messages/conversations/[^/]+/messages/[^/]+
+          method: DELETE
+        - path: /core-messages/conversations/[^/]+/messages/[^/]+
+          method: PATCH
+        - path: /core-messages/conversations/[^/]+/messages/read
+          method: POST
+        - path: /core-messages/conversations/unread-count
+          method: GET
+        - path: /core-messages/conversations/updates
+          method: GET
+        - path: /core-messages/files
+          method: POST
+        - path: /core-messages/users/search
+          method: GET
+        - path: /core-messages/ws
+          method: GET
         - path: /core-messages/broadcasts
           method: GET
         - path: /core-messages/broadcasts
@@ -181,47 +199,23 @@ ingress:
           method: GET
         - path: /core-messages/conversations/[^/]+/messages
           method: GET
-        - path: /core-messages/conversations/[^/]+/messages
-          method: POST
-        - path: /core-messages/conversations/[^/]+/messages/[^/]+
-          method: DELETE
-        - path: /core-messages/conversations/[^/]+/messages/[^/]+
-          method: PATCH
-        - path: /core-messages/conversations/[^/]+/messages/read
-          method: POST
         - path: /core-messages/conversations/direct
-          method: POST
-        - path: /core-messages/conversations/unread-count
-          method: GET
-        - path: /core-messages/conversations/updates
-          method: GET
-        - path: /core-messages/files
           method: POST
         - path: /core-messages/messages/search
           method: GET
         - path: /core-messages/users/[^/]+
           method: GET
-        - path: /core-messages/users/search
-          method: GET
-        - path: /core-messages/ws
-          method: GET
       extraAnnotations:
         nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
         nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    - service: core-news
-      port: 80
-      type: fastapi
-      paths:
-        - path: /core-news/news
-          method: GET
-        - path: /core-news/news/sync
-          method: POST
     - service: core-recipes-bff
       port: 80
       type: nest
       paths:
         - path: /core-recipes-bff/api/status
           method: GET
+        - path: /core-recipes-bff/recipes/[^/]+/like
+          method: POST
         - path: /core-recipes-bff/recipes
           method: GET
         - path: /core-recipes-bff/recipes/[^/]+
@@ -230,8 +224,6 @@ ingress:
           method: GET
         - path: /core-recipes-bff/recipes/[^/]+
           method: PUT
-        - path: /core-recipes-bff/recipes/[^/]+/like
-          method: POST
         - path: /core-recipes-bff/recipes/propose
           method: POST
         - path: /core-recipes-bff/recipes/proposed/[^/]+/publish
@@ -242,6 +234,26 @@ ingress:
       port: 80
       type: fastapi
       paths:
+        - path: /core-schedule/caldav/[^/]+/groups/[^/]+/calendar.ics
+          method: GET
+        - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
+          method: GET
+        - path: /core-schedule/groups
+          method: GET
+        - path: /core-schedule/groups/[^/]+/exams
+          method: GET
+        - path: /core-schedule/groups/[^/]+/schedule
+          method: GET
+        - path: /core-schedule/groups/[^/]+/template
+          method: GET
+        - path: /core-schedule/teachers
+          method: GET
+        - path: /core-schedule/teachers/[^/]+/exams
+          method: GET
+        - path: /core-schedule/teachers/[^/]+/schedule
+          method: GET
+        - path: /core-schedule/teachers/[^/]+/template
+          method: GET
         - path: /core-schedule/admin/classrooms
           method: GET
         - path: /core-schedule/admin/classrooms
@@ -292,26 +304,6 @@ ingress:
           method: PUT
         - path: /core-schedule/admin/templates/bulk
           method: POST
-        - path: /core-schedule/caldav/[^/]+/groups/[^/]+/calendar.ics
-          method: GET
-        - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
-          method: GET
-        - path: /core-schedule/groups
-          method: GET
-        - path: /core-schedule/groups/[^/]+/exams
-          method: GET
-        - path: /core-schedule/groups/[^/]+/schedule
-          method: GET
-        - path: /core-schedule/groups/[^/]+/template
-          method: GET
-        - path: /core-schedule/teachers
-          method: GET
-        - path: /core-schedule/teachers/[^/]+/exams
-          method: GET
-        - path: /core-schedule/teachers/[^/]+/schedule
-          method: GET
-        - path: /core-schedule/teachers/[^/]+/template
-          method: GET
     - service: frontend
       port: 80
       type: next
@@ -438,6 +430,14 @@ ingress:
           method: GET
         - path: /web-schedule-ssr/.*
           method: GET
+    - service: core-news
+      port: 80
+      type: fastapi
+      paths:
+        - path: /core-news/news
+          method: GET
+        - path: /core-news/news/sync
+          method: POST
     - service: minio
       port: 9000
       type: fastapi
