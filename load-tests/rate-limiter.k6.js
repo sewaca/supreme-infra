@@ -82,10 +82,7 @@ export const options = {
 export default function () {
   const endpoint = ENDPOINTS[Math.floor(Math.random() * ENDPOINTS.length)];
 
-  const res = http.get(endpoint.url, {
-    tags: { endpoint: endpoint.label },
-    timeout: '10s',
-  });
+  const res = http.get(endpoint.url, { tags: { endpoint: endpoint.label }, timeout: '10s' });
 
   const is429 = res.status === 429;
 

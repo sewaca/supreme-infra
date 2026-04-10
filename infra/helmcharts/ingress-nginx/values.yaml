@@ -6,10 +6,10 @@ ingress-nginx:
       enabled: true
       port: 10254
       portName: metrics
-    podAnnotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "10254"
-      prometheus.io/path: /metrics
+      service:
+        enabled: true
+        servicePort: 10254
+        type: ClusterIP
     config:
       use-http2: "true"
       http2-max-field-size: 16k
