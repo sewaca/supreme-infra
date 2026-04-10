@@ -27,6 +27,38 @@ victoria-metrics-single:
           scrape_timeout: 10s
 
         scrape_configs:
+          # Ingress-nginx controller metrics
+          - job_name: "ingress-nginx"
+            kubernetes_sd_configs:
+              - role: pod
+                namespaces:
+                  names:
+                    - ingress-nginx
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                action: keep
+                regex: true
+              - source_labels: [__meta_kubernetes_pod_container_port_name]
+                action: keep
+                regex: metrics
+              - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_pod_container_port_number]
+                action: replace
+                target_label: __address__
+                regex: ([^:]+);(\d+)
+                replacement: $1:$2
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                action: replace
+                target_label: __metrics_path__
+                regex: (.+)
+              - source_labels: [__meta_kubernetes_pod_name]
+                target_label: pod
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: namespace
+              - source_labels: [__meta_kubernetes_pod_node_name]
+                target_label: node
+              - target_label: service
+                replacement: ingress-nginx
+
           # Kubernetes pods (backend, frontend, and any other services)
           - job_name: "kubernetes-pods"
             kubernetes_sd_configs:
