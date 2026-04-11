@@ -92,7 +92,7 @@ export function updateIngressValues(): void {
   }
 
   const ingressRules = generateIngressRules(services);
-  const mergedRules = mergeIngressRulesWithExisting(ingressRules, existingValues.ingress?.rules);
+  const mergedRules = mergeIngressRulesWithExisting(ingressRules, existingValues.ingress?.rules, services);
 
   // Merge with defaults, preserving all existing values
   const ingressValues: IngressValues = {
@@ -132,21 +132,44 @@ function ingressPathKey(p: IngressPath): string {
 /**
  * Сохраняет пути и extraAnnotations из values.yaml, которых нет в router.yaml (например /core-messages/ws).
  * Также сохраняет правила для сервисов, у которых нет router.yaml (например minio).
+ * Пути с public: false в router.yaml не восстанавливаются из старого values.yaml.
  */
-function mergeIngressRulesWithExisting(generated: IngressRule[], existing: IngressRule[] | undefined): IngressRule[] {
+function mergeIngressRulesWithExisting(
+  generated: IngressRule[],
+  existing: IngressRule[] | undefined,
+  services: RouterConfig[],
+): IngressRule[] {
   if (!existing?.length) return generated;
 
   const generatedServices = new Set(generated.map((r) => r.service));
+  // Сервисы, у которых есть router.yaml (даже если все роуты private)
+  const routerServices = new Set(services.map((s) => s.service));
+
+  // Явно приватные пути по сервисам (public: false в router.yaml)
+  const privatePathsByService = new Map<string, Set<string>>();
+  for (const svc of services) {
+    const privatePaths = new Set<string>();
+    for (const route of svc.routes ?? []) {
+      if (route.public === false) {
+        privatePaths.add(ingressPathKey({ path: route.path, method: route.method }));
+      }
+    }
+    if (privatePaths.size > 0) {
+      privatePathsByService.set(svc.service, privatePaths);
+    }
+  }
 
   const merged = generated.map((rule) => {
     const prev = existing.find((e) => e.service === rule.service);
     if (!prev) return rule;
 
+    const privatePaths = privatePathsByService.get(rule.service) ?? new Set<string>();
     const seen = new Set(rule.paths.map(ingressPathKey));
     const mergedPaths = [...rule.paths];
     for (const p of prev.paths ?? []) {
       const k = ingressPathKey(p);
-      if (!seen.has(k)) {
+      // Не восстанавливаем путь если он явно помечен public: false
+      if (!seen.has(k) && !privatePaths.has(k)) {
         mergedPaths.push(p);
         seen.add(k);
       }
@@ -159,9 +182,9 @@ function mergeIngressRulesWithExisting(generated: IngressRule[], existing: Ingre
     };
   });
 
-  // Preserve rules for services that have no router.yaml (e.g. minio)
+  // Сохраняем правила только для сервисов, у которых нет router.yaml (например minio)
   for (const rule of existing) {
-    if (!generatedServices.has(rule.service)) {
+    if (!generatedServices.has(rule.service) && !routerServices.has(rule.service)) {
       merged.push(rule);
     }
   }

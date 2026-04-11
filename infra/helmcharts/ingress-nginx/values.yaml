@@ -61,32 +61,6 @@ ingress:
           method: GET
         - path: /core-applications/references/[^/]+/pdf
           method: GET
-        - path: /core-applications/applications
-          method: GET
-        - path: /core-applications/applications/notifications
-          method: GET
-        - path: /core-applications/dormitory/applications
-          method: POST
-        - path: /core-applications/dormitory/parent-agreement
-          method: POST
-        - path: /core-applications/orders
-          method: GET
-        - path: /core-applications/orders/[^/]+
-          method: GET
-        - path: /core-applications/orders/counts
-          method: GET
-        - path: /core-applications/references
-          method: GET
-        - path: /core-applications/references/[^/]+
-          method: GET
-        - path: /core-applications/references/[^/]+/cancel
-          method: POST
-        - path: /core-applications/references/[^/]+/extend-storage
-          method: POST
-        - path: /core-applications/references/order
-          method: POST
-        - path: /core-applications/applications/internal/init-user
-          method: POST
     - service: core-auth
       port: 80
       type: fastapi
@@ -101,34 +75,6 @@ ingress:
           method: POST
         - path: /core-auth/auth/validate-session
           method: POST
-        - path: /core-auth/auth/caldav-tokens
-          method: GET
-        - path: /core-auth/auth/caldav-tokens
-          method: POST
-        - path: /core-auth/auth/caldav-tokens/[^/]+
-          method: DELETE
-        - path: /core-auth/auth/challenge
-          method: POST
-        - path: /core-auth/auth/challenge/[^/]+/check
-          method: GET
-        - path: /core-auth/auth/challenge/[^/]+/verify
-          method: POST
-        - path: /core-auth/auth/forgot-password
-          method: POST
-        - path: /core-auth/auth/forgot-password/[^/]+/reset
-          method: POST
-        - path: /core-auth/auth/forgot-password/[^/]+/verify
-          method: POST
-        - path: /core-auth/auth/sessions
-          method: GET
-        - path: /core-auth/auth/sessions/[^/]+
-          method: DELETE
-        - path: /core-auth/auth/internal/caldav-tokens/validate/[^/]+
-          method: GET
-        - path: /core-auth/auth/internal/users/[^/]+/email
-          method: PATCH
-        - path: /core-auth/auth/internal/users/[^/]+/password
-          method: PATCH
     - service: core-client-info
       port: 80
       type: fastapi
@@ -137,48 +83,6 @@ ingress:
           method: GET
         - path: /core-client-info/profile/users/search
           method: GET
-        - path: /core-client-info/profile/groups
-          method: GET
-        - path: /core-client-info/profile/personal-data
-          method: GET
-        - path: /core-client-info/profile/search-for-registration
-          method: POST
-        - path: /core-client-info/profile/user
-          method: GET
-        - path: /core-client-info/rating/achievements
-          method: GET
-        - path: /core-client-info/rating/grade-improvements
-          method: GET
-        - path: /core-client-info/rating/grades
-          method: GET
-        - path: /core-client-info/rating/level
-          method: GET
-        - path: /core-client-info/rating/rankings
-          method: GET
-        - path: /core-client-info/rating/stats
-          method: GET
-        - path: /core-client-info/rating/streak
-          method: GET
-        - path: /core-client-info/settings
-          method: GET
-        - path: /core-client-info/settings
-          method: PUT
-        - path: /core-client-info/settings/email
-          method: POST
-        - path: /core-client-info/settings/password
-          method: POST
-        - path: /core-client-info/subjects/choices
-          method: GET
-        - path: /core-client-info/subjects/choices-with-priorities
-          method: GET
-        - path: /core-client-info/subjects/save-priorities
-          method: POST
-        - path: /core-client-info/subjects/user-priorities/[^/]+
-          method: GET
-        - path: /core-client-info/profile/init-user
-          method: POST
-        - path: /core-client-info/profile/users/batch
-          method: POST
     - service: core-messages
       port: 80
       type: fastapi
@@ -201,26 +105,6 @@ ingress:
           method: GET
         - path: /core-messages/ws
           method: GET
-        - path: /core-messages/broadcasts
-          method: GET
-        - path: /core-messages/broadcasts
-          method: POST
-        - path: /core-messages/broadcasts/groups
-          method: GET
-        - path: /core-messages/conversations
-          method: GET
-        - path: /core-messages/conversations/[^/]+
-          method: DELETE
-        - path: /core-messages/conversations/[^/]+
-          method: GET
-        - path: /core-messages/conversations/[^/]+/messages
-          method: GET
-        - path: /core-messages/conversations/direct
-          method: POST
-        - path: /core-messages/messages/search
-          method: GET
-        - path: /core-messages/users/[^/]+
-          method: GET
       extraAnnotations:
         nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
         nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
@@ -232,20 +116,6 @@ ingress:
           method: GET
         - path: /core-recipes-bff/recipes/[^/]+/like
           method: POST
-        - path: /core-recipes-bff/recipes
-          method: GET
-        - path: /core-recipes-bff/recipes/[^/]+
-          method: DELETE
-        - path: /core-recipes-bff/recipes/[^/]+
-          method: GET
-        - path: /core-recipes-bff/recipes/[^/]+
-          method: PUT
-        - path: /core-recipes-bff/recipes/propose
-          method: POST
-        - path: /core-recipes-bff/recipes/proposed/[^/]+/publish
-          method: POST
-        - path: /core-recipes-bff/recipes/proposed/all
-          method: GET
     - service: core-schedule
       port: 80
       type: fastapi
@@ -254,72 +124,6 @@ ingress:
           method: GET
         - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
           method: GET
-        - path: /core-schedule/groups
-          method: GET
-        - path: /core-schedule/groups/[^/]+/exams
-          method: GET
-        - path: /core-schedule/groups/[^/]+/schedule
-          method: GET
-        - path: /core-schedule/groups/[^/]+/template
-          method: GET
-        - path: /core-schedule/teachers
-          method: GET
-        - path: /core-schedule/teachers/[^/]+/exams
-          method: GET
-        - path: /core-schedule/teachers/[^/]+/schedule
-          method: GET
-        - path: /core-schedule/teachers/[^/]+/template
-          method: GET
-        - path: /core-schedule/admin/classrooms
-          method: GET
-        - path: /core-schedule/admin/classrooms
-          method: POST
-        - path: /core-schedule/admin/classrooms/[^/]+
-          method: DELETE
-        - path: /core-schedule/admin/classrooms/[^/]+
-          method: GET
-        - path: /core-schedule/admin/classrooms/[^/]+
-          method: PUT
-        - path: /core-schedule/admin/overrides
-          method: GET
-        - path: /core-schedule/admin/overrides
-          method: POST
-        - path: /core-schedule/admin/overrides/[^/]+
-          method: DELETE
-        - path: /core-schedule/admin/overrides/[^/]+
-          method: PUT
-        - path: /core-schedule/admin/semesters
-          method: GET
-        - path: /core-schedule/admin/semesters
-          method: POST
-        - path: /core-schedule/admin/semesters/[^/]+
-          method: DELETE
-        - path: /core-schedule/admin/semesters/[^/]+
-          method: GET
-        - path: /core-schedule/admin/semesters/[^/]+
-          method: PUT
-        - path: /core-schedule/admin/session-events
-          method: GET
-        - path: /core-schedule/admin/session-events
-          method: POST
-        - path: /core-schedule/admin/session-events/[^/]+
-          method: DELETE
-        - path: /core-schedule/admin/session-events/[^/]+
-          method: PUT
-        - path: /core-schedule/admin/teachers
-          method: GET
-        - path: /core-schedule/admin/teachers/sync
-          method: POST
-        - path: /core-schedule/admin/templates
-          method: GET
-        - path: /core-schedule/admin/templates
-          method: POST
-        - path: /core-schedule/admin/templates/[^/]+
-          method: DELETE
-        - path: /core-schedule/admin/templates/[^/]+
-          method: PUT
-        - path: /core-schedule/admin/templates/bulk
-          method: POST
     - service: frontend
       port: 80
       type: next
@@ -446,14 +250,6 @@ ingress:
           method: GET
         - path: /web-schedule-ssr/.*
           method: GET
-    - service: core-news
-      port: 80
-      type: fastapi
-      paths:
-        - path: /core-news/news
-          method: GET
-        - path: /core-news/news/sync
-          method: POST
     - service: minio
       port: 9000
       type: fastapi
