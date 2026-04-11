@@ -1,4 +1,5 @@
-import { CoreAuth, CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { getSessionsAuthSessionsGet } from '@supreme-int/api-client/src/generated/core-auth';
+import { getSettingsSettingsGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { coreAuthClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import type { SessionInfo } from 'services/web-profile-ssr/src/views/SettingsPage/SessionsSection';
@@ -10,11 +11,11 @@ export default async () => {
   const { userId } = await getAuthInfo();
 
   const [settingsRes, sessionsRes] = await Promise.all([
-    CoreClientInfo.getSettingsSettingsGet({
+    getSettingsSettingsGet({
       client: coreClientInfoClient,
       query: { user_id: userId },
     }),
-    CoreAuth.getSessionsAuthSessionsGet({ client: coreAuthClient }),
+    getSessionsAuthSessionsGet({ client: coreAuthClient }),
   ]);
 
   const settings = settingsRes.data;

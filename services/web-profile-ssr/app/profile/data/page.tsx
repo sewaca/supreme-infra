@@ -1,4 +1,4 @@
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { getPersonalDataProfilePersonalDataGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { ProfileDataPage } from 'services/web-profile-ssr/src/views/ProfileDataPage/ProfileDataPage';
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export default async () => {
   const { userId } = await getAuthInfo();
 
-  const res = await CoreClientInfo.getPersonalDataProfilePersonalDataGet({
+  const res = await getPersonalDataProfilePersonalDataGet({
     client: coreClientInfoClient,
     query: { user_id: userId },
   });

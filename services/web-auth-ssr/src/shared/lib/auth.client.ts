@@ -1,7 +1,7 @@
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
+import * as CoreAuth from '@supreme-int/api-client/src/generated/core-auth';
 import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
-import { CoreAuth } from '@supreme-int/api-client/src/index';
 
 // Client-side calls go through ingress at /core-auth
 const coreAuthBrowserClient = createClient({ baseUrl: '/core-auth', ...jsonBodySerializer });
@@ -80,6 +80,7 @@ export interface ClientInfoUser {
 }
 
 export async function lookup(data: { snils: string; last_name: string }): Promise<ClientInfoUser> {
+  // TODO: change to api-client
   const response = await fetch('/core-auth/auth/lookup', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -92,6 +93,7 @@ export async function lookup(data: { snils: string; last_name: string }): Promis
   return payload as ClientInfoUser;
 }
 
+// TODO: fix me or remove me
 // Костыль для совместимости: core-auth register не возвращает токен,
 // поэтому после регистрации делаем auto-login.
 export async function register(data: { email: string; password: string; snils: string }): Promise<AuthResponse> {

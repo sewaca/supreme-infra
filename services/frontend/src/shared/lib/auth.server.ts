@@ -1,5 +1,6 @@
+import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
+import { RecipesApi } from '@supreme-int/api-client/src/core-recipes-bff';
 import type { UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
-import { RecipesApi, TOKEN_KEY } from '@supreme-int/api-client/src/index';
 import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
 import { cookies } from 'next/headers';
 

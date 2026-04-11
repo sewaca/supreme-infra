@@ -1,4 +1,5 @@
-import { DecodedToken, RecipesApi, TOKEN_KEY, UserRole } from '@supreme-int/api-client/src/index';
+import { DecodedToken, TOKEN_KEY, UserRole } from '@supreme-int/api-client/src/core-auth-bff';
+import { RecipesApi } from '@supreme-int/api-client/src/core-recipes-bff';
 
 function getBackendUrl(): string {
   return 'core-recipes-bff';

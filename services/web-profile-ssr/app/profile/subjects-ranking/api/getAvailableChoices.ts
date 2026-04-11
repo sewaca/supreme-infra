@@ -1,4 +1,4 @@
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { getChoicesSubjectsChoicesGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 
 type SubjectInfo = { id: string; name: string; teacher: string };
@@ -10,7 +10,7 @@ type ChoiceGroup = {
 };
 
 export const getAvailableChoices = async (): Promise<ChoiceGroup[]> => {
-  const res = await CoreClientInfo.getChoicesSubjectsChoicesGet({
+  const res = await getChoicesSubjectsChoicesGet({
     client: coreClientInfoClient,
   });
 

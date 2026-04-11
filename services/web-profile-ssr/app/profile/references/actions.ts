@@ -1,10 +1,15 @@
 'use server';
 
+import {
+  cancelReferenceReferencesReferenceIdCancelPost,
+  createReferenceReferencesOrderPost,
+  extendStorageReferencesReferenceIdExtendStoragePost,
+  getReferencesReferencesGet,
+} from '@supreme-int/api-client/src/generated/core-applications';
 import type {
   ReferenceOrderResponse,
   ReferenceType,
 } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
-import { CoreApplications } from '@supreme-int/api-client/src/index';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { format, parseISO } from 'date-fns';
 import { PICKUP_POINTS } from 'services/web-profile-ssr/src/entities/Reference/pickupPoints';
@@ -76,7 +81,7 @@ export const getReferenceOrderOptions = async (): Promise<ReferenceOrderOptions>
 
 export const getReferences = async (): Promise<OrderedReference[]> => {
   const { userId } = await getAuthInfo();
-  const res = await CoreApplications.getReferencesReferencesGet({
+  const res = await getReferencesReferencesGet({
     client: coreApplicationsClient,
     query: { user_id: userId },
   });
@@ -92,7 +97,7 @@ export const orderReference = async (params: {
 }): Promise<{ success: boolean; error?: string }> => {
   const { userId } = await getAuthInfo();
   try {
-    await CoreApplications.createReferenceReferencesOrderPost({
+    await createReferenceReferencesOrderPost({
       client: coreApplicationsClient,
       query: { user_id: userId },
       body: {
@@ -110,7 +115,7 @@ export const orderReference = async (params: {
 export const cancelReference = async (referenceId: string): Promise<{ success: boolean; error?: string }> => {
   const { userId } = await getAuthInfo();
   try {
-    await CoreApplications.cancelReferenceReferencesReferenceIdCancelPost({
+    await cancelReferenceReferencesReferenceIdCancelPost({
       client: coreApplicationsClient,
       path: { reference_id: referenceId },
       query: { user_id: userId },
@@ -124,7 +129,7 @@ export const cancelReference = async (referenceId: string): Promise<{ success: b
 export const extendStorage = async (referenceId: string): Promise<{ success: boolean; error?: string }> => {
   const { userId } = await getAuthInfo();
   try {
-    await CoreApplications.extendStorageReferencesReferenceIdExtendStoragePost({
+    await extendStorageReferencesReferenceIdExtendStoragePost({
       client: coreApplicationsClient,
       path: { reference_id: referenceId },
       query: { user_id: userId },

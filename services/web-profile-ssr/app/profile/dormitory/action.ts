@@ -1,6 +1,6 @@
 'use server';
 
-import { CoreApplications } from '@supreme-int/api-client/src/index';
+import { uploadParentAgreementDormitoryParentAgreementPost } from '@supreme-int/api-client/src/generated/core-applications';
 import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
@@ -15,7 +15,7 @@ export const submitParentAgreement = async ({
 
   const { userId } = await getAuthInfo();
   try {
-    await CoreApplications.uploadParentAgreementDormitoryParentAgreementPost({
+    await uploadParentAgreementDormitoryParentAgreementPost({
       client: coreApplicationsClient,
       query: { user_id: userId },
       body: { file },

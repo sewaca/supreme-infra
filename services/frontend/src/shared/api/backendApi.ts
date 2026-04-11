@@ -15,10 +15,12 @@ export const backendApi = {
 
 // Re-export types for backward compatibility
 export type {
-  AuthResponse,
-  LoginData,
   Recipe,
   RecipeDetails,
+} from '@supreme-int/api-client/src/core-recipes-bff/recipes-api.types';
+export type {
+  AuthResponse,
+  LoginData,
   RegisterData,
   User,
-} from '@supreme-int/api-client/src/index';
+} from '@supreme-int/api-client/src/core-auth-bff/auth-api.types';

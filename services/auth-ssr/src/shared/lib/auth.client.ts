@@ -1,7 +1,7 @@
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
+import * as CoreAuth from '@supreme-int/api-client/src/generated/core-auth';
 import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
-import { CoreAuth } from '@supreme-int/api-client/src/index';
 
 // Client-side calls go through ingress at /core-auth
 const coreAuthBrowserClient = createClient({ baseUrl: '/core-auth', ...jsonBodySerializer });

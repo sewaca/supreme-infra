@@ -386,37 +386,36 @@ export default defineConfig({
   fs.writeFileSync(openapiConfigPath, newConfig);
 }
 
-function updateApiClientIndex(config: ServiceConfig): void {
-  if (config.serviceType !== 'fastapi') {
-    return;
-  }
+// TODO: remove me
+function updateApiClientIndex(_config: ServiceConfig): void {
+  return;
 
-  const apiClientDir = path.join(__dirname, '../../../packages/api-client');
-  const indexPath = path.join(apiClientDir, 'src', 'index.ts');
+  // const apiClientDir = path.join(__dirname, '../../../packages/api-client');
+  // const indexPath = path.join(apiClientDir, 'src', 'index.ts');
 
-  if (!fs.existsSync(indexPath)) {
-    console.log('⚠ api-client/src/index.ts not found, skipping update');
-    return;
-  }
+  // if (!fs.existsSync(indexPath)) {
+  //   console.log('⚠ api-client/src/index.ts not found, skipping update');
+  //   return;
+  // }
 
-  const content = fs.readFileSync(indexPath, 'utf-8');
+  // const content = fs.readFileSync(indexPath, 'utf-8');
 
   // Convert service-name to PascalCase for namespace
-  const namespaceName = config.serviceName
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
+  // const namespaceName = config.serviceName
+  //   .split('-')
+  //   .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+  //   .join('');
 
-  const exportLine = `export * as ${namespaceName} from './${config.serviceName}';`;
+  // const exportLine = `export * as ${namespaceName} from './${config.serviceName}';`;
 
   // Check if export already exists
-  if (content.includes(exportLine) || content.includes(`from './${config.serviceName}'`)) {
-    return;
-  }
+  // if (content.includes(exportLine) || content.includes(`from './${config.serviceName}'`)) {
+  //   return;
+  // }
 
   // Add export at the end
-  const newContent = `${content.trimEnd()}\n${exportLine}\n`;
-  fs.writeFileSync(indexPath, newContent);
+  // const newContent = `${content.trimEnd()}\n${exportLine}\n`;
+  // fs.writeFileSync(indexPath, newContent);
 }
 
 async function generateService(): Promise<void> {

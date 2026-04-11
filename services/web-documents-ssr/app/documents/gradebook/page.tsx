@@ -1,4 +1,4 @@
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { getGradesRatingGradesGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { unauthorized } from 'next/navigation';
 import { coreClientInfoClient } from 'services/web-documents-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-documents-ssr/src/shared/api/getUserId';
@@ -13,7 +13,7 @@ export default async function Page() {
     unauthorized();
   }
 
-  const gradesRes = await CoreClientInfo.getGradesRatingGradesGet({
+  const gradesRes = await getGradesRatingGradesGet({
     client: coreClientInfoClient,
     query: { user_id: userId },
   });

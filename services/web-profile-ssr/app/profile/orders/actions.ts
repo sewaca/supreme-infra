@@ -1,10 +1,14 @@
 'use server';
 
+import {
+  getOrderOrdersOrderIdGet,
+  getOrdersCountsOrdersCountsGet,
+  getOrdersOrdersGet,
+} from '@supreme-int/api-client/src/generated/core-applications';
 import type {
   OrderDetailResponse,
   OrderResponse,
 } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
-import { CoreApplications } from '@supreme-int/api-client/src/index';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { ORDER_TYPE } from 'services/web-profile-ssr/src/entities/Order/Order';
@@ -60,7 +64,7 @@ function mapOrderDetailResponse(order: OrderDetailResponse): Order {
 
 export async function getOrderTypeCounts(): Promise<OrderTypeCounts> {
   const { userId } = await getAuthInfo();
-  const res = await CoreApplications.getOrdersCountsOrdersCountsGet({
+  const res = await getOrdersCountsOrdersCountsGet({
     client: coreApplicationsClient,
     query: { user_id: userId },
   });
@@ -77,7 +81,7 @@ export async function getOrderTypeCounts(): Promise<OrderTypeCounts> {
 
 export async function getOrders(offset = 0, limit = 20, types?: OrderType[]): Promise<Order[]> {
   const { userId } = await getAuthInfo();
-  const res = await CoreApplications.getOrdersOrdersGet({
+  const res = await getOrdersOrdersGet({
     client: coreApplicationsClient,
     query: {
       user_id: userId,
@@ -93,7 +97,7 @@ export async function getOrders(offset = 0, limit = 20, types?: OrderType[]): Pr
 
 export async function getOrderById(id: string): Promise<Order | null> {
   const { userId } = await getAuthInfo();
-  const res = await CoreApplications.getOrderOrdersOrderIdGet({
+  const res = await getOrderOrdersOrderIdGet({
     client: coreApplicationsClient,
     path: { order_id: id },
     query: { user_id: userId },

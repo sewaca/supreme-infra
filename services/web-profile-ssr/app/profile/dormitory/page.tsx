@@ -1,4 +1,8 @@
-import { CoreApplications } from '@supreme-int/api-client/src/index';
+import {
+  getApplicationsApplicationsGet,
+  getNotificationsApplicationsNotificationsGet,
+  getOrdersOrdersGet,
+} from '@supreme-int/api-client/src/generated/core-applications';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
@@ -11,15 +15,15 @@ export default async () => {
   const { userId } = await getAuthInfo();
 
   const [appRes, notificationsRes, ordersRes] = await Promise.all([
-    CoreApplications.getApplicationsApplicationsGet({
+    getApplicationsApplicationsGet({
       client: coreApplicationsClient,
       query: { user_id: userId, type: 'dormitory' },
     }),
-    CoreApplications.getNotificationsApplicationsNotificationsGet({
+    getNotificationsApplicationsNotificationsGet({
       client: coreApplicationsClient,
       query: { user_id: userId, type: 'dormitory' },
     }),
-    CoreApplications.getOrdersOrdersGet({
+    getOrdersOrdersGet({
       client: coreApplicationsClient,
       query: { user_id: userId, type: 'dormitory', limit: 1 },
     }),

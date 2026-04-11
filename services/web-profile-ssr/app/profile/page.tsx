@@ -1,4 +1,5 @@
-import { CoreApplications, CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { getApplicationsApplicationsGet } from '@supreme-int/api-client/src/generated/core-applications';
+import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import type { ProfileData } from 'services/web-profile-ssr/src/entities/Profile/ProfileData';
 import { coreApplicationsClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
@@ -10,11 +11,11 @@ export default async () => {
   const { userId } = await getAuthInfo();
 
   const [userRes, applicationsRes] = await Promise.all([
-    CoreClientInfo.getUserProfileUserGet({
+    getUserProfileUserGet({
       client: coreClientInfoClient,
       query: { user_id: userId },
     }),
-    CoreApplications.getApplicationsApplicationsGet({
+    getApplicationsApplicationsGet({
       client: coreApplicationsClient,
       query: { user_id: userId },
     }),

@@ -1,4 +1,8 @@
-import { CoreApplications, CoreClientInfo } from '@supreme-int/api-client/src/index';
+import {
+  getApplicationsApplicationsGet,
+  getNotificationsApplicationsNotificationsGet,
+} from '@supreme-int/api-client/src/generated/core-applications';
+import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import { coreApplicationsClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
@@ -11,15 +15,15 @@ export default async () => {
   const { userId } = await getAuthInfo();
 
   const [userRes, appRes, notificationsRes] = await Promise.all([
-    CoreClientInfo.getUserProfileUserGet({
+    getUserProfileUserGet({
       client: coreClientInfoClient,
       query: { user_id: userId },
     }),
-    CoreApplications.getApplicationsApplicationsGet({
+    getApplicationsApplicationsGet({
       client: coreApplicationsClient,
       query: { user_id: userId, type: 'scholarship' },
     }),
-    CoreApplications.getNotificationsApplicationsNotificationsGet({
+    getNotificationsApplicationsNotificationsGet({
       client: coreApplicationsClient,
       query: { user_id: userId, type: 'scholarship' },
     }),

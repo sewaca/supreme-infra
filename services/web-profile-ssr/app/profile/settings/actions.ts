@@ -1,7 +1,17 @@
 'use server';
 
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
-import { CoreAuth, CoreClientInfo } from '@supreme-int/api-client/src/index';
+import {
+  getSessionsAuthSessionsGet,
+  revokeSessionAuthSessionsSessionIdDelete,
+  startChallengeAuthChallengePost,
+  verifyChallengeAuthChallengeChallengeIdVerifyPost,
+} from '@supreme-int/api-client/src/generated/core-auth';
+import {
+  changeEmailSettingsEmailPost,
+  changePasswordSettingsPasswordPost,
+  updateSettingsSettingsPut,
+} from '@supreme-int/api-client/src/generated/core-client-info';
 import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { cookies } from 'next/headers';
@@ -25,7 +35,7 @@ export const updateSettings = async (settings: {
 
   const userId = await getAuthUserId();
   try {
-    await CoreClientInfo.updateSettingsSettingsPut({
+    await updateSettingsSettingsPut({
       client: coreClientInfoClient,
       query: { user_id: userId },
       body: {
@@ -48,7 +58,7 @@ export const startChallenge = async (): Promise<{
   'use server';
 
   try {
-    const { data, response } = await CoreAuth.startChallengeAuthChallengePost({
+    const { data, response } = await startChallengeAuthChallengePost({
       client: coreAuthClient,
     });
 
@@ -69,7 +79,7 @@ export const verifyChallenge = async (
   'use server';
 
   try {
-    const { data, error, response } = await CoreAuth.verifyChallengeAuthChallengeChallengeIdVerifyPost({
+    const { data, error, response } = await verifyChallengeAuthChallengeChallengeIdVerifyPost({
       client: coreAuthClient,
       path: { challenge_id: challengeId },
       body: { code },
@@ -113,7 +123,7 @@ export const applyEmailChange = async (
   const userId = await getAuthUserId();
 
   try {
-    const { response } = await CoreClientInfo.changeEmailSettingsEmailPost({
+    const { response } = await changeEmailSettingsEmailPost({
       client: coreClientInfoClient,
       query: { user_id: userId },
       body: { new_email: newEmail, challenge_id: challengeId },
@@ -145,7 +155,7 @@ export const applyPasswordChange = async (
   const userId = await getAuthUserId();
 
   try {
-    const { response } = await CoreClientInfo.changePasswordSettingsPasswordPost({
+    const { response } = await changePasswordSettingsPasswordPost({
       client: coreClientInfoClient,
       query: { user_id: userId },
       body: { new_password: newPassword, challenge_id: challengeId },
@@ -165,10 +175,10 @@ export const logoutCurrentSession = async (): Promise<void> => {
   'use server';
 
   try {
-    const { data: sessions } = await CoreAuth.getSessionsAuthSessionsGet({ client: coreAuthClient });
+    const { data: sessions } = await getSessionsAuthSessionsGet({ client: coreAuthClient });
     const currentSession = sessions?.find((s) => s.is_current);
     if (currentSession) {
-      await CoreAuth.revokeSessionAuthSessionsSessionIdDelete({
+      await revokeSessionAuthSessionsSessionIdDelete({
         client: coreAuthClient,
         path: { session_id: currentSession.id },
       });
@@ -187,7 +197,7 @@ export const revokeSession = async (sessionId: string): Promise<{ success: boole
   'use server';
 
   try {
-    const { response } = await CoreAuth.revokeSessionAuthSessionsSessionIdDelete({
+    const { response } = await revokeSessionAuthSessionsSessionIdDelete({
       client: coreAuthClient,
       path: { session_id: sessionId },
     });

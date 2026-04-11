@@ -1,6 +1,6 @@
 'use server';
 
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import { savePrioritiesSubjectsSavePrioritiesPost } from '@supreme-int/api-client/src/generated/core-client-info';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
@@ -13,7 +13,7 @@ export const saveChoices = async (choices: Choice[]): Promise<boolean> => {
 
   await Promise.all(
     choices.map((choice) =>
-      CoreClientInfo.savePrioritiesSubjectsSavePrioritiesPost({
+      savePrioritiesSubjectsSavePrioritiesPost({
         client: coreClientInfoClient,
         query: { user_id: userId },
         body: {

@@ -1,11 +1,14 @@
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import {
+  getChoicesSubjectsChoicesGet,
+  getUserPrioritiesSubjectsUserPrioritiesChoiceIdGet,
+} from '@supreme-int/api-client/src/generated/core-client-info';
 import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export const getUserPriorities = async (): Promise<Record<string, string[]>> => {
   const { userId } = await getAuthInfo();
 
-  const choicesRes = await CoreClientInfo.getChoicesSubjectsChoicesGet({
+  const choicesRes = await getChoicesSubjectsChoicesGet({
     client: coreClientInfoClient,
   });
 
@@ -16,7 +19,7 @@ export const getUserPriorities = async (): Promise<Record<string, string[]>> => 
   // API expects semantic choice_id (e.g. "math", "physics", "programming")
   const prioritiesResults = await Promise.all(
     activeChoices.map((choice) =>
-      CoreClientInfo.getUserPrioritiesSubjectsUserPrioritiesChoiceIdGet({
+      getUserPrioritiesSubjectsUserPrioritiesChoiceIdGet({
         client: coreClientInfoClient,
         path: { choice_id: choice.choice_id },
         query: { user_id: userId },

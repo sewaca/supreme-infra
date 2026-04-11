@@ -1,4 +1,11 @@
-import { CoreClientInfo } from '@supreme-int/api-client/src/index';
+import {
+  getAchievementsRatingAchievementsGet,
+  getGradeImprovementsRatingGradeImprovementsGet,
+  getLevelRatingLevelGet,
+  getRankingsRatingRankingsGet,
+  getStatsRatingStatsGet,
+  getStreakRatingStreakGet,
+} from '@supreme-int/api-client/src/generated/core-client-info';
 import { ACHIEVEMENT_CONFIGS } from 'services/web-profile-ssr/src/entities/Rating/achievementsConfig';
 import { LEVEL_CONFIGS } from 'services/web-profile-ssr/src/entities/Rating/levelConfig';
 import type {
@@ -17,12 +24,12 @@ export default async () => {
   const { userId } = await getAuthInfo();
 
   const [statsRes, levelRes, rankingsRes, achievementsRes, streakRes, improvementsRes] = await Promise.all([
-    CoreClientInfo.getStatsRatingStatsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
-    CoreClientInfo.getLevelRatingLevelGet({ client: coreClientInfoClient, query: { user_id: userId } }),
-    CoreClientInfo.getRankingsRatingRankingsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
-    CoreClientInfo.getAchievementsRatingAchievementsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
-    CoreClientInfo.getStreakRatingStreakGet({ client: coreClientInfoClient, query: { user_id: userId } }),
-    CoreClientInfo.getGradeImprovementsRatingGradeImprovementsGet({
+    getStatsRatingStatsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    getLevelRatingLevelGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    getRankingsRatingRankingsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    getAchievementsRatingAchievementsGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    getStreakRatingStreakGet({ client: coreClientInfoClient, query: { user_id: userId } }),
+    getGradeImprovementsRatingGradeImprovementsGet({
       client: coreClientInfoClient,
       query: { user_id: userId },
     }),
