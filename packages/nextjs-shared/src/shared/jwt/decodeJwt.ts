@@ -16,6 +16,7 @@ function base64UrlDecode(str: string): string {
   return atob(base64WithPadding);
 }
 
+// TODO: move to authorization-lib
 export function decodeJwt(token: string): DecodedToken | null {
   try {
     const parts = token.split('.');

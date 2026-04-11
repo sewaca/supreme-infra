@@ -1,3 +1,4 @@
+// TODO: move to packages/api-client + use with hey-api
 import { createServerFetch, type QoSOptions } from './createServerFetch';
 
 export type BackendName =

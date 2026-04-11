@@ -10,7 +10,7 @@ export type SessionCheckResult = {
 export async function checkSession({
   token,
   coreAuthUrl,
-  timeoutMs = 5000,
+  timeoutMs = 600,
 }: {
   token: string;
   coreAuthUrl: string;
@@ -19,6 +19,7 @@ export async function checkSession({
   const start = performance.now();
 
   try {
+    // TODO: use packages/api-client instead of fetch
     const res = await fetch(`${coreAuthUrl}/auth/validate-session`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

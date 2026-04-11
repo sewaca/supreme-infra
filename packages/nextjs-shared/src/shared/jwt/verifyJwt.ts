@@ -2,6 +2,7 @@ import { verifyJwt as verifyJwtCore } from '@supreme-int/authorization-lib/src/j
 
 export type JwtVerifyOptions = { token: string; secret: string };
 
+// TODO: delete taste-food
 /** @deprecated Use @supreme-int/authorization-lib/src/jwt/verify-jwt directly */
 export const verifyJwt = async ({ token, secret }: JwtVerifyOptions): Promise<boolean> => {
   const { valid } = await verifyJwtCore({ token, secret });
