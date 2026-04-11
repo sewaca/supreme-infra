@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetNewsNewsGetData, GetNewsNewsGetErrors, GetNewsNewsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses } from './types.gen';
+import type { GetNewsNewsGetData, GetNewsNewsGetErrors, GetNewsNewsGetResponses, GetStatusStatusGetData, GetStatusStatusGetResponses, TriggerSyncNewsSyncPostData, TriggerSyncNewsSyncPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -27,3 +27,8 @@ export const getStatusStatusGet = <ThrowOnError extends boolean = false>(options
  * Get News
  */
 export const getNewsNewsGet = <ThrowOnError extends boolean = false>(options?: Options<GetNewsNewsGetData, ThrowOnError>) => (options?.client ?? client).get<GetNewsNewsGetResponses, GetNewsNewsGetErrors, ThrowOnError>({ url: '/news', ...options });
+
+/**
+ * Trigger Sync
+ */
+export const triggerSyncNewsSyncPost = <ThrowOnError extends boolean = false>(options?: Options<TriggerSyncNewsSyncPostData, ThrowOnError>) => (options?.client ?? client).post<TriggerSyncNewsSyncPostResponses, unknown, ThrowOnError>({ url: '/news/sync', ...options });

@@ -69,6 +69,23 @@
           }
         }
       }
+    },
+    "/news/sync": {
+      "post": {
+        "tags": ["news"],
+        "summary": "Trigger Sync",
+        "operationId": "trigger_sync_news_sync_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

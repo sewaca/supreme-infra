@@ -117,3 +117,17 @@ export type GetNewsNewsGetResponses = {
 };
 
 export type GetNewsNewsGetResponse = GetNewsNewsGetResponses[keyof GetNewsNewsGetResponses];
+
+export type TriggerSyncNewsSyncPostData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/news/sync';
+};
+
+export type TriggerSyncNewsSyncPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};

@@ -13,14 +13,14 @@ export const backendApi = {
   deleteRecipe: clientRecipesApi.deleteRecipe.bind(clientRecipesApi),
 };
 
-// Re-export types for backward compatibility
-export type {
-  Recipe,
-  RecipeDetails,
-} from '@supreme-int/api-client/src/core-recipes-bff/recipes-api.types';
 export type {
   AuthResponse,
   LoginData,
   RegisterData,
   User,
 } from '@supreme-int/api-client/src/core-auth-bff/auth-api.types';
+// Re-export types for backward compatibility
+export type {
+  Recipe,
+  RecipeDetails,
+} from '@supreme-int/api-client/src/core-recipes-bff/recipes-api.types';
