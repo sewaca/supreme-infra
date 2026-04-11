@@ -602,9 +602,6 @@ importers:
 
   packages/nextjs-shared:
     dependencies:
-      '@supreme-int/api-client':
-        specifier: workspace:*
-        version: link:../api-client
       '@supreme-int/authorization-lib':
         specifier: workspace:*
         version: link:../authorization-lib
