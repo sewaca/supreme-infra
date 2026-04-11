@@ -23,23 +23,23 @@ export const BACKEND_QOS: Record<BackendName, QoSOptions> = {
     retry: { attempts: 0 },
   },
   'core-applications': {
-    timeout: 2500,
+    timeout: 1500,
     retry: { attempts: 1, delay: 200 },
   },
   'core-client-info': {
-    timeout: 2500,
+    timeout: 1500,
     retry: { attempts: 1, delay: 200 },
   },
   'core-messages': {
-    timeout: 2500,
+    timeout: 1500,
     retry: { attempts: 1, delay: 200 },
   },
   'core-news': {
-    timeout: 2500,
+    timeout: 1500,
     retry: { attempts: 1, delay: 200 },
   },
   'core-schedule': {
-    timeout: 2500,
+    timeout: 1500,
     retry: { attempts: 1, delay: 200 },
   },
   'system-files-storage': {

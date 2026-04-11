@@ -91,6 +91,14 @@ ingress:
       port: 80
       type: fastapi
       paths:
+        - path: /core-auth/auth/login
+          method: POST
+        - path: /core-auth/auth/lookup
+          method: POST
+        - path: /core-auth/auth/me
+          method: GET
+        - path: /core-auth/auth/register
+          method: POST
         - path: /core-auth/auth/validate-session
           method: POST
         - path: /core-auth/auth/caldav-tokens
@@ -110,14 +118,6 @@ ingress:
         - path: /core-auth/auth/forgot-password/[^/]+/reset
           method: POST
         - path: /core-auth/auth/forgot-password/[^/]+/verify
-          method: POST
-        - path: /core-auth/auth/login
-          method: POST
-        - path: /core-auth/auth/lookup
-          method: POST
-        - path: /core-auth/auth/me
-          method: GET
-        - path: /core-auth/auth/register
           method: POST
         - path: /core-auth/auth/sessions
           method: GET

@@ -1,10 +1,15 @@
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
-import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
-import * as CoreAuth from '@supreme-int/api-client/src/generated/core-auth';
+import { createClientFetch } from '@supreme-int/api-client/src/fetch/create-client-fetch';
 import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
+import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth/types.gen';
 
 // Client-side calls go through ingress at /core-auth
-const coreAuthBrowserClient = createClient({ baseUrl: '/core-auth', ...jsonBodySerializer });
+// QoS mirrors server-side core-auth config: 800ms timeout, no retries
+const coreAuthBrowserClient = createClient({
+  baseUrl: '/core-auth',
+  fetch: createClientFetch({ timeout: 800 }),
+  ...jsonBodySerializer,
+});
 
 // ─── Token helpers ────────────────────────────────────────────────────────────
 
@@ -56,8 +61,8 @@ export async function login(data: {
     data: result,
     error,
     response,
-  } = await CoreAuth.loginAuthLoginPost({
-    client: coreAuthBrowserClient,
+  } = await coreAuthBrowserClient.post<AuthResponse, { detail?: string }>({
+    url: '/auth/login',
     body: data,
   });
 
@@ -66,7 +71,8 @@ export async function login(data: {
     throw new Error(detail ?? 'Request failed');
   }
 
-  return result;
+  // biome-ignore lint/suspicious/noExplicitAny: hey-api infers response data as keyof union, need double cast
+  return result as unknown as AuthResponse;
 }
 
 export interface ClientInfoUser {
@@ -80,25 +86,29 @@ export interface ClientInfoUser {
 }
 
 export async function lookup(data: { snils: string; last_name: string }): Promise<ClientInfoUser> {
-  // TODO: change to api-client
-  const response = await fetch('/core-auth/auth/lookup', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+  const {
+    data: result,
+    error,
+    response,
+  } = await coreAuthBrowserClient.post<ClientInfoUser, { detail?: string }>({
+    url: '/auth/lookup',
+    body: data,
   });
-  const payload = await response.json();
-  if (!response.ok) {
-    throw new Error((payload as { detail?: string })?.detail ?? 'Request failed');
+
+  if (!response.ok || !result) {
+    const detail = (error as { detail?: string } | undefined)?.detail;
+    throw new Error(detail ?? 'Request failed');
   }
-  return payload as ClientInfoUser;
+
+  return result as ClientInfoUser;
 }
 
 // TODO: fix me or remove me
 // Костыль для совместимости: core-auth register не возвращает токен,
 // поэтому после регистрации делаем auto-login.
 export async function register(data: { email: string; password: string; snils: string }): Promise<AuthResponse> {
-  const { response, error } = await CoreAuth.registerAuthRegisterPost({
-    client: coreAuthBrowserClient,
+  const { response, error } = await coreAuthBrowserClient.post<unknown, { detail?: string }>({
+    url: '/auth/register',
     body: data,
   });
 
@@ -112,8 +122,8 @@ export async function register(data: { email: string; password: string; snils: s
 }
 
 export async function getCurrentUser(token: string): Promise<UserInfo> {
-  const { data, error, response } = await CoreAuth.getMeAuthMeGet({
-    client: coreAuthBrowserClient,
+  const { data, error, response } = await coreAuthBrowserClient.get<UserInfo, { detail?: string }>({
+    url: '/auth/me',
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -122,7 +132,8 @@ export async function getCurrentUser(token: string): Promise<UserInfo> {
     throw new Error(detail ?? 'Request failed');
   }
 
-  return data;
+  // biome-ignore lint/suspicious/noExplicitAny: hey-api infers response data as keyof union, need double cast
+  return data as unknown as UserInfo;
 }
 
 export async function deleteUser(_id: string, _token: string): Promise<void> {

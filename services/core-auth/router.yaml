@@ -56,19 +56,19 @@ routes:
   - path: /core-auth/auth/login
     method: POST
     auth_level: none
-    public: false
+    public: true
   - path: /core-auth/auth/lookup
     method: POST
     auth_level: none
-    public: false
+    public: true
   - path: /core-auth/auth/me
     method: GET
     auth_level: none
-    public: false
+    public: true
   - path: /core-auth/auth/register
     method: POST
     auth_level: none
-    public: false
+    public: true
   - path: /core-auth/auth/sessions
     method: GET
     auth_level: none
