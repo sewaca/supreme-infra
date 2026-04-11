@@ -17,7 +17,7 @@ export default async function ProfileByIdPage({ params }: ProfileByIdPageProps) 
 
   const { id } = await params;
 
-  // TODO: getUserById is not supported by core-auth yet.
+  // TODO: delete taste-food.
   // If the requested ID matches the current user, show their profile.
   // Otherwise redirect to own profile.
   if (id !== currentUser.id) {

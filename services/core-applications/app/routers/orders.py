@@ -107,5 +107,5 @@ async def get_order(order_id: UUID, user_id: UUID, db: AsyncSession = Depends(ge
 
 @router.get("/{order_id}/pdf")
 async def get_order_pdf(order_id: UUID, user_id: UUID, db: AsyncSession = Depends(get_db)):
-    # TODO: implement — return PDF file bytes from pdf_url
+    # TODO: implement — return PDF url from system-files-storage service. url need to be stored in database
     raise NotImplementedError("get_order_pdf not implemented")

@@ -15,7 +15,7 @@ async def upload_parent_agreement(
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
 ):
-    # TODO: implement — store parent agreement file, return file URL or confirmation
+    # TODO: implement — store parent agreement file, return file URL or confirmation. use system-files-storage service here to upload files.
     raise NotImplementedError("upload_parent_agreement not implemented")
 
 
@@ -25,5 +25,5 @@ async def submit_dormitory_application(
     user_id: UUID = Query(...),
     db: AsyncSession = Depends(get_db),
 ):
-    # TODO: store to DB, generate PDF
+    # TODO: store to DB, generate PDF maybe
     return DormitoryApplicationResponse(status="ok")
