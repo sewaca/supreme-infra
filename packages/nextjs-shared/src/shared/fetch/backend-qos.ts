@@ -20,7 +20,7 @@ export type BackendName =
  */
 export const BACKEND_QOS: Record<BackendName, QoSOptions> = {
   'core-auth': {
-    timeout: 1500,
+    timeout: 800,
     retry: { attempts: 0 },
   },
   'core-applications': {
