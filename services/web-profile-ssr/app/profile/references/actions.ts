@@ -6,6 +6,7 @@ import {
   extendStorageReferencesReferenceIdExtendStoragePost,
   getReferencesReferencesGet,
 } from '@supreme-int/api-client/src/generated/core-applications';
+import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
 import type {
   ReferenceOrderResponse,
   ReferenceType,
@@ -14,7 +15,6 @@ import { i18n } from '@supreme-int/i18n/src/i18n';
 import { format, parseISO } from 'date-fns';
 import { PICKUP_POINTS } from 'services/web-profile-ssr/src/entities/Reference/pickupPoints';
 import type { OrderedReference, ReferenceStatus } from 'services/web-profile-ssr/src/entities/Reference/Reference';
-import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export type ReferenceTypeOption = { id: string; label: string };

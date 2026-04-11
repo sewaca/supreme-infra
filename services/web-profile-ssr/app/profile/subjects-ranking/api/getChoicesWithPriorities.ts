@@ -1,4 +1,4 @@
-import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 type SubjectInfo = { id: string; name: string; teacher: string };

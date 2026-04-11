@@ -7,16 +7,17 @@ import {
   startChallengeAuthChallengePost,
   verifyChallengeAuthChallengeChallengeIdVerifyPost,
 } from '@supreme-int/api-client/src/generated/core-auth';
+import { client as coreAuthClient } from '@supreme-int/api-client/src/generated/core-auth/client.gen';
 import {
   changeEmailSettingsEmailPost,
   changePasswordSettingsPasswordPost,
   updateSettingsSettingsPut,
 } from '@supreme-int/api-client/src/generated/core-client-info';
+import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
 import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { coreAuthClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
 
 async function getAuthUserId(): Promise<string> {

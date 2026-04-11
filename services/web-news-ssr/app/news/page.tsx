@@ -1,6 +1,6 @@
 import { getNewsNewsGet } from '@supreme-int/api-client/src/generated/core-news';
+import { client as coreNewsClient } from '@supreme-int/api-client/src/generated/core-news/client.gen';
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
-import { coreNewsClient } from '../../src/shared/api/clients';
 import { NewsPage } from '../../src/views/NewsPage/NewsPage';
 
 export const dynamic = 'force-dynamic';

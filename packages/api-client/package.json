@@ -7,12 +7,12 @@
     "generate:schemas": "node scripts/copy-schemas.mjs"
   },
   "dependencies": {
-    "@hey-api/client-fetch": "catalog:"
+    "@hey-api/client-fetch": "catalog:",
+    "next": "catalog:"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:",
     "@types/node": "catalog:",
-    "next": "catalog:",
     "typescript": "catalog:"
   }
 }

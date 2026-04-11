@@ -1,7 +1,7 @@
 import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
 import { RecipesApi } from '@supreme-int/api-client/src/core-recipes-bff';
+import { createServerFetch } from '@supreme-int/api-client/src/fetch/create-server-fetch';
 import type { UserInfo } from '@supreme-int/api-client/src/generated/core-auth';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
 import { cookies } from 'next/headers';
 
 const isProd = process.env.NODE_ENV === 'production';

@@ -6,6 +6,7 @@ import {
   getStatsRatingStatsGet,
   getStreakRatingStreakGet,
 } from '@supreme-int/api-client/src/generated/core-client-info';
+import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
 import { ACHIEVEMENT_CONFIGS } from 'services/web-profile-ssr/src/entities/Rating/achievementsConfig';
 import { LEVEL_CONFIGS } from 'services/web-profile-ssr/src/entities/Rating/levelConfig';
 import type {
@@ -14,7 +15,6 @@ import type {
   RatingData,
   StudentLevel,
 } from 'services/web-profile-ssr/src/entities/Rating/RatingData';
-import { coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { RatingPage } from 'services/web-profile-ssr/src/views/RatingPage/RatingPage';
 

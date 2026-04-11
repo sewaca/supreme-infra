@@ -1,7 +1,7 @@
 'use server';
 
 import { uploadParentAgreementDormitoryParentAgreementPost } from '@supreme-int/api-client/src/generated/core-applications';
-import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
+import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export const submitParentAgreement = async ({

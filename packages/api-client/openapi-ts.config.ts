@@ -1,22 +1,25 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
-export default defineConfig({
-  input: [
-    './schemas/core-auth.json',
-    './schemas/core-client-info.json',
-    './schemas/core-applications.json',
-    './schemas/core-schedule.json',
-    './schemas/core-messages.json',
-    './schemas/system-files-storage.json',
-    './schemas/core-news.json',
-  ],
-  output: [
-    './src/generated/core-auth',
-    './src/generated/core-client-info',
-    './src/generated/core-applications',
-    './src/generated/core-schedule',
-    './src/generated/core-messages',
-    './src/generated/system-files-storage',
-    './src/generated/core-news',
-  ],
-});
+const services = [
+  'core-auth',
+  'core-client-info',
+  'core-applications',
+  'core-schedule',
+  'core-messages',
+  'system-files-storage',
+  'core-news',
+] as const;
+
+export default defineConfig(
+  services.map((name) => ({
+    input: `./schemas/${name}.json`,
+    output: `./src/generated/${name}`,
+    plugins: [
+      {
+        name: '@hey-api/client-fetch' as const,
+        // relative to the generated client.gen.ts (src/generated/{name}/)
+        runtimeConfigPath: `../../client-configs/${name}`,
+      },
+    ],
+  })),
+);

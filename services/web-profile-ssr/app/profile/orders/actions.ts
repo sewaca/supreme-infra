@@ -5,6 +5,7 @@ import {
   getOrdersCountsOrdersCountsGet,
   getOrdersOrdersGet,
 } from '@supreme-int/api-client/src/generated/core-applications';
+import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
 import type {
   OrderDetailResponse,
   OrderResponse,
@@ -12,7 +13,6 @@ import type {
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { ORDER_TYPE } from 'services/web-profile-ssr/src/entities/Order/Order';
-import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export type OrderTypeCounts = Record<OrderType, number>;

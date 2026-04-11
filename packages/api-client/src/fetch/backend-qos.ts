@@ -1,5 +1,4 @@
-// TODO: move to packages/api-client + use with hey-api
-import { createServerFetch, type QoSOptions } from './createServerFetch';
+import { createServerFetch, type QoSOptions } from './create-server-fetch';
 
 export type BackendName =
   | 'core-auth'

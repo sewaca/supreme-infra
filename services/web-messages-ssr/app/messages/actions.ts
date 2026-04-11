@@ -2,6 +2,7 @@
 
 // TODO: разнести actions по разным файлам
 
+import { createServerFetch } from '@supreme-int/api-client/src/fetch/create-server-fetch';
 import {
   createBroadcastBroadcastsPost,
   createOrGetDirectConversationConversationsDirectPost,
@@ -13,9 +14,8 @@ import {
   searchUsersUsersSearchGet,
   sendMessageConversationsConversationIdMessagesPost,
 } from '@supreme-int/api-client/src/generated/core-messages';
-import { createServerFetch } from '@supreme-int/nextjs-shared/src/shared/fetch/createServerFetch';
+import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
 import type { Message } from '../../src/entities/Message/types';
-import { coreMessagesClient } from '../../src/shared/api/clients';
 import { environment } from '../../src/shared/lib/environment';
 
 export interface UploadedFile {

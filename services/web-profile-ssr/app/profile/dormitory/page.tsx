@@ -3,8 +3,8 @@ import {
   getNotificationsApplicationsNotificationsGet,
   getOrdersOrdersGet,
 } from '@supreme-int/api-client/src/generated/core-applications';
+import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
-import { coreApplicationsClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { DormitoryEmptyPage } from 'services/web-profile-ssr/src/views/DormitoryEmptyPage/DormitoryEmptyPage';
 import { DormitoryPage } from 'services/web-profile-ssr/src/views/DormitoryPage/DormitoryPage';

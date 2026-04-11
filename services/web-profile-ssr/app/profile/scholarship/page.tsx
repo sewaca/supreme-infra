@@ -2,9 +2,10 @@ import {
   getApplicationsApplicationsGet,
   getNotificationsApplicationsNotificationsGet,
 } from '@supreme-int/api-client/src/generated/core-applications';
+import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
+import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
-import { coreApplicationsClient, coreClientInfoClient } from 'services/web-profile-ssr/src/shared/api/clients';
 import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { ScholarshipEmptyPage } from 'services/web-profile-ssr/src/views/ScholarshipEmptyPage/ScholarshipEmptyPage';
 import { ScholarshipPage } from 'services/web-profile-ssr/src/views/ScholarshipPage/ScholarshipPage';

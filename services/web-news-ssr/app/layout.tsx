@@ -4,10 +4,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { getTotalUnreadCountConversationsUnreadCountGet } from '@supreme-int/api-client/src/generated/core-messages';
+import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
 import { MainAppBottomTabBar } from '@supreme-int/design-system/src/components/BottomTabBar/MainAppBottomTabBar';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
-import { coreMessagesClient } from '../src/shared/api/clients';
 import { getAuthInfo } from '../src/shared/api/getAuthInfo';
 import theme from '../src/shared/next/theme';
 

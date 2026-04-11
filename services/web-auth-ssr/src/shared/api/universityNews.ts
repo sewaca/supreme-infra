@@ -1,6 +1,6 @@
+import { client as coreNewsClient } from '@supreme-int/api-client/src/generated/core-news/client.gen';
 import { getNewsNewsGet } from '@supreme-int/api-client/src/generated/core-news/sdk.gen';
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
-import { coreNewsClient } from './clients';
 
 export type NewsItem = NewsResponse;
 

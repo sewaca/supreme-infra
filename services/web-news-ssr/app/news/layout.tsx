@@ -1,8 +1,10 @@
 import { getNotificationsApplicationsNotificationsGet } from '@supreme-int/api-client/src/generated/core-applications';
+import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
 import type { ApplicationNotificationResponse } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
+import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
 import { getTotalUnreadCountConversationsUnreadCountGet } from '@supreme-int/api-client/src/generated/core-messages';
-import { coreApplicationsClient, coreClientInfoClient, coreMessagesClient } from '../../src/shared/api/clients';
+import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
 import { getAuthInfo } from '../../src/shared/api/getAuthInfo';
 import { NewsLayout } from '../../src/views/NewsLayout/NewsLayout';
 
