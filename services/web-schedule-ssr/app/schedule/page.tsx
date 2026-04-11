@@ -6,7 +6,6 @@ import {
 } from '@supreme-int/api-client/src/generated/core-schedule';
 import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { cookies } from 'next/headers';
-import '../../src/shared/api/clients';
 import { scheduleToEvents } from '../../src/entities/Lesson/model/Lesson';
 import { getExtendedRange, getWeekRange } from '../../src/shared/lib/schedule.utils';
 import { CalendarPage } from '../../src/views/CalendarPage/CalendarPage';

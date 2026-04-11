@@ -10,7 +10,6 @@ import {
 import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { cookies } from 'next/headers';
 import { type NextRequest, NextResponse } from 'next/server';
-import '../../../src/shared/api/clients';
 import { scheduleToEvents } from '../../../src/entities/Lesson/model/Lesson';
 import { mergeScheduleGroupOptions, parseGroupNameList } from '../../../src/shared/lib/schedule-group-list';
 

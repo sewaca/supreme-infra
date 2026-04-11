@@ -3,7 +3,6 @@ import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/cor
 import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import '../../../src/shared/api/clients';
 import { environment } from '../../../src/shared/lib/environment';
 
 export const dynamic = 'force-dynamic';
