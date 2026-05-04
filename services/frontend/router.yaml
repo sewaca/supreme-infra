@@ -4,28 +4,4 @@
 
 service: frontend
 type: next
-routes:
-  - path: /
-    method: GET
-    auth_level: valid
-    public: true
-  - path: /frontend/.*
-    method: GET
-    auth_level: none
-    public: true
-  - path: /profile-old
-    method: GET
-    auth_level: valid
-    public: true
-  - path: /proposed-recipes
-    method: GET
-    auth_level: valid
-    public: true
-  - path: /recipes/[^/]+
-    method: GET
-    auth_level: valid
-    public: true
-  - path: /submit-recipe
-    method: GET
-    auth_level: valid
-    public: true
+routes: []

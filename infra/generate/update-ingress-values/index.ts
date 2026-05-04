@@ -149,6 +149,7 @@ function mergeIngressRulesWithExisting(
   const privatePathsByService = new Map<string, Set<string>>();
   for (const svc of services) {
     const privatePaths = new Set<string>();
+    if (!svc.routes) continue;
     for (const route of svc.routes ?? []) {
       if (route.public === false) {
         privatePaths.add(ingressPathKey({ path: route.path, method: route.method }));

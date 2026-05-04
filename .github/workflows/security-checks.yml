@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service-name:
-          - core-recipes-bff
+        service-name: []
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -27,8 +26,6 @@ jobs:
     strategy:
       matrix:
         service-name:
-          - frontend
-          - auth-ssr
           - web-documents-ssr
           - web-profile-ssr
           - web-auth-ssr

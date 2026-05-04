@@ -1,17 +1,17 @@
 services:
-  nest:
-    - name: core-recipes-bff
-      description: "recipes backend "
-      database:
-        enabled: true
-        name: core_recipes_bff_db
-        user: core_recipes_bff_user
-        passwordSecret: DB_PASSWORD
+  nest: []
+    # - name: core-recipes-bff
+    #   description: "recipes backend "
+    #   database:
+    #     enabled: true
+    #     name: core_recipes_bff_db
+    #     user: core_recipes_bff_user
+    #     passwordSecret: DB_PASSWORD
   next:
-    - name: frontend
-      description: Frontend service (Next.js)
-    - name: auth-ssr
-      description: authorization-ssr-sservice
+    # - name: frontend
+    #   description: Frontend service (Next.js)
+    # - name: auth-ssr
+    #   description: authorization-ssr-sservice
     - name: web-documents-ssr
       description: "documents presentation "
     - name: web-profile-ssr

@@ -9,15 +9,12 @@ on:
         type: choice
         # List of available services (auto-generated)
         options:
-          - auth-ssr
           - core-applications
           - core-auth
           - core-client-info
           - core-messages
           - core-news
-          - core-recipes-bff
           - core-schedule
-          - frontend
           - system-files-storage
           - web-auth-ssr
           - web-documents-ssr
@@ -25,7 +22,7 @@ on:
           - web-news-ssr
           - web-profile-ssr
           - web-schedule-ssr
-        default: "auth-ssr"
+        default: "core-applications"
       skip-canary:
         description: "Skip canary deployment and go directly to production"
         required: false

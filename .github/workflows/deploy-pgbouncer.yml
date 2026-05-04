@@ -7,14 +7,13 @@ on:
         required: true
         type: choice
         options:
-          - core-recipes-bff
           - core-auth
           - core-client-info
           - core-applications
           - core-schedule
           - core-messages
           - core-news
-        default: core-recipes-bff
+        default: core-auth
       action:
         description: Deployment action
         required: true

@@ -37,22 +37,6 @@ ingress:
       - diploma.sewaca.ru
       - tastefood.sewaca.ru
   rules:
-    - service: auth-ssr
-      port: 80
-      type: next
-      paths:
-        - path: /auth-ssr/.*
-          method: GET
-        - path: /forgot-password-old
-          method: GET
-        - path: /login-old
-          method: GET
-        - path: /profile-old
-          method: GET
-        - path: /profile-old/[^/]+
-          method: GET
-        - path: /register-old
-          method: GET
     - service: core-applications
       port: 80
       type: fastapi
@@ -108,14 +92,6 @@ ingress:
       extraAnnotations:
         nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
         nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    - service: core-recipes-bff
-      port: 80
-      type: nest
-      paths:
-        - path: /core-recipes-bff/api/status
-          method: GET
-        - path: /core-recipes-bff/recipes/[^/]+/like
-          method: POST
     - service: core-schedule
       port: 80
       type: fastapi
@@ -123,22 +99,6 @@ ingress:
         - path: /core-schedule/caldav/[^/]+/groups/[^/]+/calendar.ics
           method: GET
         - path: /core-schedule/caldav/[^/]+/teachers/[^/]+/calendar.ics
-          method: GET
-    - service: frontend
-      port: 80
-      type: next
-      paths:
-        - path: /
-          method: GET
-        - path: /frontend/.*
-          method: GET
-        - path: /profile-old
-          method: GET
-        - path: /proposed-recipes
-          method: GET
-        - path: /recipes/[^/]+
-          method: GET
-        - path: /submit-recipe
           method: GET
     - service: system-files-storage
       port: 80
@@ -236,11 +196,11 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /
+          method: GET
         - path: /api/caldav-setup
           method: POST
         - path: /api/schedule
-          method: GET
-        - path: /schedule
           method: GET
         - path: /schedule/exams
           method: GET
@@ -249,6 +209,8 @@ ingress:
         - path: /schedule/teacher
           method: GET
         - path: /web-schedule-ssr/.*
+          method: GET
+        - path: /schedule
           method: GET
     - service: minio
       port: 9000

@@ -8,7 +8,7 @@ export const authRoutes: AuthRoute[] = [
   { path: new RegExp('^/auth-ssr/.*$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/forgot-password-old$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/login-old$'), method: 'GET', auth_level: 'none' },
-  { path: new RegExp('^/profile-old$'), method: 'GET', auth_level: 'valid' },
-  { path: new RegExp('^/profile-old/[^/]+$'), method: 'GET', auth_level: 'valid' },
+  { path: new RegExp('^/profile-old$'), method: 'GET', auth_level: 'none' },
+  { path: new RegExp('^/profile-old/[^/]+$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/register-old$'), method: 'GET', auth_level: 'none' },
 ];

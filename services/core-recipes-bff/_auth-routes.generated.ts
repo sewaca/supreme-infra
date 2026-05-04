@@ -6,12 +6,12 @@ export interface AuthRoute { path: RegExp; method?: string; auth_level: AuthLeve
 
 export const authRoutes: AuthRoute[] = [
   { path: new RegExp('^/core-recipes-bff/api/status$'), method: 'GET', auth_level: 'none' },
-  { path: new RegExp('^/core-recipes-bff/recipes$'), method: 'GET', auth_level: 'valid' },
-  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+$'), method: 'DELETE', auth_level: 'valid' },
-  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+$'), method: 'GET', auth_level: 'valid' },
-  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+$'), method: 'PUT', auth_level: 'valid' },
-  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+/like$'), method: 'POST', auth_level: 'valid' },
-  { path: new RegExp('^/core-recipes-bff/recipes/propose$'), method: 'POST', auth_level: 'valid' },
-  { path: new RegExp('^/core-recipes-bff/recipes/proposed/[^/]+/publish$'), method: 'POST', auth_level: 'valid' },
-  { path: new RegExp('^/core-recipes-bff/recipes/proposed/all$'), method: 'GET', auth_level: 'valid' },
+  { path: new RegExp('^/core-recipes-bff/recipes$'), method: 'GET', auth_level: 'none' },
+  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+$'), method: 'DELETE', auth_level: 'none' },
+  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+$'), method: 'GET', auth_level: 'none' },
+  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+$'), method: 'PUT', auth_level: 'none' },
+  { path: new RegExp('^/core-recipes-bff/recipes/[^/]+/like$'), method: 'POST', auth_level: 'none' },
+  { path: new RegExp('^/core-recipes-bff/recipes/propose$'), method: 'POST', auth_level: 'none' },
+  { path: new RegExp('^/core-recipes-bff/recipes/proposed/[^/]+/publish$'), method: 'POST', auth_level: 'none' },
+  { path: new RegExp('^/core-recipes-bff/recipes/proposed/all$'), method: 'GET', auth_level: 'none' },
 ];

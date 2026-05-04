@@ -4,28 +4,4 @@
 
 service: auth-ssr
 type: next
-routes:
-  - path: /auth-ssr/.*
-    method: GET
-    auth_level: none
-    public: true
-  - path: /forgot-password-old
-    method: GET
-    auth_level: none
-    public: true
-  - path: /login-old
-    method: GET
-    auth_level: none
-    public: true
-  - path: /profile-old
-    method: GET
-    auth_level: valid
-    public: true
-  - path: /profile-old/[^/]+
-    method: GET
-    auth_level: valid
-    public: true
-  - path: /register-old
-    method: GET
-    auth_level: none
-    public: true
+routes: []
