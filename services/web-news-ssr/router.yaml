@@ -5,6 +5,10 @@
 service: web-news-ssr
 type: next
 routes:
+  - path: /
+    method: GET
+    auth_level: none
+    public: true
   - path: /news
     method: GET
     auth_level: none

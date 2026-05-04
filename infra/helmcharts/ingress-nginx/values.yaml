@@ -154,6 +154,8 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /
+          method: GET
         - path: /news
           method: GET
         - path: /web-news-ssr/.*
@@ -196,11 +198,13 @@ ingress:
       port: 80
       type: next
       paths:
-        - path: /
-          method: GET
+        # - path: /
+        #   method: GET
         - path: /api/caldav-setup
           method: POST
         - path: /api/schedule
+          method: GET
+        - path: /schedule
           method: GET
         - path: /schedule/exams
           method: GET
@@ -209,8 +213,6 @@ ingress:
         - path: /schedule/teacher
           method: GET
         - path: /web-schedule-ssr/.*
-          method: GET
-        - path: /schedule
           method: GET
     - service: minio
       port: 9000

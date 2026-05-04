@@ -8,6 +8,7 @@ export const authRoutes: AuthRoute[] = [
   { path: new RegExp('^/$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/api/caldav-setup$'), method: 'POST', auth_level: 'valid' },
   { path: new RegExp('^/api/schedule$'), method: 'GET', auth_level: 'valid' },
+  { path: new RegExp('^/schedule$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/schedule/exams$'), method: 'GET', auth_level: 'valid' },
   { path: new RegExp('^/schedule/group$'), method: 'GET', auth_level: 'valid' },
   { path: new RegExp('^/schedule/teacher$'), method: 'GET', auth_level: 'valid' },

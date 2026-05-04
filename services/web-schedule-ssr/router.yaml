@@ -17,6 +17,10 @@ routes:
     method: GET
     auth_level: valid
     public: true
+  - path: /schedule
+    method: GET
+    auth_level: none
+    public: true
   - path: /schedule/exams
     method: GET
     auth_level: valid
