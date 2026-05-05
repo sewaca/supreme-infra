@@ -3,8 +3,6 @@ import { client as coreApplicationsClient } from '@supreme-int/api-client/src/ge
 import type { ApplicationNotificationResponse } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
-import { getTotalUnreadCountConversationsUnreadCountGet } from '@supreme-int/api-client/src/generated/core-messages';
-import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
 import { getNewsNewsGet } from '@supreme-int/api-client/src/generated/core-news';
 import { client as coreNewsClient } from '@supreme-int/api-client/src/generated/core-news/client.gen';
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
@@ -12,6 +10,7 @@ import { groupScheduleGroupsGroupNameScheduleGet } from '@supreme-int/api-client
 import { client as coreScheduleClient } from '@supreme-int/api-client/src/generated/core-schedule/client.gen';
 import type { DaySchedule, LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
 import { getAuthInfo } from '../src/shared/api/getAuthInfo';
+import { getUnreadCount } from '../src/shared/api/getUnreadCount';
 import { HomePage } from '../src/views/HomePage/HomePage';
 
 export const dynamic = 'force-dynamic';
@@ -64,9 +63,9 @@ export default async function Page() {
   news = newsRes.data ?? [];
 
   if (auth.userId) {
-    const [profileRes, unreadRes, notificationsRes] = await Promise.all([
+    const [profileRes, unreadCount, notificationsRes] = await Promise.all([
       getUserProfileUserGet({ client: coreClientInfoClient, query: { user_id: auth.userId } }),
-      getTotalUnreadCountConversationsUnreadCountGet({ client: coreMessagesClient }),
+      getUnreadCount(),
       getNotificationsApplicationsNotificationsGet({
         client: coreApplicationsClient,
         query: { user_id: auth.userId },
@@ -88,7 +87,7 @@ export default async function Page() {
       }
     }
 
-    unreadMessagesCount = unreadRes.data?.total_unread_count ?? 0;
+    unreadMessagesCount = unreadCount;
     appNotifications = notificationsRes.data ?? [];
   }
 
