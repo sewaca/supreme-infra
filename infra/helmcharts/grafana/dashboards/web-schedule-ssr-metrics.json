@@ -1092,7 +1092,7 @@
     },
     {
       "id": 21,
-      "title": "GET /",
+      "title": "POST /api/caldav-setup",
       "type": "row",
       "gridPos": {
         "h": 1,
@@ -1103,324 +1103,6 @@
     },
     {
       "id": 22,
-      "title": "GET / - Timings",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P50",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P95",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_duration_bucket{service=\"web-schedule-ssr\",http_route=\"/\",http_method=\"GET\"}[5m])) by (le)) or on() vector(0)",
-          "legendFormat": "P99",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 23,
-      "title": "GET / - OK RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/\",http_method=\"GET\",http_status_code=~\"2..|3..\"}[1m])) or on() vector(0)",
-          "legendFormat": "OK (2xx/3xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 24,
-      "title": "GET / - Bad RPS",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 70
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_duration_count{service=\"web-schedule-ssr\",http_route=\"/\",http_method=\"GET\",http_status_code=~\"[45]..\"}[1m])) or on() vector(0)",
-          "legendFormat": "Errors (4xx/5xx)",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      }
-    },
-    {
-      "id": 25,
-      "title": "POST /api/caldav-setup",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 78
-      }
-    },
-    {
-      "id": 26,
       "title": "POST /api/caldav-setup - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1431,7 +1113,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 79
+        "y": 70
       },
       "targets": [
         {
@@ -1541,7 +1223,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 23,
       "title": "POST /api/caldav-setup - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1552,7 +1234,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 79
+        "y": 70
       },
       "targets": [
         {
@@ -1632,7 +1314,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 24,
       "title": "POST /api/caldav-setup - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1643,7 +1325,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 79
+        "y": 70
       },
       "targets": [
         {
@@ -1727,18 +1409,18 @@
       }
     },
     {
-      "id": 29,
+      "id": 25,
       "title": "GET /api/schedule",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 78
       }
     },
     {
-      "id": 30,
+      "id": 26,
       "title": "GET /api/schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -1749,7 +1431,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 88
+        "y": 79
       },
       "targets": [
         {
@@ -1859,7 +1541,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 27,
       "title": "GET /api/schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -1870,7 +1552,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 88
+        "y": 79
       },
       "targets": [
         {
@@ -1950,7 +1632,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 28,
       "title": "GET /api/schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -1961,7 +1643,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 88
+        "y": 79
       },
       "targets": [
         {
@@ -2045,18 +1727,18 @@
       }
     },
     {
-      "id": 33,
+      "id": 29,
       "title": "GET /schedule",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 87
       }
     },
     {
-      "id": 34,
+      "id": 30,
       "title": "GET /schedule - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2067,7 +1749,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 97
+        "y": 88
       },
       "targets": [
         {
@@ -2177,7 +1859,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 31,
       "title": "GET /schedule - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2188,7 +1870,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 97
+        "y": 88
       },
       "targets": [
         {
@@ -2268,7 +1950,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 32,
       "title": "GET /schedule - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2279,7 +1961,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 97
+        "y": 88
       },
       "targets": [
         {
@@ -2363,18 +2045,18 @@
       }
     },
     {
-      "id": 37,
+      "id": 33,
       "title": "GET /schedule/exams",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 105
+        "y": 96
       }
     },
     {
-      "id": 38,
+      "id": 34,
       "title": "GET /schedule/exams - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2385,7 +2067,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 106
+        "y": 97
       },
       "targets": [
         {
@@ -2495,7 +2177,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 35,
       "title": "GET /schedule/exams - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2506,7 +2188,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 106
+        "y": 97
       },
       "targets": [
         {
@@ -2586,7 +2268,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 36,
       "title": "GET /schedule/exams - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2597,7 +2279,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 106
+        "y": 97
       },
       "targets": [
         {
@@ -2681,18 +2363,18 @@
       }
     },
     {
-      "id": 41,
+      "id": 37,
       "title": "GET /schedule/group",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 105
       }
     },
     {
-      "id": 42,
+      "id": 38,
       "title": "GET /schedule/group - Timings",
       "type": "timeseries",
       "datasource": {
@@ -2703,7 +2385,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 115
+        "y": 106
       },
       "targets": [
         {
@@ -2813,7 +2495,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 39,
       "title": "GET /schedule/group - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -2824,7 +2506,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 115
+        "y": 106
       },
       "targets": [
         {
@@ -2904,7 +2586,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 40,
       "title": "GET /schedule/group - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -2915,7 +2597,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 115
+        "y": 106
       },
       "targets": [
         {
@@ -2999,18 +2681,18 @@
       }
     },
     {
-      "id": 45,
+      "id": 41,
       "title": "GET /schedule/teacher",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 123
+        "y": 114
       }
     },
     {
-      "id": 46,
+      "id": 42,
       "title": "GET /schedule/teacher - Timings",
       "type": "timeseries",
       "datasource": {
@@ -3021,7 +2703,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 124
+        "y": 115
       },
       "targets": [
         {
@@ -3131,7 +2813,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 43,
       "title": "GET /schedule/teacher - OK RPS",
       "type": "timeseries",
       "datasource": {
@@ -3142,7 +2824,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 124
+        "y": 115
       },
       "targets": [
         {
@@ -3222,7 +2904,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 44,
       "title": "GET /schedule/teacher - Bad RPS",
       "type": "timeseries",
       "datasource": {
@@ -3233,7 +2915,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 124
+        "y": 115
       },
       "targets": [
         {

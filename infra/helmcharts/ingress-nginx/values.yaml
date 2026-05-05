@@ -198,8 +198,6 @@ ingress:
       port: 80
       type: next
       paths:
-        # - path: /
-        #   method: GET
         - path: /api/caldav-setup
           method: POST
         - path: /api/schedule

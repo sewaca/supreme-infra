@@ -5,7 +5,7 @@ export type AuthLevel = 'none' | 'valid';
 export interface AuthRoute { path: RegExp; method?: string; auth_level: AuthLevel; }
 
 export const authRoutes: AuthRoute[] = [
-  { path: new RegExp('^/$'), method: 'GET', auth_level: 'none' },
+  { path: new RegExp('^/$'), method: 'GET', auth_level: 'valid' },
   { path: new RegExp('^/news$'), method: 'GET', auth_level: 'none' },
   { path: new RegExp('^/web-news-ssr/.*$'), method: 'GET', auth_level: 'none' },
 ];

@@ -34,7 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             >
               {children}
             </main>
-            <MainAppBottomTabBar homePath="/messages" />
+            <MainAppBottomTabBar />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

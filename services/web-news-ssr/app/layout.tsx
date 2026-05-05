@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             >
               {children}
             </main>
-            <MainAppBottomTabBar homePath="/news" unreadMessagesCount={unreadMessagesCount} />
+            <MainAppBottomTabBar unreadMessagesCount={unreadMessagesCount} />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
