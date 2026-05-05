@@ -38,7 +38,10 @@ function timeMoscow(now: Date): string {
   return now.toLocaleTimeString('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
 }
 
-function activeLessonsMoscow(now: Date, lessons: LessonSlot[]): { current: LessonSlot | null; next: LessonSlot | null } {
+function activeLessonsMoscow(
+  now: Date,
+  lessons: LessonSlot[],
+): { current: LessonSlot | null; next: LessonSlot | null } {
   const t = timeMoscow(now);
   const current = lessons.find((l) => l.start_time.slice(0, 5) <= t && l.end_time.slice(0, 5) > t) ?? null;
   const next = lessons.find((l) => l.start_time.slice(0, 5) > t) ?? null;
