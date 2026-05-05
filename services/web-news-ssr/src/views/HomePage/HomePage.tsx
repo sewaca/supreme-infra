@@ -9,7 +9,6 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import SchoolIcon from '@mui/icons-material/School';
 import Alert from '@mui/material/Alert';
-import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -195,28 +194,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
           />
           <QuickStatCard
             href="/messages"
-            icon={
-              <Badge
-                badgeContent={unreadMessagesCount}
-                color="error"
-                max={99}
-                sx={
-                  unreadMessagesCount > 0
-                    ? {
-                        '& .MuiBadge-badge': {
-                          '@keyframes pulse': {
-                            '0%, 100%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.25)' },
-                          },
-                          animation: 'pulse 1.8s ease-in-out infinite',
-                        },
-                      }
-                    : undefined
-                }
-              >
-                <ChatBubbleOutlineIcon sx={{ fontSize: 20 }} />
-              </Badge>
-            }
+            icon={<ChatBubbleOutlineIcon sx={{ fontSize: 20 }} />}
             label="Сообщения"
             value={unreadMessagesCount > 0 ? `${unreadMessagesCount} новых` : 'Нет новых'}
             color={unreadMessagesCount > 0 ? '#c62828' : '#424242'}
