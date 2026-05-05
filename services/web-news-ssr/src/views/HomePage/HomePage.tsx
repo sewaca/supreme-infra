@@ -17,9 +17,8 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import type { ApplicationNotificationResponse } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
-import type { DaySchedule, LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
+import type { LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
-import { useEffect, useState } from 'react';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 
 const LESSON_TYPE_COLORS: Record<string, string> = {
@@ -41,30 +40,8 @@ function getLessonTypeColor(type: string): string {
   return '#757575';
 }
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 6) return 'Доброй ночи';
-  if (hour < 12) return 'Доброе утро';
-  if (hour < 18) return 'Добрый день';
-  return 'Добрый вечер';
-}
-
-function formatTodayDate(): string {
-  return new Date().toLocaleDateString('ru-RU', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
-}
-
 function formatTime(t: string): string {
   return t.slice(0, 5);
-}
-
-function getNextLesson(lessons: LessonSlot[]): LessonSlot | null {
-  const now = new Date();
-  const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-  return lessons.find((l) => l.start_time > currentTime) ?? null;
 }
 
 type AlertSeverity = 'info' | 'warning' | 'error' | 'success';
@@ -94,24 +71,27 @@ function getCategoryColor(cat: string): string {
 interface Props {
   avatar: string | null;
   userName: string;
-  todaySchedule: DaySchedule | null;
+  lessons: LessonSlot[];
+  nextLesson: LessonSlot | null;
+  greeting: string;
+  dateLabel: string;
   unreadMessagesCount: number;
   appNotifications: ApplicationNotificationResponse[];
   news: NewsResponse[];
 }
 
-export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount, appNotifications, news }: Props) {
-  const [greeting, setGreeting] = useState(getGreeting);
-  const [dateStr, setDateStr] = useState(formatTodayDate);
-
-  useEffect(() => {
-    setGreeting(getGreeting());
-    setDateStr(formatTodayDate());
-  }, []);
-
+export function HomePage({
+  avatar,
+  userName,
+  lessons,
+  nextLesson,
+  greeting,
+  dateLabel,
+  unreadMessagesCount,
+  appNotifications,
+  news,
+}: Props) {
   const firstName = userName.split(' ')[0] ?? userName;
-  const lessons = todaySchedule?.lessons ?? [];
-  const nextLesson = getNextLesson(lessons);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -152,7 +132,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
           }}
         >
           <Typography variant="caption" sx={{ opacity: 0.7, textTransform: 'capitalize', letterSpacing: 0.3 }}>
-            {dateStr}
+            {dateLabel}
           </Typography>
           <Typography variant="h6" fontWeight={700} sx={{ mt: 0.25, lineHeight: 1.2 }}>
             {greeting}

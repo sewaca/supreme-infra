@@ -10,19 +10,39 @@ import { client as coreNewsClient } from '@supreme-int/api-client/src/generated/
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
 import { groupScheduleGroupsGroupNameScheduleGet } from '@supreme-int/api-client/src/generated/core-schedule';
 import { client as coreScheduleClient } from '@supreme-int/api-client/src/generated/core-schedule/client.gen';
-import type { DaySchedule } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
+import type { DaySchedule, LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
 import { getAuthInfo } from '../src/shared/api/getAuthInfo';
 import { HomePage } from '../src/views/HomePage/HomePage';
 
 export const dynamic = 'force-dynamic';
 
-function toDateStr(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const TZ = 'Europe/Moscow';
+
+function todayMoscow(now: Date): string {
+  return now.toLocaleDateString('en-CA', { timeZone: TZ }); // YYYY-MM-DD
+}
+
+function greetingMoscow(now: Date): string {
+  const hour = Number(now.toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false }));
+  if (hour < 6) return 'Доброй ночи';
+  if (hour < 12) return 'Доброе утро';
+  if (hour < 18) return 'Добрый день';
+  return 'Добрый вечер';
+}
+
+function dateLabelMoscow(now: Date): string {
+  return now.toLocaleDateString('ru-RU', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+function nextLessonMoscow(now: Date, lessons: LessonSlot[]): LessonSlot | null {
+  const currentTime = now.toLocaleTimeString('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+  return lessons.find((l) => l.start_time.slice(0, 5) > currentTime) ?? null;
 }
 
 export default async function Page() {
   const auth = await getAuthInfo();
-  const today = toDateStr(new Date());
+  const now = new Date();
+  const today = todayMoscow(now);
 
   let avatar: string | null = null;
   let userName = auth.name ?? '';
@@ -63,11 +83,16 @@ export default async function Page() {
     appNotifications = notificationsRes.data ?? [];
   }
 
+  const lessons = todaySchedule?.lessons ?? [];
+
   return (
     <HomePage
       avatar={avatar}
       userName={userName}
-      todaySchedule={todaySchedule}
+      lessons={lessons}
+      nextLesson={nextLessonMoscow(now, lessons)}
+      greeting={greetingMoscow(now)}
+      dateLabel={dateLabelMoscow(now)}
       unreadMessagesCount={unreadMessagesCount}
       appNotifications={appNotifications}
       news={news}
