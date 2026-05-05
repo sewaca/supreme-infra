@@ -148,7 +148,8 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
             {dateStr}
           </Typography>
           <Typography variant="h6" fontWeight={700} sx={{ mt: 0.25, lineHeight: 1.2 }}>
-            {greeting}{firstName ? `, ${firstName}` : ''}!
+            {greeting}
+            {firstName ? `, ${firstName}` : ''}!
           </Typography>
 
           {nextLesson ? (
@@ -206,20 +207,29 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
 
         {/* App notifications */}
         {appNotifications.length > 0 && (
-          <Section title="Уведомления" icon={<NotificationsNoneIcon sx={{ fontSize: 18 }} />}>
+          <Box sx={{ mb: 2.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: 'text.secondary', mb: 1.25 }}>
+              <NotificationsNoneIcon sx={{ fontSize: 18 }} />
+              <Typography variant="subtitle2" fontWeight={700} color="text.primary">
+                Уведомления
+              </Typography>
+            </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               {appNotifications.map((n) => {
                 const href = n.action ?? `/profile/orders?orderId=${n.application_id}`;
                 return (
                   <Box key={n.id} component="a" href={href} sx={{ display: 'block', textDecoration: 'none' }}>
-                    <Alert severity={toAlertSeverity(n.severity)} sx={{ borderRadius: 2 }}>
+                    <Alert
+                      severity={toAlertSeverity(n.severity)}
+                      sx={{ borderRadius: 2, fontSize: '0.75rem', '& .MuiAlert-message': { fontSize: '0.75rem' } }}
+                    >
                       {n.message}
                     </Alert>
                   </Box>
                 );
               })}
             </Box>
-          </Section>
+          </Box>
         )}
 
         {/* Today's schedule */}
@@ -245,7 +255,11 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               {lessons.map((lesson, idx) => (
-                <LessonRow key={idx} lesson={lesson} isLast={idx === lessons.length - 1} />
+                <LessonRow
+                  key={`${lesson.teacher_id}${lesson.start_time}${lesson.slot_number}`}
+                  lesson={lesson}
+                  isLast={idx === lessons.length - 1}
+                />
               ))}
             </Box>
           )}
@@ -340,7 +354,9 @@ function Section({ title, icon, action, children }: SectionProps) {
           </Typography>
         )}
       </Box>
-      <Card sx={{ borderRadius: 2.5, overflow: 'hidden' }}>{children}</Card>
+      <Card elevation={0} sx={{ borderRadius: 2.5, overflow: 'hidden', boxShadow: 'none' }}>
+        {children}
+      </Card>
     </Box>
   );
 }
@@ -351,7 +367,12 @@ function LessonRow({ lesson, isLast }: { lesson: LessonSlot; isLast: boolean }) 
     <>
       <Box sx={{ px: 2, py: 1.5, display: 'flex', gap: 2, alignItems: 'flex-start' }}>
         <Box sx={{ minWidth: 52, textAlign: 'center', pt: 0.25 }}>
-          <Typography variant="caption" fontWeight={700} color="text.primary" sx={{ display: 'block', fontSize: '0.75rem' }}>
+          <Typography
+            variant="caption"
+            fontWeight={700}
+            color="text.primary"
+            sx={{ display: 'block', fontSize: '0.75rem' }}
+          >
             {formatTime(lesson.start_time)}
           </Typography>
           <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.65rem' }}>
