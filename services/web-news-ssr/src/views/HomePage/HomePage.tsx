@@ -213,7 +213,11 @@ export function HomePage({
                   <Box key={n.id} component="a" href={href} sx={{ display: 'block', textDecoration: 'none' }}>
                     <Alert
                       severity={toAlertSeverity(n.severity)}
-                      sx={{ borderRadius: 2, fontSize: '0.75rem', '& .MuiAlert-message': { fontSize: '0.75rem' } }}
+                      sx={{
+                        borderRadius: 2,
+                        fontSize: '0.75rem',
+                        '& .MuiAlert-message': { fontSize: '0.75rem', lineHeight: '1.75' },
+                      }}
                     >
                       {n.message}
                     </Alert>
