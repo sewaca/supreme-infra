@@ -189,7 +189,7 @@ export function HomePage({
             color={unreadMessagesCount > 0 ? '#c62828' : '#424242'}
           />
           <QuickStatCard
-            href="/profile/orders"
+            href="/profile/orders?retpath=%2F"
             icon={<NotificationsNoneIcon sx={{ fontSize: 20 }} />}
             label="Уведомления"
             value={appNotifications.length > 0 ? `${appNotifications.length} шт.` : 'Нет'}
@@ -208,7 +208,7 @@ export function HomePage({
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               {appNotifications.map((n) => {
-                const href = n.action ?? `/profile/orders?orderId=${n.application_id}`;
+                const href = n.action ?? `/profile/orders?orderId=${n.application_id}&retpath=%2F`;
                 return (
                   <Box key={n.id} component="a" href={href} sx={{ display: 'block', textDecoration: 'none' }}>
                     <Alert
