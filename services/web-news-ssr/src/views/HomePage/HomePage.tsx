@@ -196,7 +196,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
             color={unreadMessagesCount > 0 ? '#c62828' : '#424242'}
           />
           <QuickStatCard
-            href="/applications"
+            href="/profile/orders"
             icon={<NotificationsNoneIcon sx={{ fontSize: 20 }} />}
             label="Уведомления"
             value={appNotifications.length > 0 ? `${appNotifications.length} шт.` : 'Нет'}
@@ -209,7 +209,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
           <Section title="Уведомления" icon={<NotificationsNoneIcon sx={{ fontSize: 18 }} />}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               {appNotifications.map((n) => {
-                const href = n.action ?? `/applications/${n.application_id}`;
+                const href = n.action ?? `/profile/orders?orderId=${n.application_id}`;
                 return (
                   <Box key={n.id} component="a" href={href} sx={{ display: 'block', textDecoration: 'none' }}>
                     <Alert severity={toAlertSeverity(n.severity)} sx={{ borderRadius: 2 }}>
