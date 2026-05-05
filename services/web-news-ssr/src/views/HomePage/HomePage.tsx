@@ -20,6 +20,7 @@ import type { ApplicationNotificationResponse } from '@supreme-int/api-client/sr
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
 import type { DaySchedule, LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
+import { useEffect, useState } from 'react';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 
 const LESSON_TYPE_COLORS: Record<string, string> = {
@@ -101,8 +102,14 @@ interface Props {
 }
 
 export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount, appNotifications, news }: Props) {
-  const greeting = getGreeting();
-  const dateStr = formatTodayDate();
+  const [greeting, setGreeting] = useState(getGreeting);
+  const [dateStr, setDateStr] = useState(formatTodayDate);
+
+  useEffect(() => {
+    setGreeting(getGreeting());
+    setDateStr(formatTodayDate());
+  }, []);
+
   const firstName = userName.split(' ')[0] ?? userName;
   const lessons = todaySchedule?.lessons ?? [];
   const nextLesson = getNextLesson(lessons);
@@ -129,6 +136,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
             py: 2,
             borderRadius: 3,
             background: 'linear-gradient(135deg, #1a2e4a 0%, #2b4878 60%, #1e6091 100%)',
+            ...fadeSlideUp(0),
             color: '#fff',
             position: 'relative',
             overflow: 'hidden',
@@ -177,7 +185,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
         </Box>
 
         {/* Quick stats */}
-        <Box sx={{ display: 'flex', gap: 1.5, mb: 2.5 }}>
+        <Box sx={{ display: 'flex', gap: 1.5, mb: 2.5, ...fadeSlideUp(1) }}>
           <QuickStatCard
             href="/schedule"
             icon={<CalendarTodayIcon sx={{ fontSize: 20 }} />}
@@ -188,7 +196,24 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
           <QuickStatCard
             href="/messages"
             icon={
-              <Badge badgeContent={unreadMessagesCount} color="error" max={99}>
+              <Badge
+                badgeContent={unreadMessagesCount}
+                color="error"
+                max={99}
+                sx={
+                  unreadMessagesCount > 0
+                    ? {
+                        '& .MuiBadge-badge': {
+                          '@keyframes pulse': {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.25)' },
+                          },
+                          animation: 'pulse 1.8s ease-in-out infinite',
+                        },
+                      }
+                    : undefined
+                }
+              >
                 <ChatBubbleOutlineIcon sx={{ fontSize: 20 }} />
               </Badge>
             }
@@ -207,7 +232,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
 
         {/* App notifications */}
         {appNotifications.length > 0 && (
-          <Box sx={{ mb: 2.5 }}>
+          <Box sx={{ mb: 2.5, ...fadeSlideUp(2) }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: 'text.secondary', mb: 1.25 }}>
               <NotificationsNoneIcon sx={{ fontSize: 18 }} />
               <Typography variant="subtitle2" fontWeight={700} color="text.primary">
@@ -234,6 +259,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
 
         {/* Today's schedule */}
         <Section
+          animIndex={appNotifications.length > 0 ? 3 : 2}
           title="Расписание на сегодня"
           icon={<CalendarTodayIcon sx={{ fontSize: 18 }} />}
           action={{ label: 'Все', href: '/schedule' }}
@@ -268,6 +294,7 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
         {/* Latest news */}
         {news.length > 0 && (
           <Section
+            animIndex={appNotifications.length > 0 ? 4 : 3}
             title="Последние новости"
             icon={<MenuBookIcon sx={{ fontSize: 18 }} />}
             action={{ label: 'Все новости', href: '/news' }}
@@ -282,6 +309,19 @@ export function HomePage({ avatar, userName, todaySchedule, unreadMessagesCount,
       </Box>
     </Box>
   );
+}
+
+const ANIM_STEP_MS = 80;
+
+function fadeSlideUp(index: number): object {
+  return {
+    '@keyframes fadeSlideUp': {
+      from: { opacity: 0, transform: 'translateY(14px)' },
+      to: { opacity: 1, transform: 'translateY(0)' },
+    },
+    animation: `fadeSlideUp 0.38s ease both`,
+    animationDelay: `${index * ANIM_STEP_MS}ms`,
+  };
 }
 
 function pluralPairs(n: number): string {
@@ -308,8 +348,9 @@ function QuickStatCard({ href, icon, label, value, color }: QuickStatCardProps) 
         textDecoration: 'none',
         color: 'inherit',
         borderRadius: 2.5,
-        '&:hover': { boxShadow: 4 },
-        transition: 'box-shadow 0.15s ease',
+        '&:hover': { boxShadow: 4, transform: 'translateY(-2px)' },
+        '&:active': { transform: 'scale(0.97)' },
+        transition: 'box-shadow 0.18s ease, transform 0.18s ease',
       }}
     >
       <Box sx={{ p: 1.5, display: 'flex', flexDirection: 'column', gap: 0.75, alignItems: 'flex-start' }}>
@@ -330,11 +371,12 @@ interface SectionProps {
   icon: React.ReactNode;
   action?: { label: string; href: string };
   children: React.ReactNode;
+  animIndex?: number;
 }
 
-function Section({ title, icon, action, children }: SectionProps) {
+function Section({ title, icon, action, children, animIndex }: SectionProps) {
   return (
-    <Box sx={{ mb: 2.5 }}>
+    <Box sx={{ mb: 2.5, ...(animIndex !== undefined ? fadeSlideUp(animIndex) : {}) }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: 'text.secondary' }}>
           {icon}
