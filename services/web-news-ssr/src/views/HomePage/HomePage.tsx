@@ -72,6 +72,7 @@ interface Props {
   avatar: string | null;
   userName: string;
   lessons: LessonSlot[];
+  currentLesson: LessonSlot | null;
   nextLesson: LessonSlot | null;
   greeting: string;
   dateLabel: string;
@@ -84,6 +85,7 @@ export function HomePage({
   avatar,
   userName,
   lessons,
+  currentLesson,
   nextLesson,
   greeting,
   dateLabel,
@@ -139,7 +141,14 @@ export function HomePage({
             {firstName ? `, ${firstName}` : ''}!
           </Typography>
 
-          {nextLesson ? (
+          {currentLesson ? (
+            <Box sx={{ mt: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <SchoolIcon sx={{ fontSize: 14, opacity: 0.8 }} />
+              <Typography variant="caption" sx={{ opacity: 0.85 }}>
+                Идёт сейчас: {currentLesson.subject_name} — до {formatTime(currentLesson.end_time)}
+              </Typography>
+            </Box>
+          ) : nextLesson ? (
             <Box sx={{ mt: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
               <AccessTimeIcon sx={{ fontSize: 14, opacity: 0.8 }} />
               <Typography variant="caption" sx={{ opacity: 0.85 }}>

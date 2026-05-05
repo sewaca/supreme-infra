@@ -34,9 +34,15 @@ function dateLabelMoscow(now: Date): string {
   return now.toLocaleDateString('ru-RU', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' });
 }
 
-function nextLessonMoscow(now: Date, lessons: LessonSlot[]): LessonSlot | null {
-  const currentTime = now.toLocaleTimeString('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
-  return lessons.find((l) => l.start_time.slice(0, 5) > currentTime) ?? null;
+function timeMoscow(now: Date): string {
+  return now.toLocaleTimeString('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+}
+
+function activeLessonsMoscow(now: Date, lessons: LessonSlot[]): { current: LessonSlot | null; next: LessonSlot | null } {
+  const t = timeMoscow(now);
+  const current = lessons.find((l) => l.start_time.slice(0, 5) <= t && l.end_time.slice(0, 5) > t) ?? null;
+  const next = lessons.find((l) => l.start_time.slice(0, 5) > t) ?? null;
+  return { current, next };
 }
 
 export default async function Page() {
@@ -84,13 +90,20 @@ export default async function Page() {
   }
 
   const lessons = todaySchedule?.lessons ?? [];
+  const { current: currentLesson, next: nextLesson } = activeLessonsMoscow(now, lessons);
+
+  console.log(
+    `[home] now=${now.toISOString()} moscow=${timeMoscow(now)} today=${today} lessons=${lessons.length}` +
+      ` current=${currentLesson?.subject_name ?? 'none'} next=${nextLesson?.subject_name ?? 'none'}`,
+  );
 
   return (
     <HomePage
       avatar={avatar}
       userName={userName}
       lessons={lessons}
-      nextLesson={nextLessonMoscow(now, lessons)}
+      currentLesson={currentLesson}
+      nextLesson={nextLesson}
       greeting={greetingMoscow(now)}
       dateLabel={dateLabelMoscow(now)}
       unreadMessagesCount={unreadMessagesCount}
