@@ -95,7 +95,7 @@ export default async function Page() {
   const lessons = todaySchedule?.lessons ?? [];
   const { current: currentLesson, next: nextLesson } = activeLessonsMoscow(now, lessons);
 
-  console.log(
+  console.debug(
     `[home] now=${now.toISOString()} moscow=${timeMoscow(now)} today=${today} lessons=${lessons.length}` +
       ` current=${currentLesson?.subject_name ?? 'none'} next=${nextLesson?.subject_name ?? 'none'}`,
   );

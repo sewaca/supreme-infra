@@ -37,7 +37,8 @@ export function createServerFetch(qos?: QoSOptions): typeof fetch {
     const method = (
       (init?.method ?? (input instanceof Request ? input.method : undefined) ?? 'GET') as string
     ).toUpperCase();
-    const label = `${method} ${url}`;
+    const traceId = Math.random().toString(36).slice(2, 10);
+    const label = `[${traceId}] ${method} ${url}`;
     const isSafe = SAFE_METHODS.has(method);
 
     const doFetch = async (): Promise<Response> => {
