@@ -1,0 +1,38 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.sign {
+  height: 28px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.text {
+  display: none;
+  font-family: var(--font-roboto, var(--font-family-primary));
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  gap: 4px;
+}
+
+@media (min-width: 600px) {
+  .text {
+    display: flex;
+    align-items: baseline;
+  }
+}
+
+.lk {
+  color: var(--color-text-primary, #2e2e30);
+}
+
+.spbgut {
+  color: #ff970f;
+}

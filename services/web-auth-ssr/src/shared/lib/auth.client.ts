@@ -71,7 +71,6 @@ export async function login(data: {
     throw new Error(detail ?? 'Request failed');
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: hey-api infers response data as keyof union, need double cast
   return result as unknown as AuthResponse;
 }
 
@@ -132,7 +131,6 @@ export async function getCurrentUser(token: string): Promise<UserInfo> {
     throw new Error(detail ?? 'Request failed');
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: hey-api infers response data as keyof union, need double cast
   return data as unknown as UserInfo;
 }
 

@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
@@ -77,6 +78,7 @@ export function CalendarPage({
       elevation={0}
     >
       <NavBar
+        leftSlot={<AppLogo />}
         center={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Typography variant="title1">Расписание</Typography>

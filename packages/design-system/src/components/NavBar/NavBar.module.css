@@ -6,7 +6,15 @@
   padding: var(--spacing-xs) var(--spacing-md);
 }
 
-.leftSlot,
+.leftSlot {
+  min-width: 40px;
+  width: auto;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .rightSlot {
   width: 40px;
   height: 40px;

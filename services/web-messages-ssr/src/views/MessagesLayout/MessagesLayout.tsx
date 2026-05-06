@@ -1,6 +1,7 @@
 'use client';
 
 import { Typography } from '@mui/material';
+import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import classNames from 'classnames';
 import { usePathname } from 'next/navigation';
@@ -124,7 +125,7 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
   return (
     <div className={styles.wrapper}>
       <NavBar
-        leftSlot={null}
+        leftSlot={<AppLogo />}
         center={
           <Typography variant="title1" fontWeight={600}>
             Сообщения

@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography';
 import type { ApplicationNotificationResponse } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
 import type { LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
+import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 
@@ -98,7 +99,7 @@ export function HomePage({
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <NavBar
-        leftSlot={null}
+        leftSlot={<AppLogo />}
         center={
           <Typography variant="title1" fontWeight={600}>
             Главная
