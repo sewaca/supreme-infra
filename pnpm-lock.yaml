@@ -440,9 +440,6 @@ importers:
 
   packages/authorization-lib:
     dependencies:
-      '@hey-api/client-fetch':
-        specifier: 'catalog:'
-        version: 0.4.3
       '@opentelemetry/api':
         specifier: 'catalog:'
         version: 1.9.0
