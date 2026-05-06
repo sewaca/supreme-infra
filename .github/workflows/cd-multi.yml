@@ -68,6 +68,13 @@ on:
         required: false
         type: boolean
         default: false
+      deployment-options:
+        description: "Deployment Options"
+        required: false
+        type: choice
+        options:
+          - "────────────────────────────────────────"
+        default: "────────────────────────────────────────"
       skip-canary:
         description: "Skip canary deployment and go directly to production"
         required: false

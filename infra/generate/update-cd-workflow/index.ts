@@ -25,6 +25,9 @@ interface ServicesYaml {
   };
 }
 
+// Inputs in cd-multi.yml that are not service booleans (generator must not touch them)
+const NON_SERVICE_INPUTS = new Set(['deployment-options', 'skip-canary']);
+
 export async function updateCdWorkflow(): Promise<void> {
   console.log('\n🔄 Updating CD workflow...\n');
 
@@ -98,4 +101,57 @@ export async function updateCdWorkflow(): Promise<void> {
       console.log(`  - ${name}: uses secret ${passwordSecret}`);
     }
   }
+
+  // Also update cd-multi.yml
+  await updateCdMultiWorkflow(allServices, projectRoot);
+}
+
+async function updateCdMultiWorkflow(allServices: string[], projectRoot: string): Promise<void> {
+  console.log('\n🔄 Updating CD Multi workflow...\n');
+
+  const cdMultiWorkflowPath = path.join(projectRoot, '.github/workflows/cd-multi.yml');
+
+  if (!fs.existsSync(cdMultiWorkflowPath)) {
+    console.log('  ⚠️  cd-multi.yml not found, skipping');
+    return;
+  }
+
+  const cdMultiContent = fs.readFileSync(cdMultiWorkflowPath, 'utf-8');
+  const cdMultiWorkflow = yaml.parseDocument(cdMultiContent);
+
+  const inputs = cdMultiWorkflow.getIn(['on', 'workflow_dispatch', 'inputs'], true) as yaml.YAMLMap | undefined;
+
+  if (!inputs || !yaml.isMap(inputs)) {
+    console.log('  ⚠️  Could not find inputs map in cd-multi.yml');
+    return;
+  }
+
+  // Preserve non-service input pairs (separator + skip-canary) in original order
+  const preservedPairs = inputs.items.filter((item) =>
+    NON_SERVICE_INPUTS.has(String((item as yaml.Pair).key)),
+  ) as yaml.Pair[];
+
+  // Rebuild: clear all items, add sorted service booleans, then preserved inputs
+  inputs.items = [];
+
+  for (const serviceName of allServices) {
+    const serviceInputNode = cdMultiWorkflow.createNode({
+      description: serviceName,
+      required: false,
+      type: 'boolean',
+      default: false,
+    });
+    inputs.add(new yaml.Pair(cdMultiWorkflow.createNode(serviceName), serviceInputNode));
+  }
+
+  for (const pair of preservedPairs) {
+    inputs.items.push(pair);
+  }
+
+  const updatedContent = cdMultiWorkflow.toString();
+  fs.writeFileSync(cdMultiWorkflowPath, updatedContent, 'utf-8');
+  await formatWorkflowYamlWithPrettier(cdMultiWorkflowPath);
+
+  console.log(`✅ Updated: ${cdMultiWorkflowPath}`);
+  console.log(`  Services: ${allServices.join(', ')}`);
 }
