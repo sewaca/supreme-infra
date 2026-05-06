@@ -36,6 +36,7 @@ export function createRouteAuthMiddleware({ routes }: Props) {
     // auth_level === 'valid': JWT verify + session check
     const token = request.cookies.get(COOKIE_NAME)?.value;
     if (!token) {
+      console.debug(`[auth-middleware] No token presented in request to path=${pathname}`);
       return redirectToLogin(request);
     }
 
@@ -47,7 +48,7 @@ export function createRouteAuthMiddleware({ routes }: Props) {
 
     const { valid, durationMs: jwtMs } = await verifyJwt({ token, secret: jwtSecret });
     if (!valid) {
-      console.log(`[auth-middleware] JWT invalid (${jwtMs.toFixed(1)}ms) path=${pathname}`);
+      console.debug(`[auth-middleware] JWT invalid (${jwtMs.toFixed(1)}ms) path=${pathname}`);
       return redirectToLogin(request);
     }
 

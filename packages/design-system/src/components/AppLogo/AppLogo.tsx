@@ -1,5 +1,5 @@
-import styles from './AppLogo.module.css';
 import cx from 'classnames';
+import styles from './AppLogo.module.css';
 
 type Props = {
   href?: string;

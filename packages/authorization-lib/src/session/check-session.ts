@@ -1,3 +1,5 @@
+import { createClient, createConfig } from '@supreme-int/api-client/src/generated/core-auth/client';
+import { validateSessionAuthValidateSessionPost } from '@supreme-int/api-client/src/generated/core-auth/sdk.gen';
 import { sessionCheckDuration, sessionCheckTotal } from '../metrics/auth-metrics';
 
 export type SessionStatus = 'valid' | 'revoked' | 'expired' | 'invalid' | 'error';
@@ -19,21 +21,25 @@ export async function checkSession({
   const start = performance.now();
 
   try {
-    // TODO: use packages/api-client instead of fetch
-    const res = await fetch(`${coreAuthUrl}/auth/validate-session`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
-      signal: AbortSignal.timeout(timeoutMs),
+    const coreAuthClient = createClient(
+      createConfig({
+        baseUrl: coreAuthUrl,
+        fetch: (input, init) => globalThis.fetch(input, { ...init, signal: AbortSignal.timeout(timeoutMs) }),
+      }),
+    );
+
+    const result = await validateSessionAuthValidateSessionPost({
+      client: coreAuthClient,
+      body: { token },
     });
 
-    const data = (await res.json()) as { status: SessionStatus };
     const durationMs = performance.now() - start;
+    const status = (result.data?.status ?? 'error') as SessionStatus;
 
-    sessionCheckDuration.record(durationMs, { status: data.status });
-    sessionCheckTotal.add(1, { status: data.status });
+    sessionCheckDuration.record(durationMs, { status });
+    sessionCheckTotal.add(1, { status });
 
-    return { status: data.status, durationMs };
+    return { status, durationMs };
   } catch {
     const durationMs = performance.now() - start;
 
