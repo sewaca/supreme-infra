@@ -1,0 +1,699 @@
+name: Multi-Service Release Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      core-applications:
+        description: "core-applications"
+        required: false
+        type: boolean
+        default: false
+      core-auth:
+        description: "core-auth"
+        required: false
+        type: boolean
+        default: false
+      core-client-info:
+        description: "core-client-info"
+        required: false
+        type: boolean
+        default: false
+      core-messages:
+        description: "core-messages"
+        required: false
+        type: boolean
+        default: false
+      core-news:
+        description: "core-news"
+        required: false
+        type: boolean
+        default: false
+      core-schedule:
+        description: "core-schedule"
+        required: false
+        type: boolean
+        default: false
+      system-files-storage:
+        description: "system-files-storage"
+        required: false
+        type: boolean
+        default: false
+      web-auth-ssr:
+        description: "web-auth-ssr"
+        required: false
+        type: boolean
+        default: false
+      web-documents-ssr:
+        description: "web-documents-ssr"
+        required: false
+        type: boolean
+        default: false
+      web-messages-ssr:
+        description: "web-messages-ssr"
+        required: false
+        type: boolean
+        default: false
+      web-news-ssr:
+        description: "web-news-ssr"
+        required: false
+        type: boolean
+        default: false
+      web-profile-ssr:
+        description: "web-profile-ssr"
+        required: false
+        type: boolean
+        default: false
+      web-schedule-ssr:
+        description: "web-schedule-ssr"
+        required: false
+        type: boolean
+        default: false
+      skip-canary:
+        description: "Skip canary deployment and go directly to production"
+        required: false
+        type: boolean
+        default: false
+
+env:
+  HELM_VERSION: "v3.16.3"
+
+jobs:
+  # ============================================
+  # PREPARATION
+  # ============================================
+
+  prepare-services:
+    name: Prepare services list
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.build-list.outputs.services }}
+      services-display: ${{ steps.build-list.outputs.services-display }}
+    steps:
+      - name: Verify branch is main
+        run: |
+          if [ "${{ github.ref_name }}" != "main" ]; then
+            echo "Error: Multi-service deployment must be run from the main branch"
+            exit 1
+          fi
+
+      - name: Build services list from inputs
+        id: build-list
+        run: |
+          SERVICES=()
+
+          [[ "${{ github.event.inputs.core-applications }}" == "true" ]] && SERVICES+=("core-applications")
+          [[ "${{ github.event.inputs.core-auth }}" == "true" ]] && SERVICES+=("core-auth")
+          [[ "${{ github.event.inputs.core-client-info }}" == "true" ]] && SERVICES+=("core-client-info")
+          [[ "${{ github.event.inputs.core-messages }}" == "true" ]] && SERVICES+=("core-messages")
+          [[ "${{ github.event.inputs.core-news }}" == "true" ]] && SERVICES+=("core-news")
+          [[ "${{ github.event.inputs.core-schedule }}" == "true" ]] && SERVICES+=("core-schedule")
+          [[ "${{ github.event.inputs.system-files-storage }}" == "true" ]] && SERVICES+=("system-files-storage")
+          [[ "${{ github.event.inputs.web-auth-ssr }}" == "true" ]] && SERVICES+=("web-auth-ssr")
+          [[ "${{ github.event.inputs.web-documents-ssr }}" == "true" ]] && SERVICES+=("web-documents-ssr")
+          [[ "${{ github.event.inputs.web-messages-ssr }}" == "true" ]] && SERVICES+=("web-messages-ssr")
+          [[ "${{ github.event.inputs.web-news-ssr }}" == "true" ]] && SERVICES+=("web-news-ssr")
+          [[ "${{ github.event.inputs.web-profile-ssr }}" == "true" ]] && SERVICES+=("web-profile-ssr")
+          [[ "${{ github.event.inputs.web-schedule-ssr }}" == "true" ]] && SERVICES+=("web-schedule-ssr")
+
+          if [ ${#SERVICES[@]} -eq 0 ]; then
+            echo "Error: No services selected. Please check at least one service."
+            exit 1
+          fi
+
+          SERVICES_JSON=$(printf '%s\n' "${SERVICES[@]}" | jq -R . | jq -sc .)
+          SERVICES_DISPLAY=$(IFS=', '; echo "${SERVICES[*]}")
+
+          echo "Selected services: $SERVICES_DISPLAY"
+          echo "services=$SERVICES_JSON" >> $GITHUB_OUTPUT
+          echo "services-display=$SERVICES_DISPLAY" >> $GITHUB_OUTPUT
+
+  # ============================================
+  # VERSION CALCULATION
+  # ============================================
+
+  get-latest-release-version:
+    name: Get latest release version for ${{ matrix.service-name }}
+    needs: [prepare-services]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Get latest release version
+        id: get-version
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          ALL_TAGS=$(git tag -l "${SERVICE_NAME}-v*" 2>/dev/null | grep -E "^${SERVICE_NAME}-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V || echo "")
+
+          echo "All tags for ${SERVICE_NAME}:"
+          echo "$ALL_TAGS"
+
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+
+          if [ -z "$LATEST_TAG" ]; then
+            VERSION="0.0.0"
+            RELEASE_TAG=""
+            echo "No previous release found for $SERVICE_NAME, starting from version: $VERSION"
+          else
+            VERSION=$(echo "$LATEST_TAG" | sed "s/^${SERVICE_NAME}-v//")
+            RELEASE_TAG="$LATEST_TAG"
+            echo "Latest release for $SERVICE_NAME: $LATEST_TAG, version: $VERSION"
+          fi
+
+          echo "$VERSION" > "version_${SERVICE_NAME}.txt"
+          echo "$RELEASE_TAG" > "release_tag_${SERVICE_NAME}.txt"
+
+      - name: Upload version files
+        uses: actions/upload-artifact@v5
+        with:
+          name: version-${{ matrix.service-name }}
+          path: |
+            version_${{ matrix.service-name }}.txt
+            release_tag_${{ matrix.service-name }}.txt
+
+  calculate-new-version:
+    name: Calculate new version for ${{ matrix.service-name }}
+    needs: [prepare-services, get-latest-release-version]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Download version files
+        uses: actions/download-artifact@v5
+        with:
+          name: version-${{ matrix.service-name }}
+
+      - name: Calculate new version from commits
+        id: calculate-version
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          CURRENT_VERSION=$(cat "version_${SERVICE_NAME}.txt")
+          RELEASE_TAG=$(cat "release_tag_${SERVICE_NAME}.txt")
+
+          echo "Current version: $CURRENT_VERSION"
+          echo "Release tag: $RELEASE_TAG"
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+          if [ -z "$RELEASE_TAG" ]; then
+            echo "No previous release tag, getting all commits"
+            COMMITS=$(git log --pretty=format:"%s" --reverse)
+          else
+            echo "Getting commits since $RELEASE_TAG"
+            COMMITS=$(git log "$RELEASE_TAG"..HEAD --pretty=format:"%s" --reverse 2>/dev/null || git log --pretty=format:"%s" --reverse)
+          fi
+
+          echo "Commits to analyze:"
+          echo "$COMMITS"
+
+          HAS_MAJOR=false
+          HAS_MINOR=false
+          HAS_FIX=false
+          CHANGELOG=""
+
+          while IFS= read -r commit_msg; do
+            [ -z "$commit_msg" ] && continue
+            CHANGELOG="${CHANGELOG}- ${commit_msg}\n"
+            case "$commit_msg" in
+              major:*|BREAKING*) HAS_MAJOR=true ;;
+              minor:*|feat:*) HAS_MINOR=true ;;
+              fix:*|patch:*) HAS_FIX=true ;;
+            esac
+          done <<< "$COMMITS"
+
+          if [ "$HAS_MAJOR" = true ]; then
+            NEW_VERSION="$((MAJOR + 1)).0.0"
+          elif [ "$HAS_MINOR" = true ]; then
+            NEW_VERSION="${MAJOR}.$((MINOR + 1)).0"
+          elif [ "$HAS_FIX" = true ]; then
+            NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          else
+            NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          fi
+
+          echo "Version bump: $CURRENT_VERSION -> $NEW_VERSION"
+
+          echo "$NEW_VERSION" > "new_version_${SERVICE_NAME}.txt"
+          echo -e "$CHANGELOG" > "changelog_${SERVICE_NAME}.txt"
+
+      - name: Upload new version files
+        uses: actions/upload-artifact@v5
+        with:
+          name: new-version-${{ matrix.service-name }}
+          path: |
+            new_version_${{ matrix.service-name }}.txt
+            changelog_${{ matrix.service-name }}.txt
+
+  # ============================================
+  # BUILD
+  # ============================================
+
+  build-image-to-docker-hub:
+    name: Build and push image for ${{ matrix.service-name }}
+    needs: [prepare-services, calculate-new-version]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Download new version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version-${{ matrix.service-name }}
+
+      - name: Get version for service
+        id: get-version
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt" | tr -d '[:space:]')
+
+          if [ -z "$VERSION" ] || ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: Invalid version format: '$VERSION'"
+            exit 1
+          fi
+
+          echo "Building $SERVICE_NAME with version $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./services/${{ matrix.service-name }}/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/supreme:production-${{
+            matrix.service-name }}-v${{ steps.get-version.outputs.version }}
+          cache-to: type=inline
+
+  # ============================================
+  # RELEASE BRANCH & GITHUB RELEASE
+  # ============================================
+
+  create-release-branch:
+    name: Create release branch for ${{ matrix.service-name }}
+    needs: [prepare-services, calculate-new-version, build-image-to-docker-hub]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download new version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version-${{ matrix.service-name }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "246592117+madara-robot@users.noreply.github.com"
+          git config --global user.name "madara-robot"
+
+      - name: Create release branch
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
+          BRANCH_NAME="releases/production/${SERVICE_NAME}-${VERSION}"
+
+          git fetch origin
+
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists, skipping"
+          else
+            echo "Creating new branch $BRANCH_NAME"
+            git checkout -b "$BRANCH_NAME"
+            git push -u origin "$BRANCH_NAME"
+            echo "Created branch $BRANCH_NAME"
+          fi
+
+  create-github-release:
+    name: Create GitHub release for ${{ matrix.service-name }}
+    needs: [prepare-services, calculate-new-version, create-release-branch]
+    if: always() && needs.create-release-branch.result == 'success'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Download new version files
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version-${{ matrix.service-name }}
+
+      - name: Install GitHub CLI
+        uses: ./.github/workflows/jobs/install-github-cli
+
+      - name: Prepare release info
+        id: get-release-info
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+        run: |
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt")
+          CHANGELOG=$(cat "changelog_${SERVICE_NAME}.txt" 2>/dev/null || echo "")
+
+          TAG_NAME="${SERVICE_NAME}-v${VERSION}"
+          RELEASE_NAME="Release ${SERVICE_NAME} v${VERSION}"
+
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+
+          CHANGELOG_LINES=$(echo "$CHANGELOG" | wc -l)
+
+          {
+            echo "# $RELEASE_NAME"
+            echo ""
+            echo "## Changelog"
+            if [ -n "$CHANGELOG" ]; then
+              if [ "$CHANGELOG_LINES" -gt 12 ]; then
+                echo "<details><summary>view full changelog</summary>"
+                echo ""
+                echo "$CHANGELOG"
+                echo ""
+                echo "</details>"
+              else
+                echo "$CHANGELOG"
+              fi
+            else
+              echo "No changes"
+            fi
+            echo ""
+            echo "## Docker Image"
+            echo "\`$DOCKER_HUB_USERNAME/supreme:production-${SERVICE_NAME}-v$VERSION\`"
+          } > "release_body_${SERVICE_NAME}.txt"
+
+      - name: Create GitHub Release
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+          TAG_NAME: ${{ steps.get-release-info.outputs.tag_name }}
+          RELEASE_NAME: ${{ steps.get-release-info.outputs.release_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BODY_FILE="release_body_${SERVICE_NAME}.txt"
+
+          if gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists, skipping"
+            exit 0
+          fi
+
+          echo "Creating release $TAG_NAME"
+          gh release create "$TAG_NAME" \
+            --title "$RELEASE_NAME" \
+            --notes-file "$BODY_FILE" \
+            --repo "$GITHUB_REPOSITORY"
+
+  # ============================================
+  # CANARY DEPLOYMENT
+  # ============================================
+
+  deploy-canary:
+    name: Deploy canary for ${{ matrix.service-name }}
+    needs: [prepare-services, calculate-new-version, create-release-branch, create-github-release]
+    if: |
+      always() &&
+      needs.create-release-branch.result == 'success' &&
+      github.event.inputs.skip-canary != 'true'
+    runs-on: ubuntu-latest
+    environment: canary
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Download new version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version-${{ matrix.service-name }}
+
+      - name: Get version
+        id: get-version
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt" | tr -d '[:space:]')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Determine service type
+        id: get-service-type
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          if ! command -v yq &> /dev/null; then
+            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            sudo chmod +x /usr/local/bin/yq
+          fi
+
+          IS_NEST=$(yq eval ".services.nest[] | select(.name == \"$SERVICE_NAME\") | .name" services.yaml)
+          IS_NEXT=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .name" services.yaml)
+          IS_FASTAPI=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .name" services.yaml)
+
+          if [ -n "$IS_NEST" ]; then
+            SERVICE_TYPE="nest"
+          elif [ -n "$IS_NEXT" ]; then
+            SERVICE_TYPE="next"
+          elif [ -n "$IS_FASTAPI" ]; then
+            SERVICE_TYPE="fastapi"
+          else
+            echo "Error: Service $SERVICE_NAME not found in services.yaml"
+            exit 1
+          fi
+
+          echo "service-type=$SERVICE_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Setup Yandex Cloud
+        uses: ./.github/workflows/jobs/setup-yandex-cloud
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
+          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
+          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Get current replica count
+        id: get-replicas
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          CURRENT_REPLICAS=$(kubectl get deployment "$SERVICE_NAME" -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "2")
+          CANARY_REPLICAS=$(( (CURRENT_REPLICAS + 1) / 2 ))
+          [ "$CANARY_REPLICAS" -lt 1 ] && CANARY_REPLICAS=1
+          echo "canary_replicas=$CANARY_REPLICAS" >> $GITHUB_OUTPUT
+
+      - name: Get database password secret name
+        id: get-db-secret
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          DB_SECRET=$(yq eval ".services.nest[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET="DB_PASSWORD"
+          fi
+
+          echo "secret_name=$DB_SECRET" >> $GITHUB_OUTPUT
+
+      - name: Deploy canary with Helm
+        uses: ./.github/workflows/jobs/deploy-helm
+        with:
+          service-name: ${{ matrix.service-name }}
+          service-type: ${{ steps.get-service-type.outputs.service-type }}
+          version: ${{ steps.get-version.outputs.version }}
+          docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          canary-enabled: "true"
+          canary-replicas: ${{ steps.get-replicas.outputs.canary_replicas }}
+          jwt-secret: ${{ secrets.JWT_SECRET }}
+          db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}
+          minio-secret-key: ${{ secrets.MINIO_SECRET_KEY }}
+
+  approve-canary:
+    name: Approve canary promotion to production
+    needs: [prepare-services, deploy-canary]
+    if: |
+      always() &&
+      needs.deploy-canary.result == 'success' &&
+      github.event.inputs.skip-canary != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Wait for manual approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: ${{ github.actor }}
+          minimum-approvals: 1
+          issue-title: "Approve canary promotion: ${{ needs.prepare-services.outputs.services-display }}"
+          issue-body: |
+            Canary deployment completed for the following services:
+
+            **${{ needs.prepare-services.outputs.services-display }}**
+
+            Please verify the canary pods are working correctly before approving promotion to production.
+
+            **To approve:** Comment `approve` or `lgtm`
+            **To deny:** Comment `deny`
+          exclude-workflow-initiator-as-approver: false
+        timeout-minutes: 60
+
+  # ============================================
+  # PRODUCTION DEPLOYMENT
+  # ============================================
+
+  promote-to-production:
+    name: Promote to production for ${{ matrix.service-name }}
+    needs: [prepare-services, calculate-new-version, create-release-branch, create-github-release, approve-canary]
+    if: |
+      always() &&
+      needs.create-release-branch.result == 'success' &&
+      needs.create-github-release.result == 'success' &&
+      (needs.approve-canary.result == 'success' || needs.approve-canary.result == 'skipped' || github.event.inputs.skip-canary == 'true')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service-name: ${{ fromJSON(needs.prepare-services.outputs.services) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Download new version file
+        uses: actions/download-artifact@v5
+        with:
+          name: new-version-${{ matrix.service-name }}
+
+      - name: Get version
+        id: get-version
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          VERSION=$(cat "new_version_${SERVICE_NAME}.txt" | tr -d '[:space:]')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Determine service type
+        id: get-service-type
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          if ! command -v yq &> /dev/null; then
+            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            sudo chmod +x /usr/local/bin/yq
+          fi
+
+          IS_NEST=$(yq eval ".services.nest[] | select(.name == \"$SERVICE_NAME\") | .name" services.yaml)
+          IS_NEXT=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .name" services.yaml)
+          IS_FASTAPI=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .name" services.yaml)
+
+          if [ -n "$IS_NEST" ]; then
+            SERVICE_TYPE="nest"
+          elif [ -n "$IS_NEXT" ]; then
+            SERVICE_TYPE="next"
+          elif [ -n "$IS_FASTAPI" ]; then
+            SERVICE_TYPE="fastapi"
+          else
+            echo "Error: Service $SERVICE_NAME not found in services.yaml"
+            exit 1
+          fi
+
+          echo "service-type=$SERVICE_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Setup Yandex Cloud
+        uses: ./.github/workflows/jobs/setup-yandex-cloud
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-cloud-id: ${{ secrets.YC_CLOUD_ID }}
+          yc-folder-id: ${{ secrets.YC_FOLDER_ID }}
+          yc-k8s-cluster-id: ${{ secrets.YC_K8S_CLUSTER_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Get database password secret name
+        id: get-db-secret
+        env:
+          SERVICE_NAME: ${{ matrix.service-name }}
+        run: |
+          if ! command -v yq &> /dev/null; then
+            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            sudo chmod +x /usr/local/bin/yq
+          fi
+
+          DB_SECRET=$(yq eval ".services.nest[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.next[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET=$(yq eval ".services.fastapi[] | select(.name == \"$SERVICE_NAME\") | .database.passwordSecret" services.yaml)
+          fi
+
+          if [ -z "$DB_SECRET" ] || [ "$DB_SECRET" = "null" ]; then
+            DB_SECRET="DB_PASSWORD"
+          fi
+
+          echo "secret_name=$DB_SECRET" >> $GITHUB_OUTPUT
+
+      - name: Promote to production
+        uses: ./.github/workflows/jobs/deploy-helm
+        with:
+          service-name: ${{ matrix.service-name }}
+          service-type: ${{ steps.get-service-type.outputs.service-type }}
+          version: ${{ steps.get-version.outputs.version }}
+          docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          canary-enabled: "false"
+          atomic: "true"
+          jwt-secret: ${{ secrets.JWT_SECRET }}
+          db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}
+          minio-secret-key: ${{ secrets.MINIO_SECRET_KEY }}
