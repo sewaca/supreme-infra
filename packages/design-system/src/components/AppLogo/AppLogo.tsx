@@ -1,8 +1,14 @@
 import styles from './AppLogo.module.css';
+import cx from 'classnames';
 
-export function AppLogo() {
-  return (
-    <div className={styles.logo}>
+type Props = {
+  href?: string;
+  light?: boolean;
+};
+
+export function AppLogo({ href, light }: Props) {
+  const inner = (
+    <>
       <svg
         className={styles.sign}
         viewBox="0 0 99 98"
@@ -22,6 +28,16 @@ export function AppLogo() {
         <span className={styles.lk}>ЛК</span>
         <span className={styles.spbgut}>СПбГУТ</span>
       </span>
-    </div>
+    </>
   );
+
+  if (href) {
+    return (
+      <a href={href} className={cx(styles.logo, { [styles.light]: light })} aria-label="ЛК СПбГУТ — на главную">
+        {inner}
+      </a>
+    );
+  }
+
+  return <div className={cx(styles.logo, { [styles.light]: light })}>{inner}</div>;
 }

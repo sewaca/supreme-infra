@@ -98,15 +98,7 @@ export function HomePage({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <NavBar
-        leftSlot={<AppLogo />}
-        center={
-          <Typography variant="title1" fontWeight={600}>
-            Главная
-          </Typography>
-        }
-        rightSlot={<ProfileButton avatar={avatar} name={userName} />}
-      />
+      <NavBar leftSlot={<AppLogo href="/" />} rightSlot={<ProfileButton avatar={avatar} name={userName} />} />
 
       <Box sx={{ flex: 1, overflow: 'auto', px: 2, pb: 2 }}>
         {/* Greeting hero */}

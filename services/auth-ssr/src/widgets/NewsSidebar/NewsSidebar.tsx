@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
+import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
 import type { NewsItem } from '../../shared/api/universityNews';
 import { getNewsUrl } from '../../shared/api/universityNews';
 
@@ -54,31 +55,13 @@ export function NewsSidebar({ news }: NewsSidebarProps) {
 
       {/* University header */}
       <Box sx={{ position: 'relative', zIndex: 1, mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
-          <Box
-            sx={{
-              width: 36,
-              height: 36,
-              borderRadius: 1.5,
-              bgcolor: 'rgba(255,255,255,0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.25rem',
-              border: '1px solid rgba(255,255,255,0.2)',
-            }}
-          >
-            🎓
-          </Box>
-          <Box>
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', display: 'block', lineHeight: 1.2 }}>
-              Личный кабинет студента
-            </Typography>
-            <Typography variant="subtitle2" sx={{ color: 'white', fontWeight: 700, letterSpacing: '0.02em' }}>
-              СПбГУТ им. проф. М.А. Бонч-Бруевича
-            </Typography>
-          </Box>
-        </Box>
+        <AppLogo light href="/" />
+        <Typography
+          variant="caption"
+          sx={{ color: 'rgba(255,255,255,0.5)', display: 'block', mt: 0.75, lineHeight: 1.3 }}
+        >
+          им. проф. М.А. Бонч-Бруевича
+        </Typography>
       </Box>
 
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', mb: 2.5 }} />

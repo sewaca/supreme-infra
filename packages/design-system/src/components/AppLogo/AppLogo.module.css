@@ -4,6 +4,7 @@
   gap: 7px;
   user-select: none;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .sign {
@@ -35,4 +36,8 @@
 
 .spbgut {
   color: #ff970f;
+}
+
+.light .lk {
+  color: rgba(255, 255, 255, 0.95);
 }

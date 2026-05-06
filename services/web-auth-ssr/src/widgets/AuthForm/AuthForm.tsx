@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
 import { PasswordInput } from '@supreme-int/design-system/src/components/PasswordInput/PasswordInput';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -326,19 +327,30 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   if (mode === 'register') {
     return (
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          p: { xs: 3, sm: 5, md: 6 },
-          bgcolor: 'background.paper',
-          minHeight: '100vh',
-        }}
-      >
-        <RegisterForm />
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', minHeight: '100vh' }}>
+        <Box
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+            px: 3,
+            py: 1.5,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <AppLogo href="/" />
+        </Box>
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: { xs: 3, sm: 5, md: 6 },
+          }}
+        >
+          <RegisterForm />
+        </Box>
       </Box>
     );
   }
@@ -360,94 +372,99 @@ export function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: { xs: 3, sm: 5, md: 6 },
-        bgcolor: 'background.paper',
-        minHeight: '100vh',
-      }}
-    >
-      <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: 420 }}>
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-            Вход в личный кабинет
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', minHeight: '100vh' }}>
+      <Box
+        sx={{ display: { xs: 'flex', md: 'none' }, px: 3, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}
+      >
+        <AppLogo href="/" />
+      </Box>
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: { xs: 3, sm: 5, md: 6 },
+        }}
+      >
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: 420 }}>
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+              Вход в личный кабинет
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Введите данные для входа в систему
+            </Typography>
+          </Box>
+
+          <Collapse in={!!error} unmountOnExit>
+            <Alert severity="error" sx={{ mb: 2.5 }} onClose={() => setError('')}>
+              {error}
+            </Alert>
+          </Collapse>
+
+          <TextField
+            fullWidth
+            label="Email"
+            type="email"
+            autoComplete="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+            sx={{ mb: 2 }}
+          />
+
+          <PasswordInput
+            fullWidth
+            label="Пароль"
+            autoComplete="current-password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            inputProps={{ minLength: 6 }}
+            sx={{ mb: 3 }}
+          />
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            size="large"
+            disabled={isLoading}
+            sx={{
+              mb: 2.5,
+              py: 1.5,
+              fontWeight: 600,
+              fontSize: '1rem',
+              background: BRAND_GRADIENT,
+              boxShadow: '0 4px 15px rgba(26,35,126,0.35)',
+              transition: 'all 0.2s',
+              '&:hover': {
+                background: 'linear-gradient(145deg, #0d1b4b 0%, #1a237e 100%)',
+                boxShadow: '0 6px 20px rgba(26,35,126,0.5)',
+                transform: 'translateY(-1px)',
+              },
+              '&:active': { transform: 'translateY(0)' },
+              '&:disabled': { background: 'rgba(0,0,0,0.12)', boxShadow: 'none' },
+            }}
+          >
+            {isLoading ? <CircularProgress size={22} thickness={3} sx={{ color: 'rgba(255,255,255,0.8)' }} /> : 'Войти'}
+          </Button>
+
+          <Typography variant="body2" align="center" color="text.secondary">
+            Нет аккаунта?{' '}
+            <Link component={NextLink} href="/register" underline="hover" sx={{ fontWeight: 600, color: '#1a237e' }}>
+              Зарегистрироваться
+            </Link>
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Введите данные для входа в систему
+
+          <Typography variant="body2" align="center" color="text.secondary" sx={{ mt: 1 }} fontWeight={600}>
+            <Link component={NextLink} href="/forgot-password" underline="hover" sx={{ color: '#1a237e' }}>
+              Забыли пароль?
+            </Link>
           </Typography>
         </Box>
-
-        <Collapse in={!!error} unmountOnExit>
-          <Alert severity="error" sx={{ mb: 2.5 }} onClose={() => setError('')}>
-            {error}
-          </Alert>
-        </Collapse>
-
-        <TextField
-          fullWidth
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          required
-          sx={{ mb: 2 }}
-        />
-
-        <PasswordInput
-          fullWidth
-          label="Пароль"
-          autoComplete="current-password"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          required
-          inputProps={{ minLength: 6 }}
-          sx={{ mb: 3 }}
-        />
-
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          size="large"
-          disabled={isLoading}
-          sx={{
-            mb: 2.5,
-            py: 1.5,
-            fontWeight: 600,
-            fontSize: '1rem',
-            background: BRAND_GRADIENT,
-            boxShadow: '0 4px 15px rgba(26,35,126,0.35)',
-            transition: 'all 0.2s',
-            '&:hover': {
-              background: 'linear-gradient(145deg, #0d1b4b 0%, #1a237e 100%)',
-              boxShadow: '0 6px 20px rgba(26,35,126,0.5)',
-              transform: 'translateY(-1px)',
-            },
-            '&:active': { transform: 'translateY(0)' },
-            '&:disabled': { background: 'rgba(0,0,0,0.12)', boxShadow: 'none' },
-          }}
-        >
-          {isLoading ? <CircularProgress size={22} thickness={3} sx={{ color: 'rgba(255,255,255,0.8)' }} /> : 'Войти'}
-        </Button>
-
-        <Typography variant="body2" align="center" color="text.secondary">
-          Нет аккаунта?{' '}
-          <Link component={NextLink} href="/register" underline="hover" sx={{ fontWeight: 600, color: '#1a237e' }}>
-            Зарегистрироваться
-          </Link>
-        </Typography>
-
-        <Typography variant="body2" align="center" color="text.secondary" sx={{ mt: 1 }} fontWeight={600}>
-          <Link component={NextLink} href="/forgot-password" underline="hover" sx={{ color: '#1a237e' }}>
-            Забыли пароль?
-          </Link>
-        </Typography>
       </Box>
     </Box>
   );

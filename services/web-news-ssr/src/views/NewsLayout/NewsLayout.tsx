@@ -2,6 +2,7 @@
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 
@@ -15,7 +16,7 @@ export function NewsLayout({ avatar, userName, children }: Props) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <NavBar
-        leftSlot={null}
+        leftSlot={<AppLogo href="/" />}
         center={
           <Typography variant="title1" fontWeight={600}>
             Новости

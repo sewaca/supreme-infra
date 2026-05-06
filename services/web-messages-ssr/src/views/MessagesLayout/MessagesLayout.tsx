@@ -125,7 +125,7 @@ export function MessagesLayout({ initialConversations, userRole, userId, token, 
   return (
     <div className={styles.wrapper}>
       <NavBar
-        leftSlot={<AppLogo />}
+        leftSlot={<AppLogo href="/" />}
         center={
           <Typography variant="title1" fontWeight={600}>
             Сообщения

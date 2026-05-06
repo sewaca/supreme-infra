@@ -78,7 +78,7 @@ export function CalendarPage({
       elevation={0}
     >
       <NavBar
-        leftSlot={<AppLogo />}
+        leftSlot={<AppLogo href="/" />}
         center={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Typography variant="title1">Расписание</Typography>
