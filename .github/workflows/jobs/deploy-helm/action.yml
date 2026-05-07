@@ -38,6 +38,10 @@ inputs:
     description: "MinIO root password (used as S3_SECRET_KEY)"
     required: false
     default: ""
+  smtp-password:
+    description: "SMTP password for email delivery"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -55,6 +59,7 @@ runs:
         JWT_SECRET="${{ inputs.jwt-secret }}"
         DB_PASSWORD="${{ inputs.db-password }}"
         MINIO_SECRET_KEY="${{ inputs.minio-secret-key }}"
+        SMTP_PASSWORD="${{ inputs.smtp-password }}"
 
         # Determine Helm chart path
         if [ "$SERVICE_TYPE" = "nest" ]; then
@@ -94,6 +99,7 @@ runs:
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
+              --set secrets.SMTP_PASSWORD="$SMTP_PASSWORD" \
               --wait --timeout 5m
           else
             # First deploy: need full values
@@ -107,6 +113,7 @@ runs:
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
+              --set secrets.SMTP_PASSWORD="$SMTP_PASSWORD" \
               --install \
               --wait --timeout 5m
           fi
@@ -123,6 +130,7 @@ runs:
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
+              --set secrets.SMTP_PASSWORD="$SMTP_PASSWORD" \
               --install \
               --wait --timeout 5m \
               --atomic
@@ -135,6 +143,7 @@ runs:
               --set secrets.JWT_SECRET="$JWT_SECRET" \
               --set secrets.DB_PASSWORD="$DB_PASSWORD" \
               --set secrets.S3_SECRET_KEY="$MINIO_SECRET_KEY" \
+              --set secrets.SMTP_PASSWORD="$SMTP_PASSWORD" \
               --install \
               --wait --timeout 5m
           fi

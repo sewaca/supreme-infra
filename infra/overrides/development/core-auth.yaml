@@ -30,7 +30,7 @@ env:
   SMTP_USERNAME: sevabulgackov@yandex.ru
   SMTP_USE_TLS: "true"
   SMTP_USE_STARTTLS: "false"
-  MAIL_FROM: noreply@supreme.local
+  MAIL_FROM: sevabulgackov@yandex.ru
   MAIL_FROM_NAME: Supreme
   APP_BASE_URL: https://supreme.local
 secrets:

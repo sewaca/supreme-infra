@@ -641,6 +641,7 @@ jobs:
           jwt-secret: ${{ secrets.JWT_SECRET }}
           db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}
           minio-secret-key: ${{ secrets.MINIO_SECRET_KEY }}
+          smtp-password: ${{ secrets.SMTP_PASSWORD }}
 
   approve-canary:
     name: Approve canary promotion to production
@@ -784,3 +785,4 @@ jobs:
           jwt-secret: ${{ secrets.JWT_SECRET }}
           db-password: ${{ secrets[steps.get-db-secret.outputs.secret_name] }}
           minio-secret-key: ${{ secrets.MINIO_SECRET_KEY }}
+          smtp-password: ${{ secrets.SMTP_PASSWORD }}
