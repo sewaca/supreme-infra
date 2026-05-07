@@ -4,8 +4,7 @@ import {
   listTeachersTeachersGet,
   teacherScheduleTeachersTeacherIdScheduleGet,
 } from '@supreme-int/api-client/src/generated/core-schedule';
-import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
-import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import { cookies } from 'next/headers';
 import { scheduleToEvents } from '../../../src/entities/Lesson/model/Lesson';
 import type { Teacher } from '../../../src/features/schedule-teacher-select/ui/TeacherScheduleSelect';
@@ -22,9 +21,7 @@ type SearchParams = Promise<{
 
 export default async function Page({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
-  const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_KEY)?.value ?? null;
-  const decoded = token ? decodeJwt(token) : null;
+  const [auth, cookieStore] = await Promise.all([getAuthInfo(), cookies()]);
 
   const userSpecifiedDate = params.date_from && params.date_to ? params.date_from : null;
   const { dateFrom } = userSpecifiedDate ? { dateFrom: userSpecifiedDate } : getWeekRange(new Date());
@@ -38,9 +35,9 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   let teachers: Teacher[] = [];
   let initialTeacherId = '';
 
-  if (decoded) {
+  if (auth.userId) {
     const [profileRes, teachersRes] = await Promise.all([
-      getUserProfileUserGet({ query: { user_id: decoded.sub } }),
+      getUserProfileUserGet({ query: { user_id: auth.userId } }),
       listTeachersTeachersGet(),
     ]);
 
@@ -63,12 +60,12 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
       error = 'Список преподавателей пуст. Обратитесь в поддержку.';
     } else {
       const paramTeacher = params.teacher;
-      const isCurrentUserTeacher = decoded.role === 'teacher';
+      const isCurrentUserTeacher = auth.role === 'teacher';
 
       if (paramTeacher && teachers.some((t) => t.id === paramTeacher)) {
         initialTeacherId = paramTeacher;
-      } else if (isCurrentUserTeacher && teachers.some((t) => t.id === decoded.sub)) {
-        initialTeacherId = decoded.sub;
+      } else if (isCurrentUserTeacher && auth.userId && teachers.some((t) => t.id === auth.userId)) {
+        initialTeacherId = auth.userId;
       } else {
         initialTeacherId = teachers[0]?.id ?? '';
       }

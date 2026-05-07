@@ -7,9 +7,7 @@ import {
   listGroupsWithScheduleGroupsGet,
   teacherScheduleTeachersTeacherIdScheduleGet,
 } from '@supreme-int/api-client/src/generated/core-schedule';
-import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
-import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
-import { cookies } from 'next/headers';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import { type NextRequest, NextResponse } from 'next/server';
 import { scheduleToEvents } from '../../../src/entities/Lesson/model/Lesson';
 import { mergeScheduleGroupOptions, parseGroupNameList } from '../../../src/shared/lib/schedule-group-list';
@@ -26,11 +24,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'date_from and date_to required' }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_KEY)?.value ?? null;
-  const decoded = token ? decodeJwt(token) : null;
+  const { userId, role } = await getAuthInfo();
 
-  if (!decoded) {
+  if (!userId) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
@@ -41,7 +37,7 @@ export async function GET(request: NextRequest) {
       const [groupsRes, scheduleGroupsRes, profileRes] = await Promise.all([
         getGroupsProfileGroupsGet(),
         listGroupsWithScheduleGroupsGet(),
-        getUserProfileUserGet({ query: { user_id: decoded.sub } }),
+        getUserProfileUserGet({ query: { user_id: userId } }),
       ]);
       const allowed = mergeScheduleGroupOptions(
         parseGroupNameList(groupsRes.data),
@@ -61,13 +57,13 @@ export async function GET(request: NextRequest) {
         path: { teacher_id: explicitTeacherId },
         query: { date_from: dateFrom, date_to: dateTo },
       });
-    } else if (decoded.role === 'teacher') {
+    } else if (role === 'teacher') {
       scheduleRes = await teacherScheduleTeachersTeacherIdScheduleGet({
-        path: { teacher_id: decoded.sub },
+        path: { teacher_id: userId },
         query: { date_from: dateFrom, date_to: dateTo },
       });
     } else {
-      const profileRes = await getUserProfileUserGet({ query: { user_id: decoded.sub } });
+      const profileRes = await getUserProfileUserGet({ query: { user_id: userId } });
       const group = profileRes.data?.group;
 
       if (!group) {

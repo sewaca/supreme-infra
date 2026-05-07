@@ -1,19 +1,15 @@
 import { createCaldavTokenAuthCaldavTokensPost } from '@supreme-int/api-client/src/generated/core-auth';
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
-import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
-import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
-import { cookies } from 'next/headers';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import { NextResponse } from 'next/server';
 import { environment } from '../../../src/shared/lib/environment';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_KEY)?.value ?? null;
-  const decoded = token ? decodeJwt(token) : null;
+  const { userId, role, token } = await getAuthInfo();
 
-  if (!decoded || !token) {
+  if (!userId || !token) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
@@ -34,10 +30,10 @@ export async function POST() {
 
     // Build CalDAV URL based on user role
     let caldavUrl: string;
-    if (decoded.role === 'teacher') {
-      caldavUrl = `${base}/${caldavToken}/teachers/${decoded.sub}/calendar.ics`;
+    if (role === 'teacher') {
+      caldavUrl = `${base}/${caldavToken}/teachers/${userId}/calendar.ics`;
     } else {
-      const profileRes = await getUserProfileUserGet({ query: { user_id: decoded.sub } });
+      const profileRes = await getUserProfileUserGet({ query: { user_id: userId } });
       const group = profileRes.data?.group;
       if (!group) {
         return NextResponse.json({ error: 'Group not found' }, { status: 400 });

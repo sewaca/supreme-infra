@@ -4,8 +4,8 @@ import {
   getOrdersOrdersGet,
 } from '@supreme-int/api-client/src/generated/core-applications';
 import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
+import { getAuthInfoOrUnauthorized as getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfoOrUnauthorized';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
-import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 import { DormitoryEmptyPage } from 'services/web-profile-ssr/src/views/DormitoryEmptyPage/DormitoryEmptyPage';
 import { DormitoryPage } from 'services/web-profile-ssr/src/views/DormitoryPage/DormitoryPage';
 

@@ -1,7 +1,7 @@
 import { createClientFetch } from '@supreme-int/api-client/src/fetch/create-client-fetch';
 import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth/types.gen';
-import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
+import { TOKEN_KEY } from '@supreme-int/lib/src/constants/auth.model';
 
 // Client-side calls go through ingress at /core-auth
 // QoS mirrors server-side core-auth config: 800ms timeout, no retries

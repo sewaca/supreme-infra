@@ -1,14 +1,7 @@
-import { TOKEN_KEY } from '../constants/auth.model';
+import { TOKEN_KEY } from '@supreme-int/lib/src/constants/auth.model';
+import { type DecodedToken, decodedTokenSchema } from './token-schema';
 
-export type DecodedToken = {
-  sub: string;
-  jti?: string;
-  email: string;
-  name: string;
-  role: string;
-  iat: number;
-  exp: number;
-};
+export type { DecodedToken } from './token-schema';
 
 function base64UrlDecode(str: string): string {
   const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -20,7 +13,8 @@ export function decodeJwt(token: string): DecodedToken | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return null;
-    return JSON.parse(base64UrlDecode(parts[1])) as DecodedToken;
+    const result = decodedTokenSchema.safeParse(JSON.parse(base64UrlDecode(parts[1])));
+    return result.success ? result.data : null;
   } catch {
     return null;
   }

@@ -13,20 +13,11 @@ import {
   updateSettingsSettingsPut,
 } from '@supreme-int/api-client/src/generated/core-client-info';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
-import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
-import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { i18n } from '@supreme-int/i18n/src/i18n';
+import { TOKEN_KEY } from '@supreme-int/lib/src/constants/auth.model';
+import { getAuthInfoOrUnauthorized } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfoOrUnauthorized';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getServerAuthToken } from 'services/web-profile-ssr/src/shared/api/getAuthToken';
-
-async function getAuthUserId(): Promise<string> {
-  const token = await getServerAuthToken();
-  if (!token) throw new Error('No auth token');
-  const payload = decodeJwt(token);
-  if (!payload?.sub) throw new Error('Invalid token: missing sub');
-  return payload.sub;
-}
 
 export const updateSettings = async (settings: {
   isNewMessageNotificationsEnabled?: boolean;
@@ -34,7 +25,7 @@ export const updateSettings = async (settings: {
 }): Promise<{ success: boolean; error?: string }> => {
   'use server';
 
-  const userId = await getAuthUserId();
+  const { userId } = await getAuthInfoOrUnauthorized();
   try {
     await updateSettingsSettingsPut({
       client: coreClientInfoClient,
@@ -121,7 +112,7 @@ export const applyEmailChange = async (
     return { success: false, error: i18n('Неверный формат email') };
   }
 
-  const userId = await getAuthUserId();
+  const { userId } = await getAuthInfoOrUnauthorized();
 
   try {
     const { response } = await changeEmailSettingsEmailPost({
@@ -153,7 +144,7 @@ export const applyPasswordChange = async (
     return { success: false, error: i18n('Новый пароль должен содержать минимум 6 символов') };
   }
 
-  const userId = await getAuthUserId();
+  const { userId } = await getAuthInfoOrUnauthorized();
 
   try {
     const { response } = await changePasswordSettingsPasswordPost({

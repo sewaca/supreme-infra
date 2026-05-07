@@ -1,6 +1,6 @@
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
-import { getAuthInfo } from '../../src/shared/api/getAuthInfo';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import { NewsLayout } from '../../src/views/NewsLayout/NewsLayout';
 
 export const dynamic = 'force-dynamic';

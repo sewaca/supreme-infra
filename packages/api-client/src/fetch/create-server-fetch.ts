@@ -1,5 +1,5 @@
+import { TOKEN_KEY } from '@supreme-int/lib/src/constants/auth.model';
 import { cookies } from 'next/headers';
-import { TOKEN_KEY } from '../constants/auth.model';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 

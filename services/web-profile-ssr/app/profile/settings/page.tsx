@@ -2,7 +2,7 @@ import { getSessionsAuthSessionsGet } from '@supreme-int/api-client/src/generate
 import { client as coreAuthClient } from '@supreme-int/api-client/src/generated/core-auth/client.gen';
 import { getSettingsSettingsGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
-import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfoOrUnauthorized as getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfoOrUnauthorized';
 import type { SessionInfo } from 'services/web-profile-ssr/src/views/SettingsPage/SessionsSection';
 import { SettingsPage } from 'services/web-profile-ssr/src/views/SettingsPage/SettingsPage';
 

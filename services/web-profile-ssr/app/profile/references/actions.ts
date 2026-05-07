@@ -12,10 +12,10 @@ import type {
   ReferenceType,
 } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
 import { i18n } from '@supreme-int/i18n/src/i18n';
+import { getAuthInfoOrUnauthorized as getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfoOrUnauthorized';
 import { format, parseISO } from 'date-fns';
 import { PICKUP_POINTS } from 'services/web-profile-ssr/src/entities/Reference/pickupPoints';
 import type { OrderedReference, ReferenceStatus } from 'services/web-profile-ssr/src/entities/Reference/Reference';
-import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export type ReferenceTypeOption = { id: string; label: string };
 

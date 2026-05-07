@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { getServerAuthToken } from '@supreme-int/nextjs-shared/src/shared/auth/getServerAuthToken';
 import { NextRequest, NextResponse } from 'next/server';
 import { environment } from '../../../../src/shared/lib/environment';
 
@@ -12,8 +12,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'conversation_id required' }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get('auth_token')?.value;
+  const token = await getServerAuthToken();
 
   const url = new URL(`${environment.coreMessagesUrl}/conversations/${conversationId}/messages`);
   url.searchParams.set('limit', limit);

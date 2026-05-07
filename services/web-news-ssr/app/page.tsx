@@ -9,7 +9,7 @@ import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-ne
 import { groupScheduleGroupsGroupNameScheduleGet } from '@supreme-int/api-client/src/generated/core-schedule';
 import { client as coreScheduleClient } from '@supreme-int/api-client/src/generated/core-schedule/client.gen';
 import type { DaySchedule, LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
-import { getAuthInfo } from '../src/shared/api/getAuthInfo';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import { getUnreadCount } from '../src/shared/api/getUnreadCount';
 import { HomePage } from '../src/views/HomePage/HomePage';
 

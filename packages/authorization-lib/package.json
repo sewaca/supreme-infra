@@ -8,9 +8,11 @@
   "dependencies": {
     "@opentelemetry/api": "catalog:",
     "@supreme-int/api-client": "workspace:*",
+    "@supreme-int/lib": "workspace:*",
     "@types/node": "catalog:",
     "jose": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "vitest": "catalog:"

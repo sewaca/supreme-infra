@@ -2,8 +2,8 @@ import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/cor
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
 import { listConversationsConversationsGet } from '@supreme-int/api-client/src/generated/core-messages';
 import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import type { Conversation } from '../../src/entities/Conversation/types';
-import { getAuthInfo } from '../../src/shared/api/getUserId';
 import { mapConversationResponseToConversation } from '../../src/shared/api/mapCoreMessagesApi';
 import { MessagesLayout } from '../../src/views/MessagesLayout/MessagesLayout';
 

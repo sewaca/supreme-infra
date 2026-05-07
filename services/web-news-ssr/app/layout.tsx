@@ -4,9 +4,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { MainAppBottomTabBar } from '@supreme-int/design-system/src/components/BottomTabBar/MainAppBottomTabBar';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
-import { getAuthInfo } from '../src/shared/api/getAuthInfo';
 import { getUnreadCount } from '../src/shared/api/getUnreadCount';
 import theme from '../src/shared/next/theme';
 

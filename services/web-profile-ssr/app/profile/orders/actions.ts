@@ -10,10 +10,10 @@ import type {
   OrderDetailResponse,
   OrderResponse,
 } from '@supreme-int/api-client/src/generated/core-applications/types.gen';
+import { getAuthInfoOrUnauthorized as getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfoOrUnauthorized';
 import type { Notification } from 'services/web-profile-ssr/src/entities/Notifications/Notifications';
 import type { Order, OrderType } from 'services/web-profile-ssr/src/entities/Order/Order';
 import { ORDER_TYPE } from 'services/web-profile-ssr/src/entities/Order/Order';
-import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
 
 export type OrderTypeCounts = Record<OrderType, number>;
 

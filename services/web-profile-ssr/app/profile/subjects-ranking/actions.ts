@@ -2,7 +2,7 @@
 
 import { savePrioritiesSubjectsSavePrioritiesPost } from '@supreme-int/api-client/src/generated/core-client-info';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
-import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfoOrUnauthorized as getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfoOrUnauthorized';
 
 type Choice = { id: string; priorities: string[] };
 

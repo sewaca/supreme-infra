@@ -1,6 +1,6 @@
 import path from 'node:path';
-import { config as loadEnv } from 'dotenv';
 import { defineConfig, devices } from '@playwright/test';
+import { config as loadEnv } from 'dotenv';
 
 loadEnv({ path: path.join(process.cwd(), '.env.example') });
 loadEnv({ path: path.join(process.cwd(), '.env'), override: true });

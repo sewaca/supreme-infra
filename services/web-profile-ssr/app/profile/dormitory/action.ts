@@ -2,7 +2,7 @@
 
 import { uploadParentAgreementDormitoryParentAgreementPost } from '@supreme-int/api-client/src/generated/core-applications';
 import { client as coreApplicationsClient } from '@supreme-int/api-client/src/generated/core-applications/client.gen';
-import { getAuthInfo } from 'services/web-profile-ssr/src/shared/api/getUserId';
+import { getAuthInfoOrUnauthorized as getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfoOrUnauthorized';
 
 export const submitParentAgreement = async ({
   applicationId: _applicationId,

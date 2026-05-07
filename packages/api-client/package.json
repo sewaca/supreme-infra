@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@hey-api/client-fetch": "catalog:",
+    "@supreme-int/lib": "workspace:*",
     "next": "catalog:"
   },
   "devDependencies": {

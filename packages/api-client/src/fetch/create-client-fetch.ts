@@ -1,4 +1,4 @@
-import { TOKEN_KEY } from '../constants/auth.model';
+import { TOKEN_KEY } from '@supreme-int/lib/src/constants/auth.model';
 
 export interface ClientQoSOptions {
   /** Request timeout in ms. Default: 2500 */

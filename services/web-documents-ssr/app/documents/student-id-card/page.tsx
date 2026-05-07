@@ -1,7 +1,7 @@
 import { getPersonalDataProfilePersonalDataGet } from '@supreme-int/api-client/src/generated/core-client-info';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import { unauthorized } from 'next/navigation';
-import { getAuthInfo } from 'services/web-documents-ssr/src/shared/api/getUserId';
 import { StudentIdBookPage } from 'services/web-documents-ssr/src/views/StudentIdBookPage/StudentIdBookPage';
 
 export const dynamic = 'force-dynamic';

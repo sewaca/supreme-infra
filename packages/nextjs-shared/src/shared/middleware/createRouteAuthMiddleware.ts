@@ -1,5 +1,6 @@
 import { verifyJwt } from '@supreme-int/authorization-lib/src/jwt/verify-jwt';
 import { checkSession } from '@supreme-int/authorization-lib/src/session/check-session';
+import { TOKEN_KEY } from '@supreme-int/lib/src/constants/auth.model';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -10,7 +11,6 @@ export interface AuthRoute {
   auth_level: AuthLevel;
 }
 
-const COOKIE_NAME = 'auth_token';
 const LOGIN_URL = '/login';
 
 type Props = {
@@ -34,7 +34,7 @@ export function createRouteAuthMiddleware({ routes }: Props) {
     }
 
     // auth_level === 'valid': JWT verify + session check
-    const token = request.cookies.get(COOKIE_NAME)?.value;
+    const token = request.cookies.get(TOKEN_KEY)?.value;
     if (!token) {
       console.debug(`[auth-middleware] No token presented in request to path=${pathname}`);
       return redirectToLogin(request);

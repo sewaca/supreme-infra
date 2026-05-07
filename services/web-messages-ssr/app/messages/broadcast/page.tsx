@@ -1,7 +1,7 @@
 import { listBroadcastsBroadcastsGet } from '@supreme-int/api-client/src/generated/core-messages';
 import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
+import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
 import { redirect } from 'next/navigation';
-import { getAuthInfo } from '../../../src/shared/api/getUserId';
 import { mapConversationResponseToConversation } from '../../../src/shared/api/mapCoreMessagesApi';
 import { BroadcastListView } from '../../../src/views/BroadcastListView/BroadcastListView';
 

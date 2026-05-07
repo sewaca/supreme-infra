@@ -1,4 +1,4 @@
-import { getTokenFromCookies, getUserFromToken } from '@supreme-int/nextjs-shared/src/shared/jwt/decodeJwt';
+import { getTokenFromCookies, getUserFromToken } from '@supreme-int/nextjs-shared/src/shared/jwt/token-utils';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import styles from './Header.module.css';
