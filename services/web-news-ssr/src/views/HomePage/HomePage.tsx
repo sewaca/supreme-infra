@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -19,8 +20,11 @@ import type { ApplicationNotificationResponse } from '@supreme-int/api-client/sr
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
 import type { LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
 import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
+import { GradientCard, type GradientCardVariant } from '@supreme-int/design-system/src/components/GradientCard/GradientCard';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
+
+const GREETING_VARIANTS: GradientCardVariant[] = ['blue', 'green', 'yellow', 'orange', 'red', 'purple'];
 
 const LESSON_TYPE_COLORS: Record<string, string> = {
   лекция: '#2196f3',
@@ -95,6 +99,11 @@ export function HomePage({
   news,
 }: Props) {
   const firstName = userName.split(' ')[0] ?? userName;
+  const [greetingVariant, setGreetingVariant] = useState<GradientCardVariant>('blue');
+
+  useEffect(() => {
+    setGreetingVariant(GREETING_VARIANTS[Math.floor(Math.random() * GREETING_VARIANTS.length)]!);
+  }, []);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -102,29 +111,9 @@ export function HomePage({
 
       <Box sx={{ flex: 1, overflow: 'auto', px: 2, pb: 2 }}>
         {/* Greeting hero */}
-        <Box
-          sx={{
-            mt: 2,
-            mb: 2.5,
-            px: 2.5,
-            py: 2,
-            borderRadius: 3,
-            background: 'linear-gradient(135deg, #1a2e4a 0%, #2b4878 60%, #1e6091 100%)',
-            ...fadeSlideUp(0),
-            color: '#fff',
-            position: 'relative',
-            overflow: 'hidden',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              top: -30,
-              right: -30,
-              width: 120,
-              height: 120,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.06)',
-            },
-          }}
+        <GradientCard
+          variant={greetingVariant}
+          sx={{ mt: 2, mb: 2.5, px: 2.5, py: 2, borderRadius: 3, ...fadeSlideUp(0) }}
         >
           <Typography variant="caption" sx={{ opacity: 0.7, textTransform: 'capitalize', letterSpacing: 0.3 }}>
             {dateLabel}
@@ -163,7 +152,7 @@ export function HomePage({
               </Typography>
             </Box>
           )}
-        </Box>
+        </GradientCard>
 
         {/* Quick stats */}
         <Box sx={{ display: 'flex', gap: 1.5, mb: 2.5, ...fadeSlideUp(1) }}>
