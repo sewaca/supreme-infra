@@ -6,7 +6,7 @@
   justify-content: center;
   background: radial-gradient(ellipse at 30% 40%, #1c2340 0%, #0d1117 70%);
   overflow: hidden;
-  font-family: var(--font-family-primary, 'Fira Sans', sans-serif);
+  font-family: var(--font-family-primary, "Fira Sans", sans-serif);
 }
 
 /* Stars */
@@ -138,7 +138,9 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 40px rgba(245, 132, 31, 0.45));
-  animation: floatNumber 7s ease-in-out infinite, shimmer 5s ease-in-out infinite;
+  animation:
+    floatNumber 7s ease-in-out infinite,
+    shimmer 5s ease-in-out infinite;
   user-select: none;
 }
 
@@ -185,7 +187,10 @@
   border-radius: 50px !important;
   text-decoration: none !important;
   letter-spacing: 0.02em !important;
-  transition: background-color 200ms ease, transform 150ms ease, box-shadow 200ms ease !important;
+  transition:
+    background-color 200ms ease,
+    transform 150ms ease,
+    box-shadow 200ms ease !important;
 }
 
 .button:hover {

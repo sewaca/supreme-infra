@@ -27,7 +27,7 @@ export const NotFound = ({
       <div className={styles.stars} aria-hidden="true">
         {STARS.map((s, i) => (
           <span
-            key={i}
+            key={`${i.toString()}-star`}
             className={styles.star}
             style={{
               top: s.top,
@@ -57,13 +57,7 @@ export const NotFound = ({
           {title}
         </Typography>
         <Typography className={styles.description}>{description}</Typography>
-        <Button
-          href={homeHref}
-          component="a"
-          variant="contained"
-          size="large"
-          className={styles.button}
-        >
+        <Button href={homeHref} component="a" variant="contained" size="large" className={styles.button}>
           Вернуться на главную
         </Button>
       </div>
