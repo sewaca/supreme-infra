@@ -4,67 +4,67 @@ on:
   workflow_dispatch:
     inputs:
       core-applications:
-        description: "core-applications"
+        description: core-applications
         required: false
         type: boolean
         default: false
       core-auth:
-        description: "core-auth"
+        description: core-auth
         required: false
         type: boolean
         default: false
       core-client-info:
-        description: "core-client-info"
+        description: core-client-info
         required: false
         type: boolean
         default: false
       core-messages:
-        description: "core-messages"
+        description: core-messages
         required: false
         type: boolean
         default: false
       core-news:
-        description: "core-news"
+        description: core-news
         required: false
         type: boolean
         default: false
       core-schedule:
-        description: "core-schedule"
+        description: core-schedule
         required: false
         type: boolean
         default: false
       system-files-storage:
-        description: "system-files-storage"
+        description: system-files-storage
         required: false
         type: boolean
         default: false
       web-auth-ssr:
-        description: "web-auth-ssr"
+        description: web-auth-ssr
         required: false
         type: boolean
         default: false
       web-documents-ssr:
-        description: "web-documents-ssr"
+        description: web-documents-ssr
         required: false
         type: boolean
         default: false
       web-messages-ssr:
-        description: "web-messages-ssr"
+        description: web-messages-ssr
         required: false
         type: boolean
         default: false
       web-news-ssr:
-        description: "web-news-ssr"
+        description: web-news-ssr
         required: false
         type: boolean
         default: false
       web-profile-ssr:
-        description: "web-profile-ssr"
+        description: web-profile-ssr
         required: false
         type: boolean
         default: false
       web-schedule-ssr:
-        description: "web-schedule-ssr"
+        description: web-schedule-ssr
         required: false
         type: boolean
         default: false
@@ -580,7 +580,8 @@ jobs:
           secret: ${{ secrets.GITHUB_TOKEN }}
           approvers: ${{ github.actor }}
           minimum-approvals: 1
-          issue-title: "Approve canary promotion: ${{ needs.prepare-services.outputs.services-display }}"
+          issue-title: "Approve canary promotion: ${{
+            needs.prepare-services.outputs.services-display }}"
           issue-body: |
             Canary deployment completed for the following services:
 
