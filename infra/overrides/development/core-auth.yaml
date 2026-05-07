@@ -25,7 +25,16 @@ env:
   DB_NAME: core_auth_db
   DB_USER: core_auth_user
   REDIS_AUTH_CACHE_URL: redis://redis-auth-cache.default.svc.cluster.local:6379
-secrets: {}
+  SMTP_HOST: smtp.yandex.ru
+  SMTP_PORT: "465"
+  SMTP_USERNAME: noreply@supreme.local
+  SMTP_USE_TLS: "true"
+  SMTP_USE_STARTTLS: "false"
+  MAIL_FROM: noreply@supreme.local
+  MAIL_FROM_NAME: Supreme
+  APP_BASE_URL: https://supreme.local
+secrets:
+  SMTP_PASSWORD: SMTP_PASSWORD
 resources:
   limits:
     cpu: 300m

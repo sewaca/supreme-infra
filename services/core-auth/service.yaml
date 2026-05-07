@@ -15,6 +15,9 @@ metrics:
   enabled: true
   port: 9464
 
+secrets:
+  SMTP_PASSWORD: SMTP_PASSWORD
+
 env:
   PORT: "8002"
   PYTHON_ENV: "production"
@@ -24,6 +27,14 @@ env:
   DB_USER: "core_auth_user"
   # DB_PASSWORD is passed from GitHub Secrets during deployment
   REDIS_AUTH_CACHE_URL: "redis://redis-auth-cache.default.svc.cluster.local:6379"
+  SMTP_HOST: "smtp.yandex.ru"
+  SMTP_PORT: "465"
+  SMTP_USERNAME: "noreply@supreme.local"
+  SMTP_USE_TLS: "true"
+  SMTP_USE_STARTTLS: "false"
+  MAIL_FROM: "noreply@supreme.local"
+  MAIL_FROM_NAME: "Supreme"
+  APP_BASE_URL: "https://supreme.local"
 
 livenessProbe:
   httpGet:

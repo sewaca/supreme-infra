@@ -3,19 +3,21 @@ import secrets
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import get_current_user
 from app.database import get_db
 from app.models.challenge import CHALLENGE_TTL_MINUTES, MAX_ATTEMPTS, AuthChallenge
+from app.models.user import AuthUser
 from app.schemas.challenge import (
     CheckChallengeResponse,
     StartChallengeResponse,
     VerifyChallengeRequest,
     VerifyChallengeResponse,
 )
+from app.services.email import EmailSender, get_email_sender
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +30,16 @@ def _generate_code() -> str:
 
 @router.post("/challenge", response_model=StartChallengeResponse)
 async def start_challenge(
+    background_tasks: BackgroundTasks,
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
+    sender: EmailSender = Depends(get_email_sender),
 ):
     user_id = uuid.UUID(current_user["sub"])
+
+    user_result = await db.execute(select(AuthUser).where(AuthUser.id == user_id))
+    user = user_result.scalar_one()
+
     code = _generate_code()
     expiring_at = datetime.now(UTC) + timedelta(minutes=CHALLENGE_TTL_MINUTES)
 
@@ -44,7 +52,17 @@ async def start_challenge(
     await db.commit()
     await db.refresh(challenge)
 
-    logger.info("[challenge] user=%s challenge=%s code=%s expires=%s", user_id, challenge.id, code, expiring_at)
+    logger.info("[challenge] user=%s challenge=%s expires=%s", user_id, challenge.id, expiring_at)
+
+    background_tasks.add_task(
+        sender.send_challenge_code,
+        email=user.email,
+        name=user.name,
+        code=code,
+        expires_at=expiring_at,
+        purpose="challenge",
+        ttl_minutes=CHALLENGE_TTL_MINUTES,
+    )
 
     return StartChallengeResponse(challenge_id=challenge.id, expiring_at=expiring_at)
 

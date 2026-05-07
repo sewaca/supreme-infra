@@ -3,7 +3,7 @@ import uuid
 from datetime import UTC, datetime, timedelta
 
 import bcrypt
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,6 +19,7 @@ from app.schemas.forgot_password import (
     ForgotPasswordVerifyRequest,
     ForgotPasswordVerifyResponse,
 )
+from app.services.email import EmailSender, get_email_sender
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,9 @@ router = APIRouter(prefix="/auth", tags=["forgot-password"])
 @router.post("/forgot-password", response_model=ForgotPasswordStartResponse)
 async def start_forgot_password(
     body: ForgotPasswordStartRequest,
+    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
+    sender: EmailSender = Depends(get_email_sender),
 ):
     expiring_at = datetime.now(UTC) + timedelta(minutes=CHALLENGE_TTL_MINUTES)
 
@@ -51,7 +54,17 @@ async def start_forgot_password(
     await db.commit()
     await db.refresh(challenge)
 
-    logger.info("[forgot-password] challenge=%s user=%s code=%s expires=%s", challenge.id, user.id, code, expiring_at)
+    logger.info("[forgot-password] challenge=%s user=%s expires=%s", challenge.id, user.id, expiring_at)
+
+    background_tasks.add_task(
+        sender.send_challenge_code,
+        email=user.email,
+        name=user.name,
+        code=code,
+        expires_at=expiring_at,
+        purpose="password_reset",
+        ttl_minutes=CHALLENGE_TTL_MINUTES,
+    )
 
     return ForgotPasswordStartResponse(challenge_id=challenge.id, expiring_at=expiring_at)
 
