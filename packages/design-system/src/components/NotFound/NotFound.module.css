@@ -1,0 +1,237 @@
+.root {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 30% 40%, #1c2340 0%, #0d1117 70%);
+  overflow: hidden;
+  font-family: var(--font-family-primary, 'Fira Sans', sans-serif);
+}
+
+/* Stars */
+
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle var(--duration, 2s) ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.08;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 0.85;
+    transform: scale(1.3);
+  }
+}
+
+/* Planet */
+
+.planet {
+  position: absolute;
+  right: 8%;
+  top: 12%;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c8c8d8 20%, #7a7a8a 100%);
+  box-shadow:
+    inset -35px -10px 50px rgba(0, 0, 0, 0.55),
+    0 0 70px rgba(245, 132, 31, 0.08);
+  animation: floatPlanet 10s ease-in-out infinite;
+}
+
+@keyframes floatPlanet {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(3deg);
+  }
+}
+
+.planetShade {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 70% 60%, transparent 50%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.crater {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.18);
+  top: 40px;
+  left: 55px;
+  width: 50px;
+  height: 22px;
+  transform: rotate(-20deg);
+}
+
+.crater2 {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.14);
+  top: 100px;
+  left: 30px;
+  width: 28px;
+  height: 12px;
+  transform: rotate(15deg);
+}
+
+.crater3 {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.12);
+  top: 65px;
+  left: 115px;
+  width: 20px;
+  height: 9px;
+  transform: rotate(-5deg);
+}
+
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 60px;
+  border: 12px solid rgba(200, 200, 216, 0.22);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(75deg);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.06);
+}
+
+/* Content */
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 24px;
+  max-width: 520px;
+}
+
+.number {
+  font-size: clamp(96px, 18vw, 176px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -4px;
+  background: linear-gradient(135deg, #ff9a5c 0%, #f5841f 40%, #e65000 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 40px rgba(245, 132, 31, 0.45));
+  animation: floatNumber 7s ease-in-out infinite, shimmer 5s ease-in-out infinite;
+  user-select: none;
+}
+
+@keyframes floatNumber {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.title {
+  color: #fff !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  margin-top: 4px !important;
+}
+
+.description {
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  max-width: 360px;
+}
+
+.button {
+  margin-top: 16px !important;
+  background-color: #f5841f !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  padding: 12px 32px !important;
+  border-radius: 50px !important;
+  text-decoration: none !important;
+  letter-spacing: 0.02em !important;
+  transition: background-color 200ms ease, transform 150ms ease, box-shadow 200ms ease !important;
+}
+
+.button:hover {
+  background-color: #e65f00 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245, 132, 31, 0.4) !important;
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .planet {
+    width: 110px;
+    height: 110px;
+    right: -20px;
+    top: 5%;
+  }
+
+  .ring {
+    width: 160px;
+    height: 36px;
+    border-width: 8px;
+  }
+
+  .crater {
+    top: 24px;
+    left: 34px;
+    width: 32px;
+    height: 14px;
+  }
+
+  .crater2 {
+    top: 62px;
+    left: 18px;
+    width: 18px;
+    height: 8px;
+  }
+
+  .crater3 {
+    top: 40px;
+    left: 72px;
+    width: 13px;
+    height: 6px;
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 
+// TODO: replace with modern 404
 export const StartAnimationNotFound = () => {
   useEffect(() => {
     function drawVisor() {
