@@ -54,7 +54,7 @@ export function NewsSidebar({ news }: NewsSidebarProps) {
       ))}
 
       {/* University header */}
-      <Box sx={{ position: 'relative', zIndex: 1, mb: 3 }}>
+      <Box sx={{ position: 'relative', zIndex: 1, mb: 2 }}>
         <AppLogo light href="/" />
         <Typography
           variant="caption"
@@ -64,10 +64,10 @@ export function NewsSidebar({ news }: NewsSidebarProps) {
         </Typography>
       </Box>
 
-      <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', mb: 2.5 }} />
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', mb: 2 }} />
 
       {/* News header */}
-      <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+      <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
         <Box
           sx={{
             width: 6,

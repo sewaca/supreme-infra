@@ -9,7 +9,7 @@ export default async function LoginPage() {
   const news = await getUniversityNews();
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'stretch' }}>
+    <Box sx={{ height: '100dvh', display: 'flex', alignItems: 'stretch', overflow: 'hidden' }}>
       <NewsSidebar news={news} />
       <AuthForm mode="login" />
     </Box>
