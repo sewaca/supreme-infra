@@ -200,12 +200,11 @@ K8s liveness/readiness probes стреляют каждые 20 секунд и �
 
 Конкретные пути по сервисам:
 
-| Сервис                                               | Путь статус-чека               | Лейбл         |
-| ---------------------------------------------------- | ------------------------------ | ------------- |
-| Next.js сервисы                                      | `/api/status`                  | `http_route`  |
-| `core-recipes-bff`                                   | `/core-recipes-bff/api/status` | `http_route`  |
-| `core-auth`, `core-applications`, `core-client-info` | `/{service}/status`            | `http_target` |
-| `core-schedule`                                      | `/core-schedule/api/status`    | `http_target` |
+| Сервис                                               | Путь статус-чека            | Лейбл         |
+| ---------------------------------------------------- | --------------------------- | ------------- |
+| Next.js сервисы                                      | `/api/status`               | `http_route`  |
+| `core-auth`, `core-applications`, `core-client-info` | `/{service}/status`         | `http_target` |
+| `core-schedule`                                      | `/core-schedule/api/status` | `http_target` |
 
 Используется точное равенство (`!=`), не regex — чтобы не задеть реальные endpoint'ы с `status` в пути.
 

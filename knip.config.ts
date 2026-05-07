@@ -12,21 +12,15 @@ const config: KnipConfig = {
     'services/*-ssr/proxy.ts',
     'e2e/*',
     'packages/api-client/src/generated/**',
-    'services/frontend/**',
   ],
   workspaces: {
     '.': {
       entry: ['infra/**/*.{ts,mjs}', 'vitest.config.global.ts'],
       project: ['infra/**/*.{ts,mjs}'],
     },
-    'services/frontend': {},
     'services/web-auth-ssr': {},
     'services/web-documents-ssr': {},
     'services/web-profile-ssr': {},
-    'services/core-recipes-bff': {
-      entry: ['src/main.ts', 'src/**/*.module.ts'],
-      project: ['src/**/*.ts'],
-    },
     'packages/api-client': {
       entry: ['src/index.ts'],
       project: ['src/**/*.ts'],

@@ -6,7 +6,6 @@ Shared API client library for all backend services (NestJS and FastAPI).
 
 - Type-safe API clients for all services
 - Auto-generated from OpenAPI schemas
-- Manual clients for NestJS services (core-auth-bff, core-recipes-bff)
 - Auto-generated clients for FastAPI services (core-client-info, core-applications)
 
 ## Generated Clients
@@ -31,26 +30,6 @@ const response = await CoreClientInfo.getProfile({ path: { userId: 123 } });
 // Or import directly from the service
 import * as CoreClientInfo from "@supreme-int/api-client/core-client-info";
 import type { GetProfileData, GetProfileResponse } from "@supreme-int/api-client/core-client-info";
-```
-
-### Manual Clients (NestJS)
-
-#### core-auth-bff
-
-```typescript
-import { AuthApi } from "@supreme-int/api-client";
-
-const authApi = new AuthApi("http://localhost:4001/core-auth-bff");
-const user = await authApi.login({ email, password });
-```
-
-#### core-recipes-bff
-
-```typescript
-import { RecipesApi } from "@supreme-int/api-client";
-
-const recipesApi = new RecipesApi("http://localhost:4000/core-recipes-bff");
-const recipes = await recipesApi.getRecipes();
 ```
 
 ## Regenerating Clients
