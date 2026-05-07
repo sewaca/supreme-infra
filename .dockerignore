@@ -5,6 +5,8 @@ node_modules
 **/*.tsbuildinfo
 coverage
 **/*.spec.*
+**/*.stories.ts
+**/*.stories.tsx
 **/vitest.config*
 .ai
 .claude
