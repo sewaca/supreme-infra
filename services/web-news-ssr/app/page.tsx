@@ -99,6 +99,9 @@ export default async function Page() {
       ` current=${currentLesson?.subject_name ?? 'none'} next=${nextLesson?.subject_name ?? 'none'}`,
   );
 
+  const GREETING_VARIANTS = ['blue', 'green', 'yellow', 'orange', 'red', 'purple'] as const;
+  const greetingVariant = GREETING_VARIANTS[Math.floor(Math.random() * GREETING_VARIANTS.length)];
+
   return (
     <HomePage
       avatar={avatar}
@@ -111,6 +114,7 @@ export default async function Page() {
       unreadMessagesCount={unreadMessagesCount}
       appNotifications={appNotifications}
       news={news}
+      greetingVariant={greetingVariant}
     />
   );
 }

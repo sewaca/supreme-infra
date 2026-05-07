@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -20,11 +19,14 @@ import type { ApplicationNotificationResponse } from '@supreme-int/api-client/sr
 import type { NewsResponse } from '@supreme-int/api-client/src/generated/core-news/types.gen';
 import type { LessonSlot } from '@supreme-int/api-client/src/generated/core-schedule/types.gen';
 import { AppLogo } from '@supreme-int/design-system/src/components/AppLogo/AppLogo';
-import { GradientCard, type GradientCardVariant } from '@supreme-int/design-system/src/components/GradientCard/GradientCard';
+import {
+  GradientCard,
+  type GradientCardVariant,
+} from '@supreme-int/design-system/src/components/GradientCard/GradientCard';
 import { NavBar } from '@supreme-int/design-system/src/components/NavBar/NavBar';
 import { ProfileButton } from '../../widgets/ProfileButton/ProfileButton';
 
-const GREETING_VARIANTS: GradientCardVariant[] = ['blue', 'green', 'yellow', 'orange', 'red', 'purple'];
+// TODO: прибраться + декомпозировать
 
 const LESSON_TYPE_COLORS: Record<string, string> = {
   лекция: '#2196f3',
@@ -83,6 +85,7 @@ interface Props {
   dateLabel: string;
   unreadMessagesCount: number;
   appNotifications: ApplicationNotificationResponse[];
+  greetingVariant: GradientCardVariant;
   news: NewsResponse[];
 }
 
@@ -96,14 +99,10 @@ export function HomePage({
   dateLabel,
   unreadMessagesCount,
   appNotifications,
+  greetingVariant,
   news,
 }: Props) {
   const firstName = userName.split(' ')[0] ?? userName;
-  const [greetingVariant, setGreetingVariant] = useState<GradientCardVariant>('blue');
-
-  useEffect(() => {
-    setGreetingVariant(GREETING_VARIANTS[Math.floor(Math.random() * GREETING_VARIANTS.length)]!);
-  }, []);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
