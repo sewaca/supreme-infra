@@ -21,12 +21,12 @@ _email_send_counter = _meter.create_counter(
 )
 
 _SUBJECTS: dict[str, str] = {
-    "challenge": "Код подтверждения Supreme",
-    "password_reset": "Сброс пароля в Supreme",  # noqa: RUF001
+    "challenge": "Код подтверждения — ЛК СПбГУТ",
+    "password_reset": "Сброс пароля — ЛК СПбГУТ",  # noqa: RUF001
 }
 
 _HEADLINES: dict[str, str] = {
-    "challenge": "Используйте этот код, чтобы подтвердить действие в Supreme.",
+    "challenge": "Используйте этот код, чтобы подтвердить действие в личном кабинете СПбГУТ.",
     "password_reset": "Вы запросили сброс пароля. Используйте этот код, чтобы продолжить.",  # noqa: RUF001
 }
 

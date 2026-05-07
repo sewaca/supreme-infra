@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = False
     smtp_use_starttls: bool = False
     mail_from: str = "noreply@supreme.local"
-    mail_from_name: str = "Supreme"
+    mail_from_name: str = "ЛК СПбГУТ"
     app_base_url: str = "http://localhost:3000"
 
     @model_validator(mode="after")

@@ -33,7 +33,7 @@ env:
   SMTP_USE_TLS: "true"
   SMTP_USE_STARTTLS: "false"
   MAIL_FROM: "sevabulgackov@yandex.ru"
-  MAIL_FROM_NAME: "Supreme"
+  MAIL_FROM_NAME: "ЛК СПбГУТ"
   APP_BASE_URL: "https://supreme.local"
 
 livenessProbe:
