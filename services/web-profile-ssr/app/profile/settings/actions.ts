@@ -1,6 +1,5 @@
 'use server';
 
-import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import {
   getSessionsAuthSessionsGet,
   revokeSessionAuthSessionsSessionIdDelete,
@@ -14,6 +13,7 @@ import {
   updateSettingsSettingsPut,
 } from '@supreme-int/api-client/src/generated/core-client-info';
 import { client as coreClientInfoClient } from '@supreme-int/api-client/src/generated/core-client-info/client.gen';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { cookies } from 'next/headers';

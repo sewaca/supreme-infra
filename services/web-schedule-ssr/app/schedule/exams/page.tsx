@@ -4,8 +4,8 @@ import {
   groupExamsGroupsGroupNameExamsGet,
   teacherExamsTeachersTeacherIdExamsGet,
 } from '@supreme-int/api-client/src/generated/core-schedule';
-import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
+import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
 import { cookies } from 'next/headers';
 import { examsToEvents } from '../../../src/entities/Lesson/model/Lesson';
 import { ExamsCalendarPage } from '../../../src/views/ExamsCalendarPage';
