@@ -81,7 +81,16 @@ class EmailSender:
             _email_send_counter.add(1, {"purpose": purpose, "result": "success"})
             logger.info("[email] sent purpose=%s to=%s", purpose, email)
         except aiosmtplib.SMTPException:
-            logger.exception("[email] SMTP failure purpose=%s to=%s", purpose, email)
+            logger.exception(
+                "[email] SMTP failure purpose=%s to=%s smtp=%s:%s user=%s use_tls=%s starttls=%s",
+                purpose,
+                email,
+                settings.smtp_host,
+                settings.smtp_port,
+                settings.smtp_username or "<no user>",
+                settings.smtp_use_tls,
+                settings.smtp_use_starttls,
+            )
             _email_send_counter.add(1, {"purpose": purpose, "result": "smtp_error"})
         except Exception:
             logger.exception("[email] unknown failure purpose=%s to=%s", purpose, email)
