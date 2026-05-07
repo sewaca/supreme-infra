@@ -147,7 +147,18 @@ export const WithLongContent: Story = {
         >
           Место проживания
         </Typography>
-        <Typography sx={{ fontSize: 36, fontWeight: 700, lineHeight: 1.2, color: 'white', mt: 0.75, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Typography
+          sx={{
+            fontSize: 36,
+            fontWeight: 700,
+            lineHeight: 1.2,
+            color: 'white',
+            mt: 0.75,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
           Общежитие №8 корпус 4
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, mt: 2 }}>

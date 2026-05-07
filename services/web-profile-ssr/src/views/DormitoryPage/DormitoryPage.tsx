@@ -72,7 +72,19 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
 
           <Spacer size={6} />
 
-          <Typography sx={{ fontSize: 36, fontWeight: 700, lineHeight: 1.2, color: 'white', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</Typography>
+          <Typography
+            sx={{
+              fontSize: 36,
+              fontWeight: 700,
+              lineHeight: 1.2,
+              color: 'white',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {name}
+          </Typography>
 
           <Spacer size={16} />
 
