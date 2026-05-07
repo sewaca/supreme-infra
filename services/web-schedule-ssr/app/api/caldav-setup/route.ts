@@ -1,6 +1,7 @@
 import { createCaldavTokenAuthCaldavTokensPost } from '@supreme-int/api-client/src/generated/core-auth';
 import { getUserProfileUserGet } from '@supreme-int/api-client/src/generated/core-client-info';
-import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { environment } from '../../../src/shared/lib/environment';

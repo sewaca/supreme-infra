@@ -1,6 +1,6 @@
 'use server';
 
-import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import {
   getSessionsAuthSessionsGet,
   revokeSessionAuthSessionsSessionIdDelete,

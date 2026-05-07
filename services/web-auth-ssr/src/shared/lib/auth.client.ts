@@ -1,4 +1,4 @@
-import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import { createClientFetch } from '@supreme-int/api-client/src/fetch/create-client-fetch';
 import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/generated/core-auth/client';
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth/types.gen';

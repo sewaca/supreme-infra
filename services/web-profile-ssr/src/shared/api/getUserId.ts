@@ -1,4 +1,5 @@
-import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import { cookies } from 'next/headers';
 import { unauthorized } from 'next/navigation';
 

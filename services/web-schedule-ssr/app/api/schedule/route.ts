@@ -7,7 +7,8 @@ import {
   listGroupsWithScheduleGroupsGet,
   teacherScheduleTeachersTeacherIdScheduleGet,
 } from '@supreme-int/api-client/src/generated/core-schedule';
-import { decodeJwt, TOKEN_KEY } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { decodeJwt } from '@supreme-int/authorization-lib/src/jwt/decode-jwt';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import { cookies } from 'next/headers';
 import { type NextRequest, NextResponse } from 'next/server';
 import { scheduleToEvents } from '../../../src/entities/Lesson/model/Lesson';

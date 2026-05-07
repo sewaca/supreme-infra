@@ -16,7 +16,7 @@ Client information service — stores user profile, settings, ratings, achieveme
 
 This service owns all user data EXCEPT:
 
-- Authentication (passwords, login sessions) — owned by `core-auth-bff`
+- Authentication (passwords, login sessions) — owned by `core-auth`
 - Applications, references, orders, dormitory — owned by `core-applications`
 
 ### Database Tables

@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers';
-
-const TOKEN_KEY = 'auth_token';
+import { TOKEN_KEY } from '../constants/auth.model';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 

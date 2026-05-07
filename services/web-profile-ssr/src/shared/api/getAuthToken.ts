@@ -1,4 +1,4 @@
-import { TOKEN_KEY } from '@supreme-int/api-client/src/core-auth-bff';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 import { cookies } from 'next/headers';
 
 export async function getServerAuthToken(): Promise<string | undefined> {

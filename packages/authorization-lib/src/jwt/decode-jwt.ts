@@ -1,4 +1,4 @@
-export const TOKEN_KEY = 'auth_token';
+import { TOKEN_KEY } from '../constants/auth.model';
 
 export type DecodedToken = {
   sub: string;

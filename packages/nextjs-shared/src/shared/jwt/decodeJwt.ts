@@ -1,4 +1,4 @@
-export const TOKEN_KEY = 'auth_token';
+import { TOKEN_KEY } from '@supreme-int/authorization-lib/src/constants/auth.model';
 
 interface DecodedToken {
   sub: number;
