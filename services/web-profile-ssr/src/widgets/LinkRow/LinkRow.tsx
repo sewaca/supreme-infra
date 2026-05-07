@@ -1,14 +1,14 @@
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { ButtonBase, ButtonBaseProps, Typography } from '@mui/material';
+import { Box, ButtonBase, ButtonBaseProps, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';
 import { ReactNode } from 'react';
 
 type Props = { title: string; href: string; icon: ReactNode; sx?: ButtonBaseProps['sx'] };
 export const LinkRow = ({ href, title, icon, sx }: Props) => {
   return (
-    <ButtonBase href={href} sx={{ paddingY: 1, paddingX: 3, width: '100%', ...sx }}>
+    <ButtonBase href={href} sx={{ paddingY: 1, paddingX: 1.5, width: '100%', ...sx }}>
       <Row gap={2} alignItems="center" justifyContent="center" sx={{ width: '100%', justifyContent: 'flex-start' }}>
-        <div>{icon}</div>
+        <Box sx={{ color: 'text.secondary', display: 'flex' }}>{icon}</Box>
         <Typography variant="body1" color="textPrimary">
           {title}
         </Typography>

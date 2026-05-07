@@ -20,11 +20,13 @@ import styles from './ProfilePage.module.css';
 type Props = { data: ProfileData };
 export const ProfilePage = ({ data }: Props) => {
   return (
-    <Box sx={{ minHeight: 'var(--user-screen-height)', display: 'flex', flexDirection: 'column' }}>
-      <DefaultNavbar rightSlot={<LogoutButton />} />
+    <Box
+      sx={{ minHeight: 'var(--user-screen-height)', display: 'flex', flexDirection: 'column', position: 'relative' }}
+    >
+      <DefaultNavbar rightSlot={<LogoutButton />} position="absolute" />
 
-      <Box sx={{ flex: 1, px: 2, pb: 2 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 2, pb: 3 }}>
+      <Box sx={{ flex: 1, overflow: 'auto', px: 2, pb: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 8, pb: 3 }}>
           {data.avatar ? (
             <img src={data.avatar} alt="Фото" className={styles.avatar} />
           ) : (
