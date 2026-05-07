@@ -7,8 +7,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Card, Divider, Typography } from '@mui/material';
-import Coin from '@supreme-int/design-system/src/icons/Coin.png';
-import House from '@supreme-int/design-system/src/icons/House.png';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { ProfileData } from '../../entities/Profile/ProfileData';
 import { ButtonCard } from '../../widgets/ButtonCard/ButtonCard';
@@ -40,20 +38,18 @@ export const ProfilePage = ({ data }: Props) => {
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 2, mb: 4, justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2, justifyContent: 'center' }}>
           <ButtonCard
-            icon={<img src={Coin.src} alt="Coin" />}
+            variant="blue"
             title={i18n('Стипендия')}
             subtitle={data.scholarship ? `${data.scholarship.value} ₽/мес.` : i18n('Вы не получаете стипендию')}
-            status={data.scholarship ? 'success' : 'error'}
             notifications={data.scholarship?.notifications}
             href="/profile/scholarship"
           />
           <ButtonCard
-            icon={<img src={House.src} alt="House" />}
+            variant="green"
             title={i18n('Общежитие')}
             subtitle={data.dormitory ? data.dormitory.value : i18n('Вы не проживаете в общежитии')}
-            status={data.dormitory ? 'success' : 'error'}
             notifications={data.dormitory?.notifications}
             href="/profile/dormitory"
           />

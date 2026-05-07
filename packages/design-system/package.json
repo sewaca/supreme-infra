@@ -10,7 +10,10 @@
   "files": [
     "src"
   ],
-  "scripts": {},
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
   "dependencies": {
     "@supreme-int/nextjs-shared": "workspace:*",
     "next": "catalog:",
@@ -21,7 +24,11 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@types/react": "catalog:"
+    "@types/react": "catalog:",
+    "storybook": "catalog:",
+    "@storybook/react": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "@storybook/addon-essentials": "catalog:"
   },
   "author": "sewaca",
   "license": "ISC"

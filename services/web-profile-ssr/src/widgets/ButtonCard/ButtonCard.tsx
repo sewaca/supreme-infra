@@ -1,37 +1,53 @@
 import { Badge, ButtonBase, Typography } from '@mui/material';
-import { ReactNode } from 'react';
-import styles from './ButtonCard.module.css';
+import {
+  GradientCard,
+  type GradientCardVariant,
+} from '@supreme-int/design-system/src/components/GradientCard/GradientCard';
 
 type Props = {
-  icon: ReactNode;
   title: string;
   subtitle: string;
-  status: 'success' | 'error';
+  variant: GradientCardVariant;
   notifications?: number;
   href: string;
 };
 
-export const ButtonCard = ({ icon, title, subtitle, status, href, notifications }: Props) => {
+export const ButtonCard = ({ title, subtitle, variant, href, notifications }: Props) => {
   return (
     <Badge
       color="error"
       badgeContent={notifications || undefined}
-      sx={{ flex: 1, width: '50%', maxWidth: '400px' }}
+      sx={{ flex: 1, width: '50%', maxWidth: '400px', minWidth: 0 }}
       component="div"
     >
-      <ButtonBase sx={{ textAlign: 'center', width: '100%' }} href={href}>
-        <div className={styles.buttonCard}>
-          {!notifications && <div className={styles.statusBadge} style={{ background: `var(--color-${status})` }} />}
-          <div className={styles.icon}>{icon}</div>
-          <Typography variant="title1">{title}</Typography>
+      <ButtonBase sx={{ width: '100%', borderRadius: 2.5, overflow: 'hidden' }} href={href}>
+        <GradientCard variant={variant} size="small" sx={{ width: '100%', textAlign: 'left' }}>
           <Typography
-            variant="body2"
-            color="textSecondary"
-            sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', width: '100%' }}
+            sx={{
+              color: 'rgba(255,255,255,0.6)',
+              textTransform: 'uppercase',
+              letterSpacing: 1.2,
+              fontSize: '0.6rem',
+              display: 'block',
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: '1rem',
+              fontWeight: 700,
+              lineHeight: 1.2,
+              color: 'white',
+              mt: 0.5,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
           >
             {subtitle}
           </Typography>
-        </div>
+        </GradientCard>
       </ButtonBase>
     </Badge>
   );

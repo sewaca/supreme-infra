@@ -6,6 +6,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SchoolIcon from '@mui/icons-material/School';
 import { Box, Container, Divider, IconButton, Paper, Typography } from '@mui/material';
+import { GradientCard } from '@supreme-int/design-system/src/components/GradientCard/GradientCard';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
@@ -57,43 +58,7 @@ export const ScholarshipPage = ({ studentName, amount, currency, order, notifica
       >
         <Spacer size={30} />
 
-        <Paper
-          elevation={0}
-          data-tour="scholarship-hero"
-          sx={{
-            background: 'linear-gradient(135deg, #2b4878 0%, #1a2e4a 100%)',
-            borderRadius: 4,
-            padding: '28px 24px 24px',
-            color: 'white',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: -48,
-              right: -48,
-              width: 180,
-              height: 180,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.06)',
-              pointerEvents: 'none',
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: -28,
-              right: 80,
-              width: 96,
-              height: 96,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.04)',
-              pointerEvents: 'none',
-            }}
-          />
-
+        <GradientCard variant="blue" data-tour="scholarship-hero">
           <Typography
             variant="caption"
             sx={{ color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 1.2, display: 'block' }}
@@ -116,7 +81,7 @@ export const ScholarshipPage = ({ studentName, amount, currency, order, notifica
               {studentName}
             </Typography>
           </Box>
-        </Paper>
+        </GradientCard>
 
         <Spacer size={16} />
 

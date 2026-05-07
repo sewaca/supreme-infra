@@ -7,6 +7,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import { Box, Container, Divider, IconButton, Paper, Typography } from '@mui/material';
+import { GradientCard } from '@supreme-int/design-system/src/components/GradientCard/GradientCard';
 import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import { i18n } from '@supreme-int/i18n/src/i18n';
 import { usePageTour } from '@supreme-int/user-tours/src/usePageTour';
@@ -61,43 +62,7 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
       >
         <Spacer size={30} />
 
-        <Paper
-          elevation={0}
-          data-tour="dormitory-hero"
-          sx={{
-            background: 'linear-gradient(135deg, #1a6651 0%, #0e3d31 100%)',
-            borderRadius: 4,
-            padding: '28px 24px 24px',
-            color: 'white',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: -48,
-              right: -48,
-              width: 180,
-              height: 180,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.06)',
-              pointerEvents: 'none',
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: -28,
-              right: 80,
-              width: 96,
-              height: 96,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.04)',
-              pointerEvents: 'none',
-            }}
-          />
-
+        <GradientCard variant="green" data-tour="dormitory-hero">
           <Typography
             variant="caption"
             sx={{ color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 1.2, display: 'block' }}
@@ -107,7 +72,7 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
 
           <Spacer size={6} />
 
-          <Typography sx={{ fontSize: 36, fontWeight: 700, lineHeight: 1.2, color: 'white' }}>{name}</Typography>
+          <Typography sx={{ fontSize: 36, fontWeight: 700, lineHeight: 1.2, color: 'white', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</Typography>
 
           <Spacer size={16} />
 
@@ -125,7 +90,7 @@ export const DormitoryPage = ({ address, name, roomNumber, contract, notificatio
               </Typography>
             </Box>
           </Box>
-        </Paper>
+        </GradientCard>
 
         <Spacer size={16} />
 
