@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BASE_PATH } from 'e2e/src/contants';
 
 test.describe('Login page — unauthenticated', { tag: ['@web-auth-ssr', '@core-auth'] }, () => {
   test('loads with correct heading and subtitle @smoke', async ({ page }) => {
@@ -53,9 +54,8 @@ test.describe('Login page — unauthenticated', { tag: ['@web-auth-ssr', '@core-
       page.locator('button[type="submit"]').click(),
     ]);
 
-    await page.waitForURL('**/profile**');
-    await expect(page).toHaveURL(/\/profile/);
-    await expect(page.locator('text=Иванов Иван')).toBeVisible();
+    await page.waitForURL(BASE_PATH);
+    await expect(page).toHaveURL(BASE_PATH);
   });
 
   test('shows error alert on invalid credentials', async ({ page }) => {

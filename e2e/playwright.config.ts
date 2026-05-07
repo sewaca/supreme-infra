@@ -9,7 +9,7 @@ const BASE_PATH = process.env.BASE_PATH || 'https://diploma.sewaca.ru/';
 
 export default defineConfig({
   testDir: './src/tests',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 8,
@@ -24,4 +24,5 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  timeout: 20000,
 });
