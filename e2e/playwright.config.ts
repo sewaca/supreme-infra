@@ -1,4 +1,9 @@
+import path from 'node:path';
+import { config as loadEnv } from 'dotenv';
 import { defineConfig, devices } from '@playwright/test';
+
+loadEnv({ path: path.join(process.cwd(), '.env.example') });
+loadEnv({ path: path.join(process.cwd(), '.env'), override: true });
 
 const BASE_PATH = process.env.BASE_PATH || 'https://diploma.sewaca.ru/';
 
