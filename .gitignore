@@ -17,6 +17,7 @@ __reports
 .turbo
 .ruff_cache
 .venv
+.env
 
 # Local files
 .claude/settings.local.json
