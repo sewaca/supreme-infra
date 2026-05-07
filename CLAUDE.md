@@ -18,7 +18,7 @@ pnpm format                # Biome + Prettier (md/yaml)
 pnpm run format:biome      # Biome only
 pnpm -r tsc                # TypeScript check all services
 pnpm -r unit               # Unit tests all services
-pnpm run generate          # Regenerate all infra (run after services.yaml changes)
+pnpm run generate          # Regenerate all infra (run after changes in services.yaml or services/*/service.yaml)
 
 cd services/<name> && pnpm run unit --verbose  # Unit tests for specific service
 ```
@@ -26,6 +26,7 @@ cd services/<name> && pnpm run unit --verbose  # Unit tests for specific service
 ## Code Style
 
 **TypeScript/JavaScript** (Biome):
+
 - 2 spaces, line width 120
 - Single quotes in TS/JS, double quotes in JSX
 - Strict mode: no `any`, no unused vars/params, explicit return types on public methods
@@ -35,6 +36,7 @@ cd services/<name> && pnpm run unit --verbose  # Unit tests for specific service
   ```
 
 **Testing** (Vitest):
+
 - Mock ALL external dependencies
 - Write mocks in one-line format (no line breaks inside mock objects)
 - AAA pattern (Arrange, Act, Assert)
@@ -45,6 +47,7 @@ cd services/<name> && pnpm run unit --verbose  # Unit tests for specific service
 ## Architecture
 
 **Feature-Sliced Design** in `src/`:
+
 ```
 services/<service>/src/
 ├── entities/     # domain models & types
@@ -55,6 +58,7 @@ services/<service>/src/
 ```
 
 **Naming**:
+
 - PascalCase: components, classes, interfaces, types (`PostCard.tsx`, `PostsService`)
 - camelCase: utilities, variables, functions (`backendApi.ts`, `getPostsSummary`)
 - UPPER_SNAKE_CASE: constants (`BASE_URL`)
@@ -64,9 +68,11 @@ services/<service>/src/
 ## Next.js SSR
 
 Pages with server-side API calls **must** have:
+
 ```ts
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 ```
+
 Without it, `next build` fails when backend services are unreachable (e.g. in Docker).
 
 API clients in SSR: configure via `createServerFetch` from `@supreme-int/nextjs-shared`, export from `shared/api/clients.ts`.
@@ -74,6 +80,7 @@ API clients in SSR: configure via `createServerFetch` from `@supreme-int/nextjs-
 ## PR Titles
 
 Must start with one of:
+
 - `major:` — breaking changes
 - `minor:` — new features / refactoring
 - `fix:` — bug fixes / patches
@@ -86,9 +93,11 @@ Examples: `minor(ui): Changed button color`, `fix: Fixed memory leak`
 `services.yaml` is the **single source of truth** for all services.
 
 After any change to `services.yaml` or `service.yaml`:
+
 ```bash
 pnpm run generate
 ```
+
 Generates: Helm overrides (`infra/overrides/`), CD workflow service list, security check matrices, router configs.
 
 **NEVER edit generated files manually** (`infra/overrides/` files are auto-generated).
@@ -101,6 +110,7 @@ Generates: Helm overrides (`infra/overrides/`), CD workflow service list, securi
 - Apps connect via PgBouncer: `DB_HOST: pgbouncer-{service}`
 
 Adding a DB to a service:
+
 1. Add `database.enabled: true` in `services.yaml`
 2. Create `infra/databases/{service}-db/` with `init.sql` / `migrations/`
 3. Run `pnpm run generate`
