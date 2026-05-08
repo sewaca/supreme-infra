@@ -24,7 +24,7 @@ export const ProfilePage = ({ data }: Props) => {
       <DefaultNavbar rightSlot={<LogoutButton />} position="absolute" />
 
       <Box sx={{ flex: 1, overflow: 'auto', px: 2, pb: 2 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 3, pb: '36px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 3, pb: 3 }}>
           {data.avatar ? (
             <img src={data.avatar} alt="Фото" className={styles.avatar} />
           ) : (
@@ -38,7 +38,7 @@ export const ProfilePage = ({ data }: Props) => {
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 2, mb: 2, justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 3, justifyContent: 'center' }}>
           <ButtonCard
             variant="blue"
             title={i18n('Стипендия')}
