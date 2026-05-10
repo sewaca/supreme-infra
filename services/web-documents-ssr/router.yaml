@@ -5,6 +5,10 @@
 service: web-documents-ssr
 type: next
 routes:
+  - path: /documents/attestation
+    method: GET
+    auth_level: valid
+    public: true
   - path: /documents/debts
     method: GET
     auth_level: none

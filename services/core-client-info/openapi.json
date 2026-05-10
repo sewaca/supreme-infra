@@ -105,6 +105,51 @@
         }
       }
     },
+    "/attestations": {
+      "get": {
+        "tags": ["attestations"],
+        "summary": "Get Attestations",
+        "operationId": "get_attestations_attestations_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AttestationResponse"
+                  },
+                  "title": "Response Get Attestations Attestations Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/settings": {
       "get": {
         "tags": ["settings"],
@@ -1223,6 +1268,69 @@
         "type": "object",
         "required": ["label", "value"],
         "title": "AcademicInfoItem"
+      },
+      "AttestationResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "subject_name": {
+            "type": "string",
+            "title": "Subject Name"
+          },
+          "is_attested": {
+            "type": "boolean",
+            "title": "Is Attested"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "teacher_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teacher Id"
+          },
+          "teacher_full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teacher Full Name"
+          },
+          "semester": {
+            "type": "integer",
+            "title": "Semester"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": ["id", "subject_name", "is_attested", "semester", "created_at"],
+        "title": "AttestationResponse"
       },
       "BatchUsersRequest": {
         "properties": {

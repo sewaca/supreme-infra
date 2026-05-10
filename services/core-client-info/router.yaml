@@ -5,6 +5,10 @@
 service: core-client-info
 type: fastapi
 routes:
+  - path: /core-client-info/attestations
+    method: GET
+    auth_level: none
+    public: true
   - path: /core-client-info/debts
     method: GET
     auth_level: none

@@ -77,6 +77,44 @@ export type AcademicInfoItem = {
 };
 
 /**
+ * AttestationResponse
+ */
+export type AttestationResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Subject Name
+     */
+    subject_name: string;
+    /**
+     * Is Attested
+     */
+    is_attested: boolean;
+    /**
+     * Reason
+     */
+    reason?: string | null;
+    /**
+     * Teacher Id
+     */
+    teacher_id?: string | null;
+    /**
+     * Teacher Full Name
+     */
+    teacher_full_name?: string | null;
+    /**
+     * Semester
+     */
+    semester: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+};
+
+/**
  * BatchUsersRequest
  */
 export type BatchUsersRequest = {
@@ -691,6 +729,38 @@ export type GetPersonalDataProfilePersonalDataGetResponses = {
 };
 
 export type GetPersonalDataProfilePersonalDataGetResponse = GetPersonalDataProfilePersonalDataGetResponses[keyof GetPersonalDataProfilePersonalDataGetResponses];
+
+export type GetAttestationsAttestationsGetData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    url: '/attestations';
+};
+
+export type GetAttestationsAttestationsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetAttestationsAttestationsGetError = GetAttestationsAttestationsGetErrors[keyof GetAttestationsAttestationsGetErrors];
+
+export type GetAttestationsAttestationsGetResponses = {
+    /**
+     * Response Get Attestations Attestations Get
+     *
+     * Successful Response
+     */
+    200: Array<AttestationResponse>;
+};
+
+export type GetAttestationsAttestationsGetResponse = GetAttestationsAttestationsGetResponses[keyof GetAttestationsAttestationsGetResponses];
 
 export type GetSettingsSettingsGetData = {
     body?: never;

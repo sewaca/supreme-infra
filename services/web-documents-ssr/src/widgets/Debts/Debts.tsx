@@ -52,7 +52,7 @@ function formatTime(iso: string): string {
 const GRADE_TYPE_LABEL: Record<string, string> = { exam: 'Экзамен', credit: 'Зачёт' };
 
 const StatusChip = ({ debt }: { debt: AcademicDebtResponse }) => {
-  if (debt.status === 'pending') return <Chip label="Не отправлено" size="small" />;
+  if (debt.status === 'pending') return <Chip label="Не назначена" size="small" />;
   if (debt.status === 'requested') return <Chip label="Запрос отправлен" size="small" color="warning" />;
   if (debt.status === 'scheduled') return <Chip label="Пересдача назначена" size="small" color="success" />;
   return null;

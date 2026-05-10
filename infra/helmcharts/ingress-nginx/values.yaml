@@ -63,6 +63,8 @@ ingress:
       port: 80
       type: fastapi
       paths:
+        - path: /core-client-info/attestations
+          method: GET
         - path: /core-client-info/debts
           method: GET
         - path: /core-client-info/debts/[^/]+/request-retake
@@ -128,6 +130,8 @@ ingress:
       port: 80
       type: next
       paths:
+        - path: /documents/attestation
+          method: GET
         - path: /documents/debts
           method: GET
         - path: /documents/gradebook
