@@ -79,7 +79,7 @@ spec:
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
           env:
             - name: DATA_SOURCE_URI
-              value: "localhost:5432/$(POSTGRES_DB)?sslmode=disable"
+              value: "localhost:5432/{{ .Values.database.name }}?sslmode=disable"
             - name: DATA_SOURCE_USER
               valueFrom:
                 secretKeyRef:
@@ -90,11 +90,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "postgresql.fullname" . }}-secret
                   key: POSTGRES_PASSWORD
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "postgresql.fullname" . }}-secret
-                  key: POSTGRES_DB
           ports:
             - name: metrics
               containerPort: 9187
