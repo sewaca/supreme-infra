@@ -321,3 +321,16 @@ migrationConfigMapParts:
       ON CONFLICT (user_id) DO NOTHING;
 migrations: {}
 skipMigrations: false
+metrics:
+  enabled: true
+  image:
+    repository: prometheuscommunity/postgres_exporter
+    tag: v0.15.0
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 25m
+      memory: 32Mi

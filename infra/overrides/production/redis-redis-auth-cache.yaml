@@ -35,3 +35,16 @@ readinessProbe:
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 3
+metrics:
+  enabled: true
+  image:
+    repository: oliver006/redis_exporter
+    tag: v1.62.0
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 25m
+      memory: 32Mi

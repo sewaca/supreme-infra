@@ -1,4 +1,5 @@
 import { generateDatabaseValues } from './generate-database-values/generate-database-values';
+import { generateInfraDashboards } from './generate-grafana-dashboards';
 import { generateValuesForAllServices } from './generate-overrides/generate-overrides';
 import { generatePgbouncerValues } from './generate-pgbouncer-values';
 import { generateRedisValues } from './generate-redis-values';
@@ -61,14 +62,19 @@ async function main() {
   generateValuesForAllServices();
   console.log('');
 
-  console.log('📋 Step 10/11: Generating Redis values...');
+  console.log('📋 Step 10/12: Generating Redis values...');
   console.log('───────────────────────────────────────────────────────────');
   generateRedisValues();
   console.log('');
 
-  console.log('📋 Step 11/11: Updating Redis workflow...');
+  console.log('📋 Step 11/12: Updating Redis workflow...');
   console.log('───────────────────────────────────────────────────────────');
   await updateRedisWorkflow();
+  console.log('');
+
+  console.log('📋 Step 12/12: Generating infrastructure Grafana dashboards...');
+  console.log('───────────────────────────────────────────────────────────');
+  generateInfraDashboards();
   console.log('');
 
   console.log('═══════════════════════════════════════════════════════════');

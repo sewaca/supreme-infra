@@ -57,6 +57,20 @@ migrations: {}
 # Set to true to skip migration job during upgrade
 skipMigrations: false
 
+metrics:
+  enabled: true
+  image:
+    repository: prometheuscommunity/postgres_exporter
+    tag: "v0.15.0"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 25m
+      memory: 32Mi
+
 # Environment overrides (default values for each environment)
 # These are applied if service.yaml doesn't specify environment-specific values
 # Priority: base values < environment overrides < service.yaml base < service.yaml overrides
