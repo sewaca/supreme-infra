@@ -16,6 +16,8 @@ class AuthRoute:
 
 
 AUTH_ROUTES: list[AuthRoute] = [
+    AuthRoute(path=re.compile(r"^/core-client-info/debts$"), method='GET', auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-client-info/debts/[^/]+/request-retake$"), method='PATCH', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/groups$"), method='GET', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/init-user$"), method='POST', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/personal-data$"), method='GET', auth_level="valid"),

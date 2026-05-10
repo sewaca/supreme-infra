@@ -1,6 +1,7 @@
 'use client';
 
 import type { UserGradeResponse } from '@supreme-int/api-client/src/generated/core-client-info/types.gen';
+import Link from 'next/link';
 import { Fragment } from 'react';
 import styles from './Gradebook.module.css';
 
@@ -54,6 +55,11 @@ export const Gradebook = ({ grades }: Props) => {
         <div className={styles.headerTitle}>Зачётная книжка</div>
         <div className={styles.headerSub}>
           Санкт-Петербургский государственный университет телекоммуникаций имени профессора М. А. Бонч-Бруевича
+        </div>
+        <div style={{ marginTop: 8 }}>
+          <Link href="/documents/debts" style={{ fontSize: 13, color: '#1565c0', textDecoration: 'none' }}>
+            Перейти к задолженностям →
+          </Link>
         </div>
       </div>
 

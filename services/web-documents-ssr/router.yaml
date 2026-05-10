@@ -5,6 +5,10 @@
 service: web-documents-ssr
 type: next
 routes:
+  - path: /documents/debts
+    method: GET
+    auth_level: none
+    public: true
   - path: /documents/gradebook
     method: GET
     auth_level: valid

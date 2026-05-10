@@ -58,6 +58,29 @@ class UserGradeResponse(BaseModel):
     semester: int
     hours: int
     teacher: str
+    teacher_id: UUID | None = None
+
+
+class AcademicDebtResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
+    id: UUID
+    subject: str
+    grade_type: str
+    course: int
+    semester: int
+    hours: int
+    teacher_id: UUID
+    teacher_name: str
+    status: str
+    retake_date: datetime | None = None
+    retake_classroom: str | None = None
+    conversation_id: UUID | None = None
+    requested_at: datetime | None = None
+
+
+class RequestRetakeRequest(BaseModel):
+    conversation_id: UUID
 
 
 class GradeImprovementResponse(BaseModel):

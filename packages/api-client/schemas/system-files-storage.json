@@ -8,9 +8,7 @@
   "paths": {
     "/api/status": {
       "get": {
-        "tags": [
-          "status"
-        ],
+        "tags": ["status"],
         "summary": "Get Status",
         "operationId": "get_status_api_status_get",
         "responses": {
@@ -27,9 +25,7 @@
     },
     "/upload": {
       "post": {
-        "tags": [
-          "upload"
-        ],
+        "tags": ["upload"],
         "summary": "Upload Attachments",
         "operationId": "upload_attachments_upload_post",
         "requestBody": {
@@ -84,9 +80,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "files"
-        ],
+        "required": ["files"],
         "title": "Body_upload_attachments_upload_post"
       },
       "HTTPValidationError": {
@@ -135,11 +129,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       }
     },

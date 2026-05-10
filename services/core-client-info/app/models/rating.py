@@ -70,4 +70,28 @@ class UserGrade(Base):
     semester: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     hours: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     teacher: Mapped[str] = mapped_column(String, nullable=False, default="")
+    teacher_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AcademicDebt(Base):
+    __tablename__ = "academic_debt"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
+    subject: Mapped[str] = mapped_column(String, nullable=False)
+    grade_type: Mapped[str] = mapped_column(String, nullable=False)
+    course: Mapped[int] = mapped_column(Integer, nullable=False)
+    semester: Mapped[int] = mapped_column(Integer, nullable=False)
+    hours: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    teacher_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    teacher_name: Mapped[str] = mapped_column(String, nullable=False)
+    status: Mapped[str] = mapped_column(String, nullable=False, default="pending")
+    retake_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retake_classroom: Mapped[str | None] = mapped_column(String, nullable=True)
+    conversation_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )

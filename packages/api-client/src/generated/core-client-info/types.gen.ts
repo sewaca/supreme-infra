@@ -5,6 +5,64 @@ export type ClientOptions = {
 };
 
 /**
+ * AcademicDebtResponse
+ */
+export type AcademicDebtResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Subject
+     */
+    subject: string;
+    /**
+     * Grade Type
+     */
+    grade_type: string;
+    /**
+     * Course
+     */
+    course: number;
+    /**
+     * Semester
+     */
+    semester: number;
+    /**
+     * Hours
+     */
+    hours: number;
+    /**
+     * Teacher Id
+     */
+    teacher_id: string;
+    /**
+     * Teacher Name
+     */
+    teacher_name: string;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Retake Date
+     */
+    retake_date?: string | null;
+    /**
+     * Retake Classroom
+     */
+    retake_classroom?: string | null;
+    /**
+     * Conversation Id
+     */
+    conversation_id?: string | null;
+    /**
+     * Requested At
+     */
+    requested_at?: string | null;
+};
+
+/**
  * AcademicInfoItem
  */
 export type AcademicInfoItem = {
@@ -184,6 +242,16 @@ export type RegistrationSearchRequest = {
      * Last Name
      */
     last_name?: string | null;
+};
+
+/**
+ * RequestRetakeRequest
+ */
+export type RequestRetakeRequest = {
+    /**
+     * Conversation Id
+     */
+    conversation_id: string;
 };
 
 /**
@@ -452,6 +520,10 @@ export type UserGradeResponse = {
      * Teacher
      */
     teacher: string;
+    /**
+     * Teacher Id
+     */
+    teacher_id?: string | null;
 };
 
 /**
@@ -963,6 +1035,68 @@ export type GetGradeImprovementsRatingGradeImprovementsGetResponses = {
 };
 
 export type GetGradeImprovementsRatingGradeImprovementsGetResponse = GetGradeImprovementsRatingGradeImprovementsGetResponses[keyof GetGradeImprovementsRatingGradeImprovementsGetResponses];
+
+export type GetDebtsDebtsGetData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    url: '/debts';
+};
+
+export type GetDebtsDebtsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDebtsDebtsGetError = GetDebtsDebtsGetErrors[keyof GetDebtsDebtsGetErrors];
+
+export type GetDebtsDebtsGetResponses = {
+    /**
+     * Response Get Debts Debts Get
+     *
+     * Successful Response
+     */
+    200: Array<AcademicDebtResponse>;
+};
+
+export type GetDebtsDebtsGetResponse = GetDebtsDebtsGetResponses[keyof GetDebtsDebtsGetResponses];
+
+export type RequestRetakeDebtsDebtIdRequestRetakePatchData = {
+    body: RequestRetakeRequest;
+    path: {
+        /**
+         * Debt Id
+         */
+        debt_id: string;
+    };
+    query?: never;
+    url: '/debts/{debt_id}/request-retake';
+};
+
+export type RequestRetakeDebtsDebtIdRequestRetakePatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RequestRetakeDebtsDebtIdRequestRetakePatchError = RequestRetakeDebtsDebtIdRequestRetakePatchErrors[keyof RequestRetakeDebtsDebtIdRequestRetakePatchErrors];
+
+export type RequestRetakeDebtsDebtIdRequestRetakePatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: AcademicDebtResponse;
+};
+
+export type RequestRetakeDebtsDebtIdRequestRetakePatchResponse = RequestRetakeDebtsDebtIdRequestRetakePatchResponses[keyof RequestRetakeDebtsDebtIdRequestRetakePatchResponses];
 
 export type GetChoicesSubjectsChoicesGetData = {
     body?: never;

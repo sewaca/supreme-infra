@@ -136,6 +136,7 @@ async def get_grades(
             semester=g.semester,
             hours=g.hours,
             teacher=g.teacher,
+            teacher_id=g.teacher_id,
         )
         for g in grades
     ]

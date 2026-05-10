@@ -651,6 +651,106 @@
         }
       }
     },
+    "/debts": {
+      "get": {
+        "tags": [
+          "debts"
+        ],
+        "summary": "Get Debts",
+        "operationId": "get_debts_debts_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AcademicDebtResponse"
+                  },
+                  "title": "Response Get Debts Debts Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/debts/{debt_id}/request-retake": {
+      "patch": {
+        "tags": [
+          "debts"
+        ],
+        "summary": "Request Retake",
+        "operationId": "request_retake_debts__debt_id__request_retake_patch",
+        "parameters": [
+          {
+            "name": "debt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Debt Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRetakeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcademicDebtResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/subjects/choices": {
       "get": {
         "tags": [
@@ -1059,6 +1159,108 @@
   },
   "components": {
     "schemas": {
+      "AcademicDebtResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "grade_type": {
+            "type": "string",
+            "title": "Grade Type"
+          },
+          "course": {
+            "type": "integer",
+            "title": "Course"
+          },
+          "semester": {
+            "type": "integer",
+            "title": "Semester"
+          },
+          "hours": {
+            "type": "integer",
+            "title": "Hours"
+          },
+          "teacher_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Teacher Id"
+          },
+          "teacher_name": {
+            "type": "string",
+            "title": "Teacher Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "retake_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retake Date"
+          },
+          "retake_classroom": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retake Classroom"
+          },
+          "conversation_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conversation Id"
+          },
+          "requested_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requested At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "subject",
+          "grade_type",
+          "course",
+          "semester",
+          "hours",
+          "teacher_id",
+          "teacher_name",
+          "status"
+        ],
+        "title": "AcademicDebtResponse"
+      },
       "AcademicInfoItem": {
         "properties": {
           "label": {
@@ -1337,6 +1539,20 @@
           "snils"
         ],
         "title": "RegistrationSearchRequest"
+      },
+      "RequestRetakeRequest": {
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Conversation Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "conversation_id"
+        ],
+        "title": "RequestRetakeRequest"
       },
       "SavePrioritiesRequest": {
         "properties": {
@@ -1789,6 +2005,18 @@
           "teacher": {
             "type": "string",
             "title": "Teacher"
+          },
+          "teacher_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teacher Id"
           }
         },
         "type": "object",

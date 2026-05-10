@@ -1,0 +1,142 @@
+.page {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.headerTitle {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.headerSub {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.empty {
+  text-align: center;
+  padding: 48px 16px;
+  font-size: 16px;
+  color: #555;
+}
+
+.semesterGroup {
+  margin-bottom: 24px;
+}
+
+.semesterTitle {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 8px 12px;
+  background: #e8e4d8;
+  border: 1px solid #1a1a1a;
+  margin-bottom: 0;
+}
+
+.card {
+  border: 1px solid #1a1a1a;
+  border-top: none;
+  padding: 12px 16px;
+  background: #fffef7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card + .card {
+  border-top: 1px solid #ccc;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.subject {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.meta {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12px;
+  color: #555;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cardBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badgePending {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.badgeRequested {
+  background: #fff8e1;
+  color: #f57c00;
+  border: 1px solid #ffcc80;
+}
+
+.badgeScheduled {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.retakeInfo {
+  font-size: 12px;
+  color: #2e7d32;
+  margin-top: 2px;
+}
+
+.chatLink {
+  font-size: 13px;
+  color: #1565c0;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.chatLink:hover {
+  text-decoration: underline;
+}

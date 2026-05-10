@@ -8,9 +8,7 @@
   "paths": {
     "/status": {
       "get": {
-        "tags": [
-          "status"
-        ],
+        "tags": ["status"],
         "summary": "Get Status",
         "operationId": "get_status_status_get",
         "responses": {
@@ -27,9 +25,7 @@
     },
     "/news": {
       "get": {
-        "tags": [
-          "news"
-        ],
+        "tags": ["news"],
         "summary": "Get News",
         "operationId": "get_news_news_get",
         "parameters": [
@@ -76,9 +72,7 @@
     },
     "/news/sync": {
       "post": {
-        "tags": [
-          "news"
-        ],
+        "tags": ["news"],
         "summary": "Trigger Sync",
         "operationId": "trigger_sync_news_sync_post",
         "responses": {
@@ -139,14 +133,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "id",
-          "title",
-          "url",
-          "date",
-          "category",
-          "created_at"
-        ],
+        "required": ["id", "title", "url", "date", "category", "created_at"],
         "title": "NewsResponse"
       },
       "ValidationError": {
@@ -182,11 +169,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       }
     }

@@ -14,6 +14,7 @@ from app.database import Base, engine
 from app.instrumentation import instrument_app, setup_instrumentation
 from app.redis_cache import close_redis
 from app.routers import (
+    debts,
     internal,
     profile,
     rating,
@@ -95,5 +96,6 @@ app.include_router(status.router)
 app.include_router(profile.router)
 app.include_router(settings_router.router)
 app.include_router(rating.router)
+app.include_router(debts.router)
 app.include_router(subjects.router)
 app.include_router(internal.router)
