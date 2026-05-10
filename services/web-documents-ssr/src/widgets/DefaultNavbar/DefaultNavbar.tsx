@@ -14,6 +14,14 @@ export const DefaultNavbar = ({ backPath, ...props }: Props) => {
   const goBack = useGoBack();
 
   const onBack = () => {
+    if (typeof window !== 'undefined') {
+      const retpath = new URLSearchParams(window.location.search).get('retpath');
+      if (retpath) {
+        router.push(retpath);
+        return;
+      }
+    }
+
     if (backPath) {
       router.push(backPath);
       return;

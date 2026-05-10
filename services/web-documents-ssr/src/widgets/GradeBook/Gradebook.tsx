@@ -57,7 +57,10 @@ export const Gradebook = ({ grades }: Props) => {
           Санкт-Петербургский государственный университет телекоммуникаций имени профессора М. А. Бонч-Бруевича
         </div>
         <div style={{ marginTop: 8 }}>
-          <Link href="/documents/debts" style={{ fontSize: 13, color: '#1565c0', textDecoration: 'none' }}>
+          <Link
+            href="/documents/debts?retpath=/documents/gradebook"
+            style={{ fontSize: 13, color: '#1565c0', textDecoration: 'none' }}
+          >
             Перейти к задолженностям →
           </Link>
         </div>

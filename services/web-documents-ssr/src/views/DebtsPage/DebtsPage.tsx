@@ -11,7 +11,7 @@ interface Props {
 export const DebtsPage = ({ debts, senderName }: Props) => {
   return (
     <>
-      <DefaultNavbar backPath="/documents/gradebook" center={<Typography fontWeight={600}>Задолженности</Typography>} />
+      <DefaultNavbar backPath="/profile" center={<Typography fontWeight={600}>Задолженности</Typography>} />
       <Debts debts={debts} senderName={senderName} />
     </>
   );
