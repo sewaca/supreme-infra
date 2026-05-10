@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import TOKEN_EXPIRE_DAYS, create_access_token, get_current_user
+from app.brute_force import is_locked, record_failed_attempt, reset_attempts
 from app.config import settings
 from app.database import get_db
 from app.models.session import UserSession
@@ -55,11 +56,20 @@ async def _get_location(ip: str | None) -> str | None:
 
 @router.post("/login", response_model=AuthResponse)
 async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
+    locked, retry_after = await is_locked(body.email)
+    if locked:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Too many failed attempts. Try again in {retry_after // 60} min.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     result = await db.execute(select(AuthUser).where(AuthUser.email == body.email))
     user = result.scalar_one_or_none()
 
     if not user:
         logger.debug("[login] user not found: email=%s", body.email)
+        await record_failed_attempt(body.email)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     logger.debug(
@@ -72,11 +82,13 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
     logger.debug("[login] bcrypt.checkpw result: %s", match)
 
     if not match:
+        await record_failed_attempt(body.email)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is disabled")
 
+    await reset_attempts(body.email)
     jti = uuid.uuid4()
     access_token = create_access_token(user.id, user.email, user.name, user.role, jti=jti)
 
