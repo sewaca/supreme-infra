@@ -1,5 +1,6 @@
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import ImportContactsIcon from '@mui/icons-material/ImportContacts';
@@ -66,6 +67,12 @@ export const ProfilePage = ({ data }: Props) => {
             href="/documents/gradebook"
             icon={<ImportContactsIcon fontSize="medium" color="inherit" />}
             title={i18n('Зачётка')}
+          />
+          <Divider sx={{ mx: 2 }} />
+          <LinkRow
+            href="/documents/debts"
+            icon={<AssignmentLateIcon fontSize="medium" color="inherit" />}
+            title={i18n('Задолженности')}
           />
           <Divider sx={{ mx: 2 }} />
           <LinkRow
