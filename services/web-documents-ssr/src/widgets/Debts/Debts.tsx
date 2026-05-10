@@ -1,10 +1,17 @@
 'use client';
 
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import type { AcademicDebtResponse } from '@supreme-int/api-client/src/generated/core-client-info/types.gen';
+import { Spacer } from '@supreme-int/design-system/src/components/Spacer/Spacer';
 import Link from 'next/link';
 import { useState } from 'react';
 import { requestRetake } from '../../../app/documents/debts/actions';
-import styles from './Debts.module.css';
 import { RetakeRequestDialog } from './RetakeRequestDialog';
 
 interface Props {
@@ -44,12 +51,20 @@ function formatTime(iso: string): string {
 
 const GRADE_TYPE_LABEL: Record<string, string> = { exam: 'Экзамен', credit: 'Зачёт' };
 
+const StatusChip = ({ debt }: { debt: AcademicDebtResponse }) => {
+  if (debt.status === 'pending') return <Chip label="Не отправлено" size="small" />;
+  if (debt.status === 'requested') return <Chip label="Запрос отправлен" size="small" color="warning" />;
+  if (debt.status === 'scheduled') return <Chip label="Пересдача назначена" size="small" color="success" />;
+  return null;
+};
+
 interface CardProps {
   debt: AcademicDebtResponse;
   senderName: string;
+  isLast: boolean;
 }
 
-const DebtCard = ({ debt, senderName }: CardProps) => {
+const DebtCard = ({ debt, senderName, isLast }: CardProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleSend = async (debtId: string, teacherId: string, content: string) => {
@@ -57,41 +72,44 @@ const DebtCard = ({ debt, senderName }: CardProps) => {
   };
 
   return (
-    <div className={styles.card}>
-      <div className={styles.cardTop}>
-        <span className={styles.subject}>{debt.subject}</span>
-        <StatusBadge debt={debt} />
-      </div>
-      <div className={styles.meta}>
-        <span>{GRADE_TYPE_LABEL[debt.grade_type] ?? debt.grade_type}</span>
-        <span>{debt.hours} ч.</span>
-        <span>Преподаватель: {debt.teacher_name}</span>
-      </div>
-      {debt.status === 'scheduled' && debt.retake_date && (
-        <div className={styles.retakeInfo}>
-          Дата пересдачи: {formatDate(debt.retake_date)} в {formatTime(debt.retake_date)}
-          {debt.retake_classroom ? `, ${debt.retake_classroom}` : ''}
-        </div>
-      )}
-      <div className={styles.cardBottom}>
+    <>
+      <Stack sx={{ px: 2, py: 1.5 }} gap={0.75}>
+        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" gap={1}>
+          <Typography variant="body1" fontWeight={600} sx={{ flex: 1 }}>
+            {debt.subject}
+          </Typography>
+          <StatusChip debt={debt} />
+        </Stack>
+
+        <Stack direction="row" gap={2} flexWrap="wrap">
+          <Typography variant="body2" color="text.secondary">
+            {GRADE_TYPE_LABEL[debt.grade_type] ?? debt.grade_type}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {debt.hours} ч.
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {debt.teacher_name}
+          </Typography>
+        </Stack>
+
+        {debt.status === 'scheduled' && debt.retake_date && (
+          <Typography variant="body2" color="success.main">
+            {formatDate(debt.retake_date)} в {formatTime(debt.retake_date)}
+            {debt.retake_classroom ? `, ${debt.retake_classroom}` : ''}
+          </Typography>
+        )}
+
         {debt.status === 'pending' && (
           <>
-            <button
-              type="button"
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ alignSelf: 'flex-start', mt: 0.5 }}
               onClick={() => setDialogOpen(true)}
-              style={{
-                padding: '6px 16px',
-                background: '#1a1a1a',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 4,
-                cursor: 'pointer',
-                fontSize: 13,
-                fontWeight: 600,
-              }}
             >
               Назначить пересдачу
-            </button>
+            </Button>
             <RetakeRequestDialog
               debt={debt}
               senderName={senderName}
@@ -101,55 +119,50 @@ const DebtCard = ({ debt, senderName }: CardProps) => {
             />
           </>
         )}
-        {(debt.status === 'requested' || debt.status === 'scheduled') && debt.conversation_id && (
-          <Link href={`/messages/${debt.conversation_id}`} className={styles.chatLink}>
-            Перейти в чат →
-          </Link>
-        )}
-      </div>
-    </div>
-  );
-};
 
-const StatusBadge = ({ debt }: { debt: AcademicDebtResponse }) => {
-  if (debt.status === 'pending') {
-    return <span className={`${styles.badge} ${styles.badgePending}`}>Не отправлено</span>;
-  }
-  if (debt.status === 'requested') {
-    return <span className={`${styles.badge} ${styles.badgeRequested}`}>Запрос отправлен</span>;
-  }
-  if (debt.status === 'scheduled') {
-    return <span className={`${styles.badge} ${styles.badgeScheduled}`}>Пересдача назначена</span>;
-  }
-  return null;
+        {(debt.status === 'requested' || debt.status === 'scheduled') && debt.conversation_id && (
+          <Typography
+            variant="body2"
+            component={Link}
+            href={`/messages/${debt.conversation_id}`}
+            sx={{ alignSelf: 'flex-start', mt: 0.5, color: 'primary.main', textDecoration: 'none' }}
+          >
+            Перейти в чат →
+          </Typography>
+        )}
+      </Stack>
+      {!isLast && <Divider sx={{ mx: 2 }} />}
+    </>
+  );
 };
 
 export const Debts = ({ debts, senderName }: Props) => {
   const groups = groupBySemester(debts);
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.headerTitle}>Задолженности</div>
-        <div className={styles.headerSub}>
-          Санкт-Петербургский государственный университет телекоммуникаций имени профессора М. А. Бонч-Бруевича
-        </div>
-      </div>
+    <Container sx={{ pb: 4 }}>
+      <Spacer size={8} />
 
       {debts.length === 0 ? (
-        <div className={styles.empty}>Задолженностей не обнаружено</div>
+        <Typography variant="body1" color="text.secondary" textAlign="center" sx={{ mt: 6 }}>
+          Задолженностей не обнаружено
+        </Typography>
       ) : (
-        groups.map((group) => (
-          <div key={`${group.course}-${group.semester}`} className={styles.semesterGroup}>
-            <div className={styles.semesterTitle}>
-              {group.course} курс — {group.semester} семестр
-            </div>
-            {group.rows.map((debt) => (
-              <DebtCard key={debt.id} debt={debt} senderName={senderName} />
-            ))}
-          </div>
-        ))
+        <Stack gap={3}>
+          {groups.map((group) => (
+            <Stack key={`${group.course}-${group.semester}`} gap={1}>
+              <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                {group.course} курс — {group.semester} семестр
+              </Typography>
+              <Card elevation={0} sx={{ borderRadius: 2.5, overflow: 'hidden' }}>
+                {group.rows.map((debt, idx) => (
+                  <DebtCard key={debt.id} debt={debt} senderName={senderName} isLast={idx === group.rows.length - 1} />
+                ))}
+              </Card>
+            </Stack>
+          ))}
+        </Stack>
       )}
-    </div>
+    </Container>
   );
 };

@@ -1,3 +1,4 @@
+import Typography from '@mui/material/Typography';
 import type { AcademicDebtResponse } from '@supreme-int/api-client/src/generated/core-client-info/types.gen';
 import { Debts } from '../../widgets/Debts/Debts';
 import { DefaultNavbar } from '../../widgets/DefaultNavbar/DefaultNavbar';
@@ -10,7 +11,7 @@ interface Props {
 export const DebtsPage = ({ debts, senderName }: Props) => {
   return (
     <>
-      <DefaultNavbar backPath="/documents/gradebook" />
+      <DefaultNavbar backPath="/documents/gradebook" center={<Typography fontWeight={600}>Задолженности</Typography>} />
       <Debts debts={debts} senderName={senderName} />
     </>
   );
