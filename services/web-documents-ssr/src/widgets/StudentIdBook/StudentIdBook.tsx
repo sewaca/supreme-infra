@@ -114,6 +114,14 @@ export const StudentIdBook = ({ user, stats }: Props) => {
           <div className={styles.footerYear}>{new Date().getFullYear()}</div>
         </div>
       </div>
+      <a
+        href="https://lk.gosuslugi.ru/profile/education"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.gosuslugiButton}
+      >
+        Посмотреть на Гос услугах
+      </a>
     </div>
   );
 };
