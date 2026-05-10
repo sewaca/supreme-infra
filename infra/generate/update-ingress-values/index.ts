@@ -27,6 +27,8 @@ interface IngressRule {
   paths: IngressPath[];
   /** Не перезаписываются при generate — только из существующего values.yaml */
   extraAnnotations?: Record<string, string>;
+  /** Переопределяет глобальный rateLimit для этого сервиса. Сохраняется при generate. */
+  rateLimit?: RateLimit;
 }
 
 interface RateLimit {
@@ -180,6 +182,7 @@ function mergeIngressRulesWithExisting(
       ...rule,
       paths: mergedPaths,
       ...(prev.extraAnnotations ? { extraAnnotations: prev.extraAnnotations } : {}),
+      ...(prev.rateLimit ? { rateLimit: prev.rateLimit } : {}),
     };
   });
 
