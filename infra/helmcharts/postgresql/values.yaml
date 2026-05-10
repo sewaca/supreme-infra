@@ -60,7 +60,7 @@ skipMigrations: false
 metrics:
   enabled: true
   image:
-    repository: quay.io/prometheuscommunity/postgres_exporter
+    repository: prometheuscommunity/postgres-exporter
     tag: "v0.15.0"
     pullPolicy: IfNotPresent
   resources:
