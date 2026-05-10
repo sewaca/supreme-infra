@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { backendApi } from '../../shared/api/backendApi';
 import type { ClientInfoUser } from '../../shared/lib/auth.client';
-import { detectClientInfo, setAuthToken } from '../../shared/lib/auth.client';
+import { detectClientInfo, RateLimitError, setAuthToken } from '../../shared/lib/auth.client';
 
 interface AuthFormProps {
   mode: 'login' | 'register';
@@ -37,13 +37,14 @@ function roleLabel(role: string): string {
   return 'Студент';
 }
 
-type RegisterStep = 'form' | 'confirm' | 'success' | 'not_found';
+type RegisterStep = 'form' | 'confirm' | 'success' | 'not_found' | 'rate_limited';
 
 function RegisterForm() {
   const router = useRouter();
   const [step, setStep] = useState<RegisterStep>('form');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [retryAfterMinutes, setRetryAfterMinutes] = useState(15);
   const [foundUser, setFoundUser] = useState<ClientInfoUser | null>(null);
   const [formData, setFormData] = useState({ email: '', password: '', snils: '', last_name: '' });
 
@@ -59,11 +60,16 @@ function RegisterForm() {
       setFoundUser(user);
       setStep('confirm');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Произошла ошибка';
-      if (msg.includes('not found') || msg.includes('не найден')) {
-        setStep('not_found');
+      if (err instanceof RateLimitError) {
+        setRetryAfterMinutes(Math.ceil(err.retryAfterSeconds / 60));
+        setStep('rate_limited');
       } else {
-        setError(msg);
+        const msg = err instanceof Error ? err.message : 'Произошла ошибка';
+        if (msg.includes('not found') || msg.includes('не найден')) {
+          setStep('not_found');
+        } else {
+          setError(msg);
+        }
       }
     } finally {
       setIsLoading(false);
@@ -88,6 +94,28 @@ function RegisterForm() {
       setIsLoading(false);
     }
   };
+
+  if (step === 'rate_limited') {
+    return (
+      <Box sx={{ width: '100%', maxWidth: 420, textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+          Слишком много попыток
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+          Из соображений безопасности поиск по СНИЛС временно заблокирован.
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+          Попробуйте снова через <strong>{retryAfterMinutes} мин.</strong>
+        </Typography>
+        <Typography variant="body2" align="center" color="text.secondary">
+          Уже есть аккаунт?{' '}
+          <Link component={NextLink} href="/login" underline="hover" sx={{ fontWeight: 600, color: '#1a237e' }}>
+            Войти
+          </Link>
+        </Typography>
+      </Box>
+    );
+  }
 
   if (step === 'not_found') {
     return (
@@ -316,6 +344,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isRateLimited, setIsRateLimited] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const clientInfoRef = useRef<Awaited<ReturnType<typeof detectClientInfo>> | null>(null);
 
@@ -358,6 +387,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsRateLimited(false);
     setIsLoading(true);
     try {
       const { location, device, ip } = clientInfoRef.current ?? (await detectClientInfo());
@@ -365,7 +395,12 @@ export function AuthForm({ mode }: AuthFormProps) {
       setAuthToken(response.access_token);
       router.push('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла ошибка');
+      if (err instanceof RateLimitError) {
+        setIsRateLimited(true);
+        setError(`Слишком много неудачных попыток. Попробуйте через ${Math.ceil(err.retryAfterSeconds / 60)} мин.`);
+      } else {
+        setError(err instanceof Error ? err.message : 'Произошла ошибка');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -399,7 +434,14 @@ export function AuthForm({ mode }: AuthFormProps) {
           </Box>
 
           <Collapse in={!!error} unmountOnExit>
-            <Alert severity="error" sx={{ mb: 2.5 }} onClose={() => setError('')}>
+            <Alert
+              severity={isRateLimited ? 'warning' : 'error'}
+              sx={{ mb: 2.5 }}
+              onClose={() => {
+                setError('');
+                setIsRateLimited(false);
+              }}
+            >
               {error}
             </Alert>
           </Collapse>
@@ -431,7 +473,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             fullWidth
             variant="contained"
             size="large"
-            disabled={isLoading}
+            disabled={isLoading || isRateLimited}
             sx={{
               mb: 2.5,
               py: 1.5,

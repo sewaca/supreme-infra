@@ -3,6 +3,15 @@ import { createClient, jsonBodySerializer } from '@supreme-int/api-client/src/ge
 import type { AuthResponse, UserInfo } from '@supreme-int/api-client/src/generated/core-auth/types.gen';
 import { TOKEN_KEY } from '@supreme-int/lib/src/constants/auth.model';
 
+export class RateLimitError extends Error {
+  readonly retryAfterSeconds: number;
+  constructor(detail: string, retryAfterSeconds: number) {
+    super(detail);
+    this.name = 'RateLimitError';
+    this.retryAfterSeconds = retryAfterSeconds;
+  }
+}
+
 // Client-side calls go through ingress at /core-auth
 // QoS mirrors server-side core-auth config: 800ms timeout, no retries
 const coreAuthBrowserClient = createClient({
@@ -68,6 +77,10 @@ export async function login(data: {
 
   if (!response.ok || !result) {
     const detail = (error as { detail?: string } | undefined)?.detail;
+    if (response.status === 429) {
+      const retryAfter = parseInt(response.headers.get('Retry-After') ?? '900', 10);
+      throw new RateLimitError(detail ?? 'Слишком много попыток входа', retryAfter);
+    }
     throw new Error(detail ?? 'Request failed');
   }
 
@@ -96,6 +109,10 @@ export async function lookup(data: { snils: string; last_name: string }): Promis
 
   if (!response.ok || !result) {
     const detail = (error as { detail?: string } | undefined)?.detail;
+    if (response.status === 429) {
+      const retryAfter = parseInt(response.headers.get('Retry-After') ?? '900', 10);
+      throw new RateLimitError(detail ?? 'Слишком много попыток', retryAfter);
+    }
     throw new Error(detail ?? 'Request failed');
   }
 

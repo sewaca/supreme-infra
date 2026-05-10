@@ -11,7 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import TOKEN_EXPIRE_DAYS, create_access_token, get_current_user
-from app.brute_force import is_locked, record_failed_attempt, reset_attempts
+from app.brute_force import is_locked, is_lookup_locked, record_failed_attempt, record_lookup_attempt, reset_attempts
 from app.config import settings
 from app.database import get_db
 from app.models.session import UserSession
@@ -113,8 +113,24 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
 
 
 @router.post("/lookup", response_model=ClientInfoUser)
-async def lookup(body: LookupRequest):
+async def lookup(body: LookupRequest, request: Request):
+    ip = (
+        request.headers.get("x-real-ip")
+        or request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+        or (request.client.host if request.client else "unknown")
+    )
+
+    locked, retry_after = await is_lookup_locked(ip)
+    if locked:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Too many lookup attempts. Try again in {retry_after // 60} min.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     snils_digits = re.sub(r"\D", "", body.snils)
+    await record_lookup_attempt(ip)
+
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.post(
