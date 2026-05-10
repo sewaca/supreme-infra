@@ -55,3 +55,6 @@ services:
       description: news parsing and displaying service
       database:
         enabled: true
+        name: core_news_db
+        user: core_news_user
+        passwordSecret: DB_PASSWORD
