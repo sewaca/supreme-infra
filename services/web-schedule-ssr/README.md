@@ -1,103 +1,72 @@
 # web-schedule-ssr
 
-Сервис для просмотра расписания для студентов и преподавателей
+SSR-фронтенд для просмотра расписания занятий и сессии для студентов и преподавателей. Поддерживает подписку на CalDAV-календарь.
 
-## Features
+**Стек:** Next.js 15 · App Router · MUI · FullCalendar · TypeScript  
+**Порт:** `3006`
 
-- Next.js 15 with App Router
-- Server-side rendering (SSR)
-- OpenTelemetry instrumentation
-- Prometheus metrics
-- TypeScript
+---
 
-## Prerequisites
+## Доменная область
 
-- Node.js 22+
-- pnpm 9+
+- Просмотр расписания занятий на неделю / месяц в формате календаря
+- Расписание по группе и по преподавателю
+- Экзамены и зачёты текущей сессии
+- Настройка CalDAV-подписки для синхронизации расписания с внешними календарями (Apple Calendar, Google Calendar и т.д.)
 
-## Local Development
+---
 
-### 1. Install Dependencies
+## Зависимости
+
+### Backend-сервисы
+
+| Сервис          | Что использует                                                                    |
+| --------------- | --------------------------------------------------------------------------------- |
+| `core-schedule` | Расписание группы/преподавателя, экзамены, шаблоны, список групп и преподавателей |
+| `core-auth`     | CalDAV-токены для настройки подписки (`/auth/caldav-tokens`)                      |
+
+### Пакеты монорепо
+
+| Пакет                            | Назначение                                            |
+| -------------------------------- | ----------------------------------------------------- |
+| `@supreme-int/api-client`        | Типизированный клиент к `core-schedule` и `core-auth` |
+| `@supreme-int/authorization-lib` | SSR JWT-верификация                                   |
+| `@supreme-int/nextjs-shared`     | SSR-утилиты, `createRouteAuthMiddleware`              |
+| `@supreme-int/design-system`     | Тема MUI                                              |
+
+### Переменные окружения
+
+| Переменная                  | Описание                             |
+| --------------------------- | ------------------------------------ |
+| `PORT`                      | Порт сервера (по умолчанию `3006`)   |
+| `NODE_ENV`                  | Окружение                            |
+| `BACKEND_SERVICE_NAMESPACE` | Kubernetes namespace бэкенд-сервисов |
+
+---
+
+## Страницы и роуты
+
+| Путь                     | Auth  | Описание                                                    |
+| ------------------------ | ----- | ----------------------------------------------------------- |
+| `/schedule`              | none  | Главная страница расписания (публичный просмотр)            |
+| `/schedule/group`        | valid | Расписание группы в формате недельного календаря            |
+| `/schedule/teacher`      | valid | Расписание преподавателя                                    |
+| `/schedule/exams`        | valid | Экзамены и зачёты текущей сессии                            |
+| `GET /api/schedule`      | valid | SSR API: получить данные расписания для клиентского рендера |
+| `POST /api/caldav-setup` | valid | Создать CalDAV-токен и вернуть инструкцию по подписке       |
+| `GET /api/status`        | —     | Health check                                                |
+
+---
+
+## Разработка
 
 ```bash
 pnpm install
-```
-
-### 2. Run Development Server
-
-```bash
-pnpm run dev
-```
-
-The application will start on http://localhost:3006
-
-### 3. Access Application
-
-- Homepage: http://localhost:3006
-- Health check: http://localhost:3006/api/status
-- Metrics: http://localhost:9464/metrics
-
-## Testing
-
-```bash
-# Run unit tests
-pnpm run unit --verbose
-
-# Run tests in watch mode
-pnpm run unit:watch
-
-# Run tests with coverage
-pnpm run unit:coverage
-```
-
-## Building
-
-```bash
-# Build for production
+pnpm run dev     # http://localhost:3006
 pnpm run build
-
-# Run production build
-pnpm run start
+pnpm run unit
 ```
 
-## Environment Variables
+## Метрики
 
-| Variable                  | Description                      | Default     |
-| ------------------------- | -------------------------------- | ----------- |
-| PORT                      | Server port                      | 3006        |
-| NODE_ENV                  | Environment                      | development |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default     |
-
-## Project Structure
-
-```
-app/
-├── layout.tsx          # Root layout
-├── page.tsx            # Homepage
-└── api/
-    └── status/
-        └── route.ts    # Health check endpoint
-
-src/
-├── components/         # Reusable components
-├── shared/            # Shared utilities
-└── views/             # Page views
-```
-
-## SVG Icons
-
-You can import SVG files as React components:
-
-```tsx
-import MyIcon from "./path/to/icon.svg";
-
-function MyComponent() {
-  return <MyIcon width={24} height={24} className="icon" />;
-}
-```
-
-SVG components accept all standard SVG props (width, height, className, fill, stroke, etc.).
-
-## License
-
-ISC
+Prometheus на порту `9464` по пути `/metrics`.

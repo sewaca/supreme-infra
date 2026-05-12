@@ -1,110 +1,123 @@
 # core-applications
 
-Applications service — manages user applications, references, orders, and dormitory operations.
+Заявления студентов, приказы деканата, официальные справки и заявки на общежитие.
 
-## Overview
+**Стек:** FastAPI · SQLAlchemy (async) · PostgreSQL  
+**Порт:** `8001`  
+**БД:** `core_applications_db` → PgBouncer `pgbouncer-core-applications`
 
-This service handles:
+---
 
-- **Applications (USER_APPLICATION)** — scholarship and dormitory applications
-- **Application Notifications** — notifications for applications
-- **References (REFERENCE_ORDER)** — document reference orders (РЖД, справки об обучении, etc.)
-- **Orders (ORDER)** — administrative orders (приказы о стипендии, общежитии, переводе)
-- **Dormitory** — parent agreement uploads
+## Доменная область
 
-## Technology Stack
+- Заявления студента (академотпуск, перевод и т.д.) и уведомления по ним
+- Приказы деканата, затрагивающие студента (зачисление, отчисление, перевод)
+- Заказ официальных справок с отслеживанием статуса и выдачей PDF
+- Подача заявок на общежитие и загрузка согласия родителей
+- Инициализация данных при регистрации нового пользователя
 
-- **FastAPI** — modern Python web framework
-- **SQLAlchemy** — async ORM for PostgreSQL
-- **Alembic** — database migrations
-- **OpenTelemetry** — observability (traces, metrics, logs)
-- **Prometheus** — metrics export on port 9464
-- **uv** — fast Python package manager
+Сервис **не хранит профиль** и не знает о расписании или сообщениях.
 
-## Development
+---
 
-### Prerequisites
+## Зависимости
 
-- Python 3.12+
-- PostgreSQL 14+
-- uv package manager
+### Исходящие вызовы
 
-### Setup
+| Сервис      | Когда                                                                       |
+| ----------- | --------------------------------------------------------------------------- |
+| `core-auth` | JWT-валидация через `authorization-py` middleware на всех защищённых роутах |
 
-1. Install dependencies:
+### Инфраструктура
+
+| Ресурс                            | Назначение                            |
+| --------------------------------- | ------------------------------------- |
+| PostgreSQL `core_applications_db` | Хранилище заявлений, заказов, справок |
+
+### Пакеты
+
+| Пакет              | Назначение                                  |
+| ------------------ | ------------------------------------------- |
+| `authorization-py` | JWT-middleware, валидация через `core-auth` |
+
+### Переменные окружения
+
+| Переменная                                        | Описание     |
+| ------------------------------------------------- | ------------ |
+| `DB_HOST` / `DB_NAME` / `DB_USER` / `DB_PASSWORD` | Реквизиты БД |
+
+---
+
+## API роуты
+
+Все роуты доступны через gateway с префиксом `/core-applications`.
+
+### Заявления
+
+| Метод | Путь                          | Описание                                    |
+| ----- | ----------------------------- | ------------------------------------------- |
+| `GET` | `/applications`               | Список активных заявлений студента          |
+| `GET` | `/applications/notifications` | Уведомления об изменении статусов заявлений |
+
+### Приказы
+
+| Метод | Путь                     | Описание                                              |
+| ----- | ------------------------ | ----------------------------------------------------- |
+| `GET` | `/orders`                | Список приказов студента (зачисление, перевод и т.д.) |
+| `GET` | `/orders/counts`         | Счётчики приказов по типам                            |
+| `GET` | `/orders/{order_id}`     | Детали конкретного приказа                            |
+| `GET` | `/orders/{order_id}/pdf` | Скачать PDF приказа                                   |
+
+### Справки
+
+| Метод  | Путь                                        | Описание                               |
+| ------ | ------------------------------------------- | -------------------------------------- |
+| `GET`  | `/references`                               | Список заказанных справок              |
+| `GET`  | `/references/{reference_id}`                | Детали справки и её текущий статус     |
+| `POST` | `/references/order`                         | Заказать новую справку                 |
+| `POST` | `/references/{reference_id}/cancel`         | Отменить заказ                         |
+| `POST` | `/references/{reference_id}/extend-storage` | Продлить срок хранения готовой справки |
+| `GET`  | `/references/{reference_id}/pdf`            | Скачать PDF справки                    |
+
+### Общежитие
+
+| Метод  | Путь                          | Описание                     |
+| ------ | ----------------------------- | ---------------------------- |
+| `POST` | `/dormitory/parent-agreement` | Загрузить согласие родителей |
+| `POST` | `/dormitory/applications`     | Подать заявку на общежитие   |
+
+### Внутренние (межсервисные)
+
+| Метод  | Путь                               | Описание                                                           |
+| ------ | ---------------------------------- | ------------------------------------------------------------------ |
+| `POST` | `/applications/internal/init-user` | Инициализировать данные нового пользователя (вызов из `core-auth`) |
+
+### Служебные
+
+| Метод | Путь      | Описание     |
+| ----- | --------- | ------------ |
+| `GET` | `/status` | Health check |
+
+---
+
+## Разработка
 
 ```bash
 uv sync
-```
-
-2. Configure environment:
-
-```bash
 cp .env.example .env
-# Edit .env with your database credentials
-```
-
-3. Run migrations:
-
-```bash
-uv run alembic upgrade head
-```
-
-4. Start development server:
-
-```bash
 uv run uvicorn app.main:app --reload --port 8001
 ```
 
-The service will be available at `http://localhost:8001/core-applications`
+Swagger UI: http://localhost:8001/core-applications/docs
 
-## API Endpoints
+### Миграции (Alembic)
 
-### Applications
-
-- `GET /applications` — list user applications (filterable by type, single by id)
-- `GET /applications/notifications` — list notifications (filterable by type, application_id)
-
-### References (Справки)
-
-- `GET /references` — list reference orders
-- `GET /references/:id` — reference details
-- `POST /references/order` — create new reference order
-- `POST /references/:id/cancel` — cancel reference
-- `POST /references/:id/extend-storage` — extend storage period
-- `GET /references/:id/pdf` — download PDF
-
-### Orders (Приказы)
-
-- `GET /orders` — list orders (filterable by type, paginated)
-- `GET /orders/counts` — counts by type
-- `GET /orders/:id` — order details with notifications
-- `GET /orders/:id/pdf` — download PDF
-
-### Dormitory
-
-- `POST /dormitory/parent-agreement` — upload parent agreement
-
-## Health Check
-
-```
-GET /core-applications/status
+```bash
+uv run alembic revision --autogenerate -m "description"
+uv run alembic upgrade head
+uv run alembic downgrade -1
 ```
 
-## Metrics
+## Метрики
 
-Prometheus metrics are exposed on port `9464` at `/metrics`.
-
-## Database
-
-The service uses PostgreSQL database `core_applications_db` with tables:
-
-- `user_application` — applications
-- `application_notification` — application notifications
-- `reference_order` — reference orders
-- `order` — administrative orders
-- `order_notification` — order notifications
-
-## Testing
-
-See `TESTING.md` for testing instructions and test data.
+Prometheus на порту `9464` по пути `/metrics`.

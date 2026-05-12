@@ -1,40 +1,78 @@
 # system-files-storage
 
-File storage service — upload files to MinIO, generate thumbnails
+Загрузка файлов в S3 (MinIO) с автоматической генерацией превью для изображений и видео.
 
-## Tech Stack
+**Стек:** FastAPI · S3 (MinIO) · Pillow  
+**Порт:** `8007`  
+**БД:** нет
 
-- **FastAPI** — web framework
-- **uvicorn** — ASGI server
-- **SQLAlchemy** (async) + **asyncpg** — database ORM
-- **OpenTelemetry** — tracing, metrics (Prometheus on port 9464), logs (Loki via OTLP)
+---
 
-## Development
+## Доменная область
+
+- Приём multipart-загрузок от клиентов
+- Сохранение файлов в S3-совместимое хранилище (MinIO)
+- Генерация thumbnail-превью для изображений
+- Возврат публичного URL для доступа к файлу
+
+Сервис **не хранит метаданные файлов** в БД — только передаёт файл в S3 и возвращает ссылку. Метаданные (имя, размер, MIME) хранятся в `message_attachment` в `core-messages`.
+
+---
+
+## Зависимости
+
+### Исходящие вызовы
+
+| Сервис      | Когда                                             |
+| ----------- | ------------------------------------------------- |
+| `core-auth` | JWT-валидация через `authorization-py` middleware |
+
+### Инфраструктура
+
+| Ресурс                            | Назначение                              |
+| --------------------------------- | --------------------------------------- |
+| S3 / MinIO `messages-attachments` | Постоянное хранилище загруженных файлов |
+
+### Переменные окружения
+
+| Переменная                        | Описание                                                            |
+| --------------------------------- | ------------------------------------------------------------------- |
+| `S3_ENDPOINT`                     | URL MinIO (например, `http://minio.default.svc.cluster.local:9000`) |
+| `S3_BUCKET`                       | Имя бакета (`messages-attachments`)                                 |
+| `S3_ACCESS_KEY` / `S3_SECRET_KEY` | Реквизиты MinIO                                                     |
+| `S3_REGION`                       | Регион (для подписи запросов)                                       |
+| `PUBLIC_BASE_URL`                 | Публичный базовый URL (для формирования ссылок в ответе)            |
+
+---
+
+## API роуты
+
+Все роуты доступны через gateway с префиксом `/system-files-storage`.
+
+### Загрузка файлов
+
+| Метод  | Путь      | Описание                                                                                                   |
+| ------ | --------- | ---------------------------------------------------------------------------------------------------------- |
+| `POST` | `/upload` | Загрузить файл. Принимает `multipart/form-data`, возвращает `file_url` и `thumbnail_url` (для изображений) |
+
+### Служебные
+
+| Метод | Путь          | Описание     |
+| ----- | ------------- | ------------ |
+| `GET` | `/api/status` | Health check |
+
+---
+
+## Разработка
 
 ```bash
-# Install dependencies
 uv sync
-
-# Copy environment variables
 cp .env.example .env
-
-# Run development server
 uv run uvicorn app.main:app --reload --port 8007
 ```
 
-## API Documentation
+Swagger UI: http://localhost:8007/system-files-storage/docs
 
-After starting the server, API docs are available at:
+## Метрики
 
-- Swagger UI: http://localhost:8007/core-files/docs
-- ReDoc: http://localhost:8007/core-files/redoc
-
-## Health Check
-
-```
-GET /core-files/api/status
-```
-
-## Metrics
-
-Prometheus metrics are exposed on port `9464` at `/metrics`.
+Prometheus на порту `9464` по пути `/metrics`.

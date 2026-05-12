@@ -1,89 +1,71 @@
 # web-documents-ssr
 
-documents presentation
+SSR-фронтенд для академических документов студента: зачётная книжка, аттестации, задолженности, студенческий билет.
 
-## Features
+**Стек:** Next.js 15 · App Router · MUI · TypeScript  
+**Порт:** `3005`
 
-- Next.js 15 with App Router
-- Server-side rendering (SSR)
-- OpenTelemetry instrumentation
-- Prometheus metrics
-- TypeScript
+---
 
-## Prerequisites
+## Доменная область
 
-- Node.js 22+
-- pnpm 9+
+- Просмотр оценок по предметам (зачётная книжка)
+- Промежуточные аттестации по семестрам
+- Академические задолженности
+- Студенческий билет
 
-## Local Development
+---
 
-### 1. Install Dependencies
+## Зависимости
+
+### Backend-сервисы
+
+| Сервис             | Что использует                                                                            |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| `core-client-info` | Профиль, оценки (`/rating/grades`), аттестации (`/attestation`), задолженности (`/debts`) |
+
+### Пакеты монорепо
+
+| Пакет                            | Назначение                                 |
+| -------------------------------- | ------------------------------------------ |
+| `@supreme-int/api-client`        | Типизированный клиент к `core-client-info` |
+| `@supreme-int/authorization-lib` | SSR JWT-верификация                        |
+| `@supreme-int/nextjs-shared`     | SSR-утилиты, `createRouteAuthMiddleware`   |
+| `@supreme-int/design-system`     | Тема MUI                                   |
+
+### Переменные окружения
+
+| Переменная                  | Описание                             |
+| --------------------------- | ------------------------------------ |
+| `PORT`                      | Порт сервера (по умолчанию `3005`)   |
+| `NODE_ENV`                  | Окружение                            |
+| `BACKEND_SERVICE_NAMESPACE` | Kubernetes namespace бэкенд-сервисов |
+
+---
+
+## Страницы и роуты
+
+`auth_level: valid` = JWT + проверка сессии в `core-auth` обязательны.
+
+| Путь                         | Auth  | Описание                                         |
+| ---------------------------- | ----- | ------------------------------------------------ |
+| `/documents/gradebook`       | valid | Зачётная книжка: оценки по предметам и семестрам |
+| `/documents/attestation`     | valid | Промежуточные аттестации                         |
+| `/documents/debts`           | none  | Академические задолженности                      |
+| `/documents/student-id-card` | valid | Студенческий билет                               |
+| `GET /api/status`            | —     | Health check                                     |
+
+---
+
+## Разработка
 
 ```bash
 pnpm install
-```
-
-### 2. Run Development Server
-
-```bash
-pnpm run dev
-```
-
-The application will start on http://localhost:3005
-
-### 3. Access Application
-
-- Homepage: http://localhost:3005
-- Health check: http://localhost:3005/api/status
-- Metrics: http://localhost:9464/metrics
-
-## Testing
-
-```bash
-# Run unit tests
-pnpm run unit --verbose
-
-# Run tests in watch mode
-pnpm run unit:watch
-
-# Run tests with coverage
-pnpm run unit:coverage
-```
-
-## Building
-
-```bash
-# Build for production
+pnpm run dev     # http://localhost:3005
 pnpm run build
-
-# Run production build
-pnpm run start
+pnpm run unit
 ```
 
-## Environment Variables
+## Метрики
 
-| Variable                  | Description                      | Default     |
-| ------------------------- | -------------------------------- | ----------- |
-| PORT                      | Server port                      | 3005        |
-| NODE_ENV                  | Environment                      | development |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default     |
-
-## Project Structure
-
-```
-app/
-├── layout.tsx          # Root layout
-├── page.tsx            # Homepage
-└── api/
-    └── status/
-        └── route.ts    # Health check endpoint
-
-src/
-├── components/         # Reusable components
-├── shared/            # Shared utilities
-└── views/             # Page views
-```
-
-## License
-
-ISC
+Prometheus на порту `9464` по пути `/metrics`.

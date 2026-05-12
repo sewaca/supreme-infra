@@ -1,54 +1,142 @@
 # core-messages
 
-Messaging — direct messages, broadcasts, file attachments
+Личные переписки, групповые чаты, каналы-рассылки, вложения и real-time обновления через WebSocket.
 
-## Tech Stack
+**Стек:** FastAPI · SQLAlchemy (async) · PostgreSQL · Redis · S3 (MinIO)  
+**Порт:** `8006`  
+**БД:** `core_messages_db` → PgBouncer `pgbouncer-core-messages`
 
-- **FastAPI** — web framework
-- **uvicorn** — ASGI server
-- **SQLAlchemy** (async) + **asyncpg** — database ORM
-- **Alembic** — database migrations
-- **OpenTelemetry** — tracing, metrics (Prometheus on port 9464), logs (Loki via OTLP)
+---
 
-## Development
+## Доменная область
+
+- Диалоги (direct, group, channel) и участники
+- Отправка, редактирование и мягкое удаление сообщений
+- Цитирование сообщений (`reply_to_id`)
+- Full-text поиск по сообщениям (tsvector, русский язык)
+- Вложения файлов с генерацией превью (через `system-files-storage`)
+- Рассылки (broadcasts) для групп студентов
+- Real-time уведомления через WebSocket + Redis Pub/Sub
+- Поиск пользователей для создания чата
+
+Кеш профилей (`user_cache`) был удалён в migration 007 — заменён на Redis-кеш из `redis-client-info-cache`.
+
+---
+
+## Зависимости
+
+### Исходящие вызовы
+
+| Сервис             | Когда                                             |
+| ------------------ | ------------------------------------------------- |
+| `core-auth`        | JWT-валидация через `authorization-py` middleware |
+| `core-client-info` | Поиск пользователей, получение профиля для кеша   |
+
+### Инфраструктура
+
+| Ресурс                            | Назначение                                                         |
+| --------------------------------- | ------------------------------------------------------------------ |
+| PostgreSQL `core_messages_db`     | Диалоги, сообщения, вложения, участники                            |
+| Redis `redis`                     | Pub/Sub для WebSocket (real-time рассылка событий между репликами) |
+| Redis `redis-client-info-cache`   | Кеш профилей пользователей                                         |
+| S3 / MinIO `messages-attachments` | Хранилище вложений и превью                                        |
+
+### Пакеты
+
+| Пакет              | Назначение                                  |
+| ------------------ | ------------------------------------------- |
+| `authorization-py` | JWT-middleware, валидация через `core-auth` |
+
+### Переменные окружения
+
+| Переменная                                                      | Описание                    |
+| --------------------------------------------------------------- | --------------------------- |
+| `DB_HOST` / `DB_NAME` / `DB_USER` / `DB_PASSWORD`               | Реквизиты БД                |
+| `REDIS_URL`                                                     | Redis для WebSocket Pub/Sub |
+| `REDIS_CACHE_URL`                                               | Redis для кеша профилей     |
+| `S3_ENDPOINT` / `S3_BUCKET` / `S3_ACCESS_KEY` / `S3_SECRET_KEY` | MinIO для вложений          |
+
+---
+
+## API роуты
+
+Все роуты доступны через gateway с префиксом `/core-messages`.
+
+### Диалоги
+
+| Метод    | Путь                               | Описание                                               |
+| -------- | ---------------------------------- | ------------------------------------------------------ |
+| `GET`    | `/conversations`                   | Список диалогов текущего пользователя                  |
+| `POST`   | `/conversations/direct`            | Создать личный диалог с пользователем                  |
+| `GET`    | `/conversations/updates`           | Последние изменения диалогов (polling-альтернатива WS) |
+| `GET`    | `/conversations/unread-count`      | Суммарное количество непрочитанных сообщений           |
+| `GET`    | `/conversations/{conversation_id}` | Детали диалога и его участники                         |
+| `DELETE` | `/conversations/{conversation_id}` | Покинуть / удалить диалог                              |
+
+### Сообщения
+
+| Метод    | Путь                     | Описание                                     |
+| -------- | ------------------------ | -------------------------------------------- |
+| `GET`    | `/messages`              | История сообщений диалога (пагинация)        |
+| `POST`   | `/messages`              | Отправить сообщение                          |
+| `POST`   | `/messages/read`         | Отметить сообщения как прочитанные           |
+| `PATCH`  | `/messages/{message_id}` | Отредактировать сообщение                    |
+| `DELETE` | `/messages/{message_id}` | Мягко удалить сообщение                      |
+| `GET`    | `/messages/search`       | Full-text поиск по сообщениям (русский язык) |
+
+### Рассылки
+
+| Метод  | Путь                 | Описание                                                    |
+| ------ | -------------------- | ----------------------------------------------------------- |
+| `GET`  | `/broadcasts`        | Список созданных рассылок                                   |
+| `POST` | `/broadcasts`        | Создать рассылку (отправить сообщение группе пользователей) |
+| `GET`  | `/broadcasts/groups` | Список групп, доступных для рассылки                        |
+
+### Вложения
+
+| Метод  | Путь     | Описание                                          |
+| ------ | -------- | ------------------------------------------------- |
+| `POST` | `/files` | Загрузить вложение к сообщению (сохраняется в S3) |
+
+### Пользователи
+
+| Метод | Путь               | Описание                                 |
+| ----- | ------------------ | ---------------------------------------- |
+| `GET` | `/users/search`    | Поиск пользователей для создания диалога |
+| `GET` | `/users/{user_id}` | Краткий профиль пользователя (из кеша)   |
+
+### Real-time
+
+| Протокол  | Путь  | Описание                                                                                  |
+| --------- | ----- | ----------------------------------------------------------------------------------------- |
+| WebSocket | `/ws` | Подключение для получения событий в реальном времени (новые сообщения, статусы прочтения) |
+
+### Служебные
+
+| Метод | Путь      | Описание     |
+| ----- | --------- | ------------ |
+| `GET` | `/status` | Health check |
+
+---
+
+## Разработка
 
 ```bash
-# Install dependencies
 uv sync
-
-# Copy environment variables
 cp .env.example .env
-
-# Run development server
 uv run uvicorn app.main:app --reload --port 8006
 ```
 
-## Database Migrations
+Swagger UI: http://localhost:8006/core-messages/docs
+
+### Миграции (Alembic)
 
 ```bash
-# Create a new migration
 uv run alembic revision --autogenerate -m "description"
-
-# Apply migrations
 uv run alembic upgrade head
-
-# Rollback
 uv run alembic downgrade -1
 ```
 
-## API Documentation
+## Метрики
 
-After starting the server, API docs are available at:
-
-- Swagger UI: http://localhost:8006/core-messages/docs
-- ReDoc: http://localhost:8006/core-messages/redoc
-
-## Health Check
-
-```
-GET /core-messages/api/status
-```
-
-## Metrics
-
-Prometheus metrics are exposed on port `9464` at `/metrics`.
+Prometheus на порту `9464` по пути `/metrics`.

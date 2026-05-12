@@ -1,104 +1,77 @@
 # web-messages-ssr
 
-Отображение сообщений
+SSR-фронтенд для мессенджера: личные чаты, групповые чаты, каналы-рассылки, поиск по сообщениям, real-time через WebSocket.
 
-## Features
+**Стек:** Next.js 15 · App Router · MUI · TypeScript  
+**Порт:** `3007`
 
-- Next.js 15 with App Router
-- Server-side rendering (SSR)
-- OpenTelemetry instrumentation
-- Prometheus metrics
-- TypeScript
-- SVG imports as React components
+---
 
-## Prerequisites
+## Доменная область
 
-- Node.js 22+
-- pnpm 9+
+- Список диалогов с превью последнего сообщения
+- Открытие и просмотр диалога с историей сообщений
+- Создание нового личного диалога (поиск пользователя)
+- Рассылки: создание и просмотр
+- Full-text поиск по сообщениям
+- Real-time обновления через WebSocket (новые сообщения, прочтение)
 
-## Local Development
+---
 
-### 1. Install Dependencies
+## Зависимости
+
+### Backend-сервисы
+
+| Сервис             | Что использует                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| `core-messages`    | Все операции с диалогами, сообщениями, рассылками, поиском; `WS /ws` для real-time |
+| `core-client-info` | Информация о пользователях при поиске                                              |
+
+### Пакеты монорепо
+
+| Пакет                            | Назначение                               |
+| -------------------------------- | ---------------------------------------- |
+| `@supreme-int/api-client`        | Типизированный клиент к `core-messages`  |
+| `@supreme-int/authorization-lib` | SSR JWT-верификация                      |
+| `@supreme-int/nextjs-shared`     | SSR-утилиты, `createRouteAuthMiddleware` |
+| `@supreme-int/design-system`     | Тема MUI                                 |
+
+### Переменные окружения
+
+| Переменная                  | Описание                             |
+| --------------------------- | ------------------------------------ |
+| `PORT`                      | Порт сервера (по умолчанию `3007`)   |
+| `NODE_ENV`                  | Окружение                            |
+| `BACKEND_SERVICE_NAMESPACE` | Kubernetes namespace бэкенд-сервисов |
+
+---
+
+## Страницы и роуты
+
+Все страницы требуют валидной сессии (`auth_level: valid`).
+
+| Путь                         | Auth  | Описание                                          |
+| ---------------------------- | ----- | ------------------------------------------------- |
+| `/messages`                  | valid | Список диалогов                                   |
+| `/messages/[conversationId]` | valid | Открытый диалог с историей сообщений              |
+| `/messages/new`              | valid | Создание нового диалога (поиск пользователя)      |
+| `/messages/broadcast`        | valid | Список рассылок                                   |
+| `/messages/broadcast/new`    | valid | Создание новой рассылки                           |
+| `/messages/search`           | valid | Full-text поиск по всем сообщениям                |
+| `GET /api/messages/history`  | valid | SSR API: история сообщений для серверного рендера |
+| `GET /api/status`            | —     | Health check                                      |
+
+---
+
+## Разработка
 
 ```bash
 pnpm install
-```
-
-### 2. Run Development Server
-
-```bash
-pnpm run dev
-```
-
-The application will start on http://localhost:3001
-
-### 3. Access Application
-
-- Homepage: http://localhost:3001
-- Health check: http://localhost:3001/api/status
-- Metrics: http://localhost:9464/metrics
-
-## Testing
-
-```bash
-# Run unit tests
-pnpm run unit --verbose
-
-# Run tests in watch mode
-pnpm run unit:watch
-
-# Run tests with coverage
-pnpm run unit:coverage
-```
-
-## Building
-
-```bash
-# Build for production
+pnpm run dev     # http://localhost:3007
 pnpm run build
-
-# Run production build
-pnpm run start
+pnpm run unit
 ```
 
-## Environment Variables
+## Метрики
 
-| Variable                  | Description                      | Default     |
-| ------------------------- | -------------------------------- | ----------- |
-| PORT                      | Server port                      | 3001        |
-| NODE_ENV                  | Environment                      | development |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default     |
-
-## Project Structure
-
-```
-app/
-├── layout.tsx          # Root layout
-├── page.tsx            # Homepage
-└── api/
-    └── status/
-        └── route.ts    # Health check endpoint
-
-src/
-├── components/         # Reusable components
-├── shared/            # Shared utilities
-└── views/             # Page views
-```
-
-## SVG Icons
-
-You can import SVG files as React components:
-
-```tsx
-import MyIcon from "./path/to/icon.svg";
-
-function MyComponent() {
-  return <MyIcon width={24} height={24} className="icon" />;
-}
-```
-
-SVG components accept all standard SVG props (width, height, className, fill, stroke, etc.).
-
-## License
-
-ISC
+Prometheus на порту `9464` по пути `/metrics`.

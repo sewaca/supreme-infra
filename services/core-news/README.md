@@ -1,54 +1,98 @@
 # core-news
 
-news parsing and displaying service
+Парсинг и хранение новостей с сайта университета. Автоматическая синхронизация по расписанию.
 
-## Tech Stack
+**Стек:** FastAPI · SQLAlchemy (async) · PostgreSQL · BeautifulSoup4  
+**Порт:** `8008`  
+**БД:** `core_news_db` → PgBouncer `pgbouncer-core-news`
 
-- **FastAPI** — web framework
-- **uvicorn** — ASGI server
-- **SQLAlchemy** (async) + **asyncpg** — database ORM
-- **Alembic** — database migrations
-- **OpenTelemetry** — tracing, metrics (Prometheus on port 9464), logs (Loki via OTLP)
+---
 
-## Development
+## Доменная область
+
+- Хранение новостей, агрегированных с внешнего сайта СПбГУТ
+- Парсинг HTML страниц для извлечения заголовка, URL, даты, рубрики
+- Фоновая синхронизация по CronJob (каждые 12 часов)
+- Защита от дублей при повторном парсинге (уникальность по `url`)
+
+Сервис автономен — не имеет входящих связей от других сервисов.
+
+---
+
+## Зависимости
+
+### Исходящие вызовы
+
+| Сервис                     | Когда                                             |
+| -------------------------- | ------------------------------------------------- |
+| `core-auth`                | JWT-middleware (если роут защищён)                |
+| Сайт СПбГУТ (`www.sut.ru`) | `POST /news/sync` — HTTP-парсинг страниц новостей |
+
+### Инфраструктура
+
+| Ресурс                    | Назначение         |
+| ------------------------- | ------------------ |
+| PostgreSQL `core_news_db` | Хранилище новостей |
+
+### Пакеты
+
+| Пакет              | Назначение     |
+| ------------------ | -------------- |
+| `authorization-py` | JWT-middleware |
+
+### Переменные окружения
+
+| Переменная                                        | Описание     |
+| ------------------------------------------------- | ------------ |
+| `DB_HOST` / `DB_NAME` / `DB_USER` / `DB_PASSWORD` | Реквизиты БД |
+
+### CronJob
+
+Синхронизация запускается автоматически раз в 12 часов:
+
+```
+POST http://core-news.default.svc.cluster.local/core-news/news/sync
+```
+
+---
+
+## API роуты
+
+Все роуты доступны через gateway с префиксом `/core-news`.
+
+### Новости
+
+| Метод  | Путь         | Описание                                                                          |
+| ------ | ------------ | --------------------------------------------------------------------------------- |
+| `GET`  | `/news`      | Список новостей (пагинация, фильтр по категории)                                  |
+| `POST` | `/news/sync` | Запустить парсинг сайта и сохранить новые новости. Вызывается CronJob или вручную |
+
+### Служебные
+
+| Метод | Путь      | Описание     |
+| ----- | --------- | ------------ |
+| `GET` | `/status` | Health check |
+
+---
+
+## Разработка
 
 ```bash
-# Install dependencies
 uv sync
-
-# Copy environment variables
 cp .env.example .env
-
-# Run development server
 uv run uvicorn app.main:app --reload --port 8008
 ```
 
-## Database Migrations
+Swagger UI: http://localhost:8008/core-news/docs
+
+### Миграции (Alembic)
 
 ```bash
-# Create a new migration
 uv run alembic revision --autogenerate -m "description"
-
-# Apply migrations
 uv run alembic upgrade head
-
-# Rollback
 uv run alembic downgrade -1
 ```
 
-## API Documentation
+## Метрики
 
-After starting the server, API docs are available at:
-
-- Swagger UI: http://localhost:8008/core-news/docs
-- ReDoc: http://localhost:8008/core-news/redoc
-
-## Health Check
-
-```
-GET /core-news/api/status
-```
-
-## Metrics
-
-Prometheus metrics are exposed on port `9464` at `/metrics`.
+Prometheus на порту `9464` по пути `/metrics`.

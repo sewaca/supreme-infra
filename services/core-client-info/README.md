@@ -1,140 +1,149 @@
 # core-client-info
 
-Client information service — stores user profile, settings, ratings, achievements, grades, and subject priorities.
+Профиль пользователя и всё, что с ним связано: личные и учебные данные, оценки, задолженности, аттестации, рейтинг, геймификация, настройки уведомлений, выбор дисциплин.
 
-**Note**: References, orders, dormitory, and applications have been moved to the `core-applications` service.
+**Стек:** FastAPI · SQLAlchemy (async) · PostgreSQL · Redis  
+**Порт:** `8000`  
+**БД:** `core_client_info_db` → PgBouncer `pgbouncer-core-client-info`
 
-## Tech Stack
+---
 
-- **FastAPI** — web framework
-- **uvicorn** — ASGI server
-- **SQLAlchemy** (async) + **asyncpg** — database ORM
-- **Alembic** — database migrations
-- **OpenTelemetry** — tracing, metrics (Prometheus on port 9464), logs (Loki via OTLP)
+## Доменная область
 
-## Domain
+- Профиль студента и преподавателя (личные + учебные данные)
+- Академические оценки, задолженности, промежуточные аттестации
+- Геймификация: уровень XP, стрики, достижения, рейтинговые позиции
+- Настройки уведомлений (в т.ч. Telegram / VK токены)
+- Выбор элективных дисциплин и приоритеты
+- Поиск пользователей по СНИЛС для регистрационного флоу
+- Инициализация профиля при первой регистрации
 
-This service owns all user data EXCEPT:
+Сервис **не хранит учётные данные** — только профиль. Аутентификация — ответственность `core-auth`.
 
-- Authentication (passwords, login sessions) — owned by `core-auth`
-- Applications, references, orders, dormitory — owned by `core-applications`
+---
 
-### Database Tables
+## Зависимости
 
-| Table                   | Description                                              |
-| ----------------------- | -------------------------------------------------------- |
-| `user_settings`         | Notification preferences, SSO tokens (Telegram/VK)       |
-| `student_stats`         | Academic info: faculty, course, group, GPA, etc.         |
-| `rating_level`          | Gamification level and XP                                |
-| `ranking_position`      | Positions in various rankings (by course, faculty, etc.) |
-| `user_achievement`      | Earned achievements (config loaded from JSON)            |
-| `streak`                | Attendance streak (current and best)                     |
-| `user_grade`            | All grades for all subjects                              |
-| `subject_choice`        | Available elective subject choice groups                 |
-| `user_subject_priority` | User's priority ordering for elective subjects           |
+### Исходящие вызовы
 
-## Development
+| Сервис          | Когда                                                                         |
+| --------------- | ----------------------------------------------------------------------------- |
+| `core-auth`     | `POST /settings/email` и `/settings/password` — проксирует смену email/пароля |
+| `core-messages` | `PATCH /debts/{id}/request-retake` — создание диалога студент–преподаватель   |
+
+### Инфраструктура
+
+| Ресурс                           | Назначение                                           |
+| -------------------------------- | ---------------------------------------------------- |
+| PostgreSQL `core_client_info_db` | Все профильные данные                                |
+| Redis `redis-client-info-cache`  | Кеш профилей (используется также из `core-messages`) |
+
+### Пакеты
+
+| Пакет              | Назначение                                          |
+| ------------------ | --------------------------------------------------- |
+| `authorization-py` | JWT-middleware, валидация токенов через `core-auth` |
+
+### Переменные окружения
+
+| Переменная                                        | Описание                |
+| ------------------------------------------------- | ----------------------- |
+| `DB_HOST` / `DB_NAME` / `DB_USER` / `DB_PASSWORD` | Реквизиты БД            |
+| `REDIS_CACHE_URL`                                 | URL Redis-кеша профилей |
+
+---
+
+## API роуты
+
+Все роуты доступны через gateway с префиксом `/core-client-info`.
+
+### Профиль
+
+| Метод | Путь                     | Описание                                                   |
+| ----- | ------------------------ | ---------------------------------------------------------- |
+| `GET` | `/profile/user`          | Полный профиль пользователя (учебные + личные данные)      |
+| `GET` | `/profile/personal-data` | Только личные данные (СНИЛС, дата рождения, регион и т.д.) |
+
+### Задолженности
+
+| Метод   | Путь                              | Описание                                                                            |
+| ------- | --------------------------------- | ----------------------------------------------------------------------------------- |
+| `GET`   | `/debts`                          | Список академических задолженностей студента                                        |
+| `PATCH` | `/debts/{debt_id}/request-retake` | Запросить пересдачу: переводит долг в `requested`, создаёт диалог в `core-messages` |
+
+### Аттестации
+
+| Метод | Путь           | Описание                                     |
+| ----- | -------------- | -------------------------------------------- |
+| `GET` | `/attestation` | Список промежуточных аттестаций по семестрам |
+
+### Рейтинг и геймификация
+
+| Метод | Путь                         | Описание                                                                    |
+| ----- | ---------------------------- | --------------------------------------------------------------------------- |
+| `GET` | `/rating/stats`              | Сводная статистика студента (средний балл, посещаемость)                    |
+| `GET` | `/rating/level`              | Текущий уровень и накопленный XP                                            |
+| `GET` | `/rating/rankings`           | Позиции в рейтингах по срезам (курс, факультет, специальность, университет) |
+| `GET` | `/rating/achievements`       | Достижения с прогрессом                                                     |
+| `GET` | `/rating/streak`             | Текущий и лучший стрик                                                      |
+| `GET` | `/rating/grades`             | Оценки по всем предметам                                                    |
+| `GET` | `/rating/grade-improvements` | Динамика улучшения оценок                                                   |
+
+### Настройки
+
+| Метод  | Путь                 | Описание                                     |
+| ------ | -------------------- | -------------------------------------------- |
+| `GET`  | `/settings`          | Настройки уведомлений и токены мессенджеров  |
+| `PUT`  | `/settings`          | Обновить настройки уведомлений               |
+| `POST` | `/settings/email`    | Изменить email (проксируется в `core-auth`)  |
+| `POST` | `/settings/password` | Изменить пароль (проксируется в `core-auth`) |
+
+### Выбор дисциплин
+
+| Метод  | Путь                                    | Описание                                        |
+| ------ | --------------------------------------- | ----------------------------------------------- |
+| `GET`  | `/subjects/choices`                     | Активные сессии выбора дисциплин                |
+| `GET`  | `/subjects/choices-with-priorities`     | Сессии с уже сохранёнными приоритетами студента |
+| `GET`  | `/subjects/user-priorities/{choice_id}` | Приоритеты студента в конкретной сессии         |
+| `POST` | `/subjects/save-priorities`             | Сохранить порядок предпочтений                  |
+
+### Внутренние (межсервисные)
+
+| Метод  | Путь                                        | Описание                                                            |
+| ------ | ------------------------------------------- | ------------------------------------------------------------------- |
+| `GET`  | `/profile/internal/users/search`            | Поиск пользователей по имени / группе (для `core-messages`)         |
+| `POST` | `/profile/internal/users/batch`             | Получить несколько профилей по списку UUID                          |
+| `GET`  | `/profile/internal/groups`                  | Список всех учебных групп                                           |
+| `GET`  | `/profile/internal/users-by-group`          | Пользователи по конкретной группе                                   |
+| `POST` | `/profile/internal/search-for-registration` | Поиск по СНИЛС (вызов из `core-auth`)                               |
+| `POST` | `/profile/internal/init-user`               | Инициализировать профиль нового пользователя (вызов из `core-auth`) |
+
+### Служебные
+
+| Метод | Путь      | Описание     |
+| ----- | --------- | ------------ |
+| `GET` | `/status` | Health check |
+
+---
+
+## Разработка
 
 ```bash
-# Install dependencies
 uv sync
-
-# Copy environment variables
 cp .env.example .env
-
-# Run development server
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-## Database Migrations
+Swagger UI: http://localhost:8000/core-client-info/docs
+
+### Миграции (Alembic)
 
 ```bash
-# Create a new migration
 uv run alembic revision --autogenerate -m "description"
-
-# Apply migrations
 uv run alembic upgrade head
-
-# Rollback
 uv run alembic downgrade -1
 ```
 
-## API Documentation
+## Метрики
 
-After starting the server, API docs are available at:
-
-- Swagger UI: http://localhost:8000/core-client-info/docs
-- ReDoc: http://localhost:8000/core-client-info/redoc
-
-## API Endpoints
-
-### Profile
-
-- `GET /api/profile/user` — basic user info
-- `GET /api/profile/personal-data` — personal + academic data
-
-### Settings
-
-- `GET /api/settings` — get user settings
-- `PUT /api/settings` — update settings
-- `POST /api/settings/email` — change email (with 2FA)
-- `POST /api/settings/password` — change password (with 2FA)
-
-### Rating & Gamification
-
-- `GET /api/rating/stats` — student stats
-- `GET /api/rating/level` — XP level
-- `GET /api/rating/rankings` — ranking positions
-- `GET /api/rating/achievements` — achievements
-- `GET /api/rating/streak` — attendance streak
-- `GET /api/rating/grades` — all grades
-- `GET /api/rating/grade-improvements` — recent grade improvements
-
-### Subjects
-
-- `GET /api/subjects/choices` — active subject choices
-- `GET /api/subjects/user-priorities/:choiceId` — user's priorities
-- `POST /api/subjects/save-priorities` — save priority order
-
-## Health Check
-
-```
-GET /core-client-info/status
-```
-
-## Metrics
-
-Prometheus metrics are exposed on port `9464` at `/metrics`.
-
-## Testing
-
-### Quick Start with Test Data
-
-1. Run migrations to create tables and insert test data:
-
-```bash
-uv run alembic upgrade head
-```
-
-2. Start the service:
-
-```bash
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
-
-3. Test with pre-configured data:
-
-```bash
-export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidnNldm9sb2QuYnVsZ2Frb3ZAZXhhbXBsZS5jb20iLCJuYW1lIjoi0JLRgdC10LLQvtC70L7QtCDQkdGD0LvQs9Cw0LrQvtCyIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDk5ODU2MDAsImV4cCI6MTc0MTUyMTYwMH0.8xHqnKimVJW8rZ5JvVvhZ9YvGx4vQE5rJ8sK9mN2pLo"
-export USER_ID="550e8400-e29b-41d4-a716-446655440000"
-
-# Test endpoints
-curl -s "http://localhost:8000/api/status" | jq .
-curl -s "http://localhost:8000/api/rating/level?user_id=$USER_ID" -H "Authorization: Bearer $JWT_TOKEN" | jq .
-```
-
-### Documentation
-
-- `TESTING.md` — Quick testing guide with setup instructions
-- `API_EXAMPLES.md` — Complete API examples with test data
-- `JWT_FORMAT.md` — JWT structure and token generation
+Prometheus на порту `9464` по пути `/metrics`.

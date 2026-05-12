@@ -1,126 +1,88 @@
 # web-profile-ssr
 
-All user profile data.
+SSR-фронтенд для личного кабинета студента: профиль, рейтинг, достижения, заказы, справки, общежитие, настройки.
 
-## Pages (features)
+**Стек:** Next.js 15 · App Router · MUI · TypeScript  
+**Порт:** `3005`
 
-1. /profile
-2. /profile/dormitory
-3. /profile/rating
-4. /profile/references
-5. /profile/settings
-6. /profile/data
-7. /profile/subjects-ranking
-8. /profile/orders?orderId=xxx&ordersType=xxx
+---
 
-```
-TODO:
-  x. /profile/gradebook
-  x. /profile/student-id
-  x. /profile/scholarship
-  x. Извлекать user_id из JWT (сейчас хардкод DEV_USER_ID)
-  x. Каталог предметов (subjects-ranking) — перенести на бэкенд (сейчас статика на фронте)
-  x. Справки: pickupPointIdsByType — перенести на бэкенд (сейчас статика)
-```
+## Доменная область
 
-## Backend Dependencies
+- Просмотр и редактирование профиля (личные и учебные данные)
+- Геймификация: уровень XP, достижения, стрик, рейтинговые позиции
+- Академические задолженности с возможностью запросить пересдачу
+- Заказы справок и отслеживание их статуса
+- Приказы деканата
+- Заявки на общежитие
+- Выбор дисциплин по выбору и управление приоритетами
+- Настройки аккаунта: смена email и пароля
 
-All pages fetch data from real backend services:
+---
 
-- **core-client-info** (port 8000) — профиль, личные данные, рейтинг, достижения, настройки, дисциплины по выбору
-- **core-applications** (port 8001) — приказы, справки, общежитие, стипендия
+## Зависимости
 
-## Prerequisites
+### Backend-сервисы
 
-- Node.js 22+
-- pnpm 9+
+| Сервис              | Что использует                                                                                             |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `core-client-info`  | Профиль, личные данные, рейтинг, достижения, оценки, задолженности, аттестации, настройки, выбор дисциплин |
+| `core-applications` | Заказы справок, приказы, заявки на общежитие                                                               |
 
-## Local Development
+### Пакеты монорепо
 
-### 1. Install Dependencies
+| Пакет                            | Назначение                                                        |
+| -------------------------------- | ----------------------------------------------------------------- |
+| `@supreme-int/api-client`        | Типизированные клиенты к `core-client-info` и `core-applications` |
+| `@supreme-int/authorization-lib` | SSR JWT-верификация                                               |
+| `@supreme-int/nextjs-shared`     | SSR-утилиты, `createRouteAuthMiddleware`                          |
+| `@supreme-int/design-system`     | Тема MUI                                                          |
+
+### Переменные окружения
+
+| Переменная                  | Описание                                 |
+| --------------------------- | ---------------------------------------- |
+| `PORT`                      | Порт сервера (по умолчанию `3005`)       |
+| `NODE_ENV`                  | Окружение                                |
+| `BACKEND_SERVICE_NAMESPACE` | Kubernetes namespace бэкенд-сервисов     |
+| `CORE_CLIENT_INFO_URL`      | URL `core-client-info` для SSR-запросов  |
+| `CORE_APPLICATIONS_URL`     | URL `core-applications` для SSR-запросов |
+| `JWT_SECRET`                | Секрет для локальной валидации JWT       |
+
+---
+
+## Страницы и роуты
+
+Все страницы `/profile/*` требуют валидной сессии (`auth_level: valid`).
+
+| Путь                                | Auth  | Описание                                            |
+| ----------------------------------- | ----- | --------------------------------------------------- |
+| `/profile`                          | valid | Главная страница профиля: фото, имя, учебные данные |
+| `/profile/data`                     | valid | Личные данные: СНИЛС, дата рождения, регион и т.д.  |
+| `/profile/rating`                   | valid | Рейтинг, XP, стрик, позиции в рейтингах             |
+| `/profile/achievements`             | valid | Достижения с прогрессом                             |
+| `/profile/orders`                   | valid | Приказы деканата                                    |
+| `/profile/references`               | valid | Справки: список, заказ, статус, скачивание PDF      |
+| `/profile/dormitory`                | valid | Заявки на общежитие                                 |
+| `/profile/scholarship`              | valid | Стипендия                                           |
+| `/profile/subjects-ranking`         | valid | Выбор элективных дисциплин и приоритеты             |
+| `/profile/settings`                 | valid | Настройки уведомлений, токены Telegram / VK         |
+| `/profile/settings/change-email`    | valid | Смена email                                         |
+| `/profile/settings/change-password` | valid | Смена пароля                                        |
+| `GET /api/status`                   | —     | Health check                                        |
+| `GET /api/timeout-check`            | none  | Проверка таймаута соединения                        |
+
+---
+
+## Разработка
 
 ```bash
 pnpm install
-```
-
-### 2. Run Development Server
-
-```bash
-pnpm run dev
-```
-
-The application will start on http://localhost:3005
-
-### 3. Access Application
-
-- Homepage: http://localhost:3005
-- Health check: http://localhost:3005/api/status
-- Metrics: http://localhost:9464/metrics
-
-## Testing
-
-```bash
-# Run unit tests
-pnpm run unit --verbose
-
-# Run tests in watch mode
-pnpm run unit:watch
-
-# Run tests with coverage
-pnpm run unit:coverage
-```
-
-## Building
-
-```bash
-# Build for production
+pnpm run dev     # http://localhost:3005
 pnpm run build
-
-# Run production build
-pnpm run start
+pnpm run unit
 ```
 
-## Environment Variables
+## Метрики
 
-| Variable                  | Description                      | Default                                 |
-| ------------------------- | -------------------------------- | --------------------------------------- |
-| PORT                      | Server port                      | 3005                                    |
-| NODE_ENV                  | Environment                      | development                             |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default                                 |
-| CORE_APPLICATIONS_URL     | URL сервиса core-applications    | http://localhost:8001/core-applications |
-| CORE_CLIENT_INFO_URL      | URL сервиса core-client-info     | http://localhost:8000/core-client-info  |
-| JWT_SECRET                | Секрет для валидации JWT         | local-development-secret                |
-
-## Project Structure
-
-```
-app/
-├── layout.tsx          # Root layout
-├── page.tsx            # Homepage
-└── api/
-    └── status/
-        └── route.ts    # Health check endpoint
-
-src/
-├── components/         # Reusable components
-├── shared/            # Shared utilities
-└── views/             # Page views
-```
-
-## SVG Icons
-
-You can import SVG files as React components:
-
-```tsx
-import MyIcon from "./path/to/icon.svg";
-
-function MyComponent() {
-  return <MyIcon width={24} height={24} className="icon" />;
-}
-```
-
-SVG components accept all standard SVG props (width, height, className, fill, stroke, etc.).
-
-## License
-
-ISC
+Prometheus на порту `9464` по пути `/metrics`.

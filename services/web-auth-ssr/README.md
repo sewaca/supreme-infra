@@ -1,104 +1,69 @@
 # web-auth-ssr
 
-Auth pages — login and register
+SSR-фронтенд для аутентификации: вход, регистрация по СНИЛС, восстановление пароля.
 
-## Features
+**Стек:** Next.js 15 · App Router · MUI · TypeScript  
+**Порт:** `3002`
 
-- Next.js 15 with App Router
-- Server-side rendering (SSR)
-- OpenTelemetry instrumentation
-- Prometheus metrics
-- TypeScript
-- SVG imports as React components
+---
 
-## Prerequisites
+## Доменная область
 
-- Node.js 22+
-- pnpm 9+
+- Страницы входа и регистрации нового пользователя
+- Регистрация через поиск по СНИЛС (существующий студент в системе)
+- Восстановление пароля через OTP на email
+- Все страницы публичны (`auth_level: none`) — доступны без JWT
 
-## Local Development
+---
 
-### 1. Install Dependencies
+## Зависимости
+
+### Backend-сервисы
+
+| Сервис      | Что использует                                                                  |
+| ----------- | ------------------------------------------------------------------------------- |
+| `core-auth` | `POST /auth/login`, `/auth/register`, `/auth/lookup`, `/auth/forgot-password/*` |
+
+### Пакеты монорепо
+
+| Пакет                        | Назначение                               |
+| ---------------------------- | ---------------------------------------- |
+| `@supreme-int/api-client`    | Типизированный клиент к `core-auth`      |
+| `@supreme-int/nextjs-shared` | SSR-утилиты, `createRouteAuthMiddleware` |
+| `@supreme-int/design-system` | Тема MUI, типографика, токены            |
+
+### Переменные окружения
+
+| Переменная                  | Описание                             |
+| --------------------------- | ------------------------------------ |
+| `PORT`                      | Порт сервера (по умолчанию `3002`)   |
+| `NODE_ENV`                  | Окружение                            |
+| `BACKEND_SERVICE_NAMESPACE` | Kubernetes namespace бэкенд-сервисов |
+
+---
+
+## Страницы и роуты
+
+Уровень аутентификации `none` = публичные страницы, JWT не требуется.
+
+| Путь               | Auth | Описание                                                               |
+| ------------------ | ---- | ---------------------------------------------------------------------- |
+| `/login`           | none | Форма входа по email + пароль                                          |
+| `/register`        | none | Регистрация: поиск по СНИЛС → подтверждение данных → создание аккаунта |
+| `/forgot-password` | none | Восстановление пароля: email → OTP → новый пароль                      |
+| `GET /api/status`  | —    | Health check                                                           |
+
+---
+
+## Разработка
 
 ```bash
 pnpm install
-```
-
-### 2. Run Development Server
-
-```bash
-pnpm run dev
-```
-
-The application will start on http://localhost:3002
-
-### 3. Access Application
-
-- Homepage: http://localhost:3002
-- Health check: http://localhost:3002/api/status
-- Metrics: http://localhost:9464/metrics
-
-## Testing
-
-```bash
-# Run unit tests
-pnpm run unit --verbose
-
-# Run tests in watch mode
-pnpm run unit:watch
-
-# Run tests with coverage
-pnpm run unit:coverage
-```
-
-## Building
-
-```bash
-# Build for production
+pnpm run dev     # http://localhost:3002
 pnpm run build
-
-# Run production build
-pnpm run start
+pnpm run unit
 ```
 
-## Environment Variables
+## Метрики
 
-| Variable                  | Description                      | Default     |
-| ------------------------- | -------------------------------- | ----------- |
-| PORT                      | Server port                      | 3002        |
-| NODE_ENV                  | Environment                      | development |
-| BACKEND_SERVICE_NAMESPACE | Kubernetes namespace for backend | default     |
-
-## Project Structure
-
-```
-app/
-├── layout.tsx          # Root layout
-├── page.tsx            # Homepage
-└── api/
-    └── status/
-        └── route.ts    # Health check endpoint
-
-src/
-├── components/         # Reusable components
-├── shared/            # Shared utilities
-└── views/             # Page views
-```
-
-## SVG Icons
-
-You can import SVG files as React components:
-
-```tsx
-import MyIcon from "./path/to/icon.svg";
-
-function MyComponent() {
-  return <MyIcon width={24} height={24} className="icon" />;
-}
-```
-
-SVG components accept all standard SVG props (width, height, className, fill, stroke, etc.).
-
-## License
-
-ISC
+Prometheus на порту `9464` по пути `/metrics`.
