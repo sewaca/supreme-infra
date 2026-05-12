@@ -17,7 +17,7 @@ erDiagram
 
     two_factor_auth {
         UUID id PK
-        UUID user_id FK UK
+        UUID user_id FK "unique"
         BOOLEAN is_enabled
         VARCHAR method
         VARCHAR secret
@@ -479,49 +479,49 @@ erDiagram
 
 ```mermaid
 erDiagram
-    AUTH_USER["core-auth-db\nauth_user"] {
+    AUTH_USER["core-auth-db · auth_user"] {
         UUID id PK
         VARCHAR email UK
     }
 
-    CLIENT_USER["core-client-info-db\nuser"] {
+    CLIENT_USER["core-client-info-db · user"] {
         UUID id PK
         VARCHAR email UK
         BOOLEAN is_registered
     }
 
-    APP_USER_APPLICATION["core-applications-db\nuser_application"] {
+    APP_USER_APPLICATION["core-applications-db · user_application"] {
         UUID user_id
     }
-    APP_REFERENCE_ORDER["core-applications-db\nreference_order"] {
+    APP_REFERENCE_ORDER["core-applications-db · reference_order"] {
         UUID user_id
     }
-    APP_ORDER["core-applications-db\norder"] {
+    APP_ORDER["core-applications-db · order"] {
         UUID user_id
     }
 
-    MSG_CONVERSATION["core-messages-db\nconversation"] {
+    MSG_CONVERSATION["core-messages-db · conversation"] {
         UUID owner_id
         UUID last_message_sender_id
     }
-    MSG_PARTICIPANT["core-messages-db\nconversation_participant"] {
+    MSG_PARTICIPANT["core-messages-db · conversation_participant"] {
         UUID user_id
     }
-    MSG_MESSAGE["core-messages-db\nmessage"] {
+    MSG_MESSAGE["core-messages-db · message"] {
         UUID sender_id
     }
 
-    SCH_TEACHER_CACHE["core-schedule-db\nteacher_cache"] {
+    SCH_TEACHER_CACHE["core-schedule-db · teacher_cache"] {
         UUID id PK
     }
-    SCH_TEMPLATE["core-schedule-db\nschedule_template"] {
+    SCH_TEMPLATE["core-schedule-db · schedule_template"] {
         UUID teacher_id
     }
-    SCH_SESSION["core-schedule-db\nsession_event"] {
+    SCH_SESSION["core-schedule-db · session_event"] {
         UUID teacher_id
     }
 
-    CLIENT_DEBT["core-client-info-db\nacademic_debt"] {
+    CLIENT_DEBT["core-client-info-db · academic_debt"] {
         UUID user_id
         UUID teacher_id
         UUID conversation_id
