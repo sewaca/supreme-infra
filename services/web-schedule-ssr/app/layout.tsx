@@ -7,6 +7,7 @@ import { getTotalUnreadCountConversationsUnreadCountGet } from '@supreme-int/api
 import { client as coreMessagesClient } from '@supreme-int/api-client/src/generated/core-messages/client.gen';
 import { MainAppBottomTabBar } from '@supreme-int/design-system/src/components/BottomTabBar/MainAppBottomTabBar';
 import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
+import { sharedIconMetadata } from '@supreme-int/nextjs-shared/src/shared/metadata/icons';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import theme from '../src/shared/next/theme';
@@ -20,6 +21,7 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: 'Расписание – ЛК СПбГУТ',
+  ...sharedIconMetadata,
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

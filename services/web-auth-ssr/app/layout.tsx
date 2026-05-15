@@ -3,6 +3,7 @@ import '@supreme-int/design-system/variables.css';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import { sharedIconMetadata } from '@supreme-int/nextjs-shared/src/shared/metadata/icons';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import theme from '../src/shared/next/theme';
@@ -17,6 +18,7 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: 'ЛК СПбГУТ',
+  ...sharedIconMetadata,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

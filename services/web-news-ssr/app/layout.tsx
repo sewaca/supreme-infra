@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { MainAppBottomTabBar } from '@supreme-int/design-system/src/components/BottomTabBar/MainAppBottomTabBar';
 import { getAuthInfo } from '@supreme-int/nextjs-shared/src/shared/auth/getAuthInfo';
+import { sharedIconMetadata } from '@supreme-int/nextjs-shared/src/shared/metadata/icons';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import { getUnreadCount } from '../src/shared/api/getUnreadCount';
@@ -19,6 +20,7 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: 'Новости – ЛК СПбГУТ',
+  ...sharedIconMetadata,
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
