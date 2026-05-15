@@ -172,7 +172,7 @@ ingress:
       port: 80
       type: next
       paths:
-        - path: /
+        - path: ^/$
           method: GET
         - path: /news
           method: GET

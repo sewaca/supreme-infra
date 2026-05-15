@@ -233,7 +233,8 @@ function generateIngressRules(services: RouterConfig[]): IngressRule[] {
     const paths: IngressPath[] = service.routes
       .filter((route) => route.public !== false)
       .map((route) => ({
-        path: route.path,
+        // '/' as nginx regex matches any path — anchor it to exact root only
+        path: route.path === '/' ? '^/$' : route.path,
         method: route.method,
       }));
 
