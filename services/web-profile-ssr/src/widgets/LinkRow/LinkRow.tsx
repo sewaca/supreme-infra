@@ -1,3 +1,5 @@
+'use client';
+
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Box, ButtonBase, ButtonBaseProps, Typography } from '@mui/material';
 import { Row } from '@supreme-int/design-system/src/components/Row/Row';

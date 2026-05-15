@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge, ButtonBase, Typography } from '@mui/material';
 import {
   GradientCard,
