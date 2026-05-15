@@ -11,7 +11,7 @@ routes:
     public: true
   - path: /news
     method: GET
-    auth_level: none
+    auth_level: valid
     public: true
   - path: /web-news-ssr/.*
     method: GET

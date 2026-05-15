@@ -39,11 +39,11 @@ routes:
     public: true
   - path: /core-messages/conversations/[^/]+/messages/[^/]+
     method: DELETE
-    auth_level: none
+    auth_level: valid
     public: true
   - path: /core-messages/conversations/[^/]+/messages/[^/]+
     method: PATCH
-    auth_level: none
+    auth_level: valid
     public: true
   - path: /core-messages/conversations/[^/]+/messages/read
     method: POST

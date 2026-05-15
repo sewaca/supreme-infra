@@ -11,7 +11,7 @@ routes:
     public: true
   - path: /documents/debts
     method: GET
-    auth_level: none
+    auth_level: valid
     public: true
   - path: /documents/gradebook
     method: GET
