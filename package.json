@@ -23,7 +23,9 @@
     "generate:service": "tsx infra/generate/generate-service/index.ts",
     "generate": "tsx infra/generate/index.ts",
 
-    "check:deadcode": "tsx infra/checks/deadcode/index.ts"
+    "check:deadcode": "tsx infra/checks/deadcode/index.ts",
+
+    "generate:favicons": "node scripts/generate-favicons.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
