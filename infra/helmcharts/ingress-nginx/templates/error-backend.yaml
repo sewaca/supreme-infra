@@ -29,13 +29,9 @@ data:
             root /usr/share/nginx/html;
             default_type text/html;
             internal;
-            add_before_body "/__ec?c=$http_x_code";
-            addition_types text/html;
-        }
-
-        location = /__ec {
-            internal;
-            return 200 "<script>window.__ec='$arg_c';</script>";
+            sendfile off;
+            sub_filter '__ERROR_CODE__' $http_x_code;
+            sub_filter_once on;
         }
     }
   error.html: |

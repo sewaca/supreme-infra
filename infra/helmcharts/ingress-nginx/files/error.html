@@ -674,7 +674,7 @@
       </div>
 
       <div class="content">
-        <div class="code" id="code">500</div>
+        <div class="code" id="code">__ERROR_CODE__</div>
         <h1 class="title">Что-то пошло не так</h1>
         <p class="desc">Сервис временно недоступен. Попробуйте обновить страницу или зайти позже.</p>
         <button class="btn" type="button" onclick="location.reload()">Обновить страницу</button>
@@ -743,10 +743,12 @@
           root.appendChild(p);
         }
 
-        // Error code from cookie set by nginx
         const codeEl = document.getElementById("code");
-        const _ecM = document.cookie.match(/\bec=(\d+)/);
-        if (_ecM) codeEl.textContent = _ecM[1];
+
+        if (codeEl.innerText === "__ERROR_CODE__") {
+          codeEl.innerText = "500";
+        }
+
         function scheduleGlitch() {
           setTimeout(
             () => {
