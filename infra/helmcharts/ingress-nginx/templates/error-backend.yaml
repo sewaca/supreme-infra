@@ -8,247 +8,30 @@ data:
   default.conf: |
     server {
         listen 8080;
+
+        error_page 502 503 504 /error.html;
+
         location /healthz {
             return 200 "ok\n";
             add_header Content-Type text/plain;
         }
+
         location / {
+            if ($http_x_code = "502") { return 502; }
+            if ($http_x_code = "503") { return 503; }
+            if ($http_x_code = "504") { return 504; }
+            return 503;
+        }
+
+        location = /error.html {
+            ssi on;
             root /usr/share/nginx/html;
-            try_files /error.html =404;
             default_type text/html;
+            internal;
         }
     }
   error.html: |
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Что-то пошло не так</title>
-    <style>
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    body{
-      position:fixed;inset:0;
-      display:flex;align-items:center;justify-content:center;
-      background:radial-gradient(ellipse at 30% 40%,#1c2340 0%,#0d1117 70%);
-      overflow:hidden;
-      font-family:"Fira Sans",system-ui,sans-serif;
-    }
-    .stars{position:absolute;inset:0;pointer-events:none}
-    .star{
-      position:absolute;background:#fff;border-radius:50%;
-      animation:twinkle var(--d,2s) ease-in-out infinite alternate;
-    }
-    @keyframes twinkle{
-      from{opacity:.08;transform:scale(.7)}
-      to{opacity:.85;transform:scale(1.3)}
-    }
-    .planet{
-      position:absolute;right:8%;top:12%;
-      width:160px;height:160px;border-radius:50%;
-      background:linear-gradient(135deg,#c8c8d8 20%,#7a7a8a 100%);
-      box-shadow:inset -30px -10px 45px rgba(0,0,0,.55),0 0 60px rgba(245,132,31,.08);
-      animation:floatPlanet 10s ease-in-out infinite;
-    }
-    @keyframes floatPlanet{
-      0%,100%{transform:translateY(0) rotate(0deg)}
-      50%{transform:translateY(-18px) rotate(3deg)}
-    }
-    .planet-shade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 70% 60%,transparent 50%,rgba(0,0,0,.3) 100%)}
-    .crater{position:absolute;border-radius:50%;background:rgba(0,0,0,.18);top:36px;left:48px;width:44px;height:20px;transform:rotate(-20deg)}
-    .crater2{position:absolute;border-radius:50%;background:rgba(0,0,0,.14);top:90px;left:26px;width:25px;height:11px;transform:rotate(15deg)}
-    .crater3{position:absolute;border-radius:50%;background:rgba(0,0,0,.12);top:58px;left:100px;width:18px;height:8px;transform:rotate(-5deg)}
-    .ring{
-      position:absolute;top:50%;left:50%;
-      width:230px;height:52px;
-      border:11px solid rgba(200,200,216,.22);
-      border-radius:50%;
-      transform:translate(-50%,-50%) rotateX(75deg);
-      box-shadow:0 0 20px rgba(255,255,255,.06);
-    }
-    .astronaut-wrap{
-      position:absolute;right:11%;bottom:14%;
-      width:110px;
-      animation:drift 9s ease-in-out infinite;
-      filter:drop-shadow(0 0 18px rgba(245,132,31,.2));
-    }
-    @keyframes drift{
-      0%  {transform:translateY(0px)   rotate(-6deg)}
-      20% {transform:translateY(-24px) rotate(4deg)}
-      45% {transform:translateY(-12px) rotate(-9deg)}
-      70% {transform:translateY(-30px) rotate(6deg)}
-      100%{transform:translateY(0px)   rotate(-6deg)}
-    }
-    .flame{
-      position:absolute;bottom:28px;right:18px;
-      width:10px;height:20px;
-      background:linear-gradient(to bottom,#f5841f,#ffcc00,transparent);
-      border-radius:50% 50% 60% 60%;
-      animation:flicker .15s ease-in-out infinite alternate;
-      filter:blur(2.5px);
-    }
-    @keyframes flicker{
-      from{transform:scaleY(.65) scaleX(.85);opacity:.75}
-      to{transform:scaleY(1.3) scaleX(1.15);opacity:1}
-    }
-    .signal{position:absolute;right:15%;bottom:33%;pointer-events:none}
-    .signal-ring{
-      position:absolute;border:1.5px solid rgba(245,132,31,.35);
-      border-radius:50%;
-      animation:expand 2.4s ease-out infinite;
-    }
-    .signal-ring:nth-child(2){animation-delay:.8s}
-    .signal-ring:nth-child(3){animation-delay:1.6s}
-    @keyframes expand{
-      0%  {width:0;height:0;top:0;left:0;opacity:.9}
-      100%{width:90px;height:90px;top:-45px;left:-45px;opacity:0}
-    }
-    .content{
-      position:relative;z-index:1;
-      display:flex;flex-direction:column;align-items:center;
-      text-align:center;gap:12px;padding:24px;max-width:520px;
-    }
-    .code{
-      font-size:clamp(88px,16vw,160px);font-weight:800;line-height:1;letter-spacing:-4px;
-      background:linear-gradient(135deg,#ff9a5c 0%,#f5841f 40%,#e65000 100%);
-      background-size:200% 200%;
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-      filter:drop-shadow(0 0 40px rgba(245,132,31,.45));
-      animation:floatCode 7s ease-in-out infinite,shimmer 5s ease-in-out infinite;
-      user-select:none;
-    }
-    @keyframes floatCode{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-14px)}
-    }
-    @keyframes shimmer{
-      0%,100%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-    }
-    .title{color:#fff;font-size:clamp(18px,3vw,24px);font-weight:600;letter-spacing:.01em;margin-top:4px}
-    .desc{color:rgba(255,255,255,.42);font-size:15px;line-height:1.65;max-width:360px}
-    .btn{
-      margin-top:16px;padding:12px 36px;
-      background:#f5841f;color:#fff;border:none;border-radius:50px;
-      font-family:inherit;font-size:15px;font-weight:600;letter-spacing:.04em;
-      cursor:pointer;
-      transition:background 200ms,transform 150ms,box-shadow 200ms;
-    }
-    .btn:hover{background:#e65f00;transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,132,31,.4)}
-    .btn:active{transform:translateY(0)}
-    @media(max-width:600px){
-      .planet{width:100px;height:100px;right:-15px;top:5%}
-      .ring{width:145px;height:33px;border-width:7px}
-      .crater{top:22px;left:30px;width:28px;height:12px}
-      .crater2{top:55px;left:16px;width:16px;height:7px}
-      .crater3{top:36px;left:62px;width:12px;height:5px}
-      .astronaut-wrap{width:75px;right:4%;bottom:8%}
-      .signal{right:8%;bottom:25%}
-    }
-    </style>
-    </head>
-    <body>
-
-    <div class="stars" id="stars"></div>
-
-    <div class="planet">
-      <div class="planet-shade"></div>
-      <div class="crater"></div>
-      <div class="crater2"></div>
-      <div class="crater3"></div>
-      <div class="ring"></div>
-    </div>
-
-    <div class="signal">
-      <div class="signal-ring"></div>
-      <div class="signal-ring"></div>
-      <div class="signal-ring"></div>
-    </div>
-
-    <div class="astronaut-wrap">
-      <div class="flame"></div>
-      <svg viewBox="0 0 80 105" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-          <radialGradient id="hg" cx="40%" cy="35%">
-            <stop offset="0%" stop-color="#f0f4ff"/>
-            <stop offset="100%" stop-color="#c4cce0"/>
-          </radialGradient>
-          <linearGradient id="vg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#4080d4" stop-opacity=".9"/>
-            <stop offset="100%" stop-color="#162e52" stop-opacity=".95"/>
-          </linearGradient>
-        </defs>
-        <!-- Legs -->
-        <rect x="24" y="77" width="13" height="22" rx="6.5" fill="#b0bcd4"/>
-        <rect x="43" y="77" width="13" height="22" rx="6.5" fill="#b0bcd4"/>
-        <!-- Boots -->
-        <ellipse cx="30" cy="98" rx="9.5" ry="5.5" fill="#8890a8"/>
-        <ellipse cx="50" cy="98" rx="9.5" ry="5.5" fill="#8890a8"/>
-        <!-- Body suit -->
-        <rect x="20" y="47" width="40" height="34" rx="11" fill="#c8d2e8"/>
-        <!-- Neck connector -->
-        <rect x="31" y="45" width="18" height="8" rx="4" fill="#b4c0d8"/>
-        <!-- Left arm -->
-        <rect x="6" y="50" width="15" height="28" rx="7.5" fill="#c8d2e8"/>
-        <!-- Right arm -->
-        <rect x="59" y="50" width="15" height="28" rx="7.5" fill="#c8d2e8"/>
-        <!-- Jetpack -->
-        <rect x="55" y="51" width="13" height="24" rx="4.5" fill="#7888a8"/>
-        <rect x="57" y="49" width="9" height="6" rx="3" fill="#8898b8"/>
-        <rect x="60" y="73" width="4" height="7" rx="2" fill="#607090"/>
-        <!-- Gloves -->
-        <ellipse cx="13" cy="79" rx="8" ry="5.5" fill="#a0acc4"/>
-        <ellipse cx="67" cy="79" rx="8" ry="5.5" fill="#a0acc4"/>
-        <!-- Helmet -->
-        <circle cx="40" cy="27" r="24" fill="url(#hg)"/>
-        <!-- Helmet collar ring -->
-        <ellipse cx="40" cy="49" rx="13" ry="4.5" fill="#b8c4dc"/>
-        <!-- Visor -->
-        <ellipse cx="40" cy="28" rx="16" ry="15" fill="url(#vg)"/>
-        <!-- Visor primary shine -->
-        <ellipse cx="33" cy="21" rx="6" ry="3.5" fill="rgba(255,255,255,.32)" transform="rotate(-18 33 21)"/>
-        <!-- Visor secondary glow -->
-        <ellipse cx="47" cy="37" rx="3" ry="1.8" fill="rgba(255,255,255,.1)"/>
-        <!-- Star reflections in visor -->
-        <circle cx="44" cy="20" r="1" fill="rgba(255,255,255,.55)"/>
-        <circle cx="48" cy="25" r=".7" fill="rgba(255,255,255,.4)"/>
-        <circle cx="36" cy="34" r=".8" fill="rgba(255,255,255,.35)"/>
-        <!-- Chest panel -->
-        <rect x="26" y="55" width="26" height="18" rx="4.5" fill="#3468a8" opacity=".85"/>
-        <!-- LED orange (blinking) -->
-        <circle cx="34" cy="62" r="3.2" fill="#f5841f"/>
-        <circle cx="34" cy="62" r="1.6" fill="#ffb86c" opacity=".7"/>
-        <!-- LED green -->
-        <circle cx="46" cy="62" r="3.2" fill="#3dde85"/>
-        <circle cx="46" cy="62" r="1.6" fill="#90ffc8" opacity=".7"/>
-        <!-- Panel progress bar -->
-        <rect x="28" y="69" width="22" height="2.5" rx="1.25" fill="rgba(255,255,255,.18)"/>
-        <!-- Antenna -->
-        <line x1="40" y1="3" x2="40" y2="14" stroke="#8898b8" stroke-width="2.2" stroke-linecap="round"/>
-        <circle cx="40" cy="3" r="2.8" fill="#f5841f" opacity=".95"/>
-        <circle cx="40" cy="3" r="1.2" fill="#ffb86c" opacity=".8"/>
-      </svg>
-    </div>
-
-    <div class="content">
-      <div class="code">504</div>
-      <h1 class="title">Что-то пошло не так</h1>
-      <p class="desc">Сервис временно недоступен. Попробуйте обновить страницу или зайти позже.</p>
-      <button class="btn" onclick="location.reload()">Обновить страницу</button>
-    </div>
-
-    <script>
-    var s=document.getElementById('stars');
-    for(var i=0;i<60;i++){
-      var e=document.createElement('span');
-      e.className='star';
-      var sz=(i%3+1)+'px';
-      e.style.cssText='top:'+((i*37+13)%93+2)+'%;left:'+((i*53+7)%93+2)+'%;width:'+sz+';height:'+sz+';--d:'+(1.5+(i*31)%20/10)+'s;animation-delay:'+(i*47)%30/10+'s';
-      s.appendChild(e);
-    }
-    </script>
-    </body>
-    </html>
+{{ .Files.Get "files/error.html" | indent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
