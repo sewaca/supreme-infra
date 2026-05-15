@@ -18,7 +18,14 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
-export const metadata: Metadata = { title: 'Расписание' };
+export const metadata: Metadata = {
+  title: 'Расписание – ЛК СПбГУТ',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+};
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const auth = await getAuthInfo();

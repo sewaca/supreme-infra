@@ -15,7 +15,14 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
-export const metadata: Metadata = { title: 'Supreme Infra' };
+export const metadata: Metadata = {
+  title: 'ЛК СПбГУТ',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
