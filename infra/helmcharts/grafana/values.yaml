@@ -9,6 +9,9 @@ grafana:
     size: 5Gi
     storageClassName: ""
 
+  deploymentStrategy:
+    type: Recreate
+
   # Resources
   resources:
     limits:
