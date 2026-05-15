@@ -12,7 +12,6 @@ ingress-nginx:
         enabled: true
         servicePort: 10254
         type: ClusterIP
-    defaultBackendService: default/web-news-ssr
     config:
       use-http2: "true"
       http2-max-field-size: 16k
@@ -31,6 +30,9 @@ ingress:
   enabled: true
   name: ingress-main
   namespace: default
+  catchallBackend:
+    service: web-news-ssr
+    port: 80
   tls:
     enabled: true
     secretName: supreme-tls-cert

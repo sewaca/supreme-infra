@@ -1,0 +1,35 @@
+{{- if and .Values.ingress.enabled .Values.ingress.catchallBackend }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.name }}-zzz-catchall
+  namespace: {{ .Values.ingress.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    {{- range .Values.ingress.tls.hosts }}
+    - {{ . }}
+    {{- end }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+  {{- range .Values.ingress.tls.hosts }}
+  - host: {{ . }}
+    http:
+      paths:
+      - path: /.+
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ $.Values.ingress.catchallBackend.service }}
+            port:
+              number: {{ $.Values.ingress.catchallBackend.port }}
+  {{- end }}
+{{- end }}
