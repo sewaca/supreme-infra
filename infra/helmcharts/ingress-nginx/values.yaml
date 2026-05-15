@@ -172,8 +172,9 @@ ingress:
       port: 80
       type: next
       paths:
-        - path: ^/$
+        - path: /
           method: GET
+          pathType: Exact
         - path: /news
           method: GET
         - path: /web-news-ssr/.*

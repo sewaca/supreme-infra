@@ -18,6 +18,7 @@ interface RouterConfig {
 interface IngressPath {
   path: string;
   method: string;
+  pathType?: 'Exact' | 'ImplementationSpecific';
 }
 
 interface IngressRule {
@@ -232,11 +233,15 @@ function generateIngressRules(services: RouterConfig[]): IngressRule[] {
 
     const paths: IngressPath[] = service.routes
       .filter((route) => route.public !== false)
-      .map((route) => ({
-        // '/' as nginx regex matches any path — anchor it to exact root only
-        path: route.path === '/' ? '^/$' : route.path,
-        method: route.method,
-      }));
+      .map((route) => {
+        const isRegex = /[[\]().*+?{}|\\^$]/.test(route.path);
+        return {
+          path: route.path,
+          method: route.method,
+          ...(route.path === '/' ? { pathType: 'Exact' } : {}),
+          // ...(isRegex ? {} : { pathType: 'Exact' as const }),
+        };
+      });
 
     if (paths.length === 0) {
       continue;
