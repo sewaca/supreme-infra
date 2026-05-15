@@ -1,9 +1,9 @@
 import { Badge, ButtonBase, Typography } from '@mui/material';
-import Link from 'next/link';
 import {
   GradientCard,
   type GradientCardVariant,
 } from '@supreme-int/design-system/src/components/GradientCard/GradientCard';
+import Link from 'next/link';
 
 type Props = {
   title: string;

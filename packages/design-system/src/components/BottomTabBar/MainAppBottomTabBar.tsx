@@ -27,5 +27,13 @@ export function MainAppBottomTabBar({ unreadMessagesCount }: Props) {
     tab.value === '/messages' && unreadMessagesCount ? { ...tab, badge: unreadMessagesCount } : tab,
   );
 
-  return <BottomTabBar tabs={tabs} currentPath={pathname} onNavigate={(value) => { window.location.href = value; }} />;
+  return (
+    <BottomTabBar
+      tabs={tabs}
+      currentPath={pathname}
+      onNavigate={(value) => {
+        window.location.href = value;
+      }}
+    />
+  );
 }

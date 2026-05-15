@@ -18,9 +18,9 @@ ingress-nginx:
       use-http2: "true"
       http2-max-field-size: 16k
       http2-max-header-size: 32k
-      proxy-connect-timeout: "3"
-      proxy-read-timeout: "3"
-      proxy-send-timeout: "3"
+      proxy-connect-timeout: "5"
+      proxy-read-timeout: "5"
+      proxy-send-timeout: "5"
       proxy-next-upstream: off
       limit-req-status-code: "429"
       custom-http-errors: 502,503,504
