@@ -16,17 +16,17 @@ class AuthRoute:
 
 
 AUTH_ROUTES: list[AuthRoute] = [
-    AuthRoute(path=re.compile(r"^/core-client-info/attestations$"), method='GET', auth_level="none"),
-    AuthRoute(path=re.compile(r"^/core-client-info/debts$"), method='GET', auth_level="none"),
-    AuthRoute(path=re.compile(r"^/core-client-info/debts/[^/]+/request-retake$"), method='PATCH', auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-client-info/attestations$"), method='GET', auth_level="valid"),
+    AuthRoute(path=re.compile(r"^/core-client-info/debts$"), method='GET', auth_level="valid"),
+    AuthRoute(path=re.compile(r"^/core-client-info/debts/[^/]+/request-retake$"), method='PATCH', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/groups$"), method='GET', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/init-user$"), method='POST', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/personal-data$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/search-for-registration$"), method='POST', auth_level="none"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/user$"), method='GET', auth_level="valid"),
-    AuthRoute(path=re.compile(r"^/core-client-info/profile/users-by-group$"), method='GET', auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-client-info/profile/users-by-group$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/profile/users/batch$"), method='POST', auth_level="none"),
-    AuthRoute(path=re.compile(r"^/core-client-info/profile/users/search$"), method='GET', auth_level="none"),
+    AuthRoute(path=re.compile(r"^/core-client-info/profile/users/search$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/rating/achievements$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/rating/grade-improvements$"), method='GET', auth_level="valid"),
     AuthRoute(path=re.compile(r"^/core-client-info/rating/grades$"), method='GET', auth_level="valid"),
