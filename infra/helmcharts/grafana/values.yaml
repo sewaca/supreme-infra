@@ -90,12 +90,22 @@ grafana:
       check_for_updates: false
     unified_alerting:
       enabled: true
-    plugin.grafana-image-renderer:
-      disabled: true
 
   # Plugins
-  plugins:
-    - grafana-piechart-panel
+  plugins: []
+
+  extraInitContainers:
+    - name: remove-broken-plugins
+      image: busybox:latest
+      command:
+        [
+          "sh",
+          "-c",
+          "rm -rf /var/lib/grafana/plugins/grafana-image-renderer /var/lib/grafana/plugins/grafana-piechart-panel",
+        ]
+      volumeMounts:
+        - name: storage
+          mountPath: /var/lib/grafana
 
   # Environment variables
   env: {}
