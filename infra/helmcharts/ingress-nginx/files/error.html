@@ -31,7 +31,7 @@ body{margin:0}
 /* ── Nebulas ────────────────────────────── */
 .nebula{
   position:absolute;border-radius:50%;
-  filter:blur(72px);pointer-events:none;
+  filter:blur(55px);pointer-events:none;
   animation:nebulaPulse var(--nd,18s) ease-in-out infinite;
 }
 @keyframes nebulaPulse{
@@ -103,7 +103,7 @@ body{margin:0}
   to{transform:rotate(340deg)}
 }
 .satellite{
-  position:absolute;top:0;left:50%;
+  position:absolute;top:-9px;left:50%;
   margin-left:-9px;
   filter:drop-shadow(0 0 5px rgba(245,132,31,.55));
 }
@@ -197,6 +197,31 @@ body{margin:0}
 .btn:hover{background:#e65f00;transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,132,31,.4)}
 .btn:active{transform:translateY(0)}
 
+/* ── Asteroids ──────────────────────────── */
+.asteroid{
+  position:absolute;pointer-events:none;opacity:.55;
+  animation:tumble var(--at,22s) linear infinite;
+}
+@keyframes tumble{
+  0%  {transform:translate(0,0) rotate(0deg)}
+  25% {transform:translate(var(--ax,18px),var(--ay,-12px)) rotate(90deg)}
+  50% {transform:translate(var(--ax2,-10px),var(--ay2,20px)) rotate(180deg)}
+  75% {transform:translate(var(--ax,18px),var(--ay,-12px)) rotate(270deg)}
+  100%{transform:translate(0,0) rotate(360deg)}
+}
+
+/* ── Particles ──────────────────────────── */
+.particle{
+  position:absolute;border-radius:50%;background:#fff;pointer-events:none;
+  animation:rise var(--pt,14s) ease-in-out var(--pd,0s) infinite;
+}
+@keyframes rise{
+  0%  {transform:translateY(0) scale(1);opacity:0}
+  15% {opacity:var(--po,.45)}
+  80% {opacity:var(--po,.45)}
+  100%{transform:translateY(-120px) scale(.4);opacity:0}
+}
+
 /* ── Mobile ─────────────────────────────── */
 @media(max-width:600px){
   .planet{width:100px;height:100px;right:-15px;top:5%}
@@ -217,9 +242,9 @@ body{margin:0}
 <div class="stars" id="stars"></div>
 
 <!-- Nebulas -->
-<div class="nebula" style="width:360px;height:300px;background:rgba(80,40,180,.07);left:-80px;top:25%;--nd:18s;--nx:20px;--ny:-15px"></div>
-<div class="nebula" style="width:280px;height:220px;background:rgba(245,132,31,.05);right:22%;bottom:2%;--nd:23s;--nx:-12px;--ny:18px"></div>
-<div class="nebula" style="width:220px;height:220px;background:rgba(20,80,200,.07);left:38%;top:-50px;--nd:14s;--nx:22px;--ny:12px"></div>
+<div class="nebula" style="width:360px;height:300px;background:rgba(80,40,180,.20);left:-80px;top:25%;--nd:18s;--nx:20px;--ny:-15px"></div>
+<div class="nebula" style="width:280px;height:220px;background:rgba(245,132,31,.16);right:22%;bottom:2%;--nd:23s;--nx:-12px;--ny:18px"></div>
+<div class="nebula" style="width:220px;height:220px;background:rgba(20,80,200,.20);left:38%;top:-50px;--nd:14s;--nx:22px;--ny:12px"></div>
 
 <!-- Planet -->
 <div class="planet">
@@ -252,6 +277,24 @@ body{margin:0}
     </div>
   </div>
 </div>
+
+<!-- Asteroids -->
+<svg class="asteroid" style="width:28px;left:6%;top:55%;--at:19s;--ax:14px;--ay:-8px;--ax2:-10px;--ay2:16px" viewBox="0 0 28 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <ellipse cx="14" cy="11" rx="13" ry="9" fill="#5a5a6a"/>
+  <ellipse cx="9" cy="8" rx="3" ry="2" fill="rgba(0,0,0,.22)"/>
+  <ellipse cx="18" cy="14" rx="2" ry="1.2" fill="rgba(0,0,0,.18)"/>
+  <ellipse cx="14" cy="6" rx="1.5" ry="1" fill="rgba(255,255,255,.1)"/>
+</svg>
+<svg class="asteroid" style="width:18px;left:78%;top:70%;--at:27s;--ax:-20px;--ay:10px;--ax2:12px;--ay2:-18px" viewBox="0 0 22 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <polygon points="11,1 20,6 18,16 4,17 2,7" fill="#4a4a5a"/>
+  <ellipse cx="8" cy="9" rx="2" ry="1.5" fill="rgba(0,0,0,.20)"/>
+  <ellipse cx="15" cy="7" rx="1.5" ry="1" fill="rgba(255,255,255,.08)"/>
+</svg>
+<svg class="asteroid" style="width:14px;left:45%;top:82%;--at:33s;--ax:22px;--ay:-14px;--ax2:-8px;--ay2:10px" viewBox="0 0 20 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <ellipse cx="10" cy="8" rx="9" ry="7" fill="#50505e"/>
+  <ellipse cx="7" cy="6" rx="2" ry="1.3" fill="rgba(0,0,0,.25)"/>
+  <ellipse cx="13" cy="10" rx="1.3" ry=".9" fill="rgba(0,0,0,.18)"/>
+</svg>
 
 <!-- Signal waves -->
 <div class="signal">
@@ -308,7 +351,7 @@ body{margin:0}
 </div>
 
 <div class="content">
-  <div class="code" id="code"><!--# echo var="http_x_code" default="503" --></div>
+  <div class="code" id="code">__ERROR_CODE__</div>
   <h1 class="title">Что-то пошло не так</h1>
   <p class="desc">Сервис временно недоступен. Попробуйте обновить страницу или зайти позже.</p>
   <button class="btn" type="button" onclick="location.reload()">Обновить страницу</button>
@@ -355,6 +398,32 @@ body{margin:0}
       `--delay:${d.delay}s`,
     ].join(';');
     root.appendChild(m);
+  }
+
+  // Particles
+  const particleData = [
+    { left: 12, top: 78, size: 2, dur: 12, delay: 0,   opacity: .5  },
+    { left: 28, top: 85, size: 1, dur: 16, delay: 3,   opacity: .35 },
+    { left: 55, top: 90, size: 2, dur: 10, delay: 1.5, opacity: .45 },
+    { left: 70, top: 75, size: 1, dur: 18, delay: 5,   opacity: .3  },
+    { left: 85, top: 88, size: 2, dur: 13, delay: 8,   opacity: .4  },
+    { left: 40, top: 80, size: 1, dur: 15, delay: 2.5, opacity: .35 },
+    { left: 20, top: 72, size: 2, dur: 11, delay: 6,   opacity: .5  },
+    { left: 62, top: 82, size: 1, dur: 17, delay: 4,   opacity: .3  },
+  ];
+  for (const d of particleData) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = [
+      `left:${d.left}%`,
+      `top:${d.top}%`,
+      `width:${d.size}px`,
+      `height:${d.size}px`,
+      `--pt:${d.dur}s`,
+      `--pd:${d.delay}s`,
+      `--po:${d.opacity}`,
+    ].join(';');
+    root.appendChild(p);
   }
 
   // Glitch on error code
