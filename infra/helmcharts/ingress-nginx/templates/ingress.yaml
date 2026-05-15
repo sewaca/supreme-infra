@@ -1,5 +1,17 @@
 {{- if .Values.ingress.enabled }}
 {{- range $rule := .Values.ingress.rules }}
+
+{{- $exactPaths := list }}
+{{- $regexPaths := list }}
+{{- range $rule.paths }}
+{{- if eq (default "ImplementationSpecific" .pathType) "Exact" }}
+{{- $exactPaths = append $exactPaths . }}
+{{- else }}
+{{- $regexPaths = append $regexPaths . }}
+{{- end }}
+{{- end }}
+
+{{- if $regexPaths }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -38,7 +50,7 @@ spec:
   - host: {{ . }}
     http:
       paths:
-      {{- range $rule.paths }}
+      {{- range $regexPaths }}
       - path: {{ .path }}
         pathType: {{ .pathType | default "ImplementationSpecific" }}
         backend:
@@ -48,5 +60,54 @@ spec:
               number: {{ $rule.port }}
       {{- end }}
   {{- end }}
+{{- end }}
+
+{{- if $exactPaths }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $.Values.ingress.name }}-{{ $rule.service }}-exact
+  namespace: {{ $.Values.ingress.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+{{- with (coalesce $rule.rateLimit $.Values.ingress.rateLimit) }}
+    nginx.ingress.kubernetes.io/limit-rps: {{ .rps | quote }}
+    {{- if .connections }}
+    nginx.ingress.kubernetes.io/limit-connections: {{ .connections | quote }}
+    {{- end }}
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: {{ .burstMultiplier | quote }}
+{{- if .whitelist }}
+    nginx.ingress.kubernetes.io/limit-whitelist: {{ .whitelist | quote }}
+{{- end }}
+{{- end }}
+spec:
+  ingressClassName: nginx
+  {{- if $.Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    {{- range $.Values.ingress.tls.hosts }}
+    - {{ . }}
+    {{- end }}
+    secretName: {{ $.Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+  {{- range $.Values.ingress.tls.hosts }}
+  - host: {{ . }}
+    http:
+      paths:
+      {{- range $exactPaths }}
+      - path: {{ .path }}
+        pathType: Exact
+        backend:
+          service:
+            name: {{ $rule.service }}
+            port:
+              number: {{ $rule.port }}
+      {{- end }}
+  {{- end }}
+{{- end }}
+
 {{- end }}
 {{- end }}
