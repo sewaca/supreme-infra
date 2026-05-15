@@ -1,4 +1,5 @@
 import { Badge, ButtonBase, Typography } from '@mui/material';
+import Link from 'next/link';
 import {
   GradientCard,
   type GradientCardVariant,
@@ -20,7 +21,7 @@ export const ButtonCard = ({ title, subtitle, variant, href, notifications }: Pr
       sx={{ flex: 1, width: '50%', maxWidth: '400px', minWidth: 0 }}
       component="div"
     >
-      <ButtonBase sx={{ width: '100%', borderRadius: 2.5, overflow: 'hidden' }} href={href}>
+      <ButtonBase component={Link} sx={{ width: '100%', borderRadius: 2.5, overflow: 'hidden' }} href={href}>
         <GradientCard variant={variant} size="small" sx={{ width: '100%', textAlign: 'left' }}>
           <Typography
             sx={{

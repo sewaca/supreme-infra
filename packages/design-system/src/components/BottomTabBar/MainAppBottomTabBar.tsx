@@ -4,7 +4,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChatIcon from '@mui/icons-material/Chat';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import type { TabItem } from './BottomTabBar';
 import { BottomTabBar } from './BottomTabBar';
 
@@ -22,11 +22,10 @@ type Props = {
 
 export function MainAppBottomTabBar({ unreadMessagesCount }: Props) {
   const pathname = usePathname();
-  const router = useRouter();
 
   const tabs: TabItem[] = MAIN_APP_TABS.map((tab) =>
     tab.value === '/messages' && unreadMessagesCount ? { ...tab, badge: unreadMessagesCount } : tab,
   );
 
-  return <BottomTabBar tabs={tabs} currentPath={pathname} onNavigate={router.push} />;
+  return <BottomTabBar tabs={tabs} currentPath={pathname} onNavigate={(value) => { window.location.href = value; }} />;
 }
