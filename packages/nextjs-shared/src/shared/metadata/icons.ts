@@ -9,7 +9,7 @@ export const sharedIconMetadata = {
     shortcut: '/favicon.ico',
     apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
   },
-  manifest: '/site.webmanifest',
+  // manifest: '/site.webmanifest', currently disabled. mac os parse it in wrong cases
   appleWebApp: {
     title: 'ЛК СПбГУТ',
   },
