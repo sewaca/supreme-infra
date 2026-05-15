@@ -17,11 +17,6 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: 'Сообщения — ЛК СПбГУТ',
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
-  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
