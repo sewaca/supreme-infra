@@ -9,7 +9,9 @@ data:
     server {
         listen 8080;
 
-        error_page 502 503 504 /error.html;
+        error_page 502 =502 /error.html;
+        error_page 503 =503 /error.html;
+        error_page 504 =504 /error.html;
 
         location /healthz {
             return 200 "ok\n";
