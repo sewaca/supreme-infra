@@ -65,7 +65,7 @@ grafana:
           disableDeletion: false
           editable: true
           options:
-            path: /var/lib/grafana/dashboards/default
+            path: /tmp/dashboards
 
   # Sidecar для автоматической загрузки дашбордов из ConfigMaps
   sidecar:
@@ -87,6 +87,8 @@ grafana:
       check_for_updates: false
     unified_alerting:
       enabled: true
+    plugin.grafana-image-renderer:
+      disabled: true
 
   # Plugins
   plugins:
