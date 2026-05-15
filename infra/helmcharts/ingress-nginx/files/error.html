@@ -1,442 +1,766 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Что-то пошло не так</title>
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{margin:0}
-.root{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  background-color:#0d1117;
-  background-image:radial-gradient(ellipse at 30% 40%,#1c2340 0%,#0d1117 70%);
-  overflow:hidden;
-  font-family:"Fira Sans",system-ui,sans-serif;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Что-то пошло не так</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      .root {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #0d1117;
+        background-image: radial-gradient(ellipse at 30% 40%, #1c2340 0%, #0d1117 70%);
+        overflow: hidden;
+        font-family: "Fira Sans", system-ui, sans-serif;
+      }
 
-/* ── Stars ─────────────────────────────── */
-.stars{position:absolute;inset:0;pointer-events:none}
-.star{
-  position:absolute;background:#fff;border-radius:50%;
-  animation:twinkle var(--d,2s) ease-in-out infinite alternate;
-}
-.star.bright{box-shadow:0 0 5px 1px rgba(255,255,255,.55)}
-@keyframes twinkle{
-  from{opacity:.06;transform:scale(.6)}
-  to{opacity:.9;transform:scale(1.4)}
-}
+      /* ── Stars ─────────────────────────────── */
+      .stars {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .star {
+        position: absolute;
+        background: #fff;
+        border-radius: 50%;
+        animation: twinkle var(--d, 2s) ease-in-out infinite alternate;
+      }
+      .star.bright {
+        box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.55);
+      }
+      @keyframes twinkle {
+        from {
+          opacity: 0.06;
+          transform: scale(0.6);
+        }
+        to {
+          opacity: 0.9;
+          transform: scale(1.4);
+        }
+      }
 
-/* ── Nebulas ────────────────────────────── */
-.nebula{
-  position:absolute;border-radius:50%;
-  filter:blur(55px);pointer-events:none;
-  animation:nebulaPulse var(--nd,18s) ease-in-out infinite;
-}
-@keyframes nebulaPulse{
-  0%,100%{transform:scale(1) translate(0,0);opacity:.7}
-  50%{transform:scale(1.15) translate(var(--nx,15px),var(--ny,-10px));opacity:1}
-}
+      /* ── Nebulas ────────────────────────────── */
+      .nebula {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(55px);
+        pointer-events: none;
+        animation: nebulaPulse var(--nd, 18s) ease-in-out infinite;
+      }
+      @keyframes nebulaPulse {
+        0%,
+        100% {
+          transform: scale(1) translate(0, 0);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.15) translate(var(--nx, 15px), var(--ny, -10px));
+          opacity: 1;
+        }
+      }
 
-/* ── Meteors ────────────────────────────── */
-.meteor{
-  position:absolute;width:1px;height:90px;
-  background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.72),rgba(255,255,255,0));
-  border-radius:1px;
-  transform:rotate(215deg);
-  opacity:0;
-  animation:meteor var(--dur,6s) ease-in var(--delay,0s) infinite;
-}
-@keyframes meteor{
-  0%{opacity:0;transform:rotate(215deg) translateY(-200px)}
-  4%{opacity:1}
-  45%{opacity:0;transform:rotate(215deg) translateY(700px)}
-  100%{opacity:0;transform:rotate(215deg) translateY(700px)}
-}
+      /* ── Meteors ────────────────────────────── */
+      .meteor {
+        position: absolute;
+        width: 1px;
+        height: 90px;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.72),
+          rgba(255, 255, 255, 0)
+        );
+        border-radius: 1px;
+        transform: rotate(215deg);
+        opacity: 0;
+        animation: meteor var(--dur, 6s) ease-in var(--delay, 0s) infinite;
+      }
+      @keyframes meteor {
+        0% {
+          opacity: 0;
+          transform: rotate(215deg) translateY(-200px);
+        }
+        4% {
+          opacity: 1;
+        }
+        45% {
+          opacity: 0;
+          transform: rotate(215deg) translateY(700px);
+        }
+        100% {
+          opacity: 0;
+          transform: rotate(215deg) translateY(700px);
+        }
+      }
 
-/* ── Planet ─────────────────────────────── */
-.planet{
-  position:absolute;right:8%;top:12%;
-  width:160px;height:160px;border-radius:50%;
-  background:linear-gradient(135deg,#c8c8d8 20%,#7a7a8a 100%);
-  box-shadow:
-    inset -30px -10px 45px rgba(0,0,0,.55),
-    0 0 60px rgba(245,132,31,.07),
-    0 0 100px rgba(100,120,255,.05);
-  animation:floatPlanet 10s ease-in-out infinite;
-}
-@keyframes floatPlanet{
-  0%,100%{transform:translateY(0) rotate(0deg)}
-  50%{transform:translateY(-18px) rotate(3deg)}
-}
-.planet-atmo{
-  position:absolute;inset:-10px;border-radius:50%;
-  box-shadow:0 0 30px 10px rgba(120,140,255,.06);
-  pointer-events:none;
-}
-.planet-shade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 70% 60%,transparent 50%,rgba(0,0,0,.3) 100%)}
-.crater{position:absolute;border-radius:50%;background:rgba(0,0,0,.18);top:36px;left:48px;width:44px;height:20px;transform:rotate(-20deg)}
-.crater2{position:absolute;border-radius:50%;background:rgba(0,0,0,.14);top:90px;left:26px;width:25px;height:11px;transform:rotate(15deg)}
-.crater3{position:absolute;border-radius:50%;background:rgba(0,0,0,.12);top:58px;left:100px;width:18px;height:8px;transform:rotate(-5deg)}
-.ring{
-  position:absolute;top:50%;left:50%;
-  width:230px;height:52px;
-  border:11px solid rgba(200,200,216,.22);
-  border-radius:50%;
-  transform:translate(-50%,-50%) rotateX(75deg);
-  box-shadow:0 0 20px rgba(255,255,255,.06);
-}
+      /* ── Planet ─────────────────────────────── */
+      .planet {
+        position: absolute;
+        right: 8%;
+        top: 12%;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #c8c8d8 20%, #7a7a8a 100%);
+        box-shadow:
+          inset -30px -10px 45px rgba(0, 0, 0, 0.55),
+          0 0 60px rgba(245, 132, 31, 0.07),
+          0 0 100px rgba(100, 120, 255, 0.05);
+        animation: floatPlanet 10s ease-in-out infinite;
+      }
+      @keyframes floatPlanet {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-18px) rotate(3deg);
+        }
+      }
+      .planet-atmo {
+        position: absolute;
+        inset: -10px;
+        border-radius: 50%;
+        box-shadow: 0 0 30px 10px rgba(120, 140, 255, 0.06);
+        pointer-events: none;
+      }
+      .planet-shade {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle at 70% 60%, transparent 50%, rgba(0, 0, 0, 0.3) 100%);
+      }
+      .crater {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.18);
+        top: 36px;
+        left: 48px;
+        width: 44px;
+        height: 20px;
+        transform: rotate(-20deg);
+      }
+      .crater2 {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.14);
+        top: 90px;
+        left: 26px;
+        width: 25px;
+        height: 11px;
+        transform: rotate(15deg);
+      }
+      .crater3 {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.12);
+        top: 58px;
+        left: 100px;
+        width: 18px;
+        height: 8px;
+        transform: rotate(-5deg);
+      }
+      .ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 230px;
+        height: 52px;
+        border: 11px solid rgba(200, 200, 216, 0.22);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) rotateX(75deg);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.06);
+      }
 
-/* ── Satellite orbit (child of .planet) ── */
-.orbit{
-  position:absolute;
-  width:260px;height:260px;
-  top:50%;left:50%;
-  margin-top:-130px;margin-left:-130px;
-  border:1px dashed rgba(255,255,255,.08);
-  border-radius:50%;
-  animation:orbitSpin 16s linear infinite;
-}
-@keyframes orbitSpin{
-  from{transform:rotate(-20deg)}
-  to{transform:rotate(340deg)}
-}
-.satellite{
-  position:absolute;top:-9px;left:50%;
-  margin-left:-9px;
-  filter:drop-shadow(0 0 5px rgba(245,132,31,.55));
-}
+      /* ── Satellite orbit (child of .planet) ── */
+      .orbit {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        top: 50%;
+        left: 50%;
+        margin-top: -130px;
+        margin-left: -130px;
+        border: 1px dashed rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: orbitSpin 16s linear infinite;
+      }
+      @keyframes orbitSpin {
+        from {
+          transform: rotate(-20deg);
+        }
+        to {
+          transform: rotate(340deg);
+        }
+      }
+      .satellite {
+        position: absolute;
+        top: -9px;
+        left: 50%;
+        margin-left: -9px;
+        filter: drop-shadow(0 0 5px rgba(245, 132, 31, 0.55));
+      }
 
-/* ── Astronaut ──────────────────────────── */
-.astronaut-wrap{
-  position:absolute;right:11%;bottom:14%;
-  width:110px;
-  animation:drift 9s ease-in-out infinite;
-  filter:drop-shadow(0 0 18px rgba(245,132,31,.2));
-}
-@keyframes drift{
-  0%  {transform:translateY(0px)   rotate(-6deg)}
-  20% {transform:translateY(-24px) rotate(4deg)}
-  45% {transform:translateY(-12px) rotate(-9deg)}
-  70% {transform:translateY(-30px) rotate(6deg)}
-  100%{transform:translateY(0px)   rotate(-6deg)}
-}
-.flame{
-  position:absolute;bottom:28px;right:18px;
-  width:10px;height:20px;
-  background:linear-gradient(to bottom,#f5841f,#ffcc00,transparent);
-  border-radius:50% 50% 60% 60%;
-  animation:flicker .15s ease-in-out infinite alternate;
-  filter:blur(2.5px);
-}
-@keyframes flicker{
-  from{transform:scaleY(.65) scaleX(.85);opacity:.75}
-  to{transform:scaleY(1.3) scaleX(1.15);opacity:1}
-}
+      /* ── Astronaut ──────────────────────────── */
+      .astronaut-wrap {
+        position: absolute;
+        right: 11%;
+        bottom: 14%;
+        width: 110px;
+        animation: drift 9s ease-in-out infinite;
+        filter: drop-shadow(0 0 18px rgba(245, 132, 31, 0.2));
+      }
+      @keyframes drift {
+        0% {
+          transform: translateY(0px) rotate(-6deg);
+        }
+        20% {
+          transform: translateY(-24px) rotate(4deg);
+        }
+        45% {
+          transform: translateY(-12px) rotate(-9deg);
+        }
+        70% {
+          transform: translateY(-30px) rotate(6deg);
+        }
+        100% {
+          transform: translateY(0px) rotate(-6deg);
+        }
+      }
+      .flame {
+        position: absolute;
+        bottom: 28px;
+        right: 18px;
+        width: 10px;
+        height: 20px;
+        background: linear-gradient(to bottom, #f5841f, #ffcc00, transparent);
+        border-radius: 50% 50% 60% 60%;
+        animation: flicker 0.15s ease-in-out infinite alternate;
+        filter: blur(2.5px);
+      }
+      @keyframes flicker {
+        from {
+          transform: scaleY(0.65) scaleX(0.85);
+          opacity: 0.75;
+        }
+        to {
+          transform: scaleY(1.3) scaleX(1.15);
+          opacity: 1;
+        }
+      }
 
-/* ── Signal waves ───────────────────────── */
-.signal{position:absolute;right:15%;bottom:33%;pointer-events:none}
-.signal-ring{
-  position:absolute;border:1.5px solid rgba(245,132,31,.35);
-  border-radius:50%;
-  animation:expand 2.4s ease-out infinite;
-}
-.signal-ring:nth-child(2){animation-delay:.8s}
-.signal-ring:nth-child(3){animation-delay:1.6s}
-@keyframes expand{
-  0%  {width:0;height:0;top:0;left:0;opacity:.9}
-  100%{width:90px;height:90px;top:-45px;left:-45px;opacity:0}
-}
+      /* ── Signal waves ───────────────────────── */
+      .signal {
+        position: absolute;
+        right: 15%;
+        bottom: 33%;
+        pointer-events: none;
+      }
+      .signal-ring {
+        position: absolute;
+        border: 1.5px solid rgba(245, 132, 31, 0.35);
+        border-radius: 50%;
+        animation: expand 2.4s ease-out infinite;
+      }
+      .signal-ring:nth-child(2) {
+        animation-delay: 0.8s;
+      }
+      .signal-ring:nth-child(3) {
+        animation-delay: 1.6s;
+      }
+      @keyframes expand {
+        0% {
+          width: 0;
+          height: 0;
+          top: 0;
+          left: 0;
+          opacity: 0.9;
+        }
+        100% {
+          width: 90px;
+          height: 90px;
+          top: -45px;
+          left: -45px;
+          opacity: 0;
+        }
+      }
 
-/* ── Content ────────────────────────────── */
-.content{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;gap:12px;padding:24px;max-width:520px;
-}
-.code{
-  font-size:clamp(88px,16vw,160px);font-weight:800;line-height:1;letter-spacing:-4px;
-  background:linear-gradient(135deg,#ff9a5c 0%,#f5841f 40%,#e65000 100%);
-  background-size:200% 200%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 40px rgba(245,132,31,.45));
-  animation:floatCode 7s ease-in-out infinite,shimmer 5s ease-in-out infinite;
-  user-select:none;
-}
-@keyframes floatCode{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-14px)}
-}
-@keyframes shimmer{
-  0%,100%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-}
-.code.glitch{
-  animation:floatCode 7s ease-in-out infinite,shimmer 5s ease-in-out infinite,glitchMove .18s steps(3) forwards !important;
-  filter:
-    drop-shadow(0 0 40px rgba(245,132,31,.45))
-    drop-shadow(-4px 0 0 rgba(0,200,255,.55))
-    drop-shadow(4px 0 0 rgba(255,50,80,.55)) !important;
-}
-@keyframes glitchMove{
-  0%  {transform:translate(-4px,1px) skewX(-3deg)}
-  33% {transform:translate(4px,-1px) skewX(3deg)}
-  66% {transform:translate(-2px,2px) skewX(-1deg)}
-  100%{transform:translate(0,0)}
-}
-.title{color:#fff;font-size:clamp(18px,3vw,24px);font-weight:600;letter-spacing:.01em;margin-top:4px}
-.desc{color:rgba(255,255,255,.42);font-size:15px;line-height:1.65;max-width:360px}
-.btn{
-  margin-top:16px;padding:12px 36px;
-  background:#f5841f;color:#fff;border:none;border-radius:50px;
-  font-family:inherit;font-size:15px;font-weight:600;letter-spacing:.04em;
-  cursor:pointer;
-  transition:background 200ms,transform 150ms,box-shadow 200ms;
-}
-.btn:hover{background:#e65f00;transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,132,31,.4)}
-.btn:active{transform:translateY(0)}
+      /* ── Content ────────────────────────────── */
+      .content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+        padding: 24px;
+        max-width: 520px;
+      }
+      .code {
+        font-size: clamp(88px, 16vw, 160px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -4px;
+        background: linear-gradient(135deg, #ff9a5c 0%, #f5841f 40%, #e65000 100%);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 40px rgba(245, 132, 31, 0.45));
+        animation:
+          floatCode 7s ease-in-out infinite,
+          shimmer 5s ease-in-out infinite;
+        user-select: none;
+      }
+      @keyframes floatCode {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-14px);
+        }
+      }
+      @keyframes shimmer {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+      .code.glitch {
+        animation:
+          floatCode 7s ease-in-out infinite,
+          shimmer 5s ease-in-out infinite,
+          glitchMove 0.18s steps(3) forwards !important;
+        filter: drop-shadow(0 0 40px rgba(245, 132, 31, 0.45)) drop-shadow(-4px 0 0 rgba(0, 200, 255, 0.55))
+          drop-shadow(4px 0 0 rgba(255, 50, 80, 0.55)) !important;
+      }
+      @keyframes glitchMove {
+        0% {
+          transform: translate(-4px, 1px) skewX(-3deg);
+        }
+        33% {
+          transform: translate(4px, -1px) skewX(3deg);
+        }
+        66% {
+          transform: translate(-2px, 2px) skewX(-1deg);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+      .title {
+        color: #fff;
+        font-size: clamp(18px, 3vw, 24px);
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        margin-top: 4px;
+      }
+      .desc {
+        color: rgba(255, 255, 255, 0.42);
+        font-size: 15px;
+        line-height: 1.65;
+        max-width: 360px;
+      }
+      .btn {
+        margin-top: 16px;
+        padding: 12px 36px;
+        background: #f5841f;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        transition:
+          background 200ms,
+          transform 150ms,
+          box-shadow 200ms;
+      }
+      .btn:hover {
+        background: #e65f00;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(245, 132, 31, 0.4);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
 
-/* ── Asteroids ──────────────────────────── */
-.asteroid{
-  position:absolute;pointer-events:none;opacity:.55;
-  animation:tumble var(--at,22s) linear infinite;
-}
-@keyframes tumble{
-  0%  {transform:translate(0,0) rotate(0deg)}
-  25% {transform:translate(var(--ax,18px),var(--ay,-12px)) rotate(90deg)}
-  50% {transform:translate(var(--ax2,-10px),var(--ay2,20px)) rotate(180deg)}
-  75% {transform:translate(var(--ax,18px),var(--ay,-12px)) rotate(270deg)}
-  100%{transform:translate(0,0) rotate(360deg)}
-}
+      /* ── Asteroids ──────────────────────────── */
+      .asteroid {
+        position: absolute;
+        pointer-events: none;
+        opacity: 0.55;
+        animation: tumble var(--at, 22s) linear infinite;
+      }
+      @keyframes tumble {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+          transform: translate(var(--ax, 18px), var(--ay, -12px)) rotate(90deg);
+        }
+        50% {
+          transform: translate(var(--ax2, -10px), var(--ay2, 20px)) rotate(180deg);
+        }
+        75% {
+          transform: translate(var(--ax, 18px), var(--ay, -12px)) rotate(270deg);
+        }
+        100% {
+          transform: translate(0, 0) rotate(360deg);
+        }
+      }
 
-/* ── Particles ──────────────────────────── */
-.particle{
-  position:absolute;border-radius:50%;background:#fff;pointer-events:none;
-  animation:rise var(--pt,14s) ease-in-out var(--pd,0s) infinite;
-}
-@keyframes rise{
-  0%  {transform:translateY(0) scale(1);opacity:0}
-  15% {opacity:var(--po,.45)}
-  80% {opacity:var(--po,.45)}
-  100%{transform:translateY(-120px) scale(.4);opacity:0}
-}
+      /* ── Particles ──────────────────────────── */
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: #fff;
+        pointer-events: none;
+        animation: rise var(--pt, 14s) ease-in-out var(--pd, 0s) infinite;
+      }
+      @keyframes rise {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0;
+        }
+        15% {
+          opacity: var(--po, 0.45);
+        }
+        80% {
+          opacity: var(--po, 0.45);
+        }
+        100% {
+          transform: translateY(-120px) scale(0.4);
+          opacity: 0;
+        }
+      }
 
-/* ── Mobile ─────────────────────────────── */
-@media(max-width:600px){
-  .planet{width:100px;height:100px;right:-15px;top:5%}
-  .ring{width:145px;height:33px;border-width:7px}
-  .crater{top:22px;left:30px;width:28px;height:12px}
-  .crater2{top:55px;left:16px;width:16px;height:7px}
-  .crater3{top:36px;left:62px;width:12px;height:5px}
-  .orbit{width:160px;height:160px;margin-top:-80px;margin-left:-80px}
-  .astronaut-wrap{width:75px;right:4%;bottom:8%}
-  .signal{right:8%;bottom:25%}
-}
-</style>
-</head>
-<body>
-<div class="root">
+      /* ── Mobile ─────────────────────────────── */
+      @media (max-width: 600px) {
+        .planet {
+          width: 100px;
+          height: 100px;
+          right: -15px;
+          top: 5%;
+        }
+        .ring {
+          width: 145px;
+          height: 33px;
+          border-width: 7px;
+        }
+        .crater {
+          top: 22px;
+          left: 30px;
+          width: 28px;
+          height: 12px;
+        }
+        .crater2 {
+          top: 55px;
+          left: 16px;
+          width: 16px;
+          height: 7px;
+        }
+        .crater3 {
+          top: 36px;
+          left: 62px;
+          width: 12px;
+          height: 5px;
+        }
+        .orbit {
+          width: 160px;
+          height: 160px;
+          margin-top: -80px;
+          margin-left: -80px;
+        }
+        .astronaut-wrap {
+          width: 75px;
+          right: 4%;
+          bottom: 8%;
+        }
+        .signal {
+          right: 8%;
+          bottom: 25%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="root">
+      <!-- Stars -->
+      <div class="stars" id="stars"></div>
 
-<!-- Stars -->
-<div class="stars" id="stars"></div>
+      <!-- Nebulas -->
+      <div
+        class="nebula"
+        style="
+          width: 360px;
+          height: 300px;
+          background: rgba(80, 40, 180, 0.2);
+          left: -80px;
+          top: 25%;
+          --nd: 18s;
+          --nx: 20px;
+          --ny: -15px;
+        "
+      ></div>
+      <div
+        class="nebula"
+        style="
+          width: 280px;
+          height: 220px;
+          background: rgba(245, 132, 31, 0.16);
+          right: 22%;
+          bottom: 2%;
+          --nd: 23s;
+          --nx: -12px;
+          --ny: 18px;
+        "
+      ></div>
+      <div
+        class="nebula"
+        style="
+          width: 220px;
+          height: 220px;
+          background: rgba(20, 80, 200, 0.2);
+          left: 38%;
+          top: -50px;
+          --nd: 14s;
+          --nx: 22px;
+          --ny: 12px;
+        "
+      ></div>
 
-<!-- Nebulas -->
-<div class="nebula" style="width:360px;height:300px;background:rgba(80,40,180,.20);left:-80px;top:25%;--nd:18s;--nx:20px;--ny:-15px"></div>
-<div class="nebula" style="width:280px;height:220px;background:rgba(245,132,31,.16);right:22%;bottom:2%;--nd:23s;--nx:-12px;--ny:18px"></div>
-<div class="nebula" style="width:220px;height:220px;background:rgba(20,80,200,.20);left:38%;top:-50px;--nd:14s;--nx:22px;--ny:12px"></div>
+      <!-- Planet -->
+      <div class="planet">
+        <div class="planet-atmo"></div>
+        <div class="planet-shade"></div>
+        <div class="crater"></div>
+        <div class="crater2"></div>
+        <div class="crater3"></div>
+        <div class="ring"></div>
+        <!-- Satellite orbiting planet -->
+        <div class="orbit">
+          <div class="satellite">
+            <svg width="18" height="20" viewBox="0 0 18 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Antenna -->
+              <line x1="9" y1="0" x2="9" y2="5" stroke="#8898b8" stroke-width="1.2" stroke-linecap="round" />
+              <circle cx="9" cy="0" r="1.8" fill="#f5841f" opacity=".95" />
+              <!-- Body -->
+              <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="#a0b4cc" />
+              <rect x="6.5" y="6.5" width="5" height="5" rx=".5" fill="#7090b0" opacity=".6" />
+              <!-- Left solar panel -->
+              <rect x="0" y="7" width="4.5" height="5" rx=".8" fill="#3468a8" opacity=".95" />
+              <line x1="2.25" y1="7" x2="2.25" y2="12" stroke="rgba(255,255,255,.15)" stroke-width=".7" />
+              <!-- Right solar panel -->
+              <rect x="13.5" y="7" width="4.5" height="5" rx=".8" fill="#3468a8" opacity=".95" />
+              <line x1="15.75" y1="7" x2="15.75" y2="12" stroke="rgba(255,255,255,.15)" stroke-width=".7" />
+              <!-- Thruster -->
+              <rect x="7" y="12.5" width="4" height="3" rx="1" fill="#8898b8" />
+              <ellipse cx="9" cy="17" rx="2" ry="2.5" fill="rgba(245,132,31,.45)" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-<!-- Planet -->
-<div class="planet">
-  <div class="planet-atmo"></div>
-  <div class="planet-shade"></div>
-  <div class="crater"></div>
-  <div class="crater2"></div>
-  <div class="crater3"></div>
-  <div class="ring"></div>
-  <!-- Satellite orbiting planet -->
-  <div class="orbit">
-    <div class="satellite">
-      <svg width="18" height="20" viewBox="0 0 18 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- Antenna -->
-        <line x1="9" y1="0" x2="9" y2="5" stroke="#8898b8" stroke-width="1.2" stroke-linecap="round"/>
-        <circle cx="9" cy="0" r="1.8" fill="#f5841f" opacity=".95"/>
-        <!-- Body -->
-        <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="#a0b4cc"/>
-        <rect x="6.5" y="6.5" width="5" height="5" rx=".5" fill="#7090b0" opacity=".6"/>
-        <!-- Left solar panel -->
-        <rect x="0" y="7" width="4.5" height="5" rx=".8" fill="#3468a8" opacity=".95"/>
-        <line x1="2.25" y1="7" x2="2.25" y2="12" stroke="rgba(255,255,255,.15)" stroke-width=".7"/>
-        <!-- Right solar panel -->
-        <rect x="13.5" y="7" width="4.5" height="5" rx=".8" fill="#3468a8" opacity=".95"/>
-        <line x1="15.75" y1="7" x2="15.75" y2="12" stroke="rgba(255,255,255,.15)" stroke-width=".7"/>
-        <!-- Thruster -->
-        <rect x="7" y="12.5" width="4" height="3" rx="1" fill="#8898b8"/>
-        <ellipse cx="9" cy="17" rx="2" ry="2.5" fill="rgba(245,132,31,.45)"/>
+      <!-- Asteroids -->
+      <svg
+        class="asteroid"
+        style="width: 28px; left: 6%; top: 55%; --at: 19s; --ax: 14px; --ay: -8px; --ax2: -10px; --ay2: 16px"
+        viewBox="0 0 28 22"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <ellipse cx="14" cy="11" rx="13" ry="9" fill="#5a5a6a" />
+        <ellipse cx="9" cy="8" rx="3" ry="2" fill="rgba(0,0,0,.22)" />
+        <ellipse cx="18" cy="14" rx="2" ry="1.2" fill="rgba(0,0,0,.18)" />
+        <ellipse cx="14" cy="6" rx="1.5" ry="1" fill="rgba(255,255,255,.1)" />
       </svg>
+      <svg
+        class="asteroid"
+        style="width: 18px; left: 78%; top: 70%; --at: 27s; --ax: -20px; --ay: 10px; --ax2: 12px; --ay2: -18px"
+        viewBox="0 0 22 18"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <polygon points="11,1 20,6 18,16 4,17 2,7" fill="#4a4a5a" />
+        <ellipse cx="8" cy="9" rx="2" ry="1.5" fill="rgba(0,0,0,.20)" />
+        <ellipse cx="15" cy="7" rx="1.5" ry="1" fill="rgba(255,255,255,.08)" />
+      </svg>
+      <svg
+        class="asteroid"
+        style="width: 14px; left: 45%; top: 82%; --at: 33s; --ax: 22px; --ay: -14px; --ax2: -8px; --ay2: 10px"
+        viewBox="0 0 20 16"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <ellipse cx="10" cy="8" rx="9" ry="7" fill="#50505e" />
+        <ellipse cx="7" cy="6" rx="2" ry="1.3" fill="rgba(0,0,0,.25)" />
+        <ellipse cx="13" cy="10" rx="1.3" ry=".9" fill="rgba(0,0,0,.18)" />
+      </svg>
+
+      <!-- Signal waves -->
+      <div class="signal">
+        <div class="signal-ring"></div>
+        <div class="signal-ring"></div>
+        <div class="signal-ring"></div>
+      </div>
+
+      <!-- Astronaut -->
+      <div class="astronaut-wrap">
+        <div class="flame"></div>
+        <svg viewBox="0 0 80 105" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="hg" cx="40%" cy="35%">
+              <stop offset="0%" stop-color="#f0f4ff" />
+              <stop offset="100%" stop-color="#c4cce0" />
+            </radialGradient>
+            <linearGradient id="vg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4080d4" stop-opacity=".9" />
+              <stop offset="100%" stop-color="#162e52" stop-opacity=".95" />
+            </linearGradient>
+          </defs>
+          <rect x="24" y="77" width="13" height="22" rx="6.5" fill="#b0bcd4" />
+          <rect x="43" y="77" width="13" height="22" rx="6.5" fill="#b0bcd4" />
+          <ellipse cx="30" cy="98" rx="9.5" ry="5.5" fill="#8890a8" />
+          <ellipse cx="50" cy="98" rx="9.5" ry="5.5" fill="#8890a8" />
+          <rect x="20" y="47" width="40" height="34" rx="11" fill="#c8d2e8" />
+          <rect x="31" y="45" width="18" height="8" rx="4" fill="#b4c0d8" />
+          <rect x="6" y="50" width="15" height="28" rx="7.5" fill="#c8d2e8" />
+          <rect x="59" y="50" width="15" height="28" rx="7.5" fill="#c8d2e8" />
+          <rect x="55" y="51" width="13" height="24" rx="4.5" fill="#7888a8" />
+          <rect x="57" y="49" width="9" height="6" rx="3" fill="#8898b8" />
+          <rect x="60" y="73" width="4" height="7" rx="2" fill="#607090" />
+          <ellipse cx="13" cy="79" rx="8" ry="5.5" fill="#a0acc4" />
+          <ellipse cx="67" cy="79" rx="8" ry="5.5" fill="#a0acc4" />
+          <circle cx="40" cy="27" r="24" fill="url(#hg)" />
+          <ellipse cx="40" cy="49" rx="13" ry="4.5" fill="#b8c4dc" />
+          <ellipse cx="40" cy="28" rx="16" ry="15" fill="url(#vg)" />
+          <ellipse cx="33" cy="21" rx="6" ry="3.5" fill="rgba(255,255,255,.32)" transform="rotate(-18 33 21)" />
+          <ellipse cx="47" cy="37" rx="3" ry="1.8" fill="rgba(255,255,255,.1)" />
+          <circle cx="44" cy="20" r="1" fill="rgba(255,255,255,.55)" />
+          <circle cx="48" cy="25" r=".7" fill="rgba(255,255,255,.4)" />
+          <circle cx="36" cy="34" r=".8" fill="rgba(255,255,255,.35)" />
+          <rect x="26" y="55" width="26" height="18" rx="4.5" fill="#3468a8" opacity=".85" />
+          <circle cx="34" cy="62" r="3.2" fill="#f5841f" />
+          <circle cx="34" cy="62" r="1.6" fill="#ffb86c" opacity=".7" />
+          <circle cx="46" cy="62" r="3.2" fill="#3dde85" />
+          <circle cx="46" cy="62" r="1.6" fill="#90ffc8" opacity=".7" />
+          <rect x="28" y="69" width="22" height="2.5" rx="1.25" fill="rgba(255,255,255,.18)" />
+          <line x1="40" y1="3" x2="40" y2="14" stroke="#8898b8" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="40" cy="3" r="2.8" fill="#f5841f" opacity=".95" />
+          <circle cx="40" cy="3" r="1.2" fill="#ffb86c" opacity=".8" />
+        </svg>
+      </div>
+
+      <div class="content">
+        <div class="code" id="code">503</div>
+        <h1 class="title">Что-то пошло не так</h1>
+        <p class="desc">Сервис временно недоступен. Попробуйте обновить страницу или зайти позже.</p>
+        <button class="btn" type="button" onclick="location.reload()">Обновить страницу</button>
+      </div>
     </div>
-  </div>
-</div>
+    <script>
+      (() => {
+        const root = document.querySelector(".root");
+        const starsEl = document.getElementById("stars");
 
-<!-- Asteroids -->
-<svg class="asteroid" style="width:28px;left:6%;top:55%;--at:19s;--ax:14px;--ay:-8px;--ax2:-10px;--ay2:16px" viewBox="0 0 28 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <ellipse cx="14" cy="11" rx="13" ry="9" fill="#5a5a6a"/>
-  <ellipse cx="9" cy="8" rx="3" ry="2" fill="rgba(0,0,0,.22)"/>
-  <ellipse cx="18" cy="14" rx="2" ry="1.2" fill="rgba(0,0,0,.18)"/>
-  <ellipse cx="14" cy="6" rx="1.5" ry="1" fill="rgba(255,255,255,.1)"/>
-</svg>
-<svg class="asteroid" style="width:18px;left:78%;top:70%;--at:27s;--ax:-20px;--ay:10px;--ax2:12px;--ay2:-18px" viewBox="0 0 22 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <polygon points="11,1 20,6 18,16 4,17 2,7" fill="#4a4a5a"/>
-  <ellipse cx="8" cy="9" rx="2" ry="1.5" fill="rgba(0,0,0,.20)"/>
-  <ellipse cx="15" cy="7" rx="1.5" ry="1" fill="rgba(255,255,255,.08)"/>
-</svg>
-<svg class="asteroid" style="width:14px;left:45%;top:82%;--at:33s;--ax:22px;--ay:-14px;--ax2:-8px;--ay2:10px" viewBox="0 0 20 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <ellipse cx="10" cy="8" rx="9" ry="7" fill="#50505e"/>
-  <ellipse cx="7" cy="6" rx="2" ry="1.3" fill="rgba(0,0,0,.25)"/>
-  <ellipse cx="13" cy="10" rx="1.3" ry=".9" fill="rgba(0,0,0,.18)"/>
-</svg>
+        // Stars
+        for (let i = 0; i < 70; i++) {
+          const el = document.createElement("span");
+          const isBright = i % 7 === 0;
+          el.className = isBright ? "star bright" : "star";
+          const size = `${isBright ? 2 : (i % 3) + 1}px`;
+          el.style.cssText = [
+            `top:${((i * 37 + 13) % 93) + 2}%`,
+            `left:${((i * 53 + 7) % 93) + 2}%`,
+            `width:${size}`,
+            `height:${size}`,
+            `--d:${1.5 + ((i * 31) % 20) / 10}s`,
+            `animation-delay:${((i * 47) % 30) / 10}s`,
+          ].join(";");
+          starsEl.appendChild(el);
+        }
 
-<!-- Signal waves -->
-<div class="signal">
-  <div class="signal-ring"></div>
-  <div class="signal-ring"></div>
-  <div class="signal-ring"></div>
-</div>
+        // Meteors
+        const meteorData = [
+          { top: 5, left: 18, dur: 5.2, delay: 0 },
+          { top: 14, left: 52, dur: 7.1, delay: 3.4 },
+          { top: 3, left: 71, dur: 4.8, delay: 7.1 },
+          { top: 22, left: 38, dur: 6.3, delay: 1.8 },
+          { top: 8, left: 83, dur: 5.9, delay: 11.2 },
+        ];
+        for (const d of meteorData) {
+          const m = document.createElement("div");
+          m.className = "meteor";
+          m.style.cssText = [`top:${d.top}%`, `left:${d.left}%`, `--dur:${d.dur}s`, `--delay:${d.delay}s`].join(";");
+          root.appendChild(m);
+        }
 
-<!-- Astronaut -->
-<div class="astronaut-wrap">
-  <div class="flame"></div>
-  <svg viewBox="0 0 80 105" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <defs>
-      <radialGradient id="hg" cx="40%" cy="35%">
-        <stop offset="0%" stop-color="#f0f4ff"/>
-        <stop offset="100%" stop-color="#c4cce0"/>
-      </radialGradient>
-      <linearGradient id="vg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#4080d4" stop-opacity=".9"/>
-        <stop offset="100%" stop-color="#162e52" stop-opacity=".95"/>
-      </linearGradient>
-    </defs>
-    <rect x="24" y="77" width="13" height="22" rx="6.5" fill="#b0bcd4"/>
-    <rect x="43" y="77" width="13" height="22" rx="6.5" fill="#b0bcd4"/>
-    <ellipse cx="30" cy="98" rx="9.5" ry="5.5" fill="#8890a8"/>
-    <ellipse cx="50" cy="98" rx="9.5" ry="5.5" fill="#8890a8"/>
-    <rect x="20" y="47" width="40" height="34" rx="11" fill="#c8d2e8"/>
-    <rect x="31" y="45" width="18" height="8" rx="4" fill="#b4c0d8"/>
-    <rect x="6" y="50" width="15" height="28" rx="7.5" fill="#c8d2e8"/>
-    <rect x="59" y="50" width="15" height="28" rx="7.5" fill="#c8d2e8"/>
-    <rect x="55" y="51" width="13" height="24" rx="4.5" fill="#7888a8"/>
-    <rect x="57" y="49" width="9" height="6" rx="3" fill="#8898b8"/>
-    <rect x="60" y="73" width="4" height="7" rx="2" fill="#607090"/>
-    <ellipse cx="13" cy="79" rx="8" ry="5.5" fill="#a0acc4"/>
-    <ellipse cx="67" cy="79" rx="8" ry="5.5" fill="#a0acc4"/>
-    <circle cx="40" cy="27" r="24" fill="url(#hg)"/>
-    <ellipse cx="40" cy="49" rx="13" ry="4.5" fill="#b8c4dc"/>
-    <ellipse cx="40" cy="28" rx="16" ry="15" fill="url(#vg)"/>
-    <ellipse cx="33" cy="21" rx="6" ry="3.5" fill="rgba(255,255,255,.32)" transform="rotate(-18 33 21)"/>
-    <ellipse cx="47" cy="37" rx="3" ry="1.8" fill="rgba(255,255,255,.1)"/>
-    <circle cx="44" cy="20" r="1" fill="rgba(255,255,255,.55)"/>
-    <circle cx="48" cy="25" r=".7" fill="rgba(255,255,255,.4)"/>
-    <circle cx="36" cy="34" r=".8" fill="rgba(255,255,255,.35)"/>
-    <rect x="26" y="55" width="26" height="18" rx="4.5" fill="#3468a8" opacity=".85"/>
-    <circle cx="34" cy="62" r="3.2" fill="#f5841f"/>
-    <circle cx="34" cy="62" r="1.6" fill="#ffb86c" opacity=".7"/>
-    <circle cx="46" cy="62" r="3.2" fill="#3dde85"/>
-    <circle cx="46" cy="62" r="1.6" fill="#90ffc8" opacity=".7"/>
-    <rect x="28" y="69" width="22" height="2.5" rx="1.25" fill="rgba(255,255,255,.18)"/>
-    <line x1="40" y1="3" x2="40" y2="14" stroke="#8898b8" stroke-width="2.2" stroke-linecap="round"/>
-    <circle cx="40" cy="3" r="2.8" fill="#f5841f" opacity=".95"/>
-    <circle cx="40" cy="3" r="1.2" fill="#ffb86c" opacity=".8"/>
-  </svg>
-</div>
+        // Particles
+        const particleData = [
+          { left: 12, top: 78, size: 2, dur: 12, delay: 0, opacity: 0.5 },
+          { left: 28, top: 85, size: 1, dur: 16, delay: 3, opacity: 0.35 },
+          { left: 55, top: 90, size: 2, dur: 10, delay: 1.5, opacity: 0.45 },
+          { left: 70, top: 75, size: 1, dur: 18, delay: 5, opacity: 0.3 },
+          { left: 85, top: 88, size: 2, dur: 13, delay: 8, opacity: 0.4 },
+          { left: 40, top: 80, size: 1, dur: 15, delay: 2.5, opacity: 0.35 },
+          { left: 20, top: 72, size: 2, dur: 11, delay: 6, opacity: 0.5 },
+          { left: 62, top: 82, size: 1, dur: 17, delay: 4, opacity: 0.3 },
+        ];
+        for (const d of particleData) {
+          const p = document.createElement("div");
+          p.className = "particle";
+          p.style.cssText = [
+            `left:${d.left}%`,
+            `top:${d.top}%`,
+            `width:${d.size}px`,
+            `height:${d.size}px`,
+            `--pt:${d.dur}s`,
+            `--pd:${d.delay}s`,
+            `--po:${d.opacity}`,
+          ].join(";");
+          root.appendChild(p);
+        }
 
-<div class="content">
-  <div class="code" id="code">__ERROR_CODE__</div>
-  <h1 class="title">Что-то пошло не так</h1>
-  <p class="desc">Сервис временно недоступен. Попробуйте обновить страницу или зайти позже.</p>
-  <button class="btn" type="button" onclick="location.reload()">Обновить страницу</button>
-</div>
-
-</div>
-<script>
-(() => {
-  const root = document.querySelector('.root');
-  const starsEl = document.getElementById('stars');
-
-  // Stars
-  for (let i = 0; i < 70; i++) {
-    const el = document.createElement('span');
-    const isBright = i % 7 === 0;
-    el.className = isBright ? 'star bright' : 'star';
-    const size = `${isBright ? 2 : (i % 3) + 1}px`;
-    el.style.cssText = [
-      `top:${((i * 37 + 13) % 93) + 2}%`,
-      `left:${((i * 53 + 7) % 93) + 2}%`,
-      `width:${size}`,
-      `height:${size}`,
-      `--d:${1.5 + ((i * 31) % 20) / 10}s`,
-      `animation-delay:${((i * 47) % 30) / 10}s`,
-    ].join(';');
-    starsEl.appendChild(el);
-  }
-
-  // Meteors
-  const meteorData = [
-    { top: 5,  left: 18, dur: 5.2, delay: 0   },
-    { top: 14, left: 52, dur: 7.1, delay: 3.4 },
-    { top: 3,  left: 71, dur: 4.8, delay: 7.1 },
-    { top: 22, left: 38, dur: 6.3, delay: 1.8 },
-    { top: 8,  left: 83, dur: 5.9, delay: 11.2 },
-  ];
-  for (const d of meteorData) {
-    const m = document.createElement('div');
-    m.className = 'meteor';
-    m.style.cssText = [
-      `top:${d.top}%`,
-      `left:${d.left}%`,
-      `--dur:${d.dur}s`,
-      `--delay:${d.delay}s`,
-    ].join(';');
-    root.appendChild(m);
-  }
-
-  // Particles
-  const particleData = [
-    { left: 12, top: 78, size: 2, dur: 12, delay: 0,   opacity: .5  },
-    { left: 28, top: 85, size: 1, dur: 16, delay: 3,   opacity: .35 },
-    { left: 55, top: 90, size: 2, dur: 10, delay: 1.5, opacity: .45 },
-    { left: 70, top: 75, size: 1, dur: 18, delay: 5,   opacity: .3  },
-    { left: 85, top: 88, size: 2, dur: 13, delay: 8,   opacity: .4  },
-    { left: 40, top: 80, size: 1, dur: 15, delay: 2.5, opacity: .35 },
-    { left: 20, top: 72, size: 2, dur: 11, delay: 6,   opacity: .5  },
-    { left: 62, top: 82, size: 1, dur: 17, delay: 4,   opacity: .3  },
-  ];
-  for (const d of particleData) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.cssText = [
-      `left:${d.left}%`,
-      `top:${d.top}%`,
-      `width:${d.size}px`,
-      `height:${d.size}px`,
-      `--pt:${d.dur}s`,
-      `--pd:${d.delay}s`,
-      `--po:${d.opacity}`,
-    ].join(';');
-    root.appendChild(p);
-  }
-
-  // Glitch on error code
-  const codeEl = document.getElementById('code');
-  function scheduleGlitch() {
-    setTimeout(() => {
-      codeEl.classList.add('glitch');
-      setTimeout(() => { codeEl.classList.remove('glitch'); }, 220);
-      scheduleGlitch();
-    }, 3000 + Math.random() * 5000);
-  }
-  scheduleGlitch();
-})();
-</script>
-</body>
+        // Error code from cookie set by nginx
+        const codeEl = document.getElementById("code");
+        const _ecM = document.cookie.match(/\bec=(\d+)/);
+        if (_ecM) codeEl.textContent = _ecM[1];
+        function scheduleGlitch() {
+          setTimeout(
+            () => {
+              codeEl.classList.add("glitch");
+              setTimeout(() => {
+                codeEl.classList.remove("glitch");
+              }, 220);
+              scheduleGlitch();
+            },
+            3000 + Math.random() * 5000
+          );
+        }
+        scheduleGlitch();
+      })();
+    </script>
+  </body>
 </html>

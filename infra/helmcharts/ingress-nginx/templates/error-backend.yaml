@@ -27,8 +27,7 @@ data:
             root /usr/share/nginx/html;
             default_type text/html;
             internal;
-            sub_filter '__ERROR_CODE__' $http_x_code;
-            sub_filter_once on;
+            add_header Set-Cookie "ec=$http_x_code; Path=/; Max-Age=10; SameSite=Strict" always;
         }
     }
   error.html: |
