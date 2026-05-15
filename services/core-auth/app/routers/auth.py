@@ -54,6 +54,40 @@ async def _get_location(ip: str | None) -> str | None:
     return None
 
 
+_WINDOWS_NT_MAP = {"10.0": "Windows 10", "6.3": "Windows 8.1", "6.2": "Windows 8", "6.1": "Windows 7"}
+
+
+def _get_device(user_agent: str | None) -> str | None:
+    if not user_agent:
+        return None
+    ua = user_agent
+
+    m = re.search(r"iPhone.*?CPU iPhone OS (\d+)[_.](\d+)", ua)
+    if m:
+        return f"iPhone, iOS {m.group(1)}.{m.group(2)}"
+
+    m = re.search(r"iPad.*?CPU OS (\d+)[_.](\d+)", ua)
+    if m:
+        return f"iPad, iPadOS {m.group(1)}.{m.group(2)}"
+
+    m = re.search(r"Android (\d+(?:\.\d+)?)", ua)
+    if m:
+        return f"Android {m.group(1)}"
+
+    m = re.search(r"Mac OS X (\d+)[_.](\d+)", ua)
+    if m:
+        return f"Mac, macOS {m.group(1)}.{m.group(2)}"
+
+    m = re.search(r"Windows NT (\d+\.\d+)", ua)
+    if m:
+        return _WINDOWS_NT_MAP.get(m.group(1), f"Windows (NT {m.group(1)})")
+
+    if "Linux" in ua or "X11" in ua:
+        return "Linux"
+
+    return None
+
+
 @router.post("/login", response_model=AuthResponse)
 async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
     locked, retry_after = await is_locked(body.email)
@@ -92,15 +126,29 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
     jti = uuid.uuid4()
     access_token = create_access_token(user.id, user.email, user.name, user.role, jti=jti)
 
-    header_ip = request.headers.get("x-real-ip") or (request.client.host if request.client else None)
-    ip = body.ip_address or header_ip
+    raw_header_ip = (
+        request.headers.get("x-real-ip") or request.headers.get("x-forwarded-for", "").split(",")[0].strip() or None
+    )
+    ip: str | None = None
+    location: str | None = None
+    try:
+        if raw_header_ip:
+            ipaddress.ip_address(raw_header_ip)
+            ip = raw_header_ip
+            location = await _get_location(ip)
+    except ValueError:
+        pass
+    if ip is None:
+        ip = body.ip_address
+        location = body.location
+
     session = UserSession(
         user_id=user.id,
         jti=jti,
         user_agent=request.headers.get("user-agent"),
         ip_address=ip,
-        location=body.location,
-        device=body.device,
+        location=location,
+        device=body.device or _get_device(request.headers.get("user-agent")),
         expires_at=datetime.now(UTC) + timedelta(days=TOKEN_EXPIRE_DAYS),
     )
     db.add(session)
