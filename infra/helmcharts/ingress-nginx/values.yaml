@@ -21,7 +21,7 @@ ingress-nginx:
       proxy-connect-timeout: "5"
       proxy-read-timeout: "5"
       proxy-send-timeout: "5"
-      proxy-next-upstream: off
+      proxy-next-upstream-tries: "1"
       limit-req-status-code: "429"
       custom-http-errors: 502,503,504
       log-format-upstream: $remote_addr - $http_x_forwarded_for - $remote_user
